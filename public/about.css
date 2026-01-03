@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400..900&family=Lobster&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Sekuya&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+* {
+    font-family: "Poppins", sans-serif;
+}
+
+.container-fluid{
+    background-color: #ECF6FF;
+}
+
+.container-fluid main h3, section h3{
+    font-size: 18px;
+}
+
+.container-fluid main h2{
+    font-size: 28px;
+}
+
+.container-fluid p{
+    line-height: 30px;
+    margin: 16px 0px 0px 0px; 
+}
+
+.container-fluid main a{
+    color: white;
+}
+
+.container-fluid #section2 h3{
+    font-size: 23px;
+}
+
+.container-fluid #section2 h4{
+    font-size: 18px;
+}
+
+.container-fluid #section3 .parent-section{
+    position: relative;
+}
+
+.container-fluid #section3 h3{
+    font-size: 23px;
+}
+
+.container-fluid #section3 h4{
+    font-size: 18px;
+}
+
+.container-fluid #section3 .card{
+    padding: 1.5rem;
+}
+
+.container-fluid #section3 .card p{
+    margin: 8px 0px 0px;
+    color: #808080;
+}
+
+.container-fluid #section3 .card .fa,span{
+    color: #155DFC;
+}
+
+.container-fluid #section3 .parent-section{
+    position: relative;
+}
+
+.container-fluid #section3 .parent-section::before{
+    content: "";
+    width: 2px;
+    height: 100%;
+    background-color: #808080;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.container-fluid #section3 .parent-section .row{
+    position: relative;
+}
+
+.container-fluid #section3 .parent-section .row::before{
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #808080;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+.container-fluid #section4 h3{
+    font-size: 23px;
+}
+
+.container-fluid #section4 h4{
+    font-size: 18px;
+}
+
+.container-fluid #section4 p{
+    color: #808080;
+}
+
+.container-fluid #section4 .fa{
+    font-size: 30px;
+    color: white;
+}
+
+.container-fluid footer{
+    background-color: white;
+}
+
+.container-fluid footer h3{
+    font-size: 23px;
+}
+
+.container-fluid footer p{
+    color: #808080;
+}
+
+
+
+
+
