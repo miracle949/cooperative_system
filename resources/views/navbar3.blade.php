@@ -68,6 +68,7 @@
                         <a href="{{ route("LoginPage") }}">Logout</a>
                     </li>
                 </ul>
+
             </li>
             
         </ul>
