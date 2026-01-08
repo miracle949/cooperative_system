@@ -8,7 +8,7 @@
     <title>Document</title>
 
     {{-- css link --}}
-    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="css_folder/register.css">
 
     {{-- bootstrap and tailwind link --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])

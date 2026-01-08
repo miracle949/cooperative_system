@@ -11,8 +11,8 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     {{-- css link --}}
-    <link rel="stylesheet" href="blogs.css">
-    <link rel="stylesheet" href="loading.css">
+    <link rel="stylesheet" href="css_folder/blogs.css">
+    <link rel="stylesheet" href="css_folder/loading.css">
 
     {{-- bootstrap and tailwind link --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])

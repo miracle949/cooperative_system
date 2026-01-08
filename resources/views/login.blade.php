@@ -9,8 +9,8 @@
     <link rel="icon" href="images/websitelogo.png" type="image/png">
 
     {{-- css link --}}
-    <link rel="stylesheet" href="login.css">
-    <link rel="stylesheet" href="loading.css">
+    <link rel="stylesheet" href="css_folder/login.css">
+    <link rel="stylesheet" href="css_folder/loading.css">
 
     {{-- bootstrap and tailwind link --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
