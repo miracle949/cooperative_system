@@ -4,80 +4,97 @@
     font-family: "Poppins", sans-serif;
 }
 
-.container-fluid{
+.container-fluid {
     background-color: #ECF6FF;
 }
 
+.container-fluid main {
+    padding: 48px;
+}
 
-.container-fluid main h3{
+
+.container-fluid main h3 {
     font-size: 19px;
 }
 
-.container-fluid main p{
+.container-fluid main p {
     font-size: 15.5px;
     color: #808080;
 }
 
-.container-fluid main label{
+.container-fluid main label {
     font-size: 15.5px;
 }
 
-.container-fluid main input{
+.container-fluid main input {
     font-size: 15.5px;
 }
 
-.container-fluid main button{
+.container-fluid main button {
     font-size: 15.5px;
 }
 
-.container-fluid main .contact h4{
+.container-fluid main .contact h4 {
     font-size: 18px;
 }
 
-.container-fluid main .contact p{
+.container-fluid main .contact p {
     margin: 5px 0px;
 }
 
-.container-fluid main .contact .fa{
+.container-fluid main .contact .fa {
     font-size: 20px;
     color: #0D6EFD;
 }
 
-.container-fluid main .contact .social .fa-brands{
+.container-fluid main .contact .social .fa-brands {
     font-size: 25px;
     padding: 0.5rem;
     color: #0D6EFD;
 }
 
-.container-fluid main textarea{
+.container-fluid main textarea {
     height: 202px;
 }
 
-.container-fluid h3{
+.container-fluid h3 {
     font-size: 23px;
 }
 
-.container-fluid #section1 h4{
+.container-fluid #section1 h4 {
     font-size: 18px;
 }
 
-.container-fluid #section1 span,p{
+.container-fluid #section1 span,
+p {
     font-size: 15.5px;
 }
 
-.container-fluid #section1 span{
+.container-fluid #section1 span {
     color: #0D6EFD;
 }
 
-.container-fluid #section1 .fa{
+.container-fluid #section1 .fa {
     font-size: 20px;
     color: #0D6EFD;
 }
 
-.container-fluid #section3 .accordion p{
+.container-fluid #section3 .accordion p {
     margin: 0;
 }
 
 /* .container-fluid #section1 h3{
     font-size: 23px;
 } */
+
+@media only screen and (max-width: 768px) {
+    .container-fluid main .contact {
+        margin-top: 3rem;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .container-fluid main {
+        padding: 50px 30px 50px 30px;
+    }
+}

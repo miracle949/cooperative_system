@@ -3,6 +3,7 @@
 * {
     font-family: "Poppins", sans-serif;
 }
+
 /* 
 .container-fluid nav{
     position: fixed;
@@ -20,11 +21,11 @@
     transition: all 0.5s ease-in-out;
 } */
 
-.carousel-item{
+.carousel-item {
     position: relative;
 }
 
-.carousel-item::before{
+.carousel-item::before {
     content: '';
     position: absolute;
     left: 0;
@@ -33,17 +34,17 @@
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
     inset: 0;
 }
 
-.carousel-item img{
+.carousel-item img {
     position: relative;
     z-index: 0;
 }
 
-.carousel-caption{
+.carousel-caption {
     z-index: 2;
     /* position: absolute;
     left: 50%;
@@ -51,15 +52,15 @@
     transform: translate(-50%,-50%); */
 }
 
-.carousel-caption p{ 
+.carousel-caption p {
     margin: 0px 0px 0px;
 }
 
-#section1 h2{
+#section1 h2 {
     font-size: 23px;
 }
 
-#section2 h2{
+#section2 h2 {
     font-size: 23px;
 }
 
@@ -67,13 +68,13 @@
     font-size: 18px;
 }
 
-#section2 .card .card-header p{
+#section2 .card .card-header p {
     font-size: 14.5px;
     margin-top: 1rem;
     color: #808080;
 }
 
-#section2 .card .card-header{
+#section2 .card .card-header {
     background-color: transparent;
 }
 
@@ -82,11 +83,11 @@
     margin-top: 1rem;
 }
 
-hr{
+hr {
     margin: 0px 0px;
 }
 
-footer h2{
+footer h2 {
     font-size: 23px;
 }
 
@@ -97,13 +98,13 @@ footer p {
     color: #808080;
 }
 
-footer .card-box{
+footer .card-box {
     width: 100%;
     padding: 2.5rem 1.5rem 1.8rem 1.5rem;
     border-radius: 20px;
     padding: 2rem;
     background-color: white;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 footer .card-box .card-box-header {
@@ -116,17 +117,55 @@ footer .card-box .card-box-body .card-box-header h3 {
     font-size: 18px;
 }
 
-footer .card-box .card-box-header p{
+footer .card-box .card-box-header p {
     width: 600px;
     font-size: 14.5px;
     margin-top: 1rem;
 }
 
-footer .card-box .fa{
+footer .card-box .fa {
     color: #00A63E;
 }
 
-footer .card-box span{
+footer .card-box span {
     font-size: 14.5px;
 }
 
+@media only screen and (max-width: 1280px) {
+    .carousel-item img {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    .carousel-item img {
+        width: 100%;
+        height: 490px;
+    }
+
+    footer .benefits-group{
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+}
+
+@media only screen and (max-width: 530px){
+    #section2 .card{
+        width: 460px;
+    }
+}
+
+@media only screen and (max-width: 480px){
+    #section2 .card{
+        width: 380px;
+    }
+}
+
+@media only screen and (max-width: 400px){
+    #section2 .card{
+        width: 330px;
+    }
+}

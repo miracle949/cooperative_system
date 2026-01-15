@@ -32,15 +32,16 @@
 
     <div class="container-fluid p-0 m-0">
         @include("navbar2")
+        @include("offcanvas")
 
         <main>
-            <h3 class="ms-5 mt-5">Member Cooperative Portal</h3>
+            <h3 class="ms-5 mt-5 me-5">Member Cooperative Portal</h3>
 
-            <p class="mt-4 ms-5">Hello Welcome, Jhun!</p>
+            <p class="mt-4 ms-5 me-5">Hello Welcome, Jhun!</p>
 
             <hr>
 
-            <div class="mt-5 pb-5 d-flex justify-content-center align-items-center flex-wrap card-parent">
+            <div class=" p-5 card-parent">
                 <div class="card-box p-4">
                     <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center" style="border-radius: 10px">
                         <i class="fa-solid fa-wallet"></i>

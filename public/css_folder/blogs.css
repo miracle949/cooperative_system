@@ -8,35 +8,46 @@
     color: white;
 } */
 
-.container-fluid main h4{
+.container-fluid main h4 {
     font-size: 16px;
     width: 145px;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
     border-radius: 28px;
     color: white;
 }
 
-.container-fluid main .content{
+.container-fluid main .blogs-image img {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.container-fluid main .blogs-content {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 3rem;
+}
+
+.container-fluid main .content {
     margin-top: 2rem;
 }
 
-.container-fluid main .content a{
+.container-fluid main .content a {
     background-color: white;
 }
 
 
-.container-fluid .tab-content .card-body{
+.container-fluid .tab-content .card-body {
     width: 350px;
     height: 280px;
 }
 
-.container-fluid .tab-content .tab-pane .sub-card-parent{
+.container-fluid .tab-content .tab-pane .sub-card-parent {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.container-fluid .tab-content .tab-pane .card-parent{
+.container-fluid .tab-content .tab-pane .card-parent {
     display: flex;
     justify-content: center;
     align-content: left;
@@ -44,43 +55,45 @@
     gap: 2rem;
 }
 
-.container-fluid .tab-content .card .card-header{
+.container-fluid .tab-content .card .card-header {
     /* width: 100%;
     height: 500px; */
     padding: 0px 0px;
 }
 
-.container-fluid .tab-content .card .card-header img{
+.container-fluid .tab-content .card .card-header img {
     width: 350px;
     height: 200px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
 
-.container-fluid .tab-content .card .card-body p{
+.container-fluid .tab-content .card .card-body p {
     margin: 0.5rem 0 0 0;
 }
 
-.container-fluid .tab-content .card .card-body a:hover .fa{
+.container-fluid .tab-content .card .card-body a:hover .fa {
     transform: translateX(20%);
     transition: all 0.5s ease-in-out;
 }
 
-.container-fluid .tab-content .card .card-body h4,p:nth-child(2),span{
+.container-fluid .tab-content .card .card-body h4,
+p:nth-child(2),
+span {
     color: black;
 }
 
-.container-fluid .tab-content .card .card-body p:nth-child(3){
+.container-fluid .tab-content .card .card-body p:nth-child(3) {
     color: #808080;
     font-size: 15px;
 }
 
-footer h4{
+footer h4 {
     color: white;
     font-size: 18px;
 }
 
-footer p{
+footer p {
     color: white;
 }
 
@@ -88,15 +101,38 @@ footer p{
     color: white;
 } */
 
-footer input.form-control{
+footer input.form-control {
     background-color: none;
     background: transparent;
     font-size: 15px;
 }
 
-footer button{
+footer button {
     padding: 8px 30px;
     background-color: white;
     color: #3E8FFF;
     border-radius: 10px;
+}
+
+
+@media only screen and (max-width: 1200px) {
+    .container-fluid main .blogs-image img {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 0px;
+        height: 400px;
+    }
+
+    .container-fluid main .blogs-content {
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        padding: 3rem;
+    }
+}
+
+@media only screen and (max-width: 640px){
+    .container-fluid main{
+        flex-direction: column;
+    }
 }

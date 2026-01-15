@@ -34,6 +34,7 @@
     <div class="container-fluid p-0 m-0">
 
         @include("navbar")
+        @include("offcanvas")
 
         <main class="z-1">
             <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
@@ -121,7 +122,7 @@
             </div> --}}
         </main>
 
-        <section class="d-flex justify-center align-items-center flex-column mb-5" id="section1">
+        <section class="d-flex justify-center align-items-center flex-column p-5 mb-5" id="section1">
             <h2 class="text-center mt-5 pt-5 fw-medium">Why Choose Our Cooperative?</h2>
 
             <p class="text-center mt-3 mw-100 tw:w-[650px] tw:text-[#808080]">We offer more than just financial services
@@ -185,7 +186,7 @@
             </div>
         </section>
 
-        <section class="d-flex justify-center align-items-center flex-column mb-5" id="section2">
+        <section class="d-flex justify-center align-items-center flex-column mb-5 p-5" id="section2">
             <h2 class="text-center mt-5 pt-5 fw-medium">Loan Products</h2>
 
             <p class="text-center mt-3 mw-100 tw:text-[16px] tw:text-[#808080]">Choose from our variety of loan products
@@ -193,7 +194,7 @@
             </p>
 
             <div class="d-flex flex-wrap justify-content-center align-items-center gap-3" style="margin-top: 32px">
-                <div data-aos="fade-right" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -208,7 +209,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-left" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -223,7 +224,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-right" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -238,7 +239,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-left" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -275,7 +276,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-start align-items-center gap-5 justify-content-md-start align-items-md-start justify-content-sm-start align-items-sm-start justify-content-xs-start align-items-xs-start flex-xl-row flex-md-column flex-sm-column flex-xs-column"
+                    <div class="d-flex justify-content-start align-items-start gap-5 justify-content-md-start align-items-md-start justify-content-sm-start align-items-sm-start justify-content-xs-start align-items-xs-start flex-xl-row flex-md-column flex-sm-column flex-xs-column benefits-group"
                         style="padding: 8px">
                         <div class="d-flex flex-column row-gap-3">
                             <div class="d-flex column-gap-3">

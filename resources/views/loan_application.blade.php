@@ -32,11 +32,12 @@
 
     <div class="container-fluid m-0 p-0">
         @include("navbar2")
+        @include("offcanvas")
 
-        <main class="p-5">
-            <div class="card-box p-5">
+        <main>
+            <div class="card-box">
                 <div class="d-flex justify-content-left align-items-center gap-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon d-flex justify-content-center align-items-center"
+                    <div class="tw:w-[55px] tw:h-[55px] card-icon"
                         style="border-radius: 10px">
                         <i class="fa-solid fa-file"></i>
                     </div>
@@ -47,8 +48,8 @@
                     </div>
                 </div>
 
-                <div class="row mt-5">
-                    <div class="col-6">
+                <div class="row form-parent">
+                    <div class="col-lg-6 col-md-12 mt-4">
                         <label>Loan Type *</label>
                         <select name="" class="form-control mt-2" style="font-size: 15.5px;">
                             <option value="">Select loan type</option>
@@ -60,13 +61,13 @@
                         </select>
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-lg-6 col-md-12 mt-md-4 mt-sm-4 loan-input">
                         <label>Loan Amount (₱) *</label>
                         <input type="text" name="" placeholder="Enter amount" class="form-control mt-2"
                             style="font-size: 15.5px;">
                     </div>
 
-                    <div class="col-6 mt-4">
+                    <div class="col-lg-6 col-md-12 mt-4">
                         <label>Loan Type *</label>
                         <select name="" class="form-control mt-2" style="font-size: 15.5px;">
                             <option value="">Select loan term</option>
@@ -78,7 +79,7 @@
                         </select>
                     </div>
 
-                    <div class="col-6 mt-4">
+                    <div class="col-lg-6 col-md-12 mt-4">
                         <label>Enter Monthly Income (₱) *</label>
                         <input type="text" name="" placeholder="Enter monthly income" class="form-control mt-2"
                             style="font-size: 15.5px;">
@@ -90,7 +91,7 @@
                             placeholder="Describe the purpose of your loan..." style="font-size: 15.5px;"></textarea>
                     </div>
 
-                    <div class="col-12 mt-5">
+                    <div class="col-12 mt-5 mt-md-4">
                         <button class="tw:w-[100%] btn btn-dark">Submit Application</button>
                     </div>
                 </div>

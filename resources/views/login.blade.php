@@ -34,7 +34,7 @@
             <div class="load"></div>
 
         </div>
-        
+
         <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">
             <div class="overlay"></div>
             <img src="images/loginbg.jpg" class="tw:h-[100%]" alt="">
@@ -57,37 +57,40 @@
                 <p class="mt-3 tw:w-[400px] text-center">Welcome back! Please log in to securely manage your account.
                 </p>
 
-                <div class="mt-3">
-                    <label>Username or Email</label>
-                    <div class="input-group mt-2">
-                        <span class="input-group-text"><i class="fa fa-user"></i></span>
-                        <input type="text" name="username_email" placeholder="Enter your username or email"
-                            class="form-control" required>
+                <div class="form-sub-parent">
+                    <div class="mt-3 form-input">
+                        <label>Username or Email</label>
+                        <div class="input-group mt-2">
+                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                            <input type="text" name="username_email" placeholder="Enter your username or email"
+                                class="form-control" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mt-3">
-                    <label>Password</label>
-                    <div class="input-group mt-2">
-                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                        <input type="password" name="password" placeholder="Enter your password" class="form-control"
-                            required>
+                    <div class="mt-3 form-input">
+                        <label>Password</label>
+                        <div class="input-group mt-2">
+                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            <input type="password" name="password" placeholder="Enter your password"
+                                class="form-control" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mt-4 tw:flex tw:justify-end">
-                    <a href="#" class="text-black">Forgot Password</a>
-                </div>
+                    <div class="mt-4 tw:flex tw:justify-end form-forgot">
+                        <a href="#" class="text-black">Forgot Password</a>
+                    </div>
 
-                <div class="mt-4">
-                    <button class="tw:w-full tw:py-1.5 tw:bg-black text-white fw-bold tw:hover:bg-gray-700" id="login"
-                        type="submit">
-                        <div class="loading"></div>Login
-                    </button>
-                </div>
+                    <div class="mt-4 form-button">
+                        <button class="tw:w-full tw:py-1.5 tw:bg-black text-white fw-bold tw:hover:bg-gray-700"
+                            id="login" type="submit">
+                            <div class="loading"></div>Login
+                        </button>
+                    </div>
 
-                <div class="text-center" style="margin-top: 1.8rem">
-                    <label>Don't have an account? <a href="{{ route("RegisterPage") }}" class="text-black">Register</a></label>
+                    <div class="text-center form-change" style="margin-top: 1.8rem">
+                        <label>Don't have an account? <a href="{{ route("RegisterPage") }}"
+                                class="text-black">Register</a></label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,7 +121,8 @@
 
     </script>
 
-     {{-- <script src="style.js"></script> --}}
+    {{--
+    <script src="style.js"></script> --}}
 </body>
 
 </html>

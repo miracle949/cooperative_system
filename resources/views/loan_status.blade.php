@@ -34,7 +34,7 @@
         @include("navbar2")
 
         <main class="p-5">
-            <div class="card-box-parent d-flex justify-content-center align-items-center flex-wrap">
+            <div class="card-box-parent d-flex justify-content-between align-items-center flex-wrap">
                 <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="card-box">
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <h4>Personal Loan</h4>

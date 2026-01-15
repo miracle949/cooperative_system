@@ -29,6 +29,10 @@
         </ul>
     </div>
 
+    <div class="nav-menu">
+        <i class="fa fa-bars" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu2" aria-controls="staticBackdrop"></i>
+    </div>
+
     <div class="nav-acc2">
 
         {{-- <a href="{{ route(" LoginPage") }}" class="py-2 px-5 text-decoration-none tw:text-[15.5px] fw-semibold"

@@ -32,6 +32,7 @@
 
     <div class="container-fluid p-0 m-0">
         @include("navbar2")
+        @include("offcanvas")
 
         <main class="p-5">
             <div class="card-box-parent p-5">
@@ -64,7 +65,7 @@
         </main>
 
         <section>
-            <div class="d-flex justify-content-center align-items-center card-box-parent flex-wrap">
+            <div class="d-flex justify-content-between align-items-center card-box-parent p-5 flex-wrap">
                 <div class="card-box tw:bg-white">
                     <div
                         class="tw:w-[55px] tw:h-[55px] card-icon d-flex justify-content-center align-items-center card-icon">

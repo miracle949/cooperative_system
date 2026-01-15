@@ -4,39 +4,110 @@
     font-family: "Poppins", sans-serif;
 }
 
-.container-fluid{
+.container-fluid {
     background-color: #ECF6FF;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
-.container-fluid main h3{
+.container-fluid main{
+    padding: 48px;
+}
+
+.container-fluid main h3 {
     font-size: 19px;
 }
 
-.container-fluid main .card-box{
-    border: 1px solid rgba(0,0,0,0.3);
+.container-fluid main .card-box {
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background-color: white;
+    padding: 48px;
 }
 
-.container-fluid main .card-box .card-icon{
+.container-fluid main .card-box .card-icon {
     background-color: #DBEAFE;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.container-fluid main .card-box .fa-solid{
+.container-fluid main .card-box .fa-solid {
     font-size: 25px;
     color: #155DFC;
 }
 
-.container-fluid main .card-box select{
-    border: 1px solid rgba(0,0,0,0.3);
+.container-fluid main .card-box select {
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.container-fluid main .card-box input{
-    border: 1px solid rgba(0,0,0,0.3);
+.container-fluid main .card-box input {
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-.container-fluid main .card-box textarea{
+.container-fluid main .card-box textarea {
     width: 100%;
     height: 202px;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+@media only screen and (min-width: 1450px) {
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+}
+
+
+@media only screen and (max-width: 640px) {
+    .container-fluid main .card-box .loan-input {
+        margin-top: 24px;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+
+    .container-fluid main{
+        padding: 30px;
+    }
+
+}
+
+@media only screen and (max-width: 475px) {
+
+    .container-fluid main{
+        padding: 50px 30px 50px 30px;
+    }
+
+    .container-fluid main .card-box {
+        padding: 30px;
+    }
+
+    .container-fluid main .card-box input {
+        font-size: 13px;
+    }
+
+    .container-fluid main .card-box .card-icon {
+        display: none;
+    }
+
+    .container-fluid main .card-box h3{
+        font-size: 20px;
+    }
+
+    .container-fluid main .card-box p{
+        margin-top: 2rem;
+    }
+
+    .container-fluid .form-parent{
+        margin-top: 15px;
+    }
 }

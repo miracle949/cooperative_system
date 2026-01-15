@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Blogs</title>
 
+    <link rel="icon" href="images/websitelogo.png" type="image/png">
+
     {{-- AOS animation link css --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -31,14 +33,15 @@
 
     <div class="container-fluid p-0 m-0">
         @include("navbar")
+        @include("offcanvas")
 
-        <main class="p-5 d-flex flex-xl-row flex-md-column flex-sm-column flex-sx-column">
-            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="" style="border-bottom-left-radius: 20px;">
-                <img src="images/blogpicture4.jpg" class="max-w-full max-h-full tw:h-[100%] object-cover"
-                    style="border-bottom-left-radius: 20px; border-top-left-radius: 20px;" alt="">
+        <main class="p-5 d-flex flex-xl-row flex-md-column flex-sm-column flex-sx-column flex-xs-column">
+
+            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="blogs-image" style="border-bottom-left-radius: 20px;">
+                <img src="images/blogpicture4.jpg" class="max-w-full max-h-full tw:h-[100%] object-cover" alt="">
             </div>
-            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" class="blogs-content p-5 tw:bg-[#3E8FFF]"
-                style="border-bottom-left-radius: 0px; border-top-right-radius: 20px; border: 1px solid rgba(0,0,0,0.3); border-bottom-left-radius: 0px; border-bottom-right-radius: 20px;">
+            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" class="blogs-content tw:bg-[#3E8FFF]"
+                style="border: 1px solid rgba(0,0,0,0.3);">
                 <h4 class="py-2 px-3">Featured Post</h4>
 
                 <p class="content" style="color: white">10 Smart Ways to Build Your Emergency Fund

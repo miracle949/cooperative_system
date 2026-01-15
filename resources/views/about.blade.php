@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>About us</title>
+    
+    <link rel="icon" href="images/websitelogo.png" type="image/png">
 
     {{-- AOS animation link css --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -31,6 +33,7 @@
     <div class="container-fluid p-0 m-0">
 
         @include("navbar")
+        @include("offcanvas")
 
         <main class="p-5">
             <div class="row">
@@ -57,18 +60,18 @@
                 </div>
 
                 <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" data-aos-offset="0"
-                    class="col-lg-6 col-md-12 tw:flex tw:justify-center tw:items-center">
+                    class="col-lg-6 col-md-12 tw:flex tw:justify-center tw:items-center about-image">
                     <img src="images/about_picture2.jpg" class="mw-100 object-fit-cover w-md-100" alt=""
                         style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
                 </div>
             </div>
         </main>
 
-        <section class="mt-5 p-5" id="section1">
+        <section class="mt-3 p-5" id="section1">
 
-            <div data-aos="fade-up" data-aos-duration="1000" class="tw:flex tw:justify-center tw:items-center gap-5 flex-wrap">
-                <div class="card tw:p-7 mw-100 hw-100"
-                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #DBEAFE; width: 550px;">
+            <div data-aos="fade-up" data-aos-duration="1000" class="tw:flex tw:justify-center tw:items-center gap-5 parent-vision-mission">
+                <div class="card tw:p-7 md:w-100"
+                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #DBEAFE;">
 
                     <div class="p-3 tw:bg-[#155DFC] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
                         style="border-radius: 10px">
@@ -85,7 +88,7 @@
                 </div>
 
                 <div data-aos="fade-up" data-aos-duration="1500" class="card tw:p-7 mw-100 hw-100"
-                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #F0FDF4; width: 550px;">
+                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #F0FDF4;">
 
                     <div class="p-3 tw:bg-[#00A63E] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
                         style="border-radius: 10px">

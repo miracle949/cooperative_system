@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Contact</title>
 
+    <link rel="icon" href="images/websitelogo.png" type="image/png">
+
     {{-- AOS animation link css --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -31,12 +33,14 @@
 
     <div class="container-fluid p-0 m-0">
         @include("navbar")
+        @include("offcanvas")
 
-        <main class="p-5">
+        <main>
 
             <div class="row">
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="col-lg-6 col-md-12">
+                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800"
+                    class="col-lg-6 col-md-12">
                     <h3>Send Us a Message</h3>
 
                     <p class="mt-3">Fill out the form below and we'll get back to you as soon as possible.</p>
@@ -81,7 +85,8 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" class="col-lg-6 col-md-12 contact ps-lg-5 ps-md-0 mt-md-5 mt-lg-0">
+                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000"
+                    class="col-lg-6 col-md-12 contact ps-lg-5 ps-md-0 mt-md-5 mt-lg-0">
                     <h3>Contact Information</h3>
 
                     <div class="tw:flex gap-3 mt-4">
@@ -243,7 +248,8 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <p>You can apply for membership by visiting any of our branches with valid IDs and initial deposit.</p>
+                            <p>You can apply for membership by visiting any of our branches with valid IDs and initial
+                                deposit.</p>
                         </div>
                     </div>
                 </div>
@@ -256,7 +262,8 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <p>Requirements vary by loan type. Generally, you need to be a member in good standing with sufficient savings.</p>
+                            <p>Requirements vary by loan type. Generally, you need to be a member in good standing with
+                                sufficient savings.</p>
                         </div>
                     </div>
                 </div>
@@ -269,7 +276,8 @@
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <p>Most loan applications are processed within 3-5 business days after submission of complete requirements.</p>
+                            <p>Most loan applications are processed within 3-5 business days after submission of
+                                complete requirements.</p>
                         </div>
                     </div>
                 </div>

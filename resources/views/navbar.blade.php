@@ -32,6 +32,10 @@
         </ul>
     </div>
 
+    <div class="nav-menu">
+        <i class="fa fa-bars" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu1" aria-controls="staticBackdrop"></i>
+    </div>
+
     <div class="nav-acc tw:flex tw:gap-x-[0.7rem]">
         {{-- <a href="#" class="text-decoration-none text-black tw:text-[20px]">
             <i class="fa fa-bell"></i>
