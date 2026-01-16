@@ -8,6 +8,10 @@
     background-color: #ECF6FF;
 }
 
+.container-fluid main {
+    padding: 48px;
+}
+
 .container-fluid main h3 {
     font-size: 18px;
     color: #808080;
@@ -21,6 +25,7 @@
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background-color: white;
+    padding: 48px;
 }
 
 .container-fluid main .card-box-parent .card-box:nth-child(1) {
@@ -54,15 +59,24 @@
 .container-fluid main .card-box-parent .card-box {
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 8px 24px 8px 8px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 1rem;
 }
 
 .container-fluid main .card-box-parent .card-box .card-icon {
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container-fluid section .card-box-parent {
     gap: 1.9rem;
+    padding: 48px;
 }
 
 .container-fluid section .card-box-parent .card-box {
@@ -104,6 +118,10 @@
     background-color: #F3E8FF;
 }
 
+.container-fluid #section2 {
+    padding: 48px;
+}
+
 .container-fluid #section2 .card-box-parent {
     border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
@@ -123,6 +141,13 @@
     background-color: white;
     width: 100%;
     padding: 2rem;
+    margin-top: 1rem;
+}
+
+.container-fluid section .card-box-parent .card-box-title .print {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 @media only screen and (max-width: 930px) {
@@ -133,14 +158,81 @@
     .container-fluid section .card-box-parent .card-box {
         width: 100%;
     }
+
+    .container-fluid section .card-box-parent .card-box span {
+        font-size: 18px;
+    }
 }
 
 @media only screen and (max-width: 768px) {
-    .container-fluid section .card-box-parent{
+    .container-fluid section .card-box-parent {
         padding: 48px;
     }
 
     .container-fluid section .card-box-parent .card-box {
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .container-fluid main .card-box-parent .card-box {
+        width: 100%;
+        padding: 15px;
+        display: flex;
+        justify-content: left;
+        align-items: left;
+    }
+
+    .container-fluid main .card-box-parent {
+        padding: 30px;
+        flex-wrap: wrap;
+    }
+
+    .container-fluid main .card-box-parent .card-box .card-icon {
+        all: unset;
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+    /* .container-fluid main .card-box-parent .card-box:nth-child(1) .card-icon {
+        background-color: #DBEAFE;
+    }
+
+    .container-fluid main .card-box-parent .card-box:nth-child(2) .card-icon {
+        background-color: #DBEAFE;
+    } */
+
+    .container-fluid main .card-box-parent .card-box .card-icon .fa-solid {
+        display: block;
+    }
+
+    .container-fluid #section2 {
+        padding: 30px;
+    }
+
+    .container-fluid section .card-box-parent {
+        padding: 30px;
+    }
+
+    .container-fluid section .card-box-parent .card-box-title {
+        flex-direction: column-reverse;
+    }
+
+    .container-fluid section .card-box-parent .card-box-title .title {
+        margin-top: 2rem;
+    }
+
+    .container-fluid section .card-box-parent .card-box-title .print {
+        width: 100%;
+        justify-content: end;
+        align-items: end;
+    }
+
+    .container-fluid main {
+        padding: 30px;
+    }
+
+    .container-fluid #section2 .card-box-parent .card-box {
+        margin-top: 2rem;
     }
 }

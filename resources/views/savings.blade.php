@@ -34,16 +34,16 @@
         @include("navbar2")
         @include("offcanvas")
 
-        <main class="p-5">
-            <div class="card-box-parent p-5">
+        <main>
+            <div class="card-box-parent">
                 <h3>My Savings</h3>
 
                 <h2 class="mt-3">₱ 12,000.00</h2>
 
-                <div class="mt-4 d-flex justify-content-left align-items-center gap-3">
-                    <div class="d-flex justify-content-center align-items-center gap-3 p-2 pe-4 card-box">
+                <div class="mt-4 d-flex justify-content-left align-items-center flex-wrap gap-3">
+                    <div class="card-box">
                         <div
-                            class="tw:w-[55px] tw:h-[55px] card-icon d-flex justify-content-center align-items-center card-icon">
+                            class="tw:w-[55px] tw:h-[55px] card-icon">
                             <i class="fa-solid fa-circle-arrow-down"></i>
                         </div>
                         <div>
@@ -51,9 +51,9 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-center align-items-center gap-3 p-2 pe-4 card-box">
+                    <div class="card-box">
                         <div
-                            class="tw:w-[55px] tw:h-[55px] card-icon d-flex justify-content-center align-items-center card-icon">
+                            class="tw:w-[55px] tw:h-[55px] card-icon">
                             <i class="fa-solid fa-circle-arrow-up"></i>
                         </div>
                         <div>
@@ -65,7 +65,7 @@
         </main>
 
         <section>
-            <div class="d-flex justify-content-between align-items-center card-box-parent p-5 flex-wrap">
+            <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
                 <div class="card-box tw:bg-white">
                     <div
                         class="tw:w-[55px] tw:h-[55px] card-icon d-flex justify-content-center align-items-center card-icon">
@@ -101,26 +101,26 @@
             </div>
         </section>
 
-        <section class="p-5" id="section2">
-            <div class="p-5 card-box-parent">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
+        <section id="section2">
+            <div class="card-box-parent">
+                <div class="d-flex justify-content-between align-items-center card-box-title">
+                    <div class="title">
                         <h3>Contribution History</h3>
 
                         <p class="tw:text-[#808080]">View your monthly contributions breakdown</p>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center gap-3">
+                    <div class="gap-3 print">
                         <button class="py-2 px-3 tw:bg-[#00A63E] tw:text-white" style="border-radius: 10px"><i class="fa-solid fa-download"></i> CSV</button>
 
                         <button class="py-2 px-3 tw:bg-[#155DFC] tw:text-white" style="border-radius: 10px"><i class="fa fa-solid fa-download"></i> PDF</button>
                     </div>
                 </div>
 
-                <div class="mt-3 card-box">
+                <div class="card-box">
                     <h4>November 2024</h4>
 
-                    <div class="mt-4">
-                        <table class="table">
+                    <div class="mt-4 overflow-x-auto">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr style="border-bottom: 1px solid black;">
                                     <th>Date</th>
@@ -145,11 +145,11 @@
                     </div>
                 </div>
 
-                <div class="mt-3 card-box">
+                <div class="card-box">
                     <h4>October 2024</h4>
 
-                    <div class="mt-4">
-                        <table class="table">
+                    <div class="mt-4 overflow-x-auto">
+                        <table class="table table-striped table-hover overflow-x-auto">
                             <thead>
                                 <tr style="border-bottom: 1px solid black;">
                                     <th>Date</th>
@@ -174,11 +174,11 @@
                     </div>
                 </div>
 
-                <div class="mt-3 card-box">
+                <div class="card-box">
                     <h4>September 2024</h4>
 
-                    <div class="mt-4">
-                        <table class="table">
+                    <div class="mt-4 overflow-x-auto">
+                        <table class="table table-striped table-hover overflow-x-auto">
                             <thead>
                                 <tr style="border-bottom: 1px solid black;">
                                     <th>Date</th>

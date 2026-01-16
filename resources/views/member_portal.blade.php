@@ -35,15 +35,18 @@
         @include("offcanvas")
 
         <main>
-            <h3 class="ms-5 mt-5 me-5">Member Cooperative Portal</h3>
+            <div class="main-intro">
+                <h3 class="">Member Cooperative Portal</h3>
 
-            <p class="mt-4 ms-5 me-5">Hello Welcome, Jhun!</p>
+                <p class="">Hello Welcome, Jhun!</p>
+            </div>
 
             <hr>
 
-            <div class=" p-5 card-parent">
+            <div class="card-parent">
                 <div class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center" style="border-radius: 10px">
+                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
+                        style="border-radius: 10px">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
 
@@ -53,7 +56,8 @@
                 </div>
 
                 <div class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center" style="border-radius: 10px">
+                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
+                        style="border-radius: 10px">
                         <i class="fa-solid fa-arrow-trend-up"></i>
                     </div>
 
@@ -62,8 +66,9 @@
                     <span>1 Loan(s)</span>
                 </div>
 
-                <div  class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center" style="border-radius: 10px">
+                <div class="card-box p-4">
+                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
+                        style="border-radius: 10px">
                         <i class="fa-solid fa-award"></i>
                     </div>
 
@@ -74,44 +79,45 @@
             </div>
         </main>
 
-        <section class="p-5">
+        <section>
             <div class="card-box-parent">
                 <h3>Loan Application</h3>
 
                 <div class="card-parent mt-4 d-flex flex-column gap-4">
 
                     <div class="card-box">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center card-status">
                             <h4>Personal Loan</h4>
 
-                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon" style="background-color: #DBFCE7; border-radius: 28px; color: #128B4A; padding: 0.5rem;">
-                                <i class="fa-solid fa-check-circle" style="font-size: 14px;"></i>
+                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
+                                style="background-color: #DBFCE7; border-radius: 28px; color: #128B4A; padding: 0.5rem;">
+                                <i class="fa-solid fa-check-circle"></i>
                                 <p style="margin: 0; font-size: 13px;">Approved</p>
                             </div>
                         </div>
 
                         <p class="mt-2 tw:text-[#808080]">Applied on 11/15/2024</p>
 
-                        <div class="row mt-5">
-                            <div class="col-3">
+                        <div class="w-100 mt-5 loan-status">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Loan Amount</p>
 
                                 <span>₱ 50,000</span>
                             </div>
 
-                            <div class="col-3">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Purpose</p>
 
                                 <span>Home Renovation</span>
                             </div>
 
-                            <div class="col-3">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Monthly Payment</p>
 
                                 <span>₱ 4,580</span>
                             </div>
 
-                            <div class="col-3">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Remaining Balance</p>
 
                                 <span>₱ 48,200</span>
@@ -124,25 +130,26 @@
                     </div>
 
                     <div class="card-box">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center card-status">
                             <h4>Personal Loan</h4>
 
-                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon" style="background-color: #FEF9C2; border-radius: 28px; color: #BA5F00; padding: 0.5rem;">
-                                <i class="fa-solid fa-clock" style="font-size: 14px;"></i>
+                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
+                                style="background-color: #FEF9C2; border-radius: 28px; color: #BA5F00; padding: 0.5rem;">
+                                <i class="fa-solid fa-clock"></i>
                                 <p style="margin: 0; font-size: 13px;">Pending</p>
                             </div>
                         </div>
 
                         <p class="mt-2 tw:text-[#808080]">Applied on 11/15/2024</p>
 
-                        <div class="row mt-5">
-                            <div class="col-3">
+                        <div class="w-100 mt-5 loan-status">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Loan Amount</p>
 
                                 <span>₱ 50,000</span>
                             </div>
 
-                            <div class="col-3">
+                            <div class="loan-value">
                                 <p class="tw:text-[#808080]">Purpose</p>
 
                                 <span>Home Renovation</span>

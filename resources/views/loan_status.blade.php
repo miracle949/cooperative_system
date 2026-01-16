@@ -32,6 +32,7 @@
 
     <div class="container-fluid p-0 m-0">
         @include("navbar2")
+        @include("offcanvas")
 
         <main class="p-5">
             <div class="card-box-parent d-flex justify-content-between align-items-center flex-wrap">
@@ -151,7 +152,7 @@
                     <div class="col-12">
                         <h4>Payment History</h4>
 
-                        <div class="mt-3">
+                        <div class="mt-3 overflow-x-auto">
                             <table class="table">
                                 <thead>
                                     <tr>
