@@ -4,27 +4,32 @@
     font-family: "Poppins", sans-serif;
 }
 
-.container-fluid{
+.container-fluid {
     background-color: #ECF6FF;
 }
 
-.container-fluid main .card-box-parent{
-    border: 1px solid rgba(0,0,0,0.3);
-    border-radius: 10px;
+.container-fluid main {
+    position: relative;
 }
 
-.container-fluid main .card-box-parent .card-box{
-    border: 1px solid rgba(0,0,0,0.3);
+.container-fluid main .card-box-parent {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    height: 100%;
+}
+
+.container-fluid main .card-box-parent .card-box {
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 30px;
     background-color: #ECECF0;
     margin: 1rem 0 0 0;
 }
 
-.container-fluid main .card-box-parent .card-box .nav{
+.container-fluid main .card-box-parent .card-box .nav {
     gap: 8rem;
 }
 
-.container-fluid main .card-box-parent .card-box .nav .nav-link{
+.container-fluid main .card-box-parent .card-box .nav .nav-link {
     background: transparent !important;
     color: #000;
     border: none;
@@ -48,73 +53,136 @@
     border-radius: 2px;
 }
 
-.card-tab{
+.card-tab {
     width: 480px;
     height: 330px;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     padding: 2rem;
 }
 
-.card-tab:nth-child(1){
+.card-tab:nth-child(1) {
     background-color: #E5F0FF;
 }
 
-.card-tab:nth-child(2){
+.card-tab:nth-child(2) {
     background-color: #E6FCEE;
 }
 
-.card-tab-benefits{
+.card-tab-benefits {
     width: 94.3%;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     padding: 2rem;
     background-color: white;
 }
 
-.card-tab-benefits h4{
+.card-tab-benefits h4 {
     font-size: 17px;
 }
 
-.transaction-tab h4{
+.transaction-tab h4 {
     font-size: 17px;
 }
 
-.settings-tab{
+.settings-tab {
     width: 100%;
     padding: 2rem;
     background-color: white;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     border-radius: 10px;
 }
 
-.settings-tab h4{
+.settings-tab h4 {
     font-size: 17px;
 }
 
-.settings-tab p{
+.settings-tab p {
     margin: 0px 0px 8px;
 }
 
-.security-tab{
+.security-tab {
     width: 100%;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     padding: 2rem;
     border-radius: 10px;
     background-color: white;
 }
 
-.security-tab h4{
+.security-tab h4 {
     font-size: 17px;
 }
 
-.security-tab .security-box{
+.security-tab .security-box {
     padding: 1.5rem;
     border-radius: 10px;
-    border: 1px solid rgba(0,0,0,0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-label{
+label {
     font-weight: 500;
 }
 
+.tab-pane {
+    padding: 48px;
+}
+
+.label-text{
+    margin-top: 48px;
+}
+
+.label-text p{
+    margin-top: 8px;
+}
+
+@media only screen and (max-width: 1200px) {
+
+    html {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width: 1150px) {
+
+    .container-fluid main .card-box-parent .card-box .nav {
+        gap: 5rem;
+    }
+}
+
+@media only screen and (max-width: 1040px) {
+    .container-fluid main .card-box-parent .card-box .nav {
+        gap: 3.5rem;
+    }
+}
+
+@media only screen and (max-width: 955px) {
+
+    main{
+        height: calc(100dvh - 80px);
+        margin-bottom: 80px;
+    }
+
+    .container-fluid main .card-box-parent .card-box {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 0;
+        padding: 1rem;
+        z-index: 1;
+    }
+
+    .container-fluid main .card-box-parent .card-box .nav {
+        gap: 2rem;
+    }
+
+    .tab-pane {
+        padding: 0;
+    }
+
+}

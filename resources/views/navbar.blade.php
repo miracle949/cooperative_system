@@ -22,9 +22,9 @@
                 <a href="#" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Services</a>
             </li>
 
-            <li class="tw:list-none">
+            {{-- <li class="tw:list-none">
                 <a href="{{ route("BlogsPage") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Blogs</a>
-            </li>
+            </li> --}}
 
             <li class="tw:list-none">
                 <a href="{{ route("ContactPage") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Contact</a>

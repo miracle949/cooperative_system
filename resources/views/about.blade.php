@@ -35,7 +35,7 @@
         @include("navbar")
         @include("offcanvas")
 
-        <main class="p-5">
+        <main>
             <div class="row">
                 <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" data-aos-offset="0"
                     class="col-lg-6 col-md-12">
@@ -67,7 +67,7 @@
             </div>
         </main>
 
-        <section class="mt-3 p-5" id="section1">
+        <section class="mt-3" id="section1">
 
             <div data-aos="fade-up" data-aos-duration="1000" class="tw:flex tw:justify-center tw:items-center gap-5 parent-vision-mission">
                 <div class="card tw:p-7 md:w-100"
@@ -106,7 +106,7 @@
 
         </section>
 
-        <section class="pt-5 p-5" id="section2">
+        <section class="pt-5" id="section2">
 
             <h3 class="text-center">Our Core Values</h3>
 
@@ -180,7 +180,7 @@
 
         </section>
 
-        <section class="pt-5 p-5" id="section3">
+        <section class="pt-5" id="section3">
             <h3 class="text-center">Our Journey</h3>
 
             <p class="tw:text-[#808080] text-center">From humble beginnings to a thriving financial cooperative serving
@@ -291,7 +291,7 @@
             </div>
         </section>
 
-        <section class="pt-5 p-5" id="section4">
+        <section class="pt-5" id="section4">
 
             <h3 class="text-center">Leadership Team</h3>
 

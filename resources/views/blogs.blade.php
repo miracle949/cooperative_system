@@ -37,11 +37,12 @@
 
         <main class="p-5 d-flex flex-xl-row flex-md-column flex-sm-column flex-sx-column flex-xs-column">
 
-            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="blogs-image" style="border-bottom-left-radius: 20px;">
+            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="blogs-image"
+                style="border-bottom-left-radius: 20px;">
                 <img src="images/blogpicture4.jpg" class="max-w-full max-h-full tw:h-[100%] object-cover" alt="">
             </div>
-            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" class="blogs-content tw:bg-[#3E8FFF]"
-                style="border: 1px solid rgba(0,0,0,0.3);">
+            <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000"
+                class="blogs-content tw:bg-[#3E8FFF]" style="border: 1px solid rgba(0,0,0,0.3);">
                 <h4 class="py-2 px-3">Featured Post</h4>
 
                 <p class="content" style="color: white">10 Smart Ways to Build Your Emergency Fund
@@ -61,10 +62,45 @@
             </div>
         </main>
 
-        <section class="px-5 pb-5">
-            
-            <ul class="nav nav-pills mb-3 p-5 flex gap-5 justify-content-center items-center tw:bg-[#808080]" 
-                id="pills-tab" role="tablist">
+        <section class="px-5 pb-5 relative">
+
+            {{-- <div class="menu-nav mb-3">
+                <button class="open"><i class="fa fa-chevron-right"></i></button>
+
+                <button class="close"><i class="fa fa-chevron-left"></i></button>
+            </div> --}}
+
+            <div class="menu-sidebar">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                            aria-selected="true">All Posts</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-financial" type="button" role="tab" aria-controls="pills-profile"
+                            aria-selected="false">Financial Tips</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-cooperativenews" type="button" role="tab"
+                            aria-controls="pills-contact" aria-selected="false">Cooperative News</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-memberstories" type="button" role="tab" aria-controls="pills-contact"
+                            aria-selected="false">Member Stories</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-fineducation" type="button" role="tab" aria-controls="pills-contact"
+                            aria-selected="false">Financial Education</button>
+                    </li>
+                </ul>
+            </div>
+
+            <ul class="nav nav-pills overflow-hidden tw:bg-[#808080]" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
                         data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
@@ -565,10 +601,11 @@
                 style="border-radius: 20px">
                 <h4>Stay Updated</h4>
 
-                <p class="mt-2 text-white">Subscribe to our newsletter to receive the latest blog posts, financial tips, and
+                <p class="mt-2 text-white">Subscribe to our newsletter to receive the latest blog posts, financial tips,
+                    and
                     cooperative news.</p>
 
-                <div class="tw:flex gap-3 mt-3">
+                <div class="tw:flex gap-3 mt-3 footer-subscribe">
                     <input class="form-control" type="text" name="" placeholder="Enter your email">
                     <button>Subscribe</button>
                 </div>

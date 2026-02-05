@@ -59,7 +59,7 @@
                     </ul>
                 </div>
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade show active p-5" id="pills-home" role="tabpanel"
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                         aria-labelledby="pills-home-tab" tabindex="0">
 
                         <div class="mt-5">
@@ -87,43 +87,43 @@
 
                         <div class="mt-5">
                             <div class="row">
-                                <div class="col-6">
-                                    <div style="font-size: 17px;">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-user"></i> Fullname:</label>
 
-                                        <p class="mt-2">Jhun Gerald Amihan</p>
+                                        <p>Jhun Gerald Amihan</p>
                                     </div>
 
-                                    <div class="mt-5" style="font-size: 17px;">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-phone"></i> Phone number:</label>
 
-                                        <p class="mt-2">+63 912 345 6789</p>
+                                        <p>+63 912 345 6789</p>
                                     </div>
 
-                                    <div class="mt-5" style="font-size: 17px;">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-location-pin"></i> Address:</label>
 
-                                        <p class="mt-2">123 Main Street, Quezon City, Metro Manila</p>
+                                        <p>123 Main Street, Quezon City, Metro Manila</p>
                                     </div>
                                 </div>
 
-                                <div class="col-6">
-                                    <div style="font-size: 17px;">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-envelope"></i> Email Address:</label>
 
-                                        <p class="mt-2">jhungerald@gmail.com</p>
+                                        <p>jhungerald@gmail.com</p>
                                     </div>
 
-                                    <div class="mt-5" style="font-size: 17px;">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-calendar-days"></i> Member Since:</label>
 
-                                        <p class="mt-2">January 2023</p>
+                                        <p>January 2023</p>
                                     </div>
 
-                                    <div class="mt-5" style="font-size: 17px;">
+                                    <div class="label-text" style="font-size: 17px;">
                                         <label><i class="fa fa-award"></i> Credit Score:</label>
 
-                                        <p class="mt-2">80 points</p>
+                                        <p>80 points</p>
                                     </div>
                                 </div>
                             </div>

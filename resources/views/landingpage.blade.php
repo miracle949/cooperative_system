@@ -15,17 +15,19 @@
     {{-- css link --}}
     <link rel="stylesheet" href="css_folder/style.css">
     <link rel="stylesheet" href="css_folder/loading.css">
+    {{-- <link rel="stylesheet" href="bootstrap-5.3.8-dist/css/bootstrap.min.css"> --}}
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- font awesome cdn link --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
 
     {{-- bootstrap link --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> --}}
 
 </head>
 
@@ -193,8 +195,8 @@
                 designed to meet your financial needs.
             </p>
 
-            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3" style="margin-top: 32px">
-                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 card-parent" style="margin-top: 32px;">
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -209,7 +211,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -224,7 +226,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -239,7 +241,7 @@
                     </div>
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100 tw:w-[520px]"
+                <div data-aos="fade-up" data-aos-duration="1000" class="card mw-100"
                     style="border-radius: 20px; padding: 1.8rem 1.5rem 1.8rem 1.5rem;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col tw:p-[8px]">
                         <div class="card-header border-0 p-0">
@@ -276,7 +278,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-start align-items-start gap-5 justify-content-md-start align-items-md-start justify-content-sm-start align-items-sm-start justify-content-xs-start align-items-xs-start flex-xl-row flex-md-column flex-sm-column flex-xs-column benefits-group"
+                    <div class="d-flex justify-content-start align-items-start gap-5 justify-content-md-start benefits-group"
                         style="padding: 8px">
                         <div class="d-flex flex-column row-gap-3">
                             <div class="d-flex column-gap-3">
@@ -321,9 +323,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     {{-- Bootstrap link --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> --}}
 
     <script>
         AOS.init();
