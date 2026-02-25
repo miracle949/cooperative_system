@@ -15,7 +15,12 @@
 
             <li class="tw:list-none">
                 <a href="{{ route("LoanApplication") }}"
-                    class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Loan Application</a>
+                    class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Lending Program</a>
+            </li>
+
+            <li class="tw:list-none">
+                <a href="{{ route("ShareCapital") }}"
+                    class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Share Capital</a>
             </li>
 
             <li class="tw:list-none">

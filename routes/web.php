@@ -29,12 +29,13 @@ Route::get("/services", [UserHandling::class, "ServicesPage"])->name(("ServicesP
 
 // Blogs page get
 
-Route::get("/blogs", [UserHandling::class, "BlogsPage"])->name(("BlogsPage"));
+Route::get("/blogs", action: [UserHandling::class, "BlogsPage"])->name(("BlogsPage"));
 
 // Contact page get
 
 Route::get("/contact", [UserHandling::class, "ContactPage"])->name(("ContactPage"));
 
+// Route::get('/services', [UserHandling::class, "Services"])->name("Services");
 // Navbar
 
 Route::get("/navbar", [UserHandling::class, "Navbar"]);
@@ -50,6 +51,8 @@ Route::get("/loan_application", [UserHandling::class, "LoanApplication"])->name(
 // Savings (Member Side)
 
 Route::get("/savings-page", [UserHandling::class, "Savings"])->name("Savings");
+
+Route::get('/share-capital', [UserHandling::class, "ShareCapital"])->name("ShareCapital");
 
 // Loan Status (Member Side)
 

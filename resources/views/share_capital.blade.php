@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Share Capital</title>
+    <link rel="icon" href="images/websitelogo.png" type="image/png">
+
+    {{-- css link --}}
+    <link rel="stylesheet" href="css_folder/share_capital.css">
+    <link rel="stylesheet" href="css_folder/loading.css">
+
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body>
+
+    <div class="container-fluid p-0 m-0">
+        @include("components.navbar2")
+        @include("components.offcanvas")
+
+        {{-- <div class="text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Loading loan requests...</p>
+        </div> --}}
+
+        <main>
+            <h3>Share Capital</h3>
+
+            <p>Manage your share capital contributions and track your dividends</p>
+
+            <div class="parent-share">
+                <div class="card">
+                    <div class="card-icon">
+                        <div class="fa fa-dollar-sign"></div>
+                    </div>
+
+                    <h4>Current Balance</h4>
+
+                    <span>P25,000</span>
+
+                    <article>25 share</article>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <div class="fa fa-arrow-trend-up"></div>
+                    </div>
+
+                    <h4>Dividend Rate</h4>
+
+                    <span>8.5% p.a</span>
+
+                    <article>Annual return</article>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <div class="fa fa-chart-pie"></div>
+                    </div>
+
+                    <h4>Last Dividend</h4>
+
+                    <span>P2,125</span>
+
+                    <article>Dec 2024</article>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <div class="fa fa-calendar-days"></div>
+                    </div>
+
+                    <h4>Next Dividend</h4>
+
+                    <span>June 15, 2025</span>
+
+                    <article>Expected date</article>
+                </div>
+            </div>
+
+            <div class="download">
+                <button>
+                    <i class="fa fa-download"></i>
+                    <span>Download Statement</span>
+                </button>
+            </div>
+
+            <div class="contribution-parent">
+                <h3>Contribution History</h3>
+
+                <div class="parent-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Reference No.</th>
+                                <th>Shares</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jan 15, 2025</td>
+                                <td>Additional Contribution</td>
+                                <td>SC-2024-001</td>
+                                <td>5</td>
+                                <td>P5,000</td>
+                                <td>
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Completed</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Jan 15, 2025</td>
+                                <td>Additional Contribution</td>
+                                <td>SC-2024-001</td>
+                                <td>5</td>
+                                <td>P5,000</td>
+                                <td>
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Completed</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Jan 15, 2025</td>
+                                <td>Additional Contribution</td>
+                                <td>SC-2024-001</td>
+                                <td>5</td>
+                                <td>P5,000</td>
+                                <td>
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Completed</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Jan 15, 2025</td>
+                                <td>Additional Contribution</td>
+                                <td>SC-2024-001</td>
+                                <td>5</td>
+                                <td>P5,000</td>
+                                <td>
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Completed</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Jan 15, 2025</td>
+                                <td>Additional Contribution</td>
+                                <td>SC-2024-001</td>
+                                <td>5</td>
+                                <td>P5,000</td>
+                                <td>
+                                    <i class="fa fa-check-circle"></i>
+                                    <span>Completed</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="dividend-parent">
+                <h3>Dividend History</h3>
+
+                <div class="parent-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th>Dividend Rate</th>
+                                <th>Share Capital</th>
+                                <th>Dividend Amount</th>
+                                <th>Date Paid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2nd Semester 2024</td>
+                                <td>8.5%</td>
+                                <td>P25,000</td>
+                                <td>P2,125</td>
+                                <td>Dec 15,2024</td>
+                            </tr>
+
+                            <tr>
+                                <td>1st Semester 2024</td>
+                                <td>8.5%</td>
+                                <td>P25,000</td>
+                                <td>P2,125</td>
+                                <td>Dec 15,2024</td>
+                            </tr>
+
+                            <tr>
+                                <td>2nd Semester 2023</td>
+                                <td>8.5%</td>
+                                <td>P25,000</td>
+                                <td>P2,125</td>
+                                <td>Dec 15,2024</td>
+                            </tr>
+
+                            <tr>
+                                <td>1st Semester 2023</td>
+                                <td>8.5%</td>
+                                <td>P25,000</td>
+                                <td>P2,125</td>
+                                <td>Dec 15,2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    {{-- AOS animation link js --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        AOS.init();
+    </script>
+</body>
+
+</html>

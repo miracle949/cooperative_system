@@ -31,8 +31,8 @@
 <body>
 
     <div class="container-fluid p-0 m-0">
-        @include("navbar2")
-        @include("offcanvas")
+        @include("components.navbar2")
+        @include("components.offcanvas")
 
         <main>
             <div class="card-box-parent">

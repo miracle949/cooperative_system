@@ -14,23 +14,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- font awesome cdn link --}}
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
-
-    {{-- bootstrap link --}}
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> --}}
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 </head>
 
 <body>
 
-    <div class="container-fluid p-4 pb-5">
+    <div class="container-fluid">
 
-        <div class="row nav-logo">
-            <div class="col-lg-7 col-md-8 col-sm-7 tw:flex tw:justify-center tw:items-center logo">
+        <div class="nav-logo">
+            <div class="logo">
 
-                <img src="images/logo2.png" class="ms-5" alt="">
+                <img src="images/logo2.png" alt="">
 
                 <div>
                     <h2 class="fw-bold">Membership Application Form</h2>
@@ -38,10 +32,9 @@
                     <p>Ready to become part of something special? We can't wait to welcome
                         you.
                 </div>
-                </p>
             </div>
 
-            <div class="col-lg-5 col-md-4 col-sm-5 tw:flex logo-image">
+            <div class="logo-image">
                 <div class="tw:w-[210px] tw:h-[160px] tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
                     style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
                     <img src="" alt="" class="tw:w-[210px] tw:h-[160px]" id="inputImage">
@@ -56,430 +49,298 @@
             <hr class="tw:w-[20%] border-2 tw:border-black">
         </div>
 
-        <section>
+        <div class="choose-type">
+            <div class="choose">
+                <div class="back">
+                    <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
+                </div>
+            </div>
+        </div>
 
+        <div class="form-box">
+            <div class="stepper">
+                <div class="step active">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="circle">1</div>
+                        <div class="label">Terms & Agreement</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="circle">2</div>
+                        <div class="label">Personal Data</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="circle">3</div>
+                        <div class="label">Other Information</div>
+                    </div>
+                </div>
 
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="choose-type">
-                        <label>What membership type are you?</label>
-                        {{-- <select name="" class="form-select mt-2" id="select_type" required>
-                            <option value="" disabled selected>Select type</option>
-                            <option value="Operator">Operator</option>
-                            <option value="Driver">Driver</option>
-                            <option value="Driver-Operator">Driver-Operator</option>
-                            <option value="Investor Associate">Investor Associate</option>
-                            <option value="Allied Workers">Allied Workers</option>
-                            <option value="Transport Entrepreneur">Transport Entrepreneur</option>
-                        </select> --}}
-                        <select name="" id="select_type" class="form-select mt-2" required>
-                            <option value="" disabled selected>Select type</option>
-                            <option value="Operator">Operator</option>
-                            <option value="Driver">Driver</option>
-                            <option value="Driver-Operator">Driver-Operator</option>
-                            <option value="Investor Associate">Investor Associate</option>
-                            <option value="Allied Workers">Allied Workers</option>
-                            <option value="Transport Entrepreneur">Transport Entrepreneur</option>
-                        </select>
+                {{-- <div class="step">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="circle">4</div>
+                        <div class="label">Personal Data Sheet</div>
+                    </div>
+                </div> --}}
+
+                <div class="step">
+                    <div class="d-flex justify-content-center align-items-center flex-column">
+                        <div class="circle">4</div>
+                        <div class="label">Review & Submit</div>
                     </div>
                 </div>
             </div>
 
-            <h2>Personal Data</h2>
+            <!-- Form -->
+            <div class="card">
+                <form id="form">
 
-            <div class="row">
-                <div class="col-lg-4 mt-4">
-                    <label>Name:</label>
-                    <input type="text" name="name" id="" class="form-control mt-2">
-                </div>
+                    <!-- Step 1 -->
 
-                <div class="col-lg-4 mt-4">
-                    <label>Date of Birth:</label>
-                    <input type="date" name="date_birth" id="" class="form-control mt-2">
-                </div>
+                    <div class="form-step active">
+                        <h3>Terms & Agreement</h3>
+                        <div class="row">
+                            <div class="col-lg-12">
 
-                <div class="col-lg-4 mt-4">
-                    <label>Place of Birth:</label>
-                    <input type="text" name="place_birth" id="" class="form-control mt-2">
-                </div>
+                                <label class="lh-lg mt-3">The Undersigned hereby subscribed and agreed to take 100 share
+                                    of the KPMPCATS authorized Share Capital with a par value of One Hundred Pesos
+                                    (Php100.00) per share amounting to Ten Thousand (P10,000.00) Pesos payable that was
+                                    scheduled within two (2) years, and agrees to pay atleast 25% as initial payment of
+                                    subscription within a Membership Fee of Two Thousand (P2000.00) Pessos.</label>
 
-                <div class="col-lg-6 mt-4">
-                    <label>Civil Status:</label>
-                    <input type="text" name="civil_status" id="" class="form-control mt-2">
-                </div>
+                                <label class="lh-lg mt-4">The undersigned agrees further to pay Fifty Thousand
+                                    (P50,000.00) Pesos (For Tourist Unit) as entrance fee for my vehicle and
+                                    Mobilization Fee of Three Thousand (P3000.00) of the Transport / Vehicle Operation
+                                    of KPMPCATS.</label>
 
-                <div class="col-lg-6 mt-4">
-                    <label>Address:</label>
-                    <input type="text" name="address" id="" class="form-control mt-2">
-                </div>
+                                <label class="lh-lg mt-4">The undersigned further pledge to undertake Regular Savings
+                                    and / or Contributions to the Caplital Build-Up of the Cooperative or to its
+                                    Programs and Services.</label>
 
-                <div class="col-lg-4 mt-4">
-                    <label>Spouse Name:</label>
-                    <input type="text" name="spouse_name" id="" class="form-control mt-2">
-                </div>
+                                <label class="mt-4">Declaration and Agreement</label>
 
-                <div class="col-lg-4 mt-4">
-                    <label>Date of Birth:</label>
-                    <input type="date" name="date_birth" id="" class="form-control mt-2">
-                </div>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" name="agree1" id="checkboxDefault1">
+                                    <label class="form-check-label" for="checkboxDefault1">
+                                        I hereby certify that the foregoing statements are true and correct to the best
+                                        of my knowledge. I understand that any false information may result in the
+                                        cancellation of my membership.
+                                    </label>
+                                </div>
 
-                <div class="col-lg-4 mt-4">
-                    <label>Place of Birth:</label>
-                    <input type="text" name="place_birth" id="" class="form-control mt-2">
-                </div>
-
-                <div class="col-lg-6 mt-4">
-                    <label>Educational Attachment:</label>
-                    <input type="text" name="education_attachment" id=""
-                        class="form-control mt-2">
-                </div>
-
-                <div class="col-lg-6 mt-4">
-                    <label>Course:</label>
-                    <input type="text" name="course" id="" class="form-control mt-2">
-                </div>
-
-                <div class="col-lg-12 mt-4">
-                    <label>Number of Dependents:</label>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-12 mt-2">
-                            <label>Son</label>
-                            <input type="text" name="son" id="" class="form-control mt-2">
-                        </div>
-
-                        <div class="col-lg-4 col-md-12 mt-2">
-                            <label>Daughter</label>
-                            <input type="text" name="son" id="" class="form-control mt-2">
-                        </div>
-
-                        <div class="col-lg-4 col-md-12 mt-2">
-                            <label>Other-Specify</label>
-                            <input type="text" name="son" id="" class="form-control mt-2">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 mt-4">
-                    <label>TIN NO:</label>
-                    <input type="number" name="tin_no" id="" class="form-control mt-2">
-                </div>
-            </div>
-
-            <h2 class="mt-5">Other Information</h2>
-
-            {{-- <div class="driver row">
-                <div class="col-lg-8 col-md-12">
-                    <label>Are your a member of any other Transport Cooperative or Association? if Yes; state the name, location and type of Coop. Answer :</label>
-                </div>
-
-                <div class="col-lg-8 col-md-12">
-                    <textarea id="exampleFormControlTextarea1" required  class="form-control mt-2" rows="8">
-
-                    </textarea>
-                </div>
-            </div> --}}
-
-            <div class="driver-operator">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <label>Number of Public Utility Vehicle Owned:</label>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-4 mt-4">
-                        <label>UV's</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>TAXI</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>BUS</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>MULTI-CAB</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>TRICYCLE</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>Other Specify</label>
-                        <input type="text" name="uv" id="" class="form-control mt-2">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-lg-8 col-md-12">
-                    <label for="exampleFormControlTextarea1">Are you a member of any other Transport Cooperative or Association? if Yes; state the name,
-                        location and type of Coop. Answer:</label>
-                </div>
-                <div class="col-lg-8 col-md-12">
-                    <textarea name="" id="exampleFormControlTextarea1" required  class="form-control mt-2" rows="8"></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8 col-md-12 mt-5">
-                    <label>As provided for in KPMPCATS art of Cooperation and By-Laws, are you willing to accept the liability of the share holders up to the amount your subscription?</label>
-
-                    <div class="row">
-                       <div class="col-lg-2 mt-2">
-                            <div class="form-check d-flex align-items-center gap-2">
-                                <input class="form-check-input" type="radio" name="question1" id="radioDefault1">
-                                <label class="form-check-label" for="radioDefault1">
-                                    Yes
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-2 mt-2">
-                            <div class="form-check d-flex align-items-center gap-2">
-                                <input class="form-check-input" type="radio" name="question1" id="radioDefault2">
-                                <label class="form-check-label" for="radioDefault2">
-                                    No
-                                </label>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" name="agree2" id="checkboxDefault2">
+                                    <label class="form-check-label" for="checkboxDefault2">
+                                        I agree to abide by the Constitution and By-Laws of the Cooperative and to
+                                        accept the rights, responsibilities, and obligations of membership. I understand
+                                        that my application is subject to approval by the Board of Directors.
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="row mt-5">
-                <div class="col-lg-8">
-                    <label>Are you willing to abide by the policies, rules and regulations that may be imposed by the CDA, OTC and KPMPCATS in accordance with the existing Laws and Articles of Cooperation and By - Laws?</label>
+                    <!-- Step 2 -->
+                    @include('membership_components.personal_data')
 
-                    <div class="row">
-                        <div class="col-lg-2 mt-2">
-                            <div class="form-check d-flex align-items-center gap-2">
-                                <input class="form-check-input" type="radio" name="question2" id="radioDefault3">
-                                <label class="form-check-label" for="radioDefault3">
-                                    Yes
-                                </label>
-                            </div>
-                        </div>
+                    <!-- Step 3 -->
+                    @include('membership_components.other_information')
 
-                        <div class="col-lg-2 mt-2">
-                            <div class="form-check d-flex align-items-center gap-2">
-                                <input class="form-check-input" type="radio" name="question2" id="radioDefault4">
-                                <label class="form-check-label" for="radioDefault4">
-                                    No
-                                </label>
-                            </div>
-                        </div>
+                    {{-- @include('membership_components.personal_data_sheet') --}}
+
+                    {{-- Step 4 --}}
+                    @include('membership_components.review_submit')
+
+                    <!-- Step 6 -->
+
+                    <!-- Buttons -->
+                    <div class="actions">
+                        <button type="button" class="btn-prev" onclick="prevStep()">
+                            <i class="fa fa-chevron-left"></i>
+                            <span>Previous</span>
+                        </button>
+                        <button type="button" class="btn-next" onclick="nextStep()">
+                            <span>Next Step</span>
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                        <button type="submit" class="btn-submit" style="display:none;">Submit</button>
                     </div>
-                </div>
+
+                </form>
             </div>
-
-            <div class="mt-4 d-flex justify-content-bottom align-items-center gap-2">
-                <label>Submitted this</label>
-                <div class="col-lg-2">
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-                
-                <label>day of</label>
-
-                <div class="col-lg-2">
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-
-                <label>20</label>
-
-                <div class="col-lg-2">
-                    <input type="text" name="" id="" class="form-control">
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-lg-12">
-                    <label>I HEREBY CERTIFY that the foregoing statetments are True and Correct:</label>
-                </div>
-            </div>
-            
-            {{-- <div class="row mt-4">
-
-                <div class="col-lg-12 d-flex justify-content-end align-items-end flex-column gap-3">
-                    <div class="signature-picture">
-
-                    </div>
-                    <label>(Signature Over Printed Name)</label>
-                </div>
-            </div> --}}
-
-            <div class="mt-5 d-flex justify-content-center align-items-end flex-column gap-3">
-                <div class="signature-picture">
-                    <input type="file" name="" id="" class="form-control">
-                </div>
-                <label>(Signature Over Printed Name)</label>
-            </div>
-
-            <div class="mt-4">
-                <hr>
-            </div>
-
-            <div class="mt-4">
-                <span>Note:</span>
-                <div class="d-flex gap-3 align-items-center">
-                    <label>This Application was Approved / Disapproved by the Board of Directors in</label>
-                    <div class="col-lg-2">
-                        <input type="text" name="" class="form-control" id="">
-                    </div>
-                    <label>its meeting held</label>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-lg-12 text-center">
-                    <button class="btn btn-dark w-25">Submit</button>
-                </div>
-            </div>
-        </section>
-        
-
-        {{-- <section class="pt-3">
-            <div class="row tw:flex tw:justify-left tw:items-center fullname">
-                <div class="col-6 label-title">
-                    <label>Name *</label>
-                </div>
-
-                <div class="col-lg-2 col-md-4">
-                    <input type="text" name="username" placeholder="Enter firstname" class="form-control">
-                </div>
-
-                <div class="col-lg-2 col-md-4">
-                    <input type="text" name="username" placeholder="Enter lastname" class="form-control">
-                </div>
-
-                <div class="col-lg-2 col-md-4">
-                    <input type="text" name="username" placeholder="Enter lastname" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Username <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-
-                    <input type="text" name="username" placeholder="Enter username" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Email <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="text" name="username" placeholder="Enter email" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Password <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="text" name="username" placeholder="Enter password" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Confirm Password <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="text" name="username" placeholder="Confirm Password" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Phone number <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="text" name="username" placeholder="Enter phone number" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Address <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="text" name="username" placeholder="Enter address" class="form-control">
-                </div>
-            </div>
-
-            <div class="row tw:flex tw:justify-left tw:items-center mt-4">
-                <div class="col-6 label-title">
-                    <label>Upload picture <span>*</span></label>
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <input type="file" name="username" placeholder="Confirm Password" class="form-control"
-                        id="inputBox">
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-lg-6 col-md-12 label-title">
-
-                </div>
-
-                <div class="col-lg-6 col-md-12 tw:flex tw:justify-left tw:items-center terms-agreements">
-                    <label><input type="checkbox" name="" id=""> I agree to the <a href="#" class="text-black">Terms &
-                            Condition</a>
-                    </label>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-lg-6 col-md-12 label-title">
-
-                </div>
-                <div class="col-lg-6 col-md-12 text-center">
-                    <button class="tw:w-full tw:hover:bg-gray-700 tw:bg-black tw:text-white" id="register">
-                        <div class="loading"></div>Submit
-                    </button>
-                </div>
-            </div>
-
-            <div class="row mt-5">
-                <div class="col-6 label-title">
-
-                </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <div class="text-center">
-                        <label>Already have an account? <a href="{{ route(" LoginPage") }}"
-                                class="text-black">Login</a></label>
-                    </div>
-                </div>
-            </div>
-        </section> --}}
-
+        </div>
     </div>
 
-    {{-- Bootstrap link --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+    <script>
+        const name = document.getElementById("name");
+        const date_birth = document.getElementById("date_birth");
+        const place_birth = document.getElementById("place_birth");
+        const email = document.getElementById("email");
+        const member_type = document.getElementById("select_type");
+        const civil_status = document.getElementById("civil_status");
+        const tin_no = document.getElementById("tin_no");
+
+        const spouse_name = document.getElementById("spouse_name");
+        const spouse_date_birth = document.getElementById("spouse_date_birth");
+        const spouse_place_birth = document.getElementById("spouse_place_birth");
+
+        const number_son = document.getElementById("number_son");
+        const number_daughter = document.getElementById("number_daughter");
+        const other_spec = document.getElementById("other_spec");
+
+        const uv = document.getElementById("uv");
+        const taxi = document.getElementById("taxi");
+        const bus = document.getElementById("bus");
+        const tricycle = document.getElementById("tricycle");
+        const mini_bus = document.getElementById("mini_bus");
+        const jeep = document.getElementById("jeep");
+        const multi_cab = document.getElementById("multi_cab");
+        const other_info_specify = document.getElementById("other_info_specify");
+        
+
+        // personal details
+
+        name.addEventListener("input", () => {
+            document.getElementById("name_display").textContent = name.value;
+        });
+
+        date_birth.addEventListener("input", () => {
+            document.getElementById("date_birth_display").textContent = date_birth.value;
+        });
+
+        place_birth.addEventListener("input", () => {
+            document.getElementById("place_birth_display").textContent = place_birth.value;
+        });
+
+        email.addEventListener("input", () => {
+            document.getElementById("email_display").textContent = email.value;
+        });
+
+        member_type.addEventListener("input", () => {
+            document.getElementById("membership_type_display").textContent = member_type.value;
+        });
+
+        civil_status.addEventListener("input", () => {
+            document.getElementById("civil_status_display").textContent = civil_status.value;
+        });
+
+        tin_no.addEventListener("input", () => {
+            document.getElementById("tin_no_display").textContent = tin_no.value;
+        });
+
+        // Spouse
+
+        spouse_name.addEventListener("input", () => {
+            document.getElementById("spouse_name_display").textContent = spouse_name.value;
+        });
+
+        spouse_date_birth.addEventListener("input", () => {
+            document.getElementById("spouse_date_birth_display").textContent = spouse_date_birth.value;
+        });
+
+        spouse_place_birth.addEventListener("input", () => {
+            document.getElementById("spouse_place_birth_display").textContent = spouse_place_birth.value;
+        });
+
+        number_son.addEventListener("input", () => {
+            document.getElementById("son_display").textContent = number_son.value;
+        });
+
+        number_daughter.addEventListener("input", () => {
+            document.getElementById("daughter_display").textContent = number_daughter.value;
+        });
+
+        other_spec.addEventListener("input", () => {
+            document.getElementById("other_spec_display").textContent = other_spec.value;
+        });
+
+        // vehicle
+
+        uv.addEventListener("input", () => {
+            document.getElementById("uv_display").textContent = uv.value;
+        });
+
+        taxi.addEventListener("input", () => {
+            document.getElementById("taxi_display").textContent = taxi.value;
+        });
+
+        bus.addEventListener("input", () => {
+            document.getElementById("bus_display").textContent = bus.value;
+        });
+
+        tricycle.addEventListener("input", () => {
+            document.getElementById("tricycle_display").textContent = tricycle.value;
+        });
+
+        mini_bus.addEventListener("input", () => {
+            document.getElementById("mini_bus_display").textContent = mini_bus.value;
+        });
+
+        jeep.addEventListener("input", () => {
+            document.getElementById("jeep_display").textContent = jeep.value;
+        });
+
+        multi_cab.addEventListener("input", () => {
+            document.getElementById("multi_cab_display").textContent = multi_cab.value;
+        });
+
+        other_info_specify.addEventListener("input", () => {
+            document.getElementById("vehi_other_spec").textContent = other_info_specify.value;
+        });
+    </script>
+
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".form-step");
+        const stepper = document.querySelectorAll(".step");
+        const nextBtn = document.querySelector(".btn-next");
+        const submitBtn = document.querySelector(".btn-submit");
+
+        function updateSteps() {
+            steps.forEach((step, index) => {
+                step.classList.toggle("active", index === currentStep);
+                stepper[index].classList.toggle("active", index === currentStep);
+            });
+
+            if (currentStep === steps.length - 1) {
+                nextBtn.style.display = "none";
+                submitBtn.style.display = "inline-block";
+            } else {
+                nextBtn.style.display = "inline-block";
+                submitBtn.style.display = "none";
+            }
+        }
+
+        function nextStep() {
+            const currentFormStep = steps[currentStep];
+
+            // get all required inputs & selects in CURRENT step only
+            const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
+
+            for (let field of requiredFields) {
+                if (!field.checkValidity()) {
+                    field.reportValidity(); // show browser validation message
+                    return; // STOP going to next step
+                }
+            }
+
+            // if all fields are valid → go next
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateSteps();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+    </script>
 
     <script>
         const imageFile = document.querySelector('#inputImage');
@@ -496,69 +357,28 @@
     </script>
 
     <script>
-        // const other_page = document.querySelector(".other-page");
-        // const other_page_1 = document.querySelector(".other-page-1");
+
         const select_type = document.getElementById("select_type");
 
         select_type.addEventListener("change", function () {
 
-            // const driver = document.querySelector(".driver");
             const driver_operator = document.querySelector(".driver-operator");
 
-            if(this.value === "Driver"){
-                // driver.style.display = "block";
-                
-                driver_operator.style.display = "none";
-            }else if(this.value === "Allied Workers"){
+            if (this.value === "Driver") {
 
                 driver_operator.style.display = "none";
-                
-            }else if(this.value !== "Driver"){
-                // driver.style.display = "none";
-                
+            } else if (this.value === "Allied Workers") {
+
+                driver_operator.style.display = "none";
+
+            } else if (this.value !== "Driver") {
+
                 driver_operator.style.display = "block";
             }
 
         });
-
-        // select_type.addEventListener("change", function () {
-        //     console.log(this.value);
-        // });
-
-        
-
-        // if(select_type.value == "Driver"){
-        //     other_page.style.display = "flex";
-        //     other_page_1.style.display = "none";
-        // }
-
-        // const selectedValue = select_type.value;
-
-        // console.log(selectedValue);
-
-        
     </script>
 
-    {{--
-    <script>
-        const loading = document.querySelector(".loading");
-        const register = document.getElementById("register");
-
-        register.addEventListener("click", () => {
-
-            loading.style.display = "block";
-            register.style.backgroundColor = "#364153";
-
-            setTimeout(() => {
-                loading.style.display = "none";
-                register.style.backgroundColor = "";
-
-                window.location.href = "/login-page";
-            }, 3000);
-
-        });
-
-    </script> --}}
 </body>
 
 </html>

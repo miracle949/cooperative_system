@@ -19,7 +19,7 @@
             </li>
 
             <li class="tw:list-none">
-                <a href="#" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Services</a>
+                <a href="{{ route("ServicesPage") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Services</a>
             </li>
 
             {{-- <li class="tw:list-none">

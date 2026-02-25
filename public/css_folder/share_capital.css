@@ -1,0 +1,205 @@
+main {
+    padding: 3rem;
+    background-color: #f5f5f8;
+}
+
+main h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+main p {
+    font-size: 15.5px;
+    color: #808080;
+    margin-top: 0.9rem;
+}
+
+main .parent-share {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+main .parent-share .card {
+    width: calc(100% / 3);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+main .parent-share .card h4 {
+    font-size: 17px;
+}
+
+main .parent-share .card span,
+main .parent-share .card article {
+    font-size: 15.5px;
+}
+
+main .parent-share .card article{
+    color: #808080;
+}
+
+/* main .parent-share .card:nth-child(1) span{
+    color: ;
+} */
+
+main .parent-share .card .card-icon {
+    width: 45px;
+    height: 45px;
+    background-color: #dfdfdf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+main .parent-share .card:nth-child(1) .card-icon {
+    background-color: #DBEAFE;
+}
+
+main .parent-share .card:nth-child(2) .card-icon {
+    background-color: #CBFFBF;
+}
+
+main .parent-share .card:nth-child(3) .card-icon {
+    background-color: #F3E8FF;
+}
+
+main .parent-share .card:nth-child(4) .card-icon {
+    background-color: #FEF9C2;
+}
+
+main .parent-share .card .card-icon .fa {
+    font-size: 20px;
+}
+
+main .parent-share .card:nth-child(1) .card-icon .fa {
+    color: #155DFC;
+}
+
+main .parent-share .card:nth-child(2) .card-icon .fa {
+    color: #33CD71;
+}
+
+main .parent-share .card:nth-child(3) .card-icon .fa {
+    color: #9810FA;
+}
+
+main .parent-share .card:nth-child(4) .card-icon .fa {
+    color: #BA5F00;
+}
+
+main .parent-share .card:nth-child(1) span {
+    color: #155DFC;
+}
+
+main .parent-share .card:nth-child(2) span {
+    color: #33CD71;
+}
+
+main .parent-share .card:nth-child(3) span {
+    color: #9810FA;
+}
+
+main .parent-share .card:nth-child(4) span {
+    color: #BA5F00;
+}
+
+main .download {
+    margin-top: 2.5rem;
+}
+
+main .download button {
+    padding: 10px 30px;
+    background-color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 7px;
+    font-size: 15.5px;
+}
+
+main .parent-table {
+    overflow-x: auto;
+}
+
+main .contribution-parent {
+    margin-top: 3rem;
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+main .contribution-parent .table {
+    margin-top: 3rem;
+    font-size: 15.5px;
+}
+
+main .contribution-parent .table thead tr th {
+    padding: 8px 0 8px 0;
+}
+
+main .contribution-parent .table tbody tr td {
+    padding: 30px 0 30px 0;
+}
+
+main .dividend-parent {
+    margin-top: 3rem;
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+main .dividend-parent .table {
+    margin-top: 3rem;
+    font-size: 15.5px;
+    overflow-x: auto;
+}
+
+main .dividend-parent .table thead tr th {
+    padding: 8px 0 8px 0;
+}
+
+main .dividend-parent .table tbody tr td {
+    padding: 30px 0 30px 0;
+}
+
+@media only screen and (max-width: 1035px) {
+    main .parent-share {
+        flex-direction: column;
+    }
+
+    main .parent-share .card {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    main .parent-table table {
+        width: 800px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    main {
+        padding: 2rem;
+    }
+
+    main .contribution-parent {
+        padding: 3rem 2.3rem 3rem 2.3rem;
+    }
+
+    main .dividend-parent {
+        padding: 3rem 2.3rem 3rem 2.3rem;
+    }
+}
+
+/* @media only screen and (max-width: 500px){
+    main .parent-table table{
+        width: 800px;
+    }
+} */

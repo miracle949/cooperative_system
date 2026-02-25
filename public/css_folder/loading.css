@@ -359,17 +359,27 @@
     } */
 }
 
-@media only screen and (max-width: 880px) {
+@media only screen and (max-width: 1060px){
+    .container-fluid .nav-acc2{
+        display: none;
+    }
 
     .container-fluid .nav-list {
         display: none;
     }
 
+    .container-fluid .nav-menu {
+        display: block;
+    }
+
     .container-fluid .nav-acc {
         display: none;
     }
+}
 
-    .container-fluid .nav-acc2{
+@media only screen and (max-width: 880px) {
+
+    .container-fluid .nav-list {
         display: none;
     }
 

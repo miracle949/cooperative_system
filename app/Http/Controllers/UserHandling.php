@@ -54,6 +54,10 @@ class UserHandling extends Controller
         return view("savings");
     }
 
+    public function ShareCapital(){
+        return view("share_capital");
+    }
+
     public function LoanStatus(){
         return view("loan_status");
     }
