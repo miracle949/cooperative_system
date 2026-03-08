@@ -21,81 +21,88 @@
 
     <div class="container-fluid">
 
-        <div class="nav-logo">
-            <div class="logo">
+        <form action="{{ route("registration") }}" id="form" method="post" class="needs-validation" novalidate
+            enctype="multipart/form-data">
+            @csrf
 
-                <img src="images/logo2.png" alt="">
+            <div class="nav-logo">
+                <div class="logo">
 
-                <div>
-                    <h2 class="fw-bold">Membership Application Form</h2>
+                    <img src="images/logo2.png" alt="">
 
-                    <p>Ready to become part of something special? We can't wait to welcome
-                        you.
-                </div>
-            </div>
+                    <div>
+                        <h2 class="fw-bold">Membership Application Form</h2>
 
-            <div class="logo-image">
-                <div class="tw:w-[210px] tw:h-[160px] tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
-                    style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
-                    <img src="" alt="" class="tw:w-[210px] tw:h-[160px]" id="inputImage">
-                    <p class="fw-semibold" id="text">2 x 2</p>
-
-                    <p class="tw:text-[#808080]" id="text2">Photo Here</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="tw:flex tw:justify-center tw:items-center line">
-            <hr class="tw:w-[20%] border-2 tw:border-black">
-        </div>
-
-        <div class="choose-type">
-            <div class="choose">
-                <div class="back">
-                    <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-box">
-            <div class="stepper">
-                <div class="step active">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="circle">1</div>
-                        <div class="label">Terms & Agreement</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="circle">2</div>
-                        <div class="label">Personal Data</div>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="circle">3</div>
-                        <div class="label">Other Information</div>
+                        <p>Ready to become part of something special? We can't wait to welcome
+                            you.
                     </div>
                 </div>
 
-                {{-- <div class="step">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="circle">4</div>
-                        <div class="label">Personal Data Sheet</div>
+                {{-- <div class="logo-image">
+                    <div class="tw:w-[210px] tw:h-[160px] tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
+                        style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
+                        <img src="" alt="" class="tw:w-[210px] tw:h-[160px]" id="inputImage">
+                        <p class="fw-semibold" id="text">2 x 2</p>
+
+                        <p class="tw:text-[#808080]" id="text2">Click here!</p>
+
+                        <input type="file" name="profile_picture" id="inputBox" class="form-control">
                     </div>
                 </div> --}}
+            </div>
+            {{--
+            <a href="{{ route(" applicationForm")}}">Go to joel</a> --}}
 
-                <div class="step">
-                    <div class="d-flex justify-content-center align-items-center flex-column">
-                        <div class="circle">4</div>
-                        <div class="label">Review & Submit</div>
+            <div class="tw:flex tw:justify-center tw:items-center line">
+                <hr class="tw:w-[20%] border-2 tw:border-black">
+            </div>
+
+            <div class="choose-type">
+                <div class="choose">
+                    <div class="back">
+                        <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Form -->
-            <div class="card">
-                <form id="form">
+            <div class="form-box">
+                <div class="stepper">
+                    <div class="step active">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="circle">1</div>
+                            <div class="label">Terms & Agreement</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="circle">2</div>
+                            <div class="label">Personal Data</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="circle">3</div>
+                            <div class="label">Other Information</div>
+                        </div>
+                    </div>
+
+                    {{-- <div class="step">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="circle">4</div>
+                            <div class="label">Personal Data Sheet</div>
+                        </div>
+                    </div> --}}
+
+                    <div class="step">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <div class="circle">4</div>
+                            <div class="label">Review & Submit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="card">
 
                     <!-- Step 1 -->
 
@@ -168,195 +175,20 @@
                         <button type="submit" class="btn-submit" style="display:none;">Submit</button>
                     </div>
 
-                </form>
-            </div>
-        </div>
+        </form>
+    </div>
+    </div>
     </div>
 
-    <script>
-        const name = document.getElementById("name");
-        const date_birth = document.getElementById("date_birth");
-        const place_birth = document.getElementById("place_birth");
-        const email = document.getElementById("email");
-        const member_type = document.getElementById("select_type");
-        const civil_status = document.getElementById("civil_status");
-        const tin_no = document.getElementById("tin_no");
+    <script src="js_folder/vehicle_form.js"></script>
 
-        const spouse_name = document.getElementById("spouse_name");
-        const spouse_date_birth = document.getElementById("spouse_date_birth");
-        const spouse_place_birth = document.getElementById("spouse_place_birth");
+    <script src="js_folder/display_form.js"></script>
 
-        const number_son = document.getElementById("number_son");
-        const number_daughter = document.getElementById("number_daughter");
-        const other_spec = document.getElementById("other_spec");
+    <script src="js_folder/card_form.js"></script>
 
-        const uv = document.getElementById("uv");
-        const taxi = document.getElementById("taxi");
-        const bus = document.getElementById("bus");
-        const tricycle = document.getElementById("tricycle");
-        const mini_bus = document.getElementById("mini_bus");
-        const jeep = document.getElementById("jeep");
-        const multi_cab = document.getElementById("multi_cab");
-        const other_info_specify = document.getElementById("other_info_specify");
-        
+    <script src="js_folder/picture_display.js"></script>
 
-        // personal details
-
-        name.addEventListener("input", () => {
-            document.getElementById("name_display").textContent = name.value;
-        });
-
-        date_birth.addEventListener("input", () => {
-            document.getElementById("date_birth_display").textContent = date_birth.value;
-        });
-
-        place_birth.addEventListener("input", () => {
-            document.getElementById("place_birth_display").textContent = place_birth.value;
-        });
-
-        email.addEventListener("input", () => {
-            document.getElementById("email_display").textContent = email.value;
-        });
-
-        member_type.addEventListener("input", () => {
-            document.getElementById("membership_type_display").textContent = member_type.value;
-        });
-
-        civil_status.addEventListener("input", () => {
-            document.getElementById("civil_status_display").textContent = civil_status.value;
-        });
-
-        tin_no.addEventListener("input", () => {
-            document.getElementById("tin_no_display").textContent = tin_no.value;
-        });
-
-        // Spouse
-
-        spouse_name.addEventListener("input", () => {
-            document.getElementById("spouse_name_display").textContent = spouse_name.value;
-        });
-
-        spouse_date_birth.addEventListener("input", () => {
-            document.getElementById("spouse_date_birth_display").textContent = spouse_date_birth.value;
-        });
-
-        spouse_place_birth.addEventListener("input", () => {
-            document.getElementById("spouse_place_birth_display").textContent = spouse_place_birth.value;
-        });
-
-        number_son.addEventListener("input", () => {
-            document.getElementById("son_display").textContent = number_son.value;
-        });
-
-        number_daughter.addEventListener("input", () => {
-            document.getElementById("daughter_display").textContent = number_daughter.value;
-        });
-
-        other_spec.addEventListener("input", () => {
-            document.getElementById("other_spec_display").textContent = other_spec.value;
-        });
-
-        // vehicle
-
-        uv.addEventListener("input", () => {
-            document.getElementById("uv_display").textContent = uv.value;
-        });
-
-        taxi.addEventListener("input", () => {
-            document.getElementById("taxi_display").textContent = taxi.value;
-        });
-
-        bus.addEventListener("input", () => {
-            document.getElementById("bus_display").textContent = bus.value;
-        });
-
-        tricycle.addEventListener("input", () => {
-            document.getElementById("tricycle_display").textContent = tricycle.value;
-        });
-
-        mini_bus.addEventListener("input", () => {
-            document.getElementById("mini_bus_display").textContent = mini_bus.value;
-        });
-
-        jeep.addEventListener("input", () => {
-            document.getElementById("jeep_display").textContent = jeep.value;
-        });
-
-        multi_cab.addEventListener("input", () => {
-            document.getElementById("multi_cab_display").textContent = multi_cab.value;
-        });
-
-        other_info_specify.addEventListener("input", () => {
-            document.getElementById("vehi_other_spec").textContent = other_info_specify.value;
-        });
-    </script>
-
-
-    <script>
-        let currentStep = 0;
-        const steps = document.querySelectorAll(".form-step");
-        const stepper = document.querySelectorAll(".step");
-        const nextBtn = document.querySelector(".btn-next");
-        const submitBtn = document.querySelector(".btn-submit");
-
-        function updateSteps() {
-            steps.forEach((step, index) => {
-                step.classList.toggle("active", index === currentStep);
-                stepper[index].classList.toggle("active", index === currentStep);
-            });
-
-            if (currentStep === steps.length - 1) {
-                nextBtn.style.display = "none";
-                submitBtn.style.display = "inline-block";
-            } else {
-                nextBtn.style.display = "inline-block";
-                submitBtn.style.display = "none";
-            }
-        }
-
-        function nextStep() {
-            const currentFormStep = steps[currentStep];
-
-            // get all required inputs & selects in CURRENT step only
-            const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
-
-            for (let field of requiredFields) {
-                if (!field.checkValidity()) {
-                    field.reportValidity(); // show browser validation message
-                    return; // STOP going to next step
-                }
-            }
-
-            // if all fields are valid → go next
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                updateSteps();
-            }
-        }
-
-        function prevStep() {
-            if (currentStep > 0) {
-                currentStep--;
-                updateSteps();
-            }
-        }
-    </script>
-
-    <script>
-        const imageFile = document.querySelector('#inputImage');
-        const inputBox = document.querySelector('#inputBox');
-
-        inputBox.addEventListener('change', function () {
-
-            imageFile.style.display = "block";
-            document.getElementById("text").style.display = "none";
-            document.getElementById("text2").style.display = "none";
-            imageFile.src = window.URL.createObjectURL(this.files[0]);
-
-        });
-    </script>
-
-    <script>
+    {{-- <script>
 
         const select_type = document.getElementById("select_type");
 
@@ -376,6 +208,24 @@
                 driver_operator.style.display = "block";
             }
 
+        });
+    </script> --}}
+
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+
+    <script>
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas);
+
+        document.querySelector("form").addEventListener("submit", function () {
+            if (!signaturePad.isEmpty()) {
+                document.getElementById('signature').value = signaturePad.toDataURL();
+            }
+        });
+
+        document.getElementById('clear').addEventListener('click', function () {
+            signaturePad.clear();
         });
     </script>
 

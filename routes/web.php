@@ -1,11 +1,20 @@
 <?php
 
 use App\Http\Controllers\UserHandling;
+use App\Http\Controllers\UsersHandle;
 use Illuminate\Support\Facades\Route;
 
 // Main page routing
 
 Route::get("/", [UserHandling::class, "UserDirection"]);
+
+Route::get('/application-form/{id}', [UserHandling::class, 'showForm'])->name('applicationForm');
+
+Route::get('/approve-user/{id}', [UserHandling::class, 'approveUser'])->name('approve.user');
+
+Route::get("/static-page", [UserHandling::class, "StaticPage"])->name("StaticPage");
+
+Route::get("/application-form", [UserHandling::class, "applicationForm"])->name("applicationForm");
 
 // Landing page get
 
@@ -35,7 +44,6 @@ Route::get("/blogs", action: [UserHandling::class, "BlogsPage"])->name(("BlogsPa
 
 Route::get("/contact", [UserHandling::class, "ContactPage"])->name(("ContactPage"));
 
-// Route::get('/services', [UserHandling::class, "Services"])->name("Services");
 // Navbar
 
 Route::get("/navbar", [UserHandling::class, "Navbar"]);
@@ -65,3 +73,11 @@ Route::get("/profile-member", [UserHandling::class, "ProfileMember"])->name("Pro
 // Homepage (Driver Side)
 
 Route::get("/driver-portal", [UserHandling::class, "DriverPortal"])->name("DriverPortal");
+
+// User handle
+
+Route::get("/user-handle", [UsersHandle::class, "UserHandle"])->name("UserHandle");
+
+// Register Post
+
+Route::post("/registration", [UsersHandle::class, "registration"])->name("registration");

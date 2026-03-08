@@ -20,8 +20,6 @@
 
     {{-- font awesome cdn link --}}
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
-
-    {{-- bootstrap link --}}
 </head>
 
 <body>
@@ -187,17 +185,10 @@
     {{-- AOS animation link js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    {{-- Bootstrap link --}}
-    <script defer src="../bootstrap_folder/js/bootstrap.bundle.min.js"></script>
 
     <script>
         AOS.init();
     </script>
-
-    {{--
-    <script>
-        const 
-    </script> --}}
 </body>
 
 </html>

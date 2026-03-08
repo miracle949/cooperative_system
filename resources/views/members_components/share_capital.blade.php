@@ -12,9 +12,12 @@
     <link rel="stylesheet" href="css_folder/share_capital.css">
     <link rel="stylesheet" href="css_folder/loading.css">
 
-    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- {{-- font awesome cdn link --}}
+
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 </head>
 
 <body>

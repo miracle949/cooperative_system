@@ -29,6 +29,10 @@
             <li class="tw:list-none">
                 <a href="{{ route("ContactPage") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Contact</a>
             </li>
+
+            <li class="tw:list-none">
+                <a href="{{ route("StaticPage") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none text-black">Static Page</a>
+            </li>
         </ul>
     </div>
 

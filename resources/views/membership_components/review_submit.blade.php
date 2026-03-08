@@ -26,9 +26,24 @@
 
                 <div class="review-parent">
                     <div class="review-first">
-                        <div class="review mt-3">
+                        {{-- <div class="review mt-3">
                             <p>Name:</p>
                             <p id="name_display"></p>
+                        </div> --}}
+
+                        <div class="review mt-3">
+                            <p>Firstname:</p>
+                            <p id="firstname_display"></p>
+                        </div>
+
+                        <div class="review mt-3">
+                            <p>Middlename:</p>
+                            <p id="middlename_display"></p>
+                        </div>
+
+                        <div class="review mt-3">
+                            <p>Lastname:</p>
+                            <p id="lastname_display"></p>
                         </div>
 
                         <div class="review mt-3">
@@ -43,17 +58,7 @@
 
                         <div class="review mt-3">
                             <p>Email:</p>
-                            <p id="email_display"></p>
-                        </div>
-
-                        <div class="review mt-3">
-                            <p>Membership Type:</p>
-                            <p id="membership_type_display"></p>
-                        </div>
-
-                        <div class="review mt-3">
-                            <p>Civil Status:</p>
-                            <p id="civil_status_display"></p>
+                            <p id="email_display" style="width: 220px;"></p>
                         </div>
                     </div>
                     <div class="review-second">
@@ -75,6 +80,16 @@
                         <div class="review mt-3">
                             <p>Tin No:</p>
                             <p id="tin_no_display"></p>
+                        </div>
+
+                        <div class="review mt-3">
+                            <p>Civil Status:</p>
+                            <p id="civil_status_display"></p>
+                        </div>
+
+                        <div class="review mt-3">
+                            <p>Membership Category:</p>
+                            <p id="membership_type_display"></p>
                         </div>
                     </div>
                 </div>
@@ -102,47 +117,54 @@
                     </div>
                 </div>
 
-                <hr>
+                {{-- <hr>
 
-                <h5 class="mt-3 fw-semibold">Number of Public Vehicle Owned</h5>
+                <h5 class="mt-3 fw-semibold">Plate no & Number No of Public Vehicle Owned</h5>
 
                 <div class="review-parent">
                     <div class="review-first">
                         <div class="review mt-3">
                             <p>UV's:</p>
-                            <p id="uv_display"></p>
+                            <p id="uv_plate_display"></p>
+                         
                         </div>
 
                         <div class="review mt-3">
                             <p>TAXI:</p>
-                            <p id="taxi_display"></p>
+                            <p id="taxi_plate_display"></p>
+                            
                         </div>
 
                         <div class="review mt-3">
                             <p>BUS:</p>
-                            <p id="bus_display"></p>
+                            <p id="bus_plate_display"></p>
+                            
                         </div>
 
                         <div class="review mt-3">
                             <p>TRICYLE:</p>
-                            <p id="tricycle_display"></p>
+                            <p id="tricycle_plate_display"></p>
+                            
                         </div>
-                    </div>
+                    </div>  
 
                     <div class="review-second">
                         <div class="review mt-3">
                             <p>MINI BUS:</p>
-                            <p id="mini_bus_display"></p>
+                            <p id="mini_bus_plate_display"></p>
+                         
                         </div>
 
                         <div class="review mt-3">
                             <p>JEEP:</p>
-                            <p id="jeep_display"></p>
+                            <p id="jeep_plate_display"></p>
+                            
                         </div>
 
                         <div class="review mt-3">
                             <p>MULTI-CAB:</p>
-                            <p id="multi_cab_display"></p>
+                            <p id="multi_cab_plate_display"></p>
+                           
                         </div>
 
                         <div class="review mt-3">
@@ -152,7 +174,7 @@
                     </div>
                 </div>
 
-                <hr>
+                <hr> --}}
 
 
             </div>
@@ -376,14 +398,18 @@
                 <div class="card">
                     <div class="d-flex align-items-center gap-3 flex-wrap">
                         <label class="m-0">Submmited this</label>
-                        <div class="col-lg-2">
-                            <input type="text" name="" id="" class="form-control">
+                        <div class="col-lg-3">
+                            <input type="date" name="submitted_at" id="submitted_at" class="form-control" style="font-size: 14.5px;" required>
+                            {{-- <div class="reminder">
+                                <span>Enter the date</span>
+                            </div> --}}
                         </div>
                         <label class="m-0">Day of</label>
-                        <div class="col-lg-2">
-                            <input type="text" value="" class="form-control">
+                        <div class="col-lg-3">
+                            <input type="text" name="day_of" value="" class="form-control" placeholder="Enter the day e.g Thursday"
+                                style="font-size: 14.5px;">
                             {{-- <div class="reminder">
-                                <span>If not applicable, you may enter “N/A”</span>
+                                <span>Enter the day e.g "Thursday"</span>
                             </div> --}}
                         </div>
                     </div>
@@ -396,7 +422,19 @@
                     <div class="row">
                         <div class="col-lg-5 mt-2">
                             <div class="card-box">
-                                <input type="file" name="" id="" class="form-control">
+                                {{-- <input type="file" name="" id="" class="form-control"> --}}
+                                <canvas id="signature-pad"
+                                    style="border:1px solid #ccc; border-radius:10px; width:100%; height:150px;">
+                                </canvas>
+
+                                <div class="mt-3 text-end">
+                                    <button type="button" id="clear" class="btn btn-sm btn-danger">
+                                        Clear
+                                    </button>
+                                </div>
+
+                                <!-- Hidden input to store base64 image -->
+                                <input type="hidden" name="signature" id="signature">
                             </div>
                         </div>
                     </div>
@@ -411,15 +449,15 @@
                             Directors in its
                         </label>
                         <div class="col-lg-3">
-                            <input type="text" name="" id="" class="form-control">
+                            <input type="text" name="board_directors" id="" class="form-control" style="font-size: 14.5px;" disabled>
                         </div>
                         <label class="m-0">meeting held at</label>
                         <div class="col-lg-3">
-                            <input type="text" name="" id="" class="form-control">
+                            <input type="text" name="meeting_held" id="" class="form-control" style="font-size: 14.5px;" disabled>
                         </div>
                         <label class="m-0">dated</label>
                         <div class="col-lg-3">
-                            <input type="text" name="" id="" class="form-control">
+                            <input type="date" name="dated_of" id="dated_of" class="form-control" style="font-size: 14.5px;" disabled>
                         </div>
                     </div>
 
@@ -443,3 +481,4 @@
         </div>
     </div>
 </div>
+

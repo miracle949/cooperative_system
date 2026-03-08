@@ -18,19 +18,13 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- font awesome cdn link --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    {{-- bootstrap link --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 </head>
 
 <body>
 
     <div class="container-fluid p-0 m-0">
-        @include("navbar2")
+        @include("components.navbar2")
 
         <main class="p-5">
             <div class="card-box-parent pt-5 ps-5 pe-5 pb-0">
@@ -518,11 +512,6 @@
 
     {{-- AOS animation link js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    {{-- Bootstrap link --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
 
     <script>
         AOS.init();

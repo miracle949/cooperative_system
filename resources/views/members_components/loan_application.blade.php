@@ -21,7 +21,6 @@
     {{-- font awesome cdn link --}}
     <link rel="stylesheet" href="../font-awesome-icon/css/all.min.css">
 
-    {{-- bootstrap link --}}
 </head>
 
 <body>
@@ -97,11 +96,6 @@
 
     {{-- AOS animation link js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    {{-- Bootstrap link --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
 
     <script>
         AOS.init();
