@@ -24,6 +24,15 @@
     display: none;
 }
 
+.container-fluid nav {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid #E2E8E5;
+    position: relative;  /* ← add this */
+    z-index: 1000; 
+}
+
 .container-fluid .loading-screen .load {
     width: 80px;
     height: 80px;
@@ -36,6 +45,9 @@
 
 .container-fluid nav .nav-list a {
     position: relative;
+    /* color: #ffffff; */
+    color: #1A1A1A;
+    /* color: #6B7B74; */
 }
 
 .container-fluid nav .nav-list a::before {
@@ -78,33 +90,65 @@
     border: 1px solid black;
 } */
 
+/* .container-fluid .nav-acc2{
+    position: relative;
+    z-index: 1000;
+} */
+
 .container-fluid .nav-acc2 a {
-    color: #000;
+    /* color: #ffffff; */
+    color: #1A1A1A;
     /* border: 1px solid black; */
     text-decoration: none;
 }
 
 .container-fluid .nav-acc2 ul {
     padding: 0;
+    /* position: relative; */
 }
 
-.container-fluid .nav-acc2 ul li:focus-within ul {
+.container-fluid .nav-acc2 ul li p{
+    font-size: 15.5px;
+}
+
+/* .container-fluid .nav-acc2 ul li:focus-within ul {
     display: block;
-    position: absolute;
+} */
+
+.container-fluid .nav-acc2 {
+    position: relative;
+    cursor: pointer;
+}
+/* 
+.container-fluid .nav-acc2 ul li ul {
+    display: none;
+} */
+
+.container-fluid .nav-acc2 ul{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .container-fluid .nav-acc2 ul li ul {
     display: none;
     position: absolute;
     right: 3%;
-    top: 10%;
+    min-width: 270px; /* ← add this */
     background-color: white;
-    /* padding: 15px 20px 15px 20px; */
+    z-index: 1001;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    z-index: 999;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(14px);
 }
+
+.container-fluid .nav-acc2.open ul li ul {
+    display: block;
+}
+
 
 .container-fluid .nav-acc2 ul li .card-icon {
     padding: 0rem 0.7rem;
@@ -268,11 +312,11 @@
 
 /* offcanvas */
 
-.offcanvas-header{
+.offcanvas-header {
     margin-top: 0.5rem;
 }
 
-.offcanvas-header img{
+.offcanvas-header img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -359,8 +403,8 @@
     } */
 }
 
-@media only screen and (max-width: 1060px){
-    .container-fluid .nav-acc2{
+@media only screen and (max-width: 1060px) {
+    .container-fluid .nav-acc2 {
         display: none;
     }
 

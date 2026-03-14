@@ -1,83 +1,89 @@
 <?php
 
+use App\Http\Controllers\lendingController;
 use App\Http\Controllers\UserHandling;
 use App\Http\Controllers\UsersHandle;
 use Illuminate\Support\Facades\Route;
 
-// Main page routing
-
 Route::get("/", [UserHandling::class, "UserDirection"]);
-
-Route::get('/application-form/{id}', [UserHandling::class, 'showForm'])->name('applicationForm');
-
-Route::get('/approve-user/{id}', [UserHandling::class, 'approveUser'])->name('approve.user');
-
-Route::get("/static-page", [UserHandling::class, "StaticPage"])->name("StaticPage");
-
-Route::get("/application-form", [UserHandling::class, "applicationForm"])->name("applicationForm");
-
-// Landing page get
 
 Route::get("/landing-page", [UserHandling::class, "Landingpage"])->name("Landingpage");
 
-// Login page get
+// Login page GET
 
 Route::get("/login-page", [UserHandling::class, "LoginPage"])->name("LoginPage");
 
-// Register page get
+// Register page GET
 
 Route::get("/register-page", [UserHandling::class, "RegisterPage"])->name("RegisterPage");
 
-// About us page get
+// About us page GET
 
-Route::get("/about-us", [UserHandling::class, "AboutUs"])->name(("AboutUs"));
+Route::get("/about-us", [UserHandling::class, "AboutUs"])->name("AboutUs");
 
-// Services page get
+// Services page GET
 
-Route::get("/services", [UserHandling::class, "ServicesPage"])->name(("ServicesPage"));
+Route::get("/services", [UserHandling::class, "ServicesPage"])->name("ServicesPage");
 
-// Blogs page get
+// // Blogs page GET
 
-Route::get("/blogs", action: [UserHandling::class, "BlogsPage"])->name(("BlogsPage"));
+Route::get("/blogs", [UserHandling::class, "BlogsPage"])->name("BlogsPage");
 
-// Contact page get
+// Contact page GET
 
-Route::get("/contact", [UserHandling::class, "ContactPage"])->name(("ContactPage"));
-
-// Navbar
+Route::get("/contact", [UserHandling::class, "ContactPage"])->name("ContactPage");
 
 Route::get("/navbar", [UserHandling::class, "Navbar"]);
 
-// Homepage (Member Side)
+// Static page GET
 
-Route::get("/member-portal", [UserHandling::class, "MemberPortal"])->name("MemberPortal");
+Route::get("/static-page", [UserHandling::class, "StaticPage"])->name("StaticPage");
 
-// Loan application (Member Side)
+// Member Portal page GET
 
-Route::get("/loan_application", [UserHandling::class, "LoanApplication"])->name("LoanApplication");
+Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("MemberPortal")->middleware("auth");
 
-// Savings (Member Side)
+// Lending Program page GET
 
-Route::get("/savings-page", [UserHandling::class, "Savings"])->name("Savings");
+Route::get("/loan_application", [UsersHandle::class, "LoanApplication"])->name("LoanApplication");
 
-Route::get('/share-capital', [UserHandling::class, "ShareCapital"])->name("ShareCapital");
+Route::get("/savings-page", [UsersHandle::class, "Savings"])->name("Savings");
 
-// Loan Status (Member Side)
+Route::get('/share-capital', [UsersHandle::class, "ShareCapital"])->name("ShareCapital");
 
-Route::get("/loan-status", [UserHandling::class, "LoanStatus"])->name("LoanStatus");
+Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus");
 
-// Profile (Member Side)
-
-Route::get("/profile-member", [UserHandling::class, "ProfileMember"])->name("ProfileMember");
-
-// Homepage (Driver Side)
+Route::get("/profile-member", [UsersHandle::class, "ProfileMember"])->name("ProfileMember");
 
 Route::get("/driver-portal", [UserHandling::class, "DriverPortal"])->name("DriverPortal");
 
-// User handle
+// NEW - correct
+Route::post("/login-handle", [UsersHandle::class, "login"])->name("UserLogin");
 
-Route::get("/user-handle", [UsersHandle::class, "UserHandle"])->name("UserHandle");
-
-// Register Post
+Route::get("/user-handle", [UsersHandle::class, "UserHandle"])->name("UserHandle")->middleware("auth");
 
 Route::post("/registration", [UsersHandle::class, "registration"])->name("registration");
+
+Route::get("/login", [UsersHandle::class, "login"])->name("login");
+
+// Route::post("/login-page", [UsersHandle::class, "login"])->name("UserLogin");
+
+Route::get('/approve-user/{id}', [UserHandling::class, 'approveUser'])->name('approve.user');
+
+// Application form - only ONE GET, ONE POST
+Route::get('/application-form/{id}', [UserHandling::class, 'showForm'])->name('applicationForm');
+
+Route::post('/application-form/{id}', [UsersHandle::class, 'applicationFormButton'])->name('applicationFormButton');
+
+Route::get("/nav-bar2", [UsersHandle::class, "Navbar2"])->name("Navbar2");
+
+Route::get("/logout", [UsersHandle::class, "logout"])->name("logout");
+
+// Loan application post
+
+// ✅ Add auth middleware
+Route::post("/lending-program", [lendingController::class, "lendingProgram"])
+    ->name("lendingProgram")
+    ->middleware("auth");
+
+// Route::get("/lending-program", [lendingController::class, "lendingProgram"])->name("lendingProgram");

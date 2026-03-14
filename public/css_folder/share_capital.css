@@ -1,6 +1,7 @@
 main {
     padding: 3rem;
-    background-color: #f5f5f8;
+    /* background-color: #f5f5f8; */
+    background-color: #F7F9F8;
 }
 
 main h3 {
@@ -28,6 +29,22 @@ main .parent-share .card {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
+    animation: slideIn 0.4s ease both;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 main .parent-share .card h4 {
@@ -115,8 +132,9 @@ main .download {
 
 main .download button {
     padding: 10px 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
     background-color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 7px;
     font-size: 15.5px;
 }
@@ -127,10 +145,11 @@ main .parent-table {
 
 main .contribution-parent {
     margin-top: 3rem;
-    background-color: #ffffff;
     padding: 3rem;
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
 }
 
 main .contribution-parent .table {
@@ -148,10 +167,11 @@ main .contribution-parent .table tbody tr td {
 
 main .dividend-parent {
     margin-top: 3rem;
-    background-color: #ffffff;
     padding: 3rem;
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
 }
 
 main .dividend-parent .table {

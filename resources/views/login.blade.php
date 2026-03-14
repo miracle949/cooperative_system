@@ -19,13 +19,15 @@
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
 
     {{-- bootstrap link --}}
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous"> --}}
+    {{--
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    --}}
 </head>
 
 <body>
 
-    <div class="container-fluid p-0 m-0 tw:flex tw:justify-between tw:items-center">
+    <div class="container-fluid">
 
         <div class="loading-screen">
 
@@ -33,45 +35,49 @@
 
         </div>
 
-        <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">
-            <div class="overlay"></div>
-            <img src="images/loginbg.jpg" class="tw:h-[100%]" alt="">
-        </div>
-        <div class="tw:flex tw:justify-center tw:items-center tw:w-[100%] tw:h-[100%]" style="position: relative">
+        {{-- <nav>
+            <div class="logo">
 
-            <div class="back-to-landing">
-                <a href="{{ route("Landingpage") }}">
-                    <i class="fa fa-arrow-left"></i>
-                </a>
+                <img src="images/logo2.png" alt="">
+
+                <div>
+                    <h2 class="fw-bold">Membership Application Form</h2>
+
+                    <p>Ready to become part of something special? We can't wait to welcome
+                        you.
+                </div>
+            </div>
+        </nav> --}}
+
+        {{-- <div class="back-to-landing">
+            <a href="{{ route(" Landingpage") }}">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+        </div> --}}
+
+        <div class="form-parent">
+            <div class="logo tw:flex tw:justify-center tw:items-center">
+                <a href="{{ route("Landingpage") }}"><img src="images/logo2.png" alt=""></a>
             </div>
 
-            <div class="form-parent">
-                <div class="logo tw:flex tw:justify-center tw:items-center">
-                    <a href="{{ route("Landingpage") }}"><img src="images/logo2.png" alt=""></a>
-                </div>
+            <h2 class="fw-semibold mt-4 text-center">Login your account</h2>
 
-                <h2 class="fw-semibold mt-4 text-center">Login your account</h2>
+            <p class="mt-3 tw:w-[400px] text-center">Welcome back! Please log in to securely manage your account.
+            </p>
 
-                <p class="mt-3 tw:w-[400px] text-center">Welcome back! Please log in to securely manage your account.
-                </p>
-
+            <form action="{{ route("UserLogin") }}" method="post">
+                @csrf
                 <div class="form-sub-parent">
                     <div class="mt-3 form-input">
                         <label>Username or Email</label>
-                        <div class="input-group mt-2">
-                            <span class="input-group-text"><i class="fa fa-user"></i></span>
-                            <input type="text" name="username_email" placeholder="Enter your username or email"
-                                class="form-control" required>
-                        </div>
+                        <input type="text" name="email" placeholder="Enter your username or email"
+                            class="form-control mt-1" required>
                     </div>
 
                     <div class="mt-3 form-input">
                         <label>Password</label>
-                        <div class="input-group mt-2">
-                            <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                            <input type="password" name="password" placeholder="Enter your password"
-                                class="form-control" required>
-                        </div>
+                        <input type="password" name="password" placeholder="Enter your password"
+                            class="form-control mt-1" required>
                     </div>
 
                     <div class="mt-4 tw:flex tw:justify-end form-forgot">
@@ -90,16 +96,16 @@
                                 class="text-black">Register</a></label>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
+
+        {{-- <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">
+            <div class="overlay"></div>
+            <img src="images/loginbg.jpg" class="tw:h-[100%]" alt="">
+        </div> --}}
     </div>
 
-    {{-- Bootstrap link --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script> --}}
-
-    <script>
+    {{-- <script>
         const loading = document.querySelector(".loading");
         const login = document.getElementById("login");
 
@@ -117,7 +123,7 @@
 
         });
 
-    </script>
+    </script>  --}}
 
     {{--
     <script src="style.js"></script> --}}

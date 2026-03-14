@@ -5,7 +5,8 @@
 } */
 
 .container-fluid {
-    background-color: #ECF6FF;
+    /* background-color: #ECF6FF; */
+    background-color: #F7F9F8;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -13,23 +14,299 @@
     overflow: hidden;
 }
 
-.container-fluid main{
+.container-fluid main {
     padding: 48px;
+    display: flex;
+    /* justify-content: space-between; */
+    gap: 2rem;
+    justify-content: center;
+    /* align-items: center; */
+    /* gap: 1rem; */
 }
 
 .container-fluid main h3 {
-    font-size: 19px;
+    font-size: 16px;
+    color: #1E4035;
+    font-weight: 600;
+}
+
+.container-fluid main .card-box p {
+    font-size: 13.5px;
+}
+
+.container-fluid select {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 7px;
+    color: #6F7174;
+    font-size: 14.5px;
+}
+
+.container-fluid select:valid {
+    color: #212529;
 }
 
 .container-fluid main .card-box {
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    /* border: 1px solid rgba(0, 0, 0, 0.3); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    border-radius: 20px;
     background-color: white;
-    padding: 48px;
+    padding: 48px 48px 30px 48px;
+    animation: slideIn 0.4s ease both;
+    width: 700px;
+    height: 100%;
+}
+
+.container-fluid main .card-box .alert-reminder button .fa-solid{
+    font-size: 24px;
+}
+
+.container-fluid .modal-content{
+    border-radius: 20px;
+}
+
+.container-fluid .modal .modal-header{
+    border: none;
+    background-color: #1E4035;
+    padding: 24px 30px 24px 30px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid .modal .modal-header .modal-text h1{
+    font-size: 19.5px;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 600;
+}
+
+.container-fluid .modal .modal-header .modal-text p{
+    margin: 6.5px 0 0;
+    color: #FFFFFF8C;
+    font-size: 13.5px;
+}
+
+.container-fluid .modal .modal-header button{
+    width: 35px;
+    height: 35px;
+    color: #ffffff;
+    background-color: #FFFFFF8C;
+    /* padding: 25px; */
+    border-radius: 50%;
+    font-size: 21px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-fluid .modal .modal-footer{
+    border: none;
+    padding: 0 12px 12px 12px;
+}
+
+.container-fluid .modal .modal-footer button{
+    width: 100%;
+    background-color: #1E4035;
+    color: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 14.5px;
+    font-weight: 600;
+}
+
+.container-fluid .modal .modal-body{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.container-fluid .modal .modal-body .lending-parent .lending-icon p{
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1E4035;
+}
+
+.container-fluid .modal .modal-body .lending-parent .lending-icon span{
+    font-size: 12.5px;
+    color: #808080;
+}
+
+.container-fluid .modal .modal-body .lending-parent{
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 16px 19px 16px 19px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid .modal .modal-body .lending-parent p{
+    margin: 0;
+    color: #1E4035;
+    font-size: 15.5px;
+}
+
+.container-fluid main .card-calculate-parent {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    animation: slideIn 0.4s ease both;
+    /* max-width: 370px; */
+}
+
+.container-fluid main .card-calculate {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    border-radius: 20px;
+    /* width: 100%; */
+    width: 370px;
+}
+
+.container-fluid main .card-calculate .calculate-header {
+    padding: 25px 48px 25px 30px;
+    background-color: #1E4035;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    /* max-width: 370px; */
+}
+
+.container-fluid main .card-calculate .calculate-header h3 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 17px;
+}
+
+.container-fluid main .card-calculate .calculate-header p {
+    color: #FFFFFF8C;
+    margin: 8px 0 0;
+    font-size: 13.5px;
+}
+
+.container-fluid main .card-calculate .calculate-body {
+    padding: 25px 30px 25px 30px;
+    background-color: #ffffff;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.container-fluid main .card-calculate .calculate-body .estimate {
+    background-color: #F7F9F8;
+    padding: 1.2rem 1.5rem 1.2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    border-radius: 15px;
+}
+
+.container-fluid main .card-calculate .calculate-body .estimate p,
+.container-fluid main .card-calculate .calculate-body .estimate .payment h4 {
+    margin: 0;
+    color: #1E4035;
+}
+
+.container-fluid main .card-calculate .calculate-body .estimate .payment h4 {
+    font-size: 20px;
+}
+
+.container-fluid main .card-calculate .calculate-body .estimate p:nth-child(1) {
+    text-transform: uppercase;
+    font-size: 13.5px;
+}
+
+.container-fluid main .card-calculate .calculate-body .estimate p:nth-child(3) {
+    font-size: 12.5px;
+    margin: 0;
+}
+
+/* .container-fluid main .card-calculate .calculate-body .estimate .payment h4{
+    
+} */
+
+.container-fluid main .card-calculate .calculate-body .parent-amount {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .text-amount p {
+    margin: 0;
+    color: #1E4035;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount hr {
+    margin: 8px 0;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14.5px;
+    /* margin-top: 0.3rem; */
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .total-amount {
+    margin-top: 0.7rem;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .total-amount p {
+    font-weight: 600;
+    margin: 0;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .amount p{
+    margin: 0;
+}
+
+.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .text-amount p{
+    color: #808080;
+}
+
+.reminders {
+    /* background-color: #C9A84C; */
+    background-color: rgba(201, 168, 76, 0.12);
+    padding: 1rem;
+    border-radius: 15px;
+    margin-top: 0.5rem;
+}
+
+.reminders p {
+    margin: 0;
+    font-size: 14.5px;
+    color: #C9A84C;
+}
+
+.container-fluid main .card-calculate-parent .interest-rate {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    border-radius: 20px;
+    padding: 30px 48px 30px 30px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .container-fluid main .card-box .card-icon {
-    background-color: #DBEAFE;
+    /* background-color: #DBEAFE; */
+    background-color: rgba(30, 64, 53, 0.07);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,21 +314,191 @@
 
 .container-fluid main .card-box .fa-solid {
     font-size: 25px;
-    color: #155DFC;
+    /* color: #155DFC; */
+    color: #1E4035;
 }
 
 .container-fluid main .card-box select {
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    /* border: 1px solid rgba(0, 0, 0, 0.3); */
+    border: 1px solid #ccc;
 }
 
-.container-fluid main .card-box input {
-    border: 1px solid rgba(0, 0, 0, 0.3);
+.container-fluid main .card-box input.form-control {
+    /* border: 1px solid rgba(0, 0, 0, 0.3); */
+    border: 1px solid #ccc;
+    font-size: 14.5px;
 }
 
 .container-fluid main .card-box textarea {
     width: 100%;
     height: 202px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    /* border: 1px solid rgba(0, 0, 0, 0.3); */
+    border: 1px solid #ccc;
+    font-size: 14.5px;
+}
+
+.container-fluid form .form-parent {
+    margin-top: 1rem;
+    font-size: 14.5px;
+}
+
+.container-fluid form .form-parent .line{
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    height: 1px;
+    /* margin: 35px 12px 35px 12px; */
+    margin-top: 35px;
+}
+
+.container-fluid form .form-parent h4{
+    font-size: 16px;
+    margin: 25px 0 0;
+    color: #1E4035;
+    font-weight: 600;
+}
+
+/* .container-fluid form .form-parent input{
+    font-size: 14.5px;
+} */
+
+.container-fluid form .form-parent button {
+    background-color: #1E4035;
+    font-size: 14.5px;
+    color: #ffffff;
+}
+
+.container-fluid form .form-parent button:active {
+    background-color: #1E4035;
+    color: #ffffff;
+}
+
+/* modal loan success */
+/* ── SUCCESS MODAL ── */
+.modal-overlay-success {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease both;
+}
+
+.success-modal-box {
+    background: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.35s ease both;
+}
+
+.sm-head {
+    background: #1E4035;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sm-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.sm-body {
+    padding: 1.75rem 2rem 2rem;
+    text-align: center;
+}
+
+.sm-body h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 0.5rem;
+}
+
+.sm-body > p {
+    font-size: 0.85rem;
+    color: #6B7B74;
+    line-height: 1.65;
+    margin-bottom: 1.4rem;
+}
+
+.sm-details {
+    background: #F7F9F8;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.4rem;
+    text-align: left;
+}
+
+.sm-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #E2E8E5;
+    font-size: 0.84rem;
+}
+
+.sm-row:last-child {
+    border-bottom: none;
+}
+
+.sm-label {
+    color: #6B7B74;
+}
+
+.sm-val {
+    font-weight: 500;
+    color: #1A1A1A;
+}
+
+.sm-badge {
+    background: rgba(201, 168, 76, 0.14);
+    color: #9A7320;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.sm-btn {
+    width: 100%;
+    padding: 12px;
+    background: #1E4035;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.sm-btn:hover {
+    background: #2A5C4E;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media only screen and (min-width: 1450px) {
@@ -66,6 +513,38 @@
     }
 }
 
+@media only screen and (max-width: 1000px) {
+    .container-fluid main .card-box .card-icon {
+        display: none;
+    }
+
+    /* .container-fluid main .card-box {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E2E8E5;
+        border-radius: 20px;
+        background-color: white;
+        padding: 48px;
+        animation: slideIn 0.4s ease both;
+        width: 700px;
+        height: 100%;
+    }
+
+    .container-fluid main .card-calculate-parent {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        animation: slideIn 0.4s ease both;
+    }
+
+    .container-fluid main .card-calculate {
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E2E8E5;
+        border-radius: 20px;
+        width: 370px;
+    } */
+}
+
 
 @media only screen and (max-width: 640px) {
     .container-fluid main .card-box .loan-input {
@@ -75,7 +554,7 @@
 
 @media only screen and (max-width: 550px) {
 
-    .container-fluid main{
+    .container-fluid main {
         padding: 30px;
     }
 
@@ -83,7 +562,7 @@
 
 @media only screen and (max-width: 475px) {
 
-    .container-fluid main{
+    .container-fluid main {
         padding: 50px 30px 50px 30px;
     }
 
@@ -99,15 +578,15 @@
         display: none;
     }
 
-    .container-fluid main .card-box h3{
+    .container-fluid main .card-box h3 {
         font-size: 20px;
     }
 
-    .container-fluid main .card-box p{
+    .container-fluid main .card-box p {
         margin-top: 2rem;
     }
 
-    .container-fluid .form-parent{
+    .container-fluid .form-parent {
         margin-top: 15px;
     }
 }

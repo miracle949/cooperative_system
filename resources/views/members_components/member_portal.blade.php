@@ -29,46 +29,78 @@
         @include("components.offcanvas")
 
         <main>
-            <div class="main-intro">
-                <h3 class="">Member Cooperative Portal</h3>
+            @if ($first_name)
 
-                <p class="">Hello Welcome, Jhun!</p>
-            </div>
+                <div class="main-intro">
+                    <p class="">Member Cooperative Portal</p>
 
-            <hr>
+                    <h3 class="">Hello Welcome, {{ $first_name }}! 👋</h3>
+                </div>
+
+            @endif
+
+            {{--
+            <hr style="z-index: -1"> --}}
+            <div class="line"></div>
 
             <div class="card-parent">
-                <div class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
-                        style="border-radius: 10px">
-                        <i class="fa-solid fa-wallet"></i>
+                <div class="card-box">
+                    <div class="card-transparent">
+                        <div class="card-head"></div>
+                        <div class="card-icon mt-2 d-flex justify-content-center align-items-center"
+                            style="border-radius: 10px">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+
+                        <p class="mt-4">Savings Balance</p>
+
+                        <span>₱ 15,750.50</span>
                     </div>
-
-                    <p class="mt-4">Savings Balance</p>
-
-                    <span>₱ 15,750.50</span>
+                    <div class="card-update">
+                        <div class="update">
+                            <i class="fa fa-arrow-up"></i>
+                            <p>Active</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
-                        style="border-radius: 10px">
-                        <i class="fa-solid fa-arrow-trend-up"></i>
+                <div class="card-box">
+                    <div class="card-transparent">
+                        <div class="card-head"></div>
+                        <div class="card-icon mt-2 d-flex justify-content-center align-items-center"
+                            style="border-radius: 10px">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+
+                        <p class="mt-4">Active Loans</p>
+
+                        <span>1 Loan(s)</span>
                     </div>
-
-                    <p class="mt-4">Active Loans</p>
-
-                    <span>1 Loan(s)</span>
+                    <div class="card-update">
+                        <div class="update">
+                            <i class="fa fa-arrow-up"></i>
+                            <p>Active</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card-box p-4">
-                    <div class="tw:w-[55px] tw:h-[55px] card-icon mt-3 d-flex justify-content-center align-items-center"
-                        style="border-radius: 10px">
-                        <i class="fa-solid fa-award"></i>
+                <div class="card-box">
+                    <div class="card-transparent">
+                        <div class="card-head"></div>
+                        <div class="card-icon mt-2 d-flex justify-content-center align-items-center"
+                            style="border-radius: 10px">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+
+                        <p class="mt-4">Credit score</p>
+
+                        <span>80 pts</span>
                     </div>
-
-                    <p class="mt-4">Credit score</p>
-
-                    <span>80 pts</span>
+                    <div class="card-update">
+                        <div class="update">
+                            <p>Good Standing</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -160,8 +192,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     {{-- Bootstrap link --}}
-    <script defer src="../bootstrap_folder/js/bootstrap.bundle.min.js"></script>
-    
+    {{--
+    <script defer src="../bootstrap_folder/js/bootstrap.bundle.min.js"></script> --}}
+
     {{--
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

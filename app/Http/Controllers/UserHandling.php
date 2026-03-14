@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Users_tbl;
+use App\Models\Membervehi_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApprovedMail;
@@ -19,7 +20,26 @@ class UserHandling extends Controller
     public function showForm($id)
     {
         $user = Users_tbl::findOrFail($id);
-        return view('members_components.application_form', compact('user'));
+        $vehicles = Membervehi_tbl::where('member_id', $id)->get()->groupBy('vehicle_type');
+        $spouse = \App\Models\Spouse_tbl::where('member_id', $id)->first();
+        $education = \App\Models\educational_tbl::where('member_id', $id)->get();
+        $seminar = \App\Models\seminars_training_tbl::where('member_id', $id)->first();
+        $employeeHistory = \App\Models\employee_history_tbl::where('member_id', $id)->first();
+        $membershipInfo = \App\Models\employee_membership_information::where('member_id', $id)->first();
+        $membershipHistory = \App\Models\tc_membership_history_tbl::where('member_id', $id)->first();
+        $specialAwards = \App\Models\special_awards_tbl::where('member_id', $id)->first();
+
+        return view('members_components.application_form', compact(
+            'user',
+            'vehicles',
+            'spouse',
+            'education',
+            'seminar',
+            'employeeHistory',
+            'membershipInfo',
+            'membershipHistory',
+            'specialAwards'
+        ));
     }
 
     public function approveUser($id)
@@ -88,11 +108,6 @@ class UserHandling extends Controller
     public function Navbar()
     {
         return view("navbar");
-    }
-
-    public function MemberPortal()
-    {
-        return view("members_components.member_portal");
     }
 
     public function LoanApplication()

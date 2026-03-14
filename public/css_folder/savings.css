@@ -5,7 +5,8 @@
 } */
 
 .container-fluid {
-    background-color: #ECF6FF;
+    /* background-color: #ECF6FF; */
+    background-color: #F7F9F8;
 }
 
 .container-fluid main {
@@ -22,9 +23,10 @@
 }
 
 .container-fluid main .card-box-parent {
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
     border-radius: 10px;
-    background-color: white;
     padding: 48px;
 }
 
@@ -58,7 +60,9 @@
 
 .container-fluid main .card-box-parent .card-box {
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
     padding: 8px 24px 8px 8px;
     display: flex;
     justify-content: left;
@@ -76,12 +80,14 @@
 
 .container-fluid section .card-box-parent {
     gap: 1.9rem;
-    padding: 48px;
+    padding: 0px 48px 48px 48px;
 }
 
 .container-fluid section .card-box-parent .card-box {
     width: calc(100% / 3.5);
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
     border-radius: 10px;
     padding: 2.5rem;
 }
@@ -119,11 +125,14 @@
 }
 
 .container-fluid #section2 {
-    padding: 48px;
+    padding: 0px 48px 48px 48px;
 }
 
 .container-fluid #section2 .card-box-parent {
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    /* border: 1px solid rgba(0, 0, 0, 0.3); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
     border-radius: 10px;
     background-color: white;
 }
@@ -137,11 +146,16 @@
 }
 
 .container-fluid #section2 .card-box-parent .card-box {
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: #ffffff;
     width: 100%;
     padding: 2rem;
     margin-top: 1rem;
+}
+
+.container-fluid section .card-box-parent .card-box-title {
+    margin-top: 48px;
 }
 
 .container-fluid section .card-box-parent .card-box-title .print {

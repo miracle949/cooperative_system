@@ -7,692 +7,540 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
-
-    {{-- css link --}}
-    {{--
-    <link rel="stylesheet" href="css_folder/application-form.css"> --}}
     <link rel="stylesheet" href="{{ asset('css_folder/application-form.css') }}">
-
-    {{-- bootstrap and tailwind link --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- font awesome cdn link --}}
-    {{--
-    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css"> --}}
-
     <link rel="stylesheet" href="{{ asset('font-awesome-icon/css/all.min.css') }}">
 </head>
 
 <body>
     <div class="container-fluid">
-        <form action="" method="post">
-            @csrf
-
-            <div class="form-box">
-                <div class="stepper">
-                    <div class="step active">
-                        <div class="d-flex justify-content-center align-items-center flex-column">
-                            <div class="circle">1</div>
-                            <div class="label">First page</div>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="d-flex justify-content-center align-items-center flex-column">
-                            <div class="circle">2</div>
-                            <div class="label">Second page</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="form-step active">
-
-                        <div class="header-card">
-                            <h2>Membership Application Form</h2>
-                        </div>
-
-                        <h3 class="mt-3">Personal Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                <label>Firstname</label>
-                                <input type="text" name="first_name" value="{{ $user->first_name ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Middle Initial</label>
-                                <input type="text" name="middle_name" value="{{ $user->middle_name ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Lastname</label>
-                                <input type="text" name="last_name" value="{{ $user->last_name ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Email</label>
-                                <input type="email" name="email" value="{{ $user->email ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Date of Birth</label>
-                                <input type="text" name="date_of_birth" value="{{ $user->date_of_birth ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Place of Birth</label>
-                                <input type="text" name="place_of_birth" value="{{ $user->place_of_birth ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Contact No</label>
-                                <input type="text" name="contact_no" value="{{ $user->contact_no ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Present Address</label>
-                                <input type="text" name="present_address" value="{{ $user->present_address ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Permanent Address</label>
-                                <input type="text" name="permanent_address" value="{{ $user->permanent_address ?? '' }}"
-                                    class="form-control mt-1">
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Other Personal Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                <label>Sex</label>
-                                <input type="text" name="sex" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Civil Status</label>
-                                <input type="text" name="civil_status" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Citizenship</label>
-                                <input type="text" name="citizenship" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Height</label>
-                                <input type="text" name="height" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Weight</label>
-                                <input type="text" name="weight" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Blood Type</label>
-                                <input type="text" name="blood_type" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Name of TSC</label>
-                                <input type="text" name="tsc_name" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Other Skills/Line of Expertise</label>
-                                <input type="text" name="skills" id="" class="form-control mt-1">
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Family Background</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                <label>Spouse Name</label>
-                                <input type="text" name="spouse_name" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Date of Birth</label>
-                                <input type="text" name="spouse_name" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Place of Birth</label>
-                                <input type="text" name="spouse_name" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Son</label>
-                                <input type="text" name="number_son" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Daughter</label>
-                                <input type="text" name="number_daughter" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Other Specification</label>
-                                <input type="text" name="number_daughter" id="" class="form-control mt-1">
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Vehicles Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                {{-- <label>UV's</label> --}}
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>UV's</label>
-                                        <input type="text" name="uv_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_uv" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>TAXI</label>
-                                        <input type="text" name="taxi_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_taxi" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>BUS</label>
-                                        <input type="text" name="bus_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_bus" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>MINI BUS</label>
-                                        <input type="text" name="mini_bus_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_mini_bus" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>JEEP</label>
-                                        <input type="text" name="jeep_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_jeep" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>MULTI-CAB</label>
-                                        <input type="text" name="multi_cab_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_multi_cab" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <div class="row">
-                                    <div class="col-lg-9" style="padding: 0 0 0 12px">
-                                        <label>TRICYCLE</label>
-                                        <input type="text" name="tricycle_plate_no" id="" class="form-control mt-1">
-                                        <div class="reminder">
-                                            <span>Enter plate number</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label>#</label>
-                                        <input type="text" name="total_tricycle" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Other Specify</label>
-                                <input type="text" name="other_info_specify" id="" class="form-control mt-1">
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Government Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                <label>SSS ID</label>
-                                <div class="card-box mt-2">
-                                    <input type="file" name="sss_id" id="" class="form-control mt-1"
-                                        style="font-size: 14px">
-                                    <span>No file selected</span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Philhealth ID</label>
-                                <div class="card-box mt-2">
-                                    <input type="file" name="philhealth_id" id="" class="form-control mt-1"
-                                        style="font-size: 14px">
-                                    <span>No file selected</span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Pagibig ID</label>
-                                <div class="card-box mt-2">
-                                    <input type="file" name="pagibig_id" id="" class="form-control mt-1"
-                                        style="font-size: 14px">
-                                    <span>No file selected</span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Driver License ID</label>
-                                <div class="card-box mt-2">
-                                    <input type="file" name="driver_license_id" id="" class="form-control mt-1"
-                                        style="font-size: 14px">
-                                    <span>No file selected</span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Tin ID</label>
-                                <div class="card-box mt-2">
-                                    <input type="file" name="tin_id" id="" class="form-control mt-1"
-                                        style="font-size: 14px">
-                                    <span>No file selected</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Educational Background</h3>
-
-                        <div class="row">
-
-                            <div class="col-lg-4">
-                                <label class="mt-4">ELEMENTARY</label>
-                                <div class="d-flex gap-4">
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault5">
-                                            <label class="form-check-label" for="radioDefault5">
-                                                Graduated
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault6">
-                                            <label class="form-check-label" for="radioDefault6">
-                                                Undergraduate
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mt-2">
-                                        <input type="text" name="" id="" class="form-control"
-                                            placeholder="if not grad pls speficy">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="mt-4">SECONDARY</label>
-                                <div class="d-flex gap-4">
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault5">
-                                            <label class="form-check-label" for="radioDefault5">
-                                                Graduated
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault6">
-                                            <label class="form-check-label" for="radioDefault6">
-                                                Undergraduate
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mt-2">
-                                        <input type="text" name="" id="" class="form-control"
-                                            placeholder="if not grad pls speficy">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="mt-4">VOCATIONAL/TRADE COURSE</label>
-                                <div class="d-flex gap-4">
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault5">
-                                            <label class="form-check-label" for="radioDefault5">
-                                                Graduated
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault6">
-                                            <label class="form-check-label" for="radioDefault6">
-                                                Undergraduate
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mt-2">
-                                        <input type="text" name="" id="" class="form-control"
-                                            placeholder="if not grad pls speficy">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <label class="mt-4">COLLEGE</label>
-                                <div class="d-flex gap-4">
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault5">
-                                            <label class="form-check-label" for="radioDefault5">
-                                                Graduated
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="question4"
-                                                id="radioDefault6">
-                                            <label class="form-check-label" for="radioDefault6">
-                                                Undergraduate
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mt-2">
-                                        <input type="text" name="" id="" class="form-control"
-                                            placeholder="if not grad pls speficy">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-step">
-                        <h3 class="mt-3">Seminars/Training Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-6 mt-4">
-                                <label>Title of Seminar/Conference/Workshop/Short Courses Attended
-                                </label>
-                                <input type="text" name="title_seminar" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Inclusive Dates of Attendance (From / To)
-                                </label>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <input type="date" name="date_of_attendance" id="" class="form-control mt-1">
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <input type="date" name="date_of_attendance" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Conducted/Sponsored By (Write in full)
-                                </label>
-                                <input type="text" name="date_of_attendance" id="" class="form-control mt-1">
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Work/Employee History</h3>
-
-                        <div class="row">
-                            <div class="col-lg-4 mt-4">
-                                <label>Name of Office/Company/Cooperative
-                                </label>
-                                <input type="text" name="name_office" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Position Title
-                                </label>
-                                <input type="text" name="position_title" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Monthly Salary
-                                </label>
-                                <input type="number" name="monthly_salary" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Inclusive Dates (From/To)
-                                </label>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <input type="date" name="from" id="" class="form-control mt-1">
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <input type="date" name="from" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">TC Membership Information</h3>
-
-                        <div class="row">
-                            <div class="col-lg-6 mt-4">
-                                <label>Date of Membership with Transport Cooperative (TC)</label>
-                                <input type="date" name="date_of_membership" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Date of CETOS</label>
-                                <input type="date" name="date_of_cetos" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>Membership Category</label>
-                                <input type="text" name="membership_category" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>TC Member I.D. No.</label>
-                                <input type="text" name="tc_member_no" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-4 mt-4">
-                                <label>No. of Units Owned</label>
-                                <input type="text" name="no_units_owned" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Type/Mode of Unit</label>
-                                <input type="text" name="type_of_unit" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Paid-Up Capital</label>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <input type="date" name="as_of_date" id="" class="form-control mt-1">
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <input type="number" name="paid_price" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">TC Membership History</h3>
-
-                        <div class="row">
-                            <div class="col-lg-6 mt-4">
-                                <label>Inclusive Dates</label>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <input type="date" name="history_from" id="" class="form-control mt-1">
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <input type="date" name="history_to" id="" class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Membership Category</label>
-                                <input type="text" name="membership_category_history" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-12 mt-4">
-                                <label>TC Held Positions</label>
-
-                                <div class="row">
-                                    <div class="col-lg-6 mt-4">
-                                        <label>Inclusive Dates</label>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <input type="date" name="from_date" id="" class="form-control mt-1">
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <input type="date" name="to_date" id="" class="form-control mt-1">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 mt-4">
-                                        <label>Position Held</label>
-                                        <input type="text" name="position_held" id="" class="form-control mt-1">
-                                    </div>
-
-                                    <div class="col-lg-6 mt-4">
-                                        <label>Monthly Salary/Allowance</label>
-                                        <input type="number" name="monthly_salary_allowance" id=""
-                                            class="form-control mt-1">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="mt-5">Special Awards/Recognition</h3>
-
-                        <div class="row">
-                            <div class="col-lg-6 mt-4">
-                                <label>Title of Award/s</label>
-                                <input type="text" name="title_of_awards" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Awarded By</label>
-                                <input type="text" name="awarded_by" id="" class="form-control mt-1">
-                            </div>
-
-                            <div class="col-lg-6 mt-4">
-                                <label>Membership in Other Association/Organization/Cooperative (Write in full)</label>
-                                <input type="text" name="membership_other_association" id="" class="form-control mt-1">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="actions">
-                        <button type="button" class="btn-prev" onclick="prevStep()">
-                            <i class="fa fa-chevron-left"></i>
-                            <span>Previous</span>
-                        </button>
-                        <button type="button" class="btn-next" onclick="nextStep()">
-                            <span>Next page</span>
-                            <i class="fa fa-chevron-right"></i>
-                        </button>
-                        <button type="submit" class="btn-submit" style="display:none;">Submit</button>
-                    </div>
+        <nav>
+            <div class="nav-logo">
+                <img src="../images/logo2.png" alt="">
+                <div class="nav-text">
+                    <h2 class="fw-bold">Membership Application Form</h2>
+
+                    <p>Ready to become part of something special? We can't wait to welcome
+                        you.
                 </div>
             </div>
-        </form>
+        </nav>
+
+        <div class="form-container-body">
+            <form id="form" action="{{ route('applicationFormButton', $user->id) }}" method="post" enctype="multipart/form-data">
+                @csrf
+
+                <div class="form-box">
+                    <div class="stepper">
+                        <div class="step active">
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                                <div class="circle">1</div>
+                                <div class="label">First page</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                                <div class="circle">2</div>
+                                <div class="label">Second page</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="body-card">
+                            <div class="form-step active">
+
+                            <div class="header-card">
+                                <h2>Membership Application Form</h2>
+                            </div>
+
+                                {{-- PERSONAL INFORMATION --}}
+                                <h3 class="mt-3">Personal Information</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Firstname</label>
+                                            <input type="text" name="first_name" value="{{ $user->first_name ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Middle Initial</label>
+                                            <input type="text" name="middle_name" value="{{ $user->middle_name ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Lastname</label>
+                                            <input type="text" name="last_name" value="{{ $user->last_name ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Email</label>
+                                            <input type="email" name="email" value="{{ $user->email ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Date of Birth</label>
+                                            <input type="text" name="date_of_birth" value="{{ $user->date_of_birth ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Place of Birth</label>
+                                            <input type="text" name="place_of_birth" value="{{ $user->place_of_birth ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Contact No</label>
+                                            <input type="text" name="contact_no" value="{{ $user->contact_no ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Present Address</label>
+                                            <input type="text" name="present_address" value="{{ $user->present_address ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Permanent Address</label>
+                                            <input type="text" name="permanent_address" value="{{ $user->permanent_address ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- OTHER PERSONAL INFORMATION --}}
+                                <h3 class="mt-5">Other Personal Information</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Sex</label>
+                                            <input type="text" name="sex" value="{{ $user->sex ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Civil Status</label>
+                                            <input type="text" name="civil_status" value="{{ $user->civil_status ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Citizenship</label>
+                                            <input type="text" name="citizenship" value="{{ $user->citizenship ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Height</label>
+                                            <input type="text" name="height" value="{{ $user->height ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Weight</label>
+                                            <input type="text" name="weight" value="{{ $user->weight ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Blood Type</label>
+                                            <input type="text" name="blood_type" value="{{ $user->blood_type ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Name of TSC</label>
+                                            <input type="text" name="tsc_name" value="{{ $user->tsc_name ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Other Skills/Line of Expertise</label>
+                                            <input type="text" name="skills" value="{{ $user->skills ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- FAMILY BACKGROUND --}}
+                                <h3 class="mt-5">Family Background</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Spouse Name</label>
+                                            <input type="text" name="spouse_name" value="{{ $spouse->spouse_name ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Date of Birth</label>
+                                            <input type="date" name="spouse_date_birth" value="{{ $spouse->spouse_date_birth ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Place of Birth</label>
+                                            <input type="text" name="spouse_place_birth" value="{{ $spouse->spouse_place_birth ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Son</label>
+                                            <input type="number" name="number_son" value="{{ $user->number_son ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Daughter</label>
+                                            <input type="number" name="number_daughter" value="{{ $user->number_daughter ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Other Specification</label>
+                                            <input type="text" name="other_spec" value="{{ $user->other_spec ?? '' }}" class="form-control mt-1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- VEHICLES INFORMATION --}}
+                                <h3 class="mt-5">Vehicles Information</h3>
+                                <div class="form-body">
+                                    <div class="vehicles-grid mt-5" id="vehiclesGrid"></div>
+                                </div>
+
+                                {{-- GOVERNMENT INFORMATION --}}
+                                <h3 class="mt-5">Government Information</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mt-4">
+                                            <label>SSS ID</label>
+                                            <div class="card-box mt-2">
+                                                <input type="file" name="sss_id" class="form-control mt-1" style="font-size: 14px">
+                                                <span>No file selected</span>
+                                            </div>
+                                            @if(!empty($governmentIds->sss_id))
+                                                <small class="mt-1 d-block">
+                                                    Current: <a href="{{ asset('storage/' . $governmentIds->sss_id) }}" target="_blank">View file</a>
+                                                </small>
+                                            @endif
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Philhealth ID</label>
+                                            <div class="card-box mt-2">
+                                                <input type="file" name="philhealth_id" class="form-control mt-1" style="font-size: 14px">
+                                                <span>No file selected</span>
+                                            </div>
+                                            @if(!empty($governmentIds->philhealth_id))
+                                                <small class="mt-1 d-block">
+                                                    Current: <a href="{{ asset('storage/' . $governmentIds->philhealth_id) }}" target="_blank">View file</a>
+                                                </small>
+                                            @endif
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Pagibig ID</label>
+                                            <div class="card-box mt-2">
+                                                <input type="file" name="pagibig_id" class="form-control mt-1" style="font-size: 14px">
+                                                <span>No file selected</span>
+                                            </div>
+                                            @if(!empty($governmentIds->pagibig_id))
+                                                <small class="mt-1 d-block">
+                                                    Current: <a href="{{ asset('storage/' . $governmentIds->pagibig_id) }}" target="_blank">View file</a>
+                                                </small>
+                                            @endif
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Tin ID</label>
+                                            <div class="card-box mt-2">
+                                                <input type="file" name="tin_id" class="form-control mt-1" style="font-size: 14px">
+                                                <span>No file selected</span>
+                                            </div>
+                                            @if(!empty($governmentIds->tin_id))
+                                                <small class="mt-1 d-block">
+                                                    Current: <a href="{{ asset('storage/' . $governmentIds->tin_id) }}" target="_blank">View file</a>
+                                                </small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- EDUCATIONAL BACKGROUND --}}
+                                <h3 class="mt-5">Educational Background</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        @php
+                                            $eduLevels = ['Elementary', 'Secondary', 'Vocational/Trade Course', 'College'];
+                                            $eduData   = $education ?? collect();
+                                        @endphp
+
+                                        @foreach($eduLevels as $index => $level)
+                                        <div class="col-lg-4">
+                                            <label class="mt-4">{{ strtoupper($level) }}</label>
+                                            <input type="hidden" name="educational_level[]" value="{{ $level }}">
+                                            @php $eduRecord = $eduData->firstWhere('educational_level', $level); @endphp
+                                            <div class="d-flex gap-4">
+                                                <div class="mt-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="edu_status[{{ $index }}]"
+                                                            value="Graduated"
+                                                            {{ ($eduRecord->status ?? '') == 'Graduated' ? 'checked' : '' }}>
+                                                        <label class="form-check-label">Graduated</label>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="edu_status[{{ $index }}]"
+                                                            value="Undergraduate"
+                                                            {{ ($eduRecord->status ?? '') == 'Undergraduate' ? 'checked' : '' }}>
+                                                        <label class="form-check-label">Undergraduate</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-12 mt-2">
+                                                    <input type="text" name="edu_specify[{{ $index }}]"
+                                                        value="{{ $eduRecord->specify ?? '' }}"
+                                                        class="form-control" placeholder="if not grad pls specify">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-step">
+
+                                {{-- SEMINARS --}}
+                                <h3 class="mt-3">Seminars/Training Information</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Title of Seminar/Conference/Workshop/Short Courses Attended</label>
+                                            <input type="text" name="title_seminar"
+                                                value="{{ $seminar->title_seminar ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Inclusive Dates of Attendance (From / To)</label>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="attendance_from"
+                                                        value="{{ $seminar->attendance_from ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="attendance_to"
+                                                        value="{{ $seminar->attendance_to ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Conducted/Sponsored By (Write in full)</label>
+                                            <input type="text" name="sponsored_by"
+                                                value="{{ $seminar->sponsored_by ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- EMPLOYEE HISTORY --}}
+                                {{-- DB columns: name_office, position_title, monthly_salary, employee_inclusive_from, employee_inclusive_to --}}
+                                <h3 class="mt-5">Work/Employee History</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Name of Office/Company/Cooperative</label>
+                                            <input type="text" name="name_office"
+                                                value="{{ $employeeHistory->name_office ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Position Title</label>
+                                            <input type="text" name="position_title"
+                                                value="{{ $employeeHistory->position_title ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Monthly Salary</label>
+                                            <input type="number" name="monthly_salary"
+                                                value="{{ $employeeHistory->monthly_salary ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Inclusive Dates (From/To)</label>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="employee_inclusive_from"
+                                                        value="{{ $employeeHistory->employee_inclusive_from ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="employee_inclusive_to"
+                                                        value="{{ $employeeHistory->employee_inclusive_to ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- TC MEMBERSHIP INFORMATION --}}
+                                {{-- DB columns: date_of_membership, date_of_cetos, membership_category, tc_member_id_no, no_units_owned, type_mode_unit, paid_up_capital, paid_up_price --}}
+                                <h3 class="mt-5">TC Membership Information</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Date of Membership with Transport Cooperative (TC)</label>
+                                            <input type="date" name="date_of_membership"
+                                                value="{{ $membershipInfo->date_of_membership ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Date of CETOS</label>
+                                            <input type="date" name="date_of_cetos"
+                                                value="{{ $membershipInfo->date_of_cetos ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>Membership Category</label>
+                                            <input type="text" name="membership_category"
+                                                value="{{ $membershipInfo->membership_category ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>TC Member I.D. No.</label>
+                                            <input type="text" name="tc_member_id_no"
+                                                value="{{ $membershipInfo->tc_member_id_no ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-4 mt-4">
+                                            <label>No. of Units Owned</label>
+                                            <input type="text" name="no_units_owned"
+                                                value="{{ $membershipInfo->no_units_owned ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Type/Mode of Unit</label>
+                                            <input type="text" name="type_mode_unit"
+                                                value="{{ $membershipInfo->type_mode_unit ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Paid-Up Capital</label>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    {{-- paid_up_capital is string in DB, not a date --}}
+                                                    <input type="text" name="paid_up_capital"
+                                                        value="{{ $membershipInfo->paid_up_capital ?? '' }}"
+                                                        class="form-control mt-1" placeholder="Capital amount">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="number" name="paid_up_price"
+                                                        value="{{ $membershipInfo->paid_up_price ?? '' }}"
+                                                        class="form-control mt-1" placeholder="Price">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- TC MEMBERSHIP HISTORY --}}
+                                {{-- DB columns: members_inclusive_dates_from, members_inclusive_dates_to, membership_category, tc_held_inclusive_dates_from, tc_held_inclusive_dates_to, position_held, monthly_salary_allowance --}}
+                                <h3 class="mt-5">TC Membership History</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Inclusive Dates</label>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="members_inclusive_dates_from"
+                                                        value="{{ $membershipHistory->members_inclusive_dates_from ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <input type="date" name="members_inclusive_dates_to"
+                                                        value="{{ $membershipHistory->members_inclusive_dates_to ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Membership Category</label>
+                                            <input type="text" name="membership_category_history"
+                                                value="{{ $membershipHistory->membership_category ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-12 mt-4">
+                                            <label>TC Held Positions</label>
+                                            <div class="row">
+                                                <div class="col-lg-6 mt-4">
+                                                    <label>Inclusive Dates</label>
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <input type="date" name="tc_held_inclusive_dates_from"
+                                                                value="{{ $membershipHistory->tc_held_inclusive_dates_from ?? '' }}"
+                                                                class="form-control mt-1">
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <input type="date" name="tc_held_inclusive_dates_to"
+                                                                value="{{ $membershipHistory->tc_held_inclusive_dates_to ?? '' }}"
+                                                                class="form-control mt-1">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mt-4">
+                                                    <label>Position Held</label>
+                                                    <input type="text" name="position_held"
+                                                        value="{{ $membershipHistory->position_held ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                                <div class="col-lg-6 mt-4">
+                                                    <label>Monthly Salary/Allowance</label>
+                                                    <input type="number" name="monthly_salary_allowance"
+                                                        value="{{ $membershipHistory->monthly_salary_allowance ?? '' }}"
+                                                        class="form-control mt-1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- SPECIAL AWARDS --}}
+                                {{-- DB columns: title_awards, awarded_by, membership_other_association --}}
+                                <h3 class="mt-5">Special Awards/Recognition</h3>
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Title of Award/s</label>
+                                            <input type="text" name="title_awards"
+                                                value="{{ $specialAwards->title_awards ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Awarded By</label>
+                                            <input type="text" name="awarded_by"
+                                                value="{{ $specialAwards->awarded_by ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Membership in Other Association/Organization/Cooperative (Write in full)</label>
+                                            <input type="text" name="membership_other_association"
+                                                value="{{ $specialAwards->membership_other_association ?? '' }}"
+                                                class="form-control mt-1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- STEP 2 --}}
+                        {{-- <div class="body-card">
+                            
+                        </div> --}}
+
+                        <div class="actions">
+                            <button type="button" class="btn-prev" onclick="prevStep()">
+                                <i class="fa fa-chevron-left"></i>
+                                <span>Previous</span>
+                            </button>
+                            <button type="button" class="btn-next" onclick="nextStep()">
+                                <span>Next page</span>
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
+                            <button type="submit" class="btn-submit" style="display:none;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+
+    @php
+        $existingVehicles = [
+            'UV'        => $vehicles->get('UV', collect())->pluck('plate_no')->toArray(),
+            'TAXI'      => $vehicles->get('TAXI', collect())->pluck('plate_no')->toArray(),
+            'BUS'       => $vehicles->get('BUS', collect())->pluck('plate_no')->toArray(),
+            'MINI BUS'  => $vehicles->get('MINI BUS', collect())->pluck('plate_no')->toArray(),
+            'JEEP'      => $vehicles->get('JEEP', collect())->pluck('plate_no')->toArray(),
+            'MULTI-CAB' => $vehicles->get('MULTI-CAB', collect())->pluck('plate_no')->toArray(),
+            'TRICYCLE'  => $vehicles->get('TRICYCLE', collect())->pluck('plate_no')->toArray(),
+        ];
+    @endphp
+
+    <script>
+        const EXISTING_VEHICLES = @json($existingVehicles);
+    </script>
+
+    <script src="{{ asset('js_folder/vehi_application.js') }}"></script>
+
 
     <script>
         let currentStep = 0;
@@ -706,7 +554,6 @@
                 step.classList.toggle("active", index === currentStep);
                 stepper[index].classList.toggle("active", index === currentStep);
             });
-
             if (currentStep === steps.length - 1) {
                 nextBtn.style.display = "none";
                 submitBtn.style.display = "inline-block";
@@ -718,18 +565,13 @@
 
         function nextStep() {
             const currentFormStep = steps[currentStep];
-
-            // get all required inputs & selects in CURRENT step only
             const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
-
             for (let field of requiredFields) {
                 if (!field.checkValidity()) {
-                    field.reportValidity(); // show browser validation message
-                    return; // STOP going to next step
+                    field.reportValidity();
+                    return;
                 }
             }
-
-            // if all fields are valid → go next
             if (currentStep < steps.length - 1) {
                 currentStep++;
                 updateSteps();
@@ -744,5 +586,4 @@
         }
     </script>
 </body>
-
 </html>

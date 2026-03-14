@@ -10,6 +10,7 @@ class Membervehi_tbl extends Model
 
     protected $fillable = [
         "member_id",
+        "plate_no",
         "vehicle_type",
         "quantity"
     ];
