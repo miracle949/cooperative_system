@@ -312,7 +312,6 @@
                                 </div>
 
                                 {{-- EMPLOYEE HISTORY --}}
-                                {{-- DB columns: name_office, position_title, monthly_salary, employee_inclusive_from, employee_inclusive_to --}}
                                 <h3 class="mt-5">Work/Employee History</h3>
                                 <div class="form-body">
                                     <div class="row">
@@ -353,7 +352,6 @@
                                 </div>
 
                                 {{-- TC MEMBERSHIP INFORMATION --}}
-                                {{-- DB columns: date_of_membership, date_of_cetos, membership_category, tc_member_id_no, no_units_owned, type_mode_unit, paid_up_capital, paid_up_price --}}
                                 <h3 class="mt-5">TC Membership Information</h3>
                                 <div class="form-body">
                                     <div class="row">
@@ -397,7 +395,6 @@
                                             <label>Paid-Up Capital</label>
                                             <div class="row">
                                                 <div class="col-lg-6">
-                                                    {{-- paid_up_capital is string in DB, not a date --}}
                                                     <input type="text" name="paid_up_capital"
                                                         value="{{ $membershipInfo->paid_up_capital ?? '' }}"
                                                         class="form-control mt-1" placeholder="Capital amount">
@@ -413,7 +410,6 @@
                                 </div>
 
                                 {{-- TC MEMBERSHIP HISTORY --}}
-                                {{-- DB columns: members_inclusive_dates_from, members_inclusive_dates_to, membership_category, tc_held_inclusive_dates_from, tc_held_inclusive_dates_to, position_held, monthly_salary_allowance --}}
                                 <h3 class="mt-5">TC Membership History</h3>
                                 <div class="form-body">
                                     <div class="row">
@@ -474,7 +470,6 @@
                                 </div>
 
                                 {{-- SPECIAL AWARDS --}}
-                                {{-- DB columns: title_awards, awarded_by, membership_other_association --}}
                                 <h3 class="mt-5">Special Awards/Recognition</h3>
                                 <div class="form-body">
                                     <div class="row">

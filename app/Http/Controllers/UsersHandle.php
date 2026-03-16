@@ -127,7 +127,6 @@ class UsersHandle extends Controller
                 'edu_specify.*' => 'nullable|string|max:255',
             ]);
 
-            // ==================== 1. users_tbls ====================
             Users_tbl::where('id', $id)->update($request->only([
                 'first_name',
                 'middle_name',
@@ -151,7 +150,6 @@ class UsersHandle extends Controller
                 'other_spec',
             ]));
 
-            // ==================== 2. spouse_tbls ====================
             Spouse_tbl::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -161,7 +159,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 3. membergovern_ids_tbls ====================
             $governmentData = [];
             $fileFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
 
@@ -172,13 +169,11 @@ class UsersHandle extends Controller
                 }
             }
 
-            // Always updateOrCreate even if no new files — ensures record exists
             Membergovern_ids_tbl::updateOrCreate(
                 ['member_id' => $id],
-                $governmentData  // only updates fields that have new files
+                $governmentData 
             );
 
-            // ==================== 3b. membervehi_tbls ====================
             Membervehi_tbl::where('member_id', $id)->delete();
 
             $vehicleTypes = [
@@ -213,7 +208,6 @@ class UsersHandle extends Controller
                 }
             }
 
-            // ==================== 4. seminars_training_tbls ====================
             seminars_training_tbl::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -224,7 +218,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 5. employee_history_tbls ====================
             employee_history_tbl::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -236,7 +229,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 6. employee_membership_informations ====================
             employee_membership_information::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -251,7 +243,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 7. tc_membership_history_tbls ====================
             tc_membership_history_tbl::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -265,7 +256,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 8. special_awards_tbls ====================
             special_awards_tbl::updateOrCreate(
                 ['member_id' => $id],
                 [
@@ -275,7 +265,6 @@ class UsersHandle extends Controller
                 ]
             );
 
-            // ==================== 9. educational_tbls ====================
             $levels = ['Elementary', 'Secondary', 'Vocational/Trade Course', 'College'];
 
             foreach ($levels as $index => $level) {
@@ -288,7 +277,6 @@ class UsersHandle extends Controller
                 );
             }
 
-            // ==================== Reload all data for view ====================
             $user = Users_tbl::findOrFail($id);
             $vehicles = Membervehi_tbl::where('member_id', $id)->get()->groupBy('vehicle_type');
             $spouse = Spouse_tbl::where('member_id', $id)->first();
@@ -298,7 +286,7 @@ class UsersHandle extends Controller
             $membershipInfo = employee_membership_information::where('member_id', $id)->first();
             $membershipHistory = tc_membership_history_tbl::where('member_id', $id)->first();
             $specialAwards = special_awards_tbl::where('member_id', $id)->first();
-            $governmentIds = Membergovern_ids_tbl::where('member_id', $id)->first(); // ADD THIS
+            $governmentIds = Membergovern_ids_tbl::where('member_id', $id)->first();
 
             return view('members_components.application_form', compact(
                 'user',
@@ -310,7 +298,7 @@ class UsersHandle extends Controller
                 'membershipInfo',
                 'membershipHistory',
                 'specialAwards',
-                'governmentIds'  // ADD THIS
+                'governmentIds' 
             ));
 
         } catch (\Exception $e) {
@@ -507,7 +495,7 @@ class UsersHandle extends Controller
                 "spouse_place_birth" => $request->spouse_place_birth,
             ]);
 
-            // Government IDs - handle file uploads properly
+        
             $governmentIds = ['member_id' => $users->id];
             $fileFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
 

@@ -281,7 +281,6 @@
             </div>
         </main>
 
-        {{-- Success Modal — uses session values from controller --}}
         @if(session("ApplySuccess"))
             <div class="modal-overlay-success" id="success-modal">
                 <div class="success-modal-box">
@@ -336,10 +335,10 @@
             const termRaw = document.querySelector('[name="lending_type_term"]').value;
             const term    = parseInt(termRaw);
 
-            // Update type display
+
             document.getElementById('calc-type').textContent = type || '-';
 
-            // Reset if incomplete
+
             if (!type || !amount || !term || amount <= 0) {
                 document.getElementById('calc-monthly').textContent  = '₱-';
                 document.getElementById('calc-term-sub').textContent = 'Fill in amount & term to compute.';
@@ -352,7 +351,7 @@
             }
 
             const r       = RATES[type] ?? 0.015;
-            // Amortization formula: P * r * (1+r)^n / ((1+r)^n - 1)
+
             const monthly  = amount * r * Math.pow(1 + r, term) / (Math.pow(1 + r, term) - 1);
             const total    = monthly * term;
             const interest = total - amount;
@@ -365,7 +364,7 @@
             document.getElementById('calc-total').textContent    = '₱' + fmt(total);
             document.getElementById('calc-interest').textContent = '₱' + fmt(interest);
 
-            // Save calculated values to hidden inputs so they submit with the form
+
             document.getElementById('hidden-monthly').value  = monthly.toFixed(2);
             document.getElementById('hidden-total').value    = total.toFixed(2);
             document.getElementById('hidden-interest').value = interest.toFixed(2);

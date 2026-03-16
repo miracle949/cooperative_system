@@ -47,22 +47,38 @@ Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("Member
 
 Route::get("/loan_application", [UsersHandle::class, "LoanApplication"])->name("LoanApplication");
 
+// Savings page GET
+
 Route::get("/savings-page", [UsersHandle::class, "Savings"])->name("Savings");
+
+// Share Capital page GET
 
 Route::get('/share-capital', [UsersHandle::class, "ShareCapital"])->name("ShareCapital");
 
+// Loan Status page GET
+
 Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus");
+
+// Profile Member page GET
 
 Route::get("/profile-member", [UsersHandle::class, "ProfileMember"])->name("ProfileMember");
 
+// Driver Portal page GET
+
 Route::get("/driver-portal", [UserHandling::class, "DriverPortal"])->name("DriverPortal");
 
-// NEW - correct
+// Login Handle page POST
 Route::post("/login-handle", [UsersHandle::class, "login"])->name("UserLogin");
+
+// User Handle page GET
 
 Route::get("/user-handle", [UsersHandle::class, "UserHandle"])->name("UserHandle")->middleware("auth");
 
+// Registration page POST
+
 Route::post("/registration", [UsersHandle::class, "registration"])->name("registration");
+
+// Lending Program page GET
 
 Route::get("/login", [UsersHandle::class, "login"])->name("login");
 
@@ -79,9 +95,6 @@ Route::get("/nav-bar2", [UsersHandle::class, "Navbar2"])->name("Navbar2");
 
 Route::get("/logout", [UsersHandle::class, "logout"])->name("logout");
 
-// Loan application post
-
-// ✅ Add auth middleware
 Route::post("/lending-program", [lendingController::class, "lendingProgram"])
     ->name("lendingProgram")
     ->middleware("auth");
