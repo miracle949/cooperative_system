@@ -202,7 +202,7 @@
             <div class="card-calculate-parent">
                 <div class="card-calculate">
                     <div class="calculate-header">
-                        <h3>Lending Calculator</h3>
+                        <h3>Lending Invoice</h3>
                         <p>Auto Computes as you fill the form</p>
                     </div>
                     <div class="calculate-body">

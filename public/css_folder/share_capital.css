@@ -25,14 +25,27 @@ main .parent-share {
 
 main .parent-share .card {
     width: calc(100% / 3);
-    padding: 1.5rem;
+    padding: 1.8rem 1.5rem 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 0.9rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
     background-color: #ffffff;
     animation: slideIn 0.4s ease both;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+main .parent-share .card .card-accent{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #155DFC;
 }
 
 @keyframes slideIn {
@@ -48,17 +61,19 @@ main .parent-share .card {
 }
 
 main .parent-share .card h4 {
-    font-size: 17px;
+    font-size: 23px;
+    font-weight: 600;
 }
 
 main .parent-share .card span,
 main .parent-share .card article {
     font-size: 15.5px;
-}
-
-main .parent-share .card article{
     color: #808080;
 }
+
+/* main .parent-share .card article{
+    color: #808080;
+} */
 
 /* main .parent-share .card:nth-child(1) span{
     color: ;
@@ -110,19 +125,19 @@ main .parent-share .card:nth-child(4) .card-icon .fa {
     color: #BA5F00;
 }
 
-main .parent-share .card:nth-child(1) span {
+main .parent-share .card:nth-child(1) h4 {
     color: #155DFC;
 }
 
-main .parent-share .card:nth-child(2) span {
+main .parent-share .card:nth-child(2) h4 {
     color: #33CD71;
 }
 
-main .parent-share .card:nth-child(3) span {
+main .parent-share .card:nth-child(3) h4 {
     color: #9810FA;
 }
 
-main .parent-share .card:nth-child(4) span {
+main .parent-share .card:nth-child(4) h4 {
     color: #BA5F00;
 }
 

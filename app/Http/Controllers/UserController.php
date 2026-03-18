@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApprovedMail;
 
-class UserHandling extends Controller
+class UserController extends Controller
 {
     public $getUser;
 
@@ -138,5 +138,33 @@ class UserHandling extends Controller
     public function DriverPortal()
     {
         return view("members_components.driver_portal");
+    }
+
+    public function dashboard_admin(){
+        return view("admin_components.dashboard");
+    }
+
+    public function dashboard_members(){
+        return view("admin_components.members");
+    }
+
+    public function dashboard_savings(){
+        return view("admin_components.savings");
+    }
+
+    public function dashboard_lendings(){
+        return view("admin_components.lending");
+    }
+
+    public function dashboard_sharecapitals(){
+        return view("admin_components.sharecapitals");
+    }
+
+    public function dashboard_reports(){
+        return view("admin_components.reports");
+    }
+
+    public function dashboard_settings(){
+        return view("admin_components.settings");
     }
 }

@@ -38,13 +38,14 @@
 
             <div class="parent-share">
                 <div class="card">
+                    <div class="card-accent"></div>
                     <div class="card-icon">
                         <div class="fa fa-dollar-sign"></div>
                     </div>
 
-                    <h4>Current Balance</h4>
+                    <span>Current Balance</span>
 
-                    <span>P25,000</span>
+                    <h4>P25,000</h4>
 
                     <article>25 share</article>
                 </div>
@@ -54,9 +55,9 @@
                         <div class="fa fa-arrow-trend-up"></div>
                     </div>
 
-                    <h4>Dividend Rate</h4>
+                    <span>Dividend Rate</span>
 
-                    <span>8.5% p.a</span>
+                    <h4>8.5% p.a</h4>
 
                     <article>Annual return</article>
                 </div>
@@ -66,9 +67,9 @@
                         <div class="fa fa-chart-pie"></div>
                     </div>
 
-                    <h4>Last Dividend</h4>
+                    <span>Last Dividend</span>
 
-                    <span>P2,125</span>
+                    <h4>P2,125</h4>
 
                     <article>Dec 2024</article>
                 </div>
@@ -78,9 +79,9 @@
                         <div class="fa fa-calendar-days"></div>
                     </div>
 
-                    <h4>Next Dividend</h4>
+                    <span>Next Dividend</span>
 
-                    <span>June 15, 2025</span>
+                    <h4>June 15, 2025</h4>
 
                     <article>Expected date</article>
                 </div>

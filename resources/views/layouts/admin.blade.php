@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'CoopAdmin - Cooperative Savings & Loan Management')</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        success: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        },
+                        warning: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        danger: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            color: #4b5563;
+            border-radius: 1rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover {
+            background-color: #e5e7eb;
+            color: #111827;
+        }
+
+        .sidebar-link.active {
+            background-color: #e5e7eb;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .sidebar-link.active i {
+            color: #2563eb;
+        }
+
+        .sidebar-link i {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: #6b7280;
+        }
+
+        .sidebar-link.active:hover {
+            background-color: #e5e7eb;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-outline {
+            border: 1px solid #d1d5db;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            background-color: #f9fafb;
+        }
+
+        .input,
+        .select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input:focus,
+        .select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .badge {
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-gray {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            font-size: 0.875rem;
+            text-align: left;
+        }
+
+        .table thead {
+            background-color: #f9fafb;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .table th {
+            padding: 0.75rem 1rem;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 32rem;
+            width: 100%;
+            margin: 0 1rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            padding: 0.25rem 0;
+            z-index: 50;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f3f4f6;
+            padding: 1.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 50;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-60 bg-gray-50 border-r border-gray-200 fixed h-full z-40">
+            <div class="flex flex-col h-full">
+                <!-- Logo -->
+                <div class="p-5 border-b border-gray-200">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center shadow-sm">
+                            <i data-lucide="building-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-base font-bold text-gray-900">CoopAdmin</h1>
+                            <p class="text-xs text-gray-500">Savings & Loans</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-1 p-3 space-y-1">
+                    <a href="{{ route('dashboard') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{{ route('lendings') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
+                        <i data-lucide="banknote" class="w-5 h-5"></i>
+                        <span>Loan Processing</span>
+                    </a>
+                    <a href="{{ route('members') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('members') ? 'active' : '' }}">
+                        <i data-lucide="users" class="w-5 h-5"></i>
+                        <span>Members</span>
+                    </a>
+                    <a href="{{ route('savings') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('savings') ? 'active' : '' }}">
+                        <i data-lucide="piggy-bank" class="w-5 h-5"></i>
+                        <span>Savings</span>
+                    </a>
+                    <a href="{{ route('sharecapitals') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('sharecapitals') ? 'active' : '' }}">
+                        <i data-lucide="coins" class="w-5 h-5"></i>
+                        <span>Share Capitals</span>
+                    </a>
+                    <a href="{{ route('reports') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('reports') ? 'active' : '' }}">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="{{ route('settings') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('settings') ? 'active' : '' }}">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+
+                <!-- User Info -->
+                <div class="p-3 border-t border-gray-200">
+                    <a href="{{ route('settings') }}"
+                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+                        <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center shadow-sm">
+                            <span class="text-primary-600 font-semibold text-sm">JD</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900 truncate">John Doe</p>
+                            <p class="text-xs text-gray-500 truncate">Administrator</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-60">
+            <!-- Top Navigation -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <!-- Search -->
+                    <div class="flex-1 max-w-md">
+                        <div class="relative">
+                            <i data-lucide="search"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input type="text" placeholder="Search members, loans, transactions..."
+                                class="input pl-10 bg-gray-50">
+                        </div>
+                    </div>
+
+                    <!-- Right Side -->
+                    <div class="flex items-center gap-4">
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <i data-lucide="bell" class="w-5 h-5 text-gray-600"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-danger-500 rounded-full"></span>
+                        </button>
+
+                        <!-- Settings Link -->
+                        <a href="{{ route('settings') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            title="Settings">
+                            <i data-lucide="settings" class="w-5 h-5 text-gray-600"></i>
+                        </a>
+
+                        <!-- User Profile -->
+                        <a href="{{ route('settings') }}"
+                            class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                                <span class="text-primary-600 text-sm font-semibold">JD</span>
+                            </div>
+                            <div class="hidden md:block text-left">
+                                <p class="text-sm font-medium text-gray-900">John Doe</p>
+                                <p class="text-xs text-gray-500">Admin</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="p-6">
+                @yield('content')
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" id="toast-icon">
+            <i data-lucide="check-circle" class="w-5 h-5 text-success-500"></i>
+        </div>
+        <div>
+            <p class="font-medium text-gray-900" id="toast-title">Success</p>
+            <p class="text-sm text-gray-500" id="toast-message">Operation completed successfully</p>
+        </div>
+        <button onclick="hideToast()" class="ml-4">
+            <i data-lucide="x" class="w-4 h-4 text-gray-400"></i>
+        </button>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Toast functions
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastTitle = document.getElementById('toast-title');
+            const toastMessage = document.getElementById('toast-message');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+
+            const icons = {
+                success: 'check-circle',
+                error: 'x-circle',
+                warning: 'alert-triangle',
+                info: 'info'
+            };
+
+            toastIcon.innerHTML = `<i data-lucide="${icons[type]}" class="w-5 h-5 text-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'warning'}-500"></i>`;
+            lucide.createIcons();
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 5000);
+        }
+
+        function hideToast() {
+            document.getElementById('toast').classList.add('hidden');
+        }
+
+        // Dropdown toggle
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+
+        // Modal functions
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Tab functions
+        function switchTab(tabId, activeTab) {
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-primary-600', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            activeTab.classList.remove('bg-gray-100', 'text-gray-600');
+            activeTab.classList.add('bg-primary-600', 'text-white');
+        }
+    </script>
+
+    @yield('scripts')
+</body>
+
+</html>

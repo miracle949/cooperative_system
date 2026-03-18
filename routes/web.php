@@ -1,43 +1,43 @@
 <?php
 
 use App\Http\Controllers\lendingController;
-use App\Http\Controllers\UserHandling;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersHandle;
 use Illuminate\Support\Facades\Route;
 
-Route::get("/", [UserHandling::class, "UserDirection"]);
+Route::get("/", [UserController::class, "UserDirection"]);
 
-Route::get("/landing-page", [UserHandling::class, "Landingpage"])->name("Landingpage");
+Route::get("/landing-page", [UserController::class, "Landingpage"])->name("Landingpage");
 
 // Login page GET
 
-Route::get("/login-page", [UserHandling::class, "LoginPage"])->name("LoginPage");
+Route::get("/login-page", [UserController::class, "LoginPage"])->name("LoginPage");
 
 // Register page GET
 
-Route::get("/register-page", [UserHandling::class, "RegisterPage"])->name("RegisterPage");
+Route::get("/register-page", [UserController::class, "RegisterPage"])->name("RegisterPage");
 
 // About us page GET
 
-Route::get("/about-us", [UserHandling::class, "AboutUs"])->name("AboutUs");
+Route::get("/about-us", [UserController::class, "AboutUs"])->name("AboutUs");
 
 // Services page GET
 
-Route::get("/services", [UserHandling::class, "ServicesPage"])->name("ServicesPage");
+Route::get("/services", [UserController::class, "ServicesPage"])->name("ServicesPage");
 
 // // Blogs page GET
 
-Route::get("/blogs", [UserHandling::class, "BlogsPage"])->name("BlogsPage");
+Route::get("/blogs", [UserController::class, "BlogsPage"])->name("BlogsPage");
 
 // Contact page GET
 
-Route::get("/contact", [UserHandling::class, "ContactPage"])->name("ContactPage");
+Route::get("/contact", [UserController::class, "ContactPage"])->name("ContactPage");
 
-Route::get("/navbar", [UserHandling::class, "Navbar"]);
+Route::get("/navbar", [UserController::class, "Navbar"]);
 
 // Static page GET
 
-Route::get("/static-page", [UserHandling::class, "StaticPage"])->name("StaticPage");
+Route::get("/static-page", [UserController::class, "StaticPage"])->name("StaticPage");
 
 // Member Portal page GET
 
@@ -65,7 +65,7 @@ Route::get("/profile-member", [UsersHandle::class, "ProfileMember"])->name("Prof
 
 // Driver Portal page GET
 
-Route::get("/driver-portal", [UserHandling::class, "DriverPortal"])->name("DriverPortal");
+Route::get("/driver-portal", [UserController::class, "DriverPortal"])->name("DriverPortal");
 
 // Login Handle page POST
 Route::post("/login-handle", [UsersHandle::class, "login"])->name("UserLogin");
@@ -82,12 +82,10 @@ Route::post("/registration", [UsersHandle::class, "registration"])->name("regist
 
 Route::get("/login", [UsersHandle::class, "login"])->name("login");
 
-// Route::post("/login-page", [UsersHandle::class, "login"])->name("UserLogin");
-
-Route::get('/approve-user/{id}', [UserHandling::class, 'approveUser'])->name('approve.user');
+Route::get('/approve-user/{id}', [UserController::class, 'approveUser'])->name('approve.user');
 
 // Application form - only ONE GET, ONE POST
-Route::get('/application-form/{id}', [UserHandling::class, 'showForm'])->name('applicationForm');
+Route::get('/application-form/{id}', [UserController::class, 'showForm'])->name('applicationForm');
 
 Route::post('/application-form/{id}', [UsersHandle::class, 'applicationFormButton'])->name('applicationFormButton');
 
@@ -99,4 +97,19 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
     ->name("lendingProgram")
     ->middleware("auth");
 
-// Route::get("/lending-program", [lendingController::class, "lendingProgram"])->name("lendingProgram");
+
+// Jhun Code
+
+Route::get("/dashboard-admin", [UserController::class, "dashboard_admin"])->name("dashboard");
+
+Route::get("/dashboard-members", [UserController::class, "dashboard_members"])->name("members");
+
+Route::get("/dashboard-savings", [UserController::class, "dashboard_savings"])->name("savings");
+
+Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
+
+Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
+
+Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
+
+Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");

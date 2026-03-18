@@ -367,7 +367,7 @@
                                                 value="{{ $membershipInfo->date_of_cetos ?? '' }}"
                                                 class="form-control mt-1">
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-4 m~t-4">
                                             <label>Membership Category</label>
                                             <input type="text" name="membership_category"
                                                 value="{{ $membershipInfo->membership_category ?? '' }}"
