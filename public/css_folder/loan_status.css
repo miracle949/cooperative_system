@@ -23,9 +23,9 @@
     /* background-color: white; */
 }
 
-.container-fluid main .card-box-parent .card-box:nth-child(1) {
+/* .container-fluid main .card-box-parent .card-box:nth-child(1) {
     border: 2px solid var(--green);
-}
+} */
 
 .container-fluid main .card-box-parent .card-box h4 {
     font-size: 17px;

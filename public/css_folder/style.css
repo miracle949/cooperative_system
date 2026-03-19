@@ -194,7 +194,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
     clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
     z-index: 2;
 }

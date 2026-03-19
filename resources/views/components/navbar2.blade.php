@@ -26,7 +26,7 @@
             </li>
 
             <li class="tw:list-none">
-                <a href="{{ route("Savings") }}"
+                <a href="{{ route("savings.index") }}"
                     class="tw:no-underline tw:text-[15.5px] text-decoration-none">Savings</a>
             </li>
 

@@ -63,7 +63,7 @@
         </li>
 
         <li>
-          <a href="{{ route("Savings") }}">Savings</a>
+          <a href="{{ route("savings.index") }}">Savings</a>
         </li>
 
         <li>

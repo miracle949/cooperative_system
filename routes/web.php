@@ -3,6 +3,7 @@
 use App\Http\Controllers\lendingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersHandle;
+use App\Http\Controllers\SavingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [UserController::class, "UserDirection"]);
@@ -49,7 +50,14 @@ Route::get("/loan_application", [UsersHandle::class, "LoanApplication"])->name("
 
 // Savings page GET
 
-Route::get("/savings-page", [UsersHandle::class, "Savings"])->name("Savings");
+// Route::get("/savings-page", [UsersHandle::class, "Savings"])->name("Savings");
+
+// NEW — savings routes
+Route::get("/savings-page", [SavingsController::class, "index"])->name("savings.index")->middleware("auth");
+
+Route::post("/savings/deposit", [SavingsController::class, "deposit"])->name("savings.deposit")->middleware("auth");
+
+Route::post("/savings/withdraw", [SavingsController::class, "withdraw"])->name("savings.withdraw")->middleware("auth");
 
 // Share Capital page GET
 
