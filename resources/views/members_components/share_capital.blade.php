@@ -32,9 +32,26 @@
         </div> --}}
 
         <main>
-            <h3>Share Capital</h3>
+            {{-- <h3>Share Capital</h3>
 
-            <p>Manage your share capital contributions and track your dividends</p>
+            <p>Manage your share capital contributions and track your dividends</p> --}}
+
+            <div class="parent-main">
+                <div class="main-intro">
+                    <p class="">Member Account</p>
+
+                    <h3 class="">Share Capital</h3>
+
+                    <span>Manage your share capital contributions and track your dividends</span>
+                </div>
+
+                <div class="download">
+                    <button>
+                        <i class="fa fa-download"></i>
+                        <span>Download Statement</span>
+                    </button>
+                </div>
+            </div>
 
             <div class="parent-share">
                 <div class="card">
@@ -51,6 +68,7 @@
                 </div>
 
                 <div class="card">
+                    <div class="card-accent"></div>
                     <div class="card-icon">
                         <div class="fa fa-arrow-trend-up"></div>
                     </div>
@@ -63,6 +81,7 @@
                 </div>
 
                 <div class="card">
+                    <div class="card-accent"></div>
                     <div class="card-icon">
                         <div class="fa fa-chart-pie"></div>
                     </div>
@@ -75,6 +94,7 @@
                 </div>
 
                 <div class="card">
+                    <div class="card-accent"></div>
                     <div class="card-icon">
                         <div class="fa fa-calendar-days"></div>
                     </div>
@@ -85,13 +105,6 @@
 
                     <article>Expected date</article>
                 </div>
-            </div>
-
-            <div class="download">
-                <button>
-                    <i class="fa fa-download"></i>
-                    <span>Download Statement</span>
-                </button>
             </div>
 
             <div class="contribution-parent">

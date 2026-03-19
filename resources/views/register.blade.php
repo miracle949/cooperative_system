@@ -22,6 +22,18 @@
 
     <div class="container-fluid">
 
+        {{-- <div class="logo-image">
+            <div class="tw:w-[210px] tw:h-[160px] tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
+                style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
+                <img src="" alt="" class="tw:w-[210px] tw:h-[160px]" id="inputImage">
+                <p class="fw-semibold" id="text">2 x 2</p>
+
+                <p class="tw:text-[#808080]" id="text2">Click here!</p>
+
+                <input type="file" name="profile_picture" id="inputBox" class="form-control">
+            </div>
+        </div> --}}
+
         <div class="nav-logo">
             <div class="logo">
 
@@ -34,18 +46,6 @@
                         you.</p>
                 </div>
             </div>
-
-            {{-- <div class="logo-image">
-                <div class="tw:w-[210px] tw:h-[160px] tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
-                    style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
-                    <img src="" alt="" class="tw:w-[210px] tw:h-[160px]" id="inputImage">
-                    <p class="fw-semibold" id="text">2 x 2</p>
-
-                    <p class="tw:text-[#808080]" id="text2">Click here!</p>
-
-                    <input type="file" name="profile_picture" id="inputBox" class="form-control">
-                </div>
-            </div> --}}
         </div>
 
         <form action="{{ route("registration") }}" id="form" method="post" class="needs-validation" novalidate
@@ -291,11 +291,11 @@
 
     <script>
         window.addEventListener('load', function () {
-        const cardBox = document.querySelector('.card-box');
-        cardBox.style.animation = 'none';
-        cardBox.offsetHeight; // force reflow
-        cardBox.style.animation = '';
-    });
+            const cardBox = document.querySelector('.card-box');
+            cardBox.style.animation = 'none';
+            cardBox.offsetHeight; // force reflow
+            cardBox.style.animation = '';
+        });
     </script>
 
     <script>

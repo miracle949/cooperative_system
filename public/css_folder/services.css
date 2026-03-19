@@ -1,5 +1,6 @@
 main {
-    background-color: #f5f5f8;
+    /* background-color: #f5f5f8; */
+    background-color: #ffffff;
     /* background-color: #ECF6FF; */
     padding: 2.5rem 0rem 0rem 0rem;
 }
@@ -16,10 +17,13 @@ main .services-parent {
 main .services-parent .card {
     width: calc(100% / 3.5);
     padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    border-radius: 15px;
 }
 
-main .services-parent .card:hover{
-    border: 1px solid #1559F7;
+main .services-parent .card:hover {
+    /* border: 1px solid #1559F7; */
     /* transform: scale(1.1); */
     transition: all 0.3s ease-in;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -28,7 +32,8 @@ main .services-parent .card:hover{
 main .services-parent .card .card-icon {
     width: 50px;
     height: 50px;
-    background-color: #DBEAFE;
+    /* background-color: #DBEAFE; */
+    background-color: var(--green2);
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -37,7 +42,8 @@ main .services-parent .card .card-icon {
 
 main .services-parent .card .card-icon .fa {
     font-size: 19px;
-    color: #155DFC;
+    /* color: #155DFC; */
+    color: #ffffff;
 }
 
 main .services-parent .card h3 {
@@ -61,17 +67,19 @@ main .services-parent .card ul li {
     line-height: 40px;
 }
 
-main .services-parent .card ul li .fa{
-    color: #10AC4A;
+main .services-parent .card ul li .fa {
+    /* color: #10AC4A; */
+    color: var(--green);
 }
 
-main .services-parent .card hr{
+main .services-parent .card hr {
     color: rgba(0, 0, 0, 0.4);
 }
 
-main .services-parent .card summary{
+main .services-parent .card summary {
     font-size: 14.5px;
-    color: #1559F7;
+    /* color: #1559F7; */
+    color: #4D8275;
     list-style: none;
 }
 
@@ -86,9 +94,10 @@ main .choosing-our {
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-main .choosing-our ul .check-choose li .fa{
-    color: #10AC4A;
+main .choosing-our ul .check-choose li .fa {
+    color: var(--green);
 }
+
 
 main .choosing-our .choosing-text h3 {
     font-size: 23px;
@@ -100,6 +109,7 @@ main .choosing-our .choosing-text p {
     font-size: 15.5px;
     line-height: 30px;
     margin-top: 1rem;
+    /* color: var(--muted); */
 }
 
 main .choosing-our .choosing-text ul {
@@ -171,7 +181,8 @@ main .how-access .step-by-step .step-card .step-icon {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #155DFC;
+    /* background-color: #155DFC; */
+    background-color: var(--green);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -201,7 +212,8 @@ main .ready-started {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #1559F7;
+    /* background-color: #1559F7; */
+    background-color: var(--green);
     color: #ffffff;
 }
 
@@ -225,11 +237,13 @@ main .ready-started .ready-started-acc {
 main .ready-started .ready-started-acc a {
     text-decoration: none;
     font-size: 15.5px;
+    font-weight: 600;
 }
 
 main .ready-started .ready-started-acc a:nth-child(1) {
     background-color: #ffffff;
-    color: #155DFC;
+    /* color: #155DFC; */
+    color: var(--green);
     padding: 10px 30px;
     border-radius: 7px;
 }

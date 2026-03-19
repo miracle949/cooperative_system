@@ -55,49 +55,79 @@
             </a>
         </div> --}}
 
-        <div class="form-parent">
-            <div class="logo tw:flex tw:justify-center tw:items-center">
-                <a href="{{ route("Landingpage") }}"><img src="images/logo2.png" alt=""></a>
-            </div>
+        <div class="form-image">
+            <span>Secure Member Portal</span>
 
-            <h2 class="fw-semibold mt-4 text-center">Login your account</h2>
+            <h3>Your gateway to <b>smarter</b> management starts here.</h3>
 
-            <p class="mt-3 tw:w-[400px] text-center">Welcome back! Please log in to securely manage your account.
-            </p>
+            <div class="line"></div>
 
-            <form action="{{ route("UserLogin") }}" method="post">
-                @csrf
-                <div class="form-sub-parent">
-                    <div class="mt-3 form-input">
-                        <label>Username or Email</label>
-                        <input type="text" name="email" placeholder="Enter your username or email"
-                            class="form-control mt-1" required>
-                    </div>
+            <p>Access your account to manage records, track progress, and collaborate with your team — all in one
+                secure, centralized platform built for excellence.</p>
 
-                    <div class="mt-3 form-input">
-                        <label>Password</label>
-                        <input type="password" name="password" placeholder="Enter your password"
-                            class="form-control mt-1" required>
-                    </div>
-
-                    <div class="mt-4 tw:flex tw:justify-end form-forgot">
-                        <a href="#" class="text-black">Forgot Password</a>
-                    </div>
-
-                    <div class="mt-4 form-button">
-                        <button class="tw:w-full tw:py-1.5 tw:bg-black text-white fw-bold tw:hover:bg-gray-700"
-                            id="login" type="submit">
-                            <div class="loading"></div>Login
-                        </button>
-                    </div>
-
-                    <div class="text-center form-change" style="margin-top: 1.8rem">
-                        <label>Don't have an account? <a href="{{ route("RegisterPage") }}"
-                                class="text-black">Register</a></label>
-                    </div>
+            <div class="total-members">
+                <div class="members">
+                    <h4>12k+</h4>
+                    <span>Members</span>
                 </div>
-            </form>
+
+                <div class="members">
+                    <h4>99.9%</h4>
+                    <span>Upptime</span>
+                </div>
+
+                <div class="members">
+                    <h4>256-bit</h4>
+                    <span>Encryption</span>
+                </div>
+            </div>
         </div>
+        <div class="form-box-parent">
+            <div class="form-parent">
+                <div class="logo tw:flex tw:justify-center tw:items-center">
+                    <a href="{{ route("Landingpage") }}"><img src="images/logo2.png" alt=""></a>
+                </div>
+
+                <h2 class="fw-semibold mt-4 text-center">Login your account</h2>
+
+                <p class="mt-3 text-center">Welcome back! Please log in to securely manage your account.
+                </p>
+
+                <form action="{{ route("UserLogin") }}" method="post">
+                    @csrf
+                    <div class="form-sub-parent">
+                        <div class="mt-4 form-input">
+                            <label>Username or Email</label>
+                            <input type="text" name="email" placeholder="Enter your username or email"
+                                class="form-control mt-2" required>
+                        </div>
+
+                        <div class="mt-3 form-input">
+                            <label>Password</label>
+                            <input type="password" name="password" placeholder="Enter your password"
+                                class="form-control mt-2" required>
+                        </div>
+
+                        <div class="mt-4 tw:flex tw:justify-end form-forgot">
+                            <a href="#" class="text-black">Forgot Password</a>
+                        </div>
+
+                        <div class="mt-4 form-button">
+                            <button class="tw:w-full tw:py-1.5 tw:bg-black text-white fw-bold tw:hover:bg-gray-700"
+                                id="login" type="submit">
+                                <div class="loading"></div>Login
+                            </button>
+                        </div>
+
+                        <div class="text-center form-change" style="margin-top: 1.8rem">
+                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}"
+                                    class="text-black">Register</a></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
 
         {{-- <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">
             <div class="overlay"></div>
@@ -105,7 +135,8 @@
         </div> --}}
     </div>
 
-    {{-- <script>
+    {{--
+    <script>
         const loading = document.querySelector(".loading");
         const login = document.getElementById("login");
 
@@ -123,7 +154,7 @@
 
         });
 
-    </script>  --}}
+    </script> --}}
 
     {{--
     <script src="style.js"></script> --}}

@@ -33,11 +33,11 @@
 
         <main>
             <div class="row">
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" data-aos-offset="0"
+                <div
                     class="col-lg-6 col-md-12">
                     <h3 class="text-uppercase fw-semibold mt-3">About Our Cooperative</h3>
 
-                    <h2 class="fw-bold mt-3 mw-100">Built on Trust, Grown by Community</h2>
+                    <h2 class="fw-bold mt-2 mw-100">Built on <b>Trust</b>, Grown by <b>Community</b></h2>
 
                     <p class="mt-3 mw-100">For over 15 years, we have been building a community-driven financial institution
                         that truly puts members first. Our cooperative is founded on the principles of mutual support,
@@ -50,12 +50,12 @@
 
                     <div class="mt-4">
                         <a href="#"
-                            class="text-decoration-none btn btn-dark py-2 px-5 text-uppercase fw-semibold tw:hover:bg-gray-700"
-                            style="font-size: 14.5px">Learn More</a>
+                            class="text-decoration-none btn text-uppercase fw-semibold tw:hover:bg-gray-700"
+                            style="font-size: 14.5px">Learn More <i class="fa fa-arrow-right"></i></a>
                     </div>
                 </div>
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" data-aos-offset="0"
+                <div
                     class="col-lg-6 col-md-12 tw:flex tw:justify-center tw:items-center about-image">
                     <img src="images/about_picture2.jpg" class="mw-100 object-fit-cover w-md-100" alt=""
                         style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
@@ -65,12 +65,12 @@
 
         <section class="mt-3" id="section1">
 
-            <div data-aos="fade-up" data-aos-duration="1000" class="tw:flex tw:justify-center tw:items-center gap-5 parent-vision-mission">
+            <div class="tw:flex tw:justify-center tw:items-center gap-5 parent-vision-mission">
                 <div class="card tw:p-7 md:w-100"
-                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #DBEAFE;">
+                    style="border-radius: 10px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8E5;">
 
-                    <div class="p-3 tw:bg-[#155DFC] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                        style="border-radius: 10px">
+                    <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                        style="border-radius: 10px; background-color: var(--green2);">
                         <i class="fa fa-bullseye tw:text-white" style="font-size: 20px"></i>
                     </div>
 
@@ -83,11 +83,11 @@
 
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1500" class="card tw:p-7 mw-100 hw-100"
-                    style="border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; background-color: #F0FDF4;">
+                <div class="card tw:p-7 mw-100 hw-100"
+                    style="border-radius: 10px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8E5;">
 
-                    <div class="p-3 tw:bg-[#00A63E] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                        style="border-radius: 10px">
+                    <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                        style="border-radius: 10px; background-color: var(--green2);">
                         <i class="fa fa-eye tw:text-white" style="font-size: 20px"></i>
                     </div>
 
@@ -114,9 +114,9 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 mt-5">
                     <div data-aos="fade-up" data-aos-duration="1000" class="card tw:p-7 rounded-lg">
-                        <div class="p-3 tw:bg-[#DBEAFE] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                            style="border-radius: 10px">
-                            <i class="fa fa-users tw:text-[#155DFC]" style="font-size: 20px"></i>
+                        <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                            style="border-radius: 10px; background-color: var(--green)">
+                            <i class="fa fa-users" style="font-size: 20px; color: #ffffff;"></i>
                         </div>
 
                         <h4 class="mt-4">Community First</h4>
@@ -129,9 +129,9 @@
 
                 <div class="col-lg-6 col-md-12 mt-5">
                     <div data-aos="fade-up" data-aos-duration="1000" class="card tw:p-7 rounded-lg">
-                        <div class="p-3 tw:bg-[#DBEAFE] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                            style="border-radius: 10px">
-                            <i class="fa fa-medal tw:text-[#155DFC]" style="font-size: 20px"></i>
+                        <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                            style="border-radius: 10px; background-color: var(--green)">
+                            <i class="fa fa-medal" style="font-size: 20px; color: #ffffff;"></i>
                         </div>
 
                         <h4 class="mt-4">Integrity First</h4>
@@ -146,9 +146,9 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 mt-4">
                     <div data-aos="fade-up" data-aos-duration="1000" class="card tw:p-7 rounded-lg">
-                        <div class="p-3 tw:bg-[#DBEAFE] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                            style="border-radius: 10px">
-                            <i class="fa fa-bullseye tw:text-[#155DFC]" style="font-size: 20px"></i>
+                        <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                            style="border-radius: 10px; background-color: var(--green)">
+                            <i class="fa fa-bullseye" style="font-size: 20px; color: #ffffff;"></i>
                         </div>
 
                         <h4 class="mt-4">Excellence</h4>
@@ -160,9 +160,9 @@
 
                 <div class="col-lg-6 col-md-12 mt-4">
                     <div data-aos="fade-up" data-aos-duration="1000" class="card tw:p-7 rounded-lg">
-                        <div class="p-3 tw:bg-[#DBEAFE] tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                            style="border-radius: 10px">
-                            <i class="fa fa-eye tw:text-[#155DFC]" style="font-size: 20px"></i>
+                        <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
+                            style="border-radius: 10px; background-color: var(--green)">
+                            <i class="fa fa-eye" style="font-size: 20px; color: #ffffff;"></i>
                         </div>
 
                         <h4 class="mt-4">Inclusivity</h4>

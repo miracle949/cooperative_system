@@ -28,6 +28,7 @@
         @include("components.navbar2")
         @include("components.offcanvas")
 
+
         <main>
             @if ($first_name)
 
@@ -185,7 +186,24 @@
                 </div>
             </div>
         </section>
+
+        @if (session("message"))
+            <div class="message">
+                <i class="fa fa-check-circle"></i>
+                <div>
+                    <p>{{ session("message") }}</p>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    document.querySelector(".message").style.display = "none";
+                }, 2000);
+            </script>
+
+        @endif
     </div>
+
 
 
     {{-- AOS animation link js --}}
@@ -200,8 +218,17 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script> --}}
 
+    {{--
     <script>
         AOS.init();
+    </script> --}}
+
+    <script>
+        // const message = document.querySelector(".message");
+
+        // setTimeout(() => {
+        //     document.querySelector(".message").style.display = "none";
+        // }, 2000);
     </script>
 </body>
 

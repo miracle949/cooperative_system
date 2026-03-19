@@ -35,28 +35,127 @@
 
 div.container-fluid {
     /* background-color: #f5f5f8; */
-    background-color: #F7F9F8;
+    /* background-color: #F7F9F8; */
+    /* background-color: #F9FAFB; */
+    /* background-color: #F7F9F8; */
+    background-color: #ffffff;
     /* background-color: #FFFAF0; */
     /* background-color: #F8F8F4; */
     position: relative;
     /* padding: 0 0; */
     height: 100vh;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 2rem; */
+    padding: 0 0;
+    /* height: 100vh; */
+    overflow: hidden;
+}
+
+.container-fluid .form-image{
+    width: 100%;
+    height: 100%;
+    max-width: 50%;
+    background-image: linear-gradient(160deg, rgba(26, 77, 58, 0.82) 0%, rgba(10, 30, 20, 0.70) 100%), url("../images/loginbg.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    flex-direction: column;
+    padding-top: 5rem;
+    /* gap: 1.5rem; */
+}
+
+.container-fluid .form-image .line{
+    width: 10%;
+    height: 3px;
+    background-color: var(--gold);
+    margin-top: 2.5rem;
+}
+
+.container-fluid .form-image span, 
+.container-fluid .form-image h3,
+.container-fluid .form-image p{
+    color: #ffffff;
+}
+
+.container-fluid .form-image p{
+    margin: 0;
+    font-size: 14.5px;
+    width: 400px;
+    /* color: #808080; */
+    margin-top: 2.5rem;
+    line-height: 25px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.container-fluid .form-image span {
+    font-size: 14.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    /* margin-top: 1rem; */
+}
+
+.container-fluid .form-image h3 {
+    font-size: 50px;
+    width: 480px;
+    line-height: 50px;
+    margin: 1rem 0 0 0;
+    font-family: "Playfair Display";
+}
+
+.container-fluid .form-image h3 b{
+    color: var(--gold);
+    font-weight: 600;
+    font-style: italic;
+    font-family: "Playfair Display";
+}
+
+.container-fluid .form-image .total-members{
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    margin-top: 3rem;
+}
+
+.container-fluid .form-image .total-members .members h4{
+    color: #ffffff;
+    font-weight: 600;
+    margin: 0;
+    font-size: 21px;
+}
+
+.container-fluid .form-image .total-members .members span{
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13.5px;
+}
+
+.container-fluid .form-box-parent{
+    /* width: 50%; */
+    padding: 2.5rem;
+    width: 100%;
+    display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
-    /* height: 100vh; */
 }
 
 .container-fluid .form-parent {
     /* margin-top: -1.2rem; */
     background-color: #ffffff;
+    width: 80%;
     padding: 1.8rem;
     /* border: 1px solid rgba(0, 0, 0, 0.2); */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
     border-radius: 10px;
+    /* width: 100%; */
     animation: slideIn 0.4s ease both;
+    /* width: 100%; */
 }
 
 @keyframes slideIn {
@@ -73,20 +172,23 @@ div.container-fluid {
 
 .container-fluid .logo img {
     border-radius: 50%;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .container-fluid h2 {
     font-size: 22px;
+    color: var(--green);
+    font-weight: 600;
 }
 
 .container-fluid p {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 400;
+    width: 360px;
     /* line-height: 27px; */
-    color: #808080;
+    color: var(--muted);
 }
 
 .container-fluid label {
@@ -104,9 +206,9 @@ input.form-control {
     padding: 6px 12px;
 }
 
-.container-fluid span {
+/* .container-fluid span {
     border: 1px solid rgba(0, 0, 0, 0.3);
-}
+} */
 
 /* .container-fluid input{
     border: 1px solid rgba(0,0,0,0.3);
@@ -129,7 +231,7 @@ input.form-control {
     border-radius: 7px;
     font-size: 14.5px;
     position: relative;
-    background-color: #1E4035;
+    background-color: var(--green);
 }
 
 .loading {

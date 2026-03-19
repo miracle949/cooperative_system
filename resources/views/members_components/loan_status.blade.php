@@ -30,7 +30,7 @@
 
         <main class="p-5">
             <div class="card-box-parent d-flex justify-content-between align-items-center flex-wrap">
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800" class="card-box">
+                <div class="card-box">
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <h4>Personal Loan</h4>
 
@@ -46,7 +46,7 @@
                     <span class="tw:text-[#808080]">Applied 11/14/2025</span>
                 </div>
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000" class="card-box">
+                <div class="card-box">
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <h4>Emergency Loan</h4>
 
@@ -67,7 +67,7 @@
         <section class="ps-5 pe-5 pt-2 pb-5 d-flex justify-content-center align-items-center flex-column gap-4">
 
             <button style="all: unset; width: 100%;" class="d-flex justify-content-center align-items-center">
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800"
+                <div
                     class="card-box-parent row">
 
                     <div class="col-6">

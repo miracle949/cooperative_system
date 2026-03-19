@@ -4,6 +4,24 @@
     font-weight: 400;
 }
 
+@font-face {
+    font-family: 'Playfair_Display';
+    src: url('../Playfair_Display/static/PlayfairDisplay-Bold.ttf') format('truetype');
+    font-weight: 600;
+}
+
+:root {
+    --white: #FFFFFF;
+    --off: #F7F9F8;
+    --green: #1E4035;
+    --green2: #2A5C4E;
+    --gold: #C9A84C;
+    --text: #1A1A1A;
+    --muted: #6B7B74;
+    --border: #E2E8E5;
+    --shadow: rgba(30, 64, 53, 0.09);
+}
+
 * {
     font-family: 'Poppins', sans-serif;
 }
@@ -27,10 +45,24 @@
 .container-fluid nav {
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(14px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border-bottom: 1px solid #E2E8E5;
-    position: relative;  /* ← add this */
-    z-index: 1000; 
+    position: relative;
+    /* ← add this */
+    z-index: 1000;
+}
+
+.container-fluid nav .nav-logo{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.container-fluid nav .nav-logo h3{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--green);
 }
 
 .container-fluid .loading-screen .load {
@@ -43,14 +75,23 @@
     animation: spin 1s linear infinite;
 }
 
-.container-fluid nav .nav-list a {
+.container-fluid nav .nav-acc{
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.container-fluid nav .nav-acc .nav-list a {
     position: relative;
     /* color: #ffffff; */
-    color: #1A1A1A;
+    /* color: var(--muted); */
+    color: var(--text);
+    /* font-weight: 500; */
+    font-size: 14.8px;
     /* color: #6B7B74; */
 }
 
-.container-fluid nav .nav-list a::before {
+.container-fluid nav .nav-acc .nav-list a::before {
     content: "";
     position: absolute;
     left: 0;
@@ -61,18 +102,20 @@
 
 }
 
-.container-fluid nav .nav-list a:hover::before {
+.container-fluid nav .nav-acc .nav-list a:hover::before {
     width: 100%;
     transition: all 0.4s ease-in-out;
 }
 
-.container-fluid .nav-acc a {
+.container-fluid .nav-acc .nav-button a {
     /* color: #000;
     border: 1px solid black;
     text-decoration: none; */
     color: #fff;
-    background-color: #000;
+    background-color: #1E4035;
     text-decoration: none;
+    padding: 10px 30px;
+    font-size: 14.8px;
 }
 
 .container-fluid .nav-menu {
@@ -95,6 +138,28 @@
     z-index: 1000;
 } */
 
+.container-fluid nav .nav-list2 a{
+    color: var(--text);
+    font-size: 14.5px;
+    position: relative;
+}
+
+.container-fluid nav .nav-list2 a::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background-color: black;
+
+}
+
+.container-fluid nav .nav-list2 a:hover::before {
+    width: 100%;
+    transition: all 0.4s ease-in-out;
+}
+
 .container-fluid .nav-acc2 a {
     /* color: #ffffff; */
     color: #1A1A1A;
@@ -107,7 +172,7 @@
     /* position: relative; */
 }
 
-.container-fluid .nav-acc2 ul li p{
+.container-fluid .nav-acc2 ul li p {
     font-size: 15.5px;
 }
 
@@ -119,12 +184,13 @@
     position: relative;
     cursor: pointer;
 }
+
 /* 
 .container-fluid .nav-acc2 ul li ul {
     display: none;
 } */
 
-.container-fluid .nav-acc2 ul{
+.container-fluid .nav-acc2 ul {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -134,7 +200,8 @@
     display: none;
     position: absolute;
     right: 3%;
-    min-width: 270px; /* ← add this */
+    min-width: 270px;
+    /* ← add this */
     background-color: white;
     z-index: 1001;
     padding: 10px;

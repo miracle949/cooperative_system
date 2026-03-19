@@ -5,7 +5,8 @@
 } */
 
 .container-fluid {
-    background-color: #f5f5f8;
+    /* background-color: #f5f5f8; */
+    background-color: #ffffff;
 }
 
 .container-fluid main {
@@ -28,10 +29,18 @@
 
 .container-fluid main input {
     font-size: 15.5px;
+    border: 1px solid rgba(0,0,0,0.2);
 }
 
 .container-fluid main button {
     font-size: 15.5px;
+    background-color: var(--green);
+    color: #ffffff;
+}
+
+.container-fluid main button:hover{
+    background-color: var(--green);
+    color: #ffffff;
 }
 
 .container-fluid main .contact h4 {
@@ -44,17 +53,27 @@
 
 .container-fluid main .contact .fa {
     font-size: 20px;
-    color: #0D6EFD;
+    /* color: #0D6EFD; */
+    /* color: var(--green); */
+    color: #ffffff;
 }
 
 .container-fluid main .contact .social .fa-brands {
     font-size: 25px;
     padding: 0.5rem;
-    color: #0D6EFD;
+    /* color: #0D6EFD; */
+    /* color: var(--text); */
+    color: #ffffff;
+    /* color: var(--green); */
+}
+
+.container-fluid main .contact .social h4{
+    color: #ffffff;
 }
 
 .container-fluid main textarea {
     height: 202px;
+    border: 1px solid rgba(0,0,0,0.2);
 }
 
 .container-fluid h3 {
@@ -63,6 +82,11 @@
 
 .container-fluid #section1 h4 {
     font-size: 18px;
+    font-weight: 600;
+}
+
+.container-fluid #section1 h3{
+    font-weight: 600;
 }
 
 .container-fluid #section1 span,
@@ -71,12 +95,15 @@ p {
 }
 
 .container-fluid #section1 span {
-    color: #0D6EFD;
+    /* color: #0D6EFD; */
+    color: var(--green);
 }
 
 .container-fluid #section1 .fa {
     font-size: 20px;
-    color: #0D6EFD;
+    /* color: var(--green); */
+    color: #ffffff;
+    /* color: #0D6EFD; */
 }
 
 .container-fluid #section3 .accordion p {

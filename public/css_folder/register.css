@@ -58,13 +58,13 @@ html {
     padding: 20px 0px 0px 40px;
 }
 
-
 div.container-fluid {
     /* background-color: #ECF6FF; */
     /* background-color: #f5f5f8; */
     padding: 0;
     padding: 0px 0px 48px 0px;
-    background-color: #F7F9F8;
+    /* background-color: #F7F9F8; */
+    background-color: #ffffff;
     /* background-color: #ffffff; */
 }
 
@@ -77,7 +77,8 @@ div.container-fluid {
     margin: 0px 0px 0px 24px;
     /* color: #ffffff; */
     /* color: #1a1814; */
-    color: #1A1A1A;
+    color: #1E4035;
+    font-weight: 600;
     /* color: #1E4035; */
 }
 
@@ -186,7 +187,7 @@ div.container-fluid {
     /* background-color: #FFFFFF; */
     /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
     /* border-bottom: 1px solid #E2E8E5; */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border-bottom: 1px solid #E2E8E5;
     /* border-bottom: 1px solid #E2E8E5; */
     /* max-width: 1100px;
@@ -426,6 +427,11 @@ button {
     border-radius: 10px;
 }
 
+/* .container-fluid .actions button:hover{
+    background-color: var(--green);
+    color: #ffffff;
+} */
+
 .container-fluid .actions .btn-next {
     /* background: #2563eb; */
     background-color: #1E4035;
@@ -488,8 +494,27 @@ button {
     border-radius: 7px;
 }
 
+button#clear:hover{
+    background-color: var(--green);
+    color: #ffffff;
+}
+
 .card-box-signature button {
     background-color: #1E4035;
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 14.5px;
+    padding: 7px 20px;
+    font-weight: 600;
+}
+
+.card-box-signature button:hover{
+    background-color: var(--green);
+    color: #ffffff;
+}
+
+.card-box-signature button:active{
+    background-color: var(--green);
     color: #ffffff;
 }
 

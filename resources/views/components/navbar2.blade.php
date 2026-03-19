@@ -3,11 +3,12 @@
     <div class="nav-logo">
         {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}
         <img src="images/logo2.png" width="50px" height="50px" style="border-radius: 50%" alt="">
+        <h3>KMPCATS</h3>
         {{-- <h2 class="mw-100 m-0" style="font-size: 14px; width: 200px;">Kingsland Pala-Pala MPC & Transport Service
         </h2> --}}
     </div>
 
-    <div class="nav-list">
+    <div class="nav-list nav-list2">
         <ul class="tw:flex tw:gap-x-[4rem] m-0 p-0">
             <li class="tw:list-none">
                 <a href="{{ route("MemberPortal") }}"
@@ -16,7 +17,7 @@
 
             <li class="tw:list-none">
                 <a href="{{ route("LoanApplication") }}"
-                    class="tw:no-underline tw:text-[15.5px] text-decoration-none">Lending Program</a>
+                    class="tw:no-underline tw:text-[15.5px] text-decoration-none">Lending Application</a>
             </li>
 
             <li class="tw:list-none">

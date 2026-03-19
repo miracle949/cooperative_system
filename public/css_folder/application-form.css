@@ -33,7 +33,7 @@
     /* background-color: #1E4035; */
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(14px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border-bottom: 1px solid #E2E8E5;
 }
 

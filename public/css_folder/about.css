@@ -1,37 +1,81 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400..900&family=Lobster&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Sekuya&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@font-face {
+    font-family: 'Playfair_Display';
+    src: url('../Playfair_Display/static/PlayfairDisplay-Bold.ttf') format('truetype');
+    font-weight: 600;
+}
 
 * {
     font-family: "Poppins", sans-serif;
 }
 
 .container-fluid {
-    background-color: #f5f5f8;
+    /* background-color: #f5f5f8; */
+    /* background-color: #F7F9F8; */
+    background-color: #ffffff;
 }
 
 .container-fluid main {
-    padding: 48px;
+    padding: 48px 48px 52px 48px;
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.container-fluid main h3,
-section h3 {
+.container-fluid main h3 {
+    color: var(--gold);
+    font-size: 16.5px;
+
+}
+
+.container-fluid section h3 {
     font-size: 18px;
 }
 
 .container-fluid main h2 {
     font-size: 28px;
+    color: var(--green);
+    font-weight: bold;
+    /* font-family: "Playfair Display"; */
 }
+
+/* .container-fluid main h2 b {
+    font-family: "Playfair Display";
+    font-style: italic;
+    color: var(--green);
+} */
 
 .container-fluid p {
     line-height: 30px;
     margin: 16px 0px 0px 0px;
+    /* color: var(--muted); */
 }
 
-.container-fluid main a {
+/* .container-fluid main a {
     color: white;
+} */
+
+.container-fluid main a {
+    color: #ffffff;
+    background-color: var(--green);
+    padding: 10px 30px;
+}
+
+.container-fluid main a:hover {
+    color: #ffffff;
+    background-color: var(--green);
 }
 
 .container-fluid #section1 {
     padding: 48px;
+    /* border-bottom: 1px solid rgba(0,0,0,0.1); */
+}
+
+.container-fluid #section1 .card h3{
+    color: var(--green);
+    font-weight: 600;
+}
+
+.container-fluid #section1 .card p{
+    color: var(--muted);
 }
 
 .container-fluid #section2 {
@@ -40,10 +84,17 @@ section h3 {
 
 .container-fluid #section2 h3 {
     font-size: 23px;
+    font-weight: 600;
 }
 
 .container-fluid #section2 h4 {
     font-size: 18px;
+    font-weight: 600;
+}
+
+.container-fluid #section2 .card{
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
 }
 
 .container-fluid #section3 {
@@ -68,7 +119,7 @@ section h3 {
 
 .container-fluid #section3 .card p {
     margin: 8px 0px 0px;
-    color: #808080;
+    color: var(--muted);
 }
 
 .container-fluid #section3 .card .fa,
@@ -107,7 +158,7 @@ span {
     border-radius: 50%;
 }
 
-.container-fluid #section4{
+.container-fluid #section4 {
     padding: 48px;
 }
 

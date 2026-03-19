@@ -154,7 +154,7 @@
                                     </canvas>
 
                                     <div class="mt-3 text-end">
-                                        <button type="button" id="clear" class="btn btn-sm">
+                                        <button type="button" id="clear" class="">
                                             Clear
                                         </button>
                                     </div>

@@ -33,9 +33,9 @@
 
             <div class="row">
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800"
+                <div
                     class="col-lg-6 col-md-12">
-                    <h3>Send Us a Message</h3>
+                    <h3 class="fw-bold">Send Us a Message</h3>
 
                     <p class="mt-3">Fill out the form below and we'll get back to you as soon as possible.</p>
 
@@ -74,18 +74,18 @@
                     </div>
 
                     <div class="mt-4">
-                        <button class="btn btn-primary tw:w-full"><i class="fa-brands fa-telegram-plane"></i> Send
+                        <button class="btn tw:w-full"><i class="fa-brands fa-telegram-plane"></i> Send
                             Message</button>
                     </div>
                 </div>
 
-                <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="1000"
+                <div
                     class="col-lg-6 col-md-12 contact ps-lg-5 ps-md-0 mt-md-5 mt-lg-0">
-                    <h3>Contact Information</h3>
+                    <h3 class="fw-bold">Contact Information</h3>
 
                     <div class="tw:flex gap-3 mt-4">
-                        <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                        <div class="p-4 d-flex justify-content-center align-items-center"
+                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                             <i class="fa fa-location-dot"></i>
                         </div>
 
@@ -99,8 +99,8 @@
                     </div>
 
                     <div class="tw:flex gap-3 mt-4">
-                        <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                        <div class="p-4 d-flex justify-content-center align-items-center"
+                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                             <i class="fa fa-phone"></i>
                         </div>
 
@@ -114,8 +114,8 @@
                     </div>
 
                     <div class="tw:flex gap-3 mt-4">
-                        <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                        <div class="p-4 d-flex justify-content-center align-items-center"
+                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                             <i class="fa fa-envelope"></i>
                         </div>
 
@@ -129,8 +129,8 @@
                     </div>
 
                     <div class="tw:flex gap-3 mt-4">
-                        <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                        <div class="p-4 d-flex justify-content-center align-items-center"
+                            style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                             <i class="fa fa-clock"></i>
                         </div>
 
@@ -143,7 +143,7 @@
                         </div>
                     </div>
 
-                    <div class="p-4 social mt-4 tw:bg-[#DBEAFE]" style="border: 1px solid rgba(0,0,0,0.1)">
+                    <div class="p-4 social mt-4" style="border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                         <h4>Follow Us</h4>
 
                         <div class="d-flex column-gap-3">
@@ -167,8 +167,8 @@
                 <div data-aos="fade-up" data-aos-duration="1000" class="tw:bg-white p-4"
                     style="border: 1px solid rgba(0,0,0,0.3); width: 320px; height: 310px; border-radius: 20px;">
 
-                    <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                    <div class="p-4 d-flex justify-content-center align-items-center"
+                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                         <i class="fa fa-location-dot"></i>
                     </div>
 
@@ -181,10 +181,10 @@
                     <p class="mt-4">Mon-Fri: 8AM-5PM, Sat: 8AM-12PM</p>
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:bg-white p-3"
+                <div data-aos="fade-up" data-aos-duration="1000" class="tw:bg-white p-4"
                     style="border: 1px solid rgba(0,0,0,0.3); width: 320px; height: 310px; border-radius: 20px;">
-                    <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                    <div class="p-4 d-flex justify-content-center align-items-center"
+                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                         <i class="fa fa-location-dot"></i>
                     </div>
 
@@ -197,10 +197,10 @@
                     <p class="mt-4">Mon-Fri: 9AM-5PM, Sat: 9AM-12PM</p>
                 </div>
 
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:bg-white p-3"
+                <div data-aos="fade-up" data-aos-duration="1000" class="tw:bg-white p-4"
                     style="border: 1px solid rgba(0,0,0,0.3); width: 320px; height: 310px; border-radius: 20px;">
-                    <div class="p-4 tw:bg-[#DBEAFE] d-flex justify-content-center align-items-center"
-                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1);">
+                    <div class="p-4 d-flex justify-content-center align-items-center"
+                        style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); background-color: var(--green)">
                         <i class="fa fa-location-dot"></i>
                     </div>
 
