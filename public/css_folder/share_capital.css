@@ -30,10 +30,11 @@ main .parent-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* gap: 1.5rem; */
 }
 
 main h3 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
 }
 
@@ -125,6 +126,7 @@ main .parent-share .card:nth-child(4) .card-accent {
 main .parent-share .card h4 {
     font-size: 20px;
     font-weight: 600;
+    margin: 0;
 }
 
 main .parent-share .card span,
@@ -205,17 +207,29 @@ main .parent-share .card:nth-child(4) h4 {
     color: #155DFC;
 }
 
-main .download {
-    margin-top: 2.5rem;
+main .share button{
+    padding: 10px 30px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;
+    background-color: var(--green);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 7px;
+    font-size: 13.5px;
 }
+
 
 main .download button {
     padding: 10px 30px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
     background-color: #ffffff;
+    color: #000;
+    /* color: #ffffff; */
+    /* background-color: var(--green); */
+    font-weight: 600;
     border-radius: 7px;
-    font-size: 14.5px;
+    font-size: 13.5px;
 }
 
 main .parent-table {
@@ -232,7 +246,8 @@ main .contribution-parent {
 }
 
 main .contribution-parent .table {
-    margin-top: 3rem;
+    /* margin-top: 3rem; */
+    margin-top: 1.3rem;
     font-size: 15.5px;
 }
 
@@ -254,7 +269,8 @@ main .dividend-parent {
 }
 
 main .dividend-parent .table {
-    margin-top: 3rem;
+    /* margin-top: 3rem; */
+    margin-top: 1.3rem;
     font-size: 15.5px;
     overflow-x: auto;
 }

@@ -36,7 +36,7 @@
 
             <p>Manage your share capital contributions and track your dividends</p> --}}
 
-            <div class="parent-main">
+            {{-- <div class="parent-main">
                 <div class="main-intro">
                     <p class="">Member Account</p>
 
@@ -45,6 +45,40 @@
                     <span>Manage your share capital contributions and track your dividends</span>
                 </div>
 
+                <div class="download">
+                    <button>
+                        <i class="fa fa-download"></i>
+                        <span>Download Statement</span>
+                    </button>
+                </div>
+            </div> --}}
+
+            <div class="modal fade" id="shareCapital" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            ...
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parent-main">
+                <div class="share">
+                    <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                        <i class="fa fa-plus"></i>
+                        <span>Add Share Capital</span>
+                    </button>
+                </div>
                 <div class="download">
                     <button>
                         <i class="fa fa-download"></i>

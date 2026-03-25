@@ -62,8 +62,9 @@ class SavingsController extends Controller
             ? Carbon::parse($lastUpdated)->diffForHumans()
             : 'No transactions yet';
 
-        // Months since account was opened
-        $monthsActive = Carbon::parse($savingsAccount->opened_at)->diffInMonths(Carbon::today());
+        // $monthsActive = Carbon::parse($savingsAccount->opened_at)->diffInMonths(Carbon::today());
+        // ✅ FIX - rounds up to nearest whole month (so 0.19 = 1)
+        $monthsActive = (int) ceil(Carbon::parse($savingsAccount->opened_at)->floatDiffInMonths(Carbon::today()));
 
 
         return view(
@@ -81,9 +82,6 @@ class SavingsController extends Controller
         );
     }
 
-    /**
-     * Handle deposit.
-     */
     public function deposit(Request $request)
     {
         $request->validate([

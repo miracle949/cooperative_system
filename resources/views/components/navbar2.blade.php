@@ -31,7 +31,7 @@
             </li>
 
             <li class="tw:list-none">
-                <a href="{{ route("LoanStatus") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none">Loan
+                <a href="{{ route("LoanStatus") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none">Lending
                     Status</a>
             </li>
         </ul>

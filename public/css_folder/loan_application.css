@@ -31,7 +31,7 @@
     gap: 0.5rem;
 } */
 
-.container-fluid main .main-intro p{
+.container-fluidx main .main-intro p {
     margin: 0px 48px 0px 0px;
     text-transform: uppercase;
     font-size: 15px;
@@ -39,7 +39,7 @@
     font-weight: 600;
 }
 
-.container-fluid main .main-intro h3{
+.container-fluid main .main-intro h3 {
     margin: 5px 48px 5px 0px;
     font-family: "Playfair Display";
     font-size: 32px;
@@ -47,17 +47,17 @@
     color: #1E4035;
 }
 
-.container-fluid main .main-intro span{
+.container-fluid main .main-intro span {
     color: var(--muted);
     font-size: 14.5px;
 }
 
-.container-fluid main .card-parent-box{
+.container-fluid main .card-parent-box {
     display: flex;
     /* justify-content: space-between; */
     gap: 2rem;
     width: 100%;
-    margin-top: 2rem;
+    /* margin-top: 2rem; */
 }
 
 .container-fluid main h3 {
@@ -89,19 +89,20 @@
     background-color: white;
     padding: 48px 48px 30px 48px;
     animation: slideIn 0.4s ease both;
-    width: 700px;
+    width: 100%;
+    max-width: 700px;
     height: 100%;
 }
 
-.container-fluid main .card-box .alert-reminder button .fa-solid{
+.container-fluid main .card-box .alert-reminder button .fa-solid {
     font-size: 24px;
 }
 
-.container-fluid .modal-content{
+.container-fluid .modal-content {
     border-radius: 20px;
 }
 
-.container-fluid .modal .modal-header{
+.container-fluid .modal .modal-header {
     border: none;
     background-color: #1E4035;
     padding: 24px 30px 24px 30px;
@@ -113,20 +114,20 @@
     align-items: center;
 }
 
-.container-fluid .modal .modal-header .modal-text h1{
+.container-fluid .modal .modal-header .modal-text h1 {
     font-size: 19.5px;
     color: #ffffff;
     margin: 0;
     font-weight: 600;
 }
 
-.container-fluid .modal .modal-header .modal-text p{
+.container-fluid .modal .modal-header .modal-text p {
     margin: 6.5px 0 0;
     color: #FFFFFF8C;
     font-size: 13.5px;
 }
 
-.container-fluid .modal .modal-header button{
+.container-fluid .modal .modal-header button {
     width: 35px;
     height: 35px;
     color: #ffffff;
@@ -139,12 +140,12 @@
     align-items: center;
 }
 
-.container-fluid .modal .modal-footer{
+.container-fluid .modal .modal-footer {
     border: none;
     padding: 0 12px 12px 12px;
 }
 
-.container-fluid .modal .modal-footer button{
+.container-fluid .modal .modal-footer button {
     width: 100%;
     background-color: #1E4035;
     color: #ffffff;
@@ -153,26 +154,26 @@
     font-weight: 600;
 }
 
-.container-fluid .modal .modal-body{
+.container-fluid .modal .modal-body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.container-fluid .modal .modal-body .lending-parent .lending-icon p{
+.container-fluid .modal .modal-body .lending-parent .lending-icon p {
     margin: 0;
     font-size: 14.5px;
     font-weight: 600;
     color: #1E4035;
 }
 
-.container-fluid .modal .modal-body .lending-parent .lending-icon span{
+.container-fluid .modal .modal-body .lending-parent .lending-icon span {
     font-size: 12.5px;
     color: #808080;
 }
 
-.container-fluid .modal .modal-body .lending-parent{
-    border: 1px solid rgba(0,0,0,0.2);
+.container-fluid .modal .modal-body .lending-parent {
+    border: 1px solid rgba(0, 0, 0, 0.2);
     padding: 16px 19px 16px 19px;
     border-radius: 15px;
     display: flex;
@@ -180,7 +181,7 @@
     align-items: center;
 }
 
-.container-fluid .modal .modal-body .lending-parent p{
+.container-fluid .modal .modal-body .lending-parent p {
     margin: 0;
     color: #1E4035;
     font-size: 15.5px;
@@ -200,6 +201,8 @@
     border: 1px solid #E2E8E5;
     border-radius: 20px;
     /* width: 100%; */
+    /* width: 100%;
+    max-width: 400px; */
     width: 400px;
 }
 
@@ -298,11 +301,11 @@
     margin: 0;
 }
 
-.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .amount p{
+.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .amount p {
     margin: 0;
 }
 
-.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .text-amount p{
+.container-fluid main .card-calculate .calculate-body .parent-amount .card-amount .text-amount p {
     color: #808080;
 }
 
@@ -378,7 +381,7 @@
     font-size: 14.5px;
 }
 
-.container-fluid form .form-parent .line{
+.container-fluid form .form-parent .line {
     width: 100%;
     border: 1px solid rgba(0, 0, 0, 0.2);
     height: 1px;
@@ -386,7 +389,7 @@
     margin-top: 35px;
 }
 
-.container-fluid form .form-parent h4{
+.container-fluid form .form-parent h4 {
     font-size: 16px;
     margin: 25px 0 0;
     color: #1E4035;
@@ -464,7 +467,7 @@
     margin-bottom: 0.5rem;
 }
 
-.sm-body > p {
+.sm-body>p {
     font-size: 0.85rem;
     color: #6B7B74;
     line-height: 1.65;
@@ -528,13 +531,25 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(24px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media only screen and (min-width: 1450px) {
@@ -579,6 +594,28 @@
         border-radius: 20px;
         width: 370px;
     } */
+}
+
+@media only screen and (max-width: 950px) {
+    .container-fluid main .card-box {
+        padding: 30px 30px 30px 30px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .container-fluid main .card-parent-box {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .container-fluid main .card-parent-box .card-box {
+        /* width: 100%; */
+        max-width: 100%;
+    }
+
+    .container-fluid main .card-calculate {
+        width: 100%;
+    }
 }
 
 

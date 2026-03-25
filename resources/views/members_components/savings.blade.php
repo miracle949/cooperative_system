@@ -30,20 +30,23 @@
         @include("components.offcanvas")
 
         <main>
-            <div class="main-intro">
+            {{-- <div class="main-intro">
                 <p class="">Member Savings</p>
                 <h3 class="">My Savings</h3>
                 <span>Manage your share capital contributions and track your dividends</span>
-            </div>
+            </div> --}}
 
             <div class="card-box-parent">
                 <div class="card-box-text">
                     <h3>Total Savings Balance</h3>
                     <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
-                    <span>Last updated {{ $lastUpdated }} · {{ $monthsActive }} {{ $monthsActive == 1 ? 'month' : 'months' }} active</span>
+                    {{-- ✅ fixed --}}
+                    <span>Last updated {{ $lastUpdated }} · 
+                        {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }} active
+                    </span>
                 </div>
 
-                <div class="d-flex justify-content-left align-items-center flex-wrap gap-4">
+                <div class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
 
                     {{-- Deposit --}}
                     <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal" style="cursor:pointer;">
@@ -123,7 +126,7 @@
                         <div class="mt-4 overflow-x-auto">
                             <table class="table table-striped table-hover">
                                 <thead>
-                                    <tr style="border-bottom: 1px solid black;">
+                                    <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
                                         <th>Date</th>
                                         <th>Type</th>
                                         <th class="text-end">Amount</th>

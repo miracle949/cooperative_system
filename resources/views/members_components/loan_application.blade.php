@@ -94,13 +94,13 @@
         </div>
 
         <main>
-            <div class="main-intro">
+            {{-- <div class="main-intro">
                 <p class="">Member Services</p>
 
                 <h3 class="">Lending Application</h3>
 
                 <span>Fill out the form below to apply for a loan</span>
-            </div>
+            </div> --}}
             <div class="card-parent-box">
                 <div class="card-box">
                     <div class="d-flex justify-content-left align-items-center gap-4">
@@ -108,7 +108,7 @@
                             <i class="fa-solid fa-file"></i>
                         </div>
                         <div class="d-flex justify-content-between align-items-center w-100">
-                            <div>
+                            <div class="card-header">
                                 <h3>Lending Applications</h3>
                                 <p style="margin: 0px;" class="tw:text-[#808080]">Fill out the form below to apply for a
                                     lending
