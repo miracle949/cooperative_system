@@ -21,6 +21,85 @@
 
     {{-- font awesome cdn link --}}
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
+
+    <style>
+        /* ── Reference number pill ── */
+        .sm-ref-pill {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f0f4f2;
+            border: 1px dashed #1E4035;
+            border-radius: 10px;
+            padding: 0.65rem 1rem;
+            margin: 0.75rem 0;
+            gap: 0.5rem;
+        }
+        .sm-ref-label {
+            font-size: 0.75rem;
+            color: #6B7B74;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .sm-ref-value {
+            font-family: monospace;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #1E4035;
+            letter-spacing: 0.05em;
+            word-break: break-all;
+            text-align: right;
+        }
+        .sm-copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6B7B74;
+            font-size: 0.85rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+        .sm-copy-btn:hover { color: #1E4035; }
+
+        /* ── Download receipt button ── */
+        .sm-btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.6rem;
+            border: 1.5px solid #1E4035;
+            border-radius: 10px;
+            background: transparent;
+            color: #1E4035;
+            font-family: inherit;
+            font-size: 0.87rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        .sm-btn-download:hover {
+            background: #1E4035;
+            color: #fff;
+        }
+
+        /* ── Transaction ref in table ── */
+        .tx-ref {
+            font-family: monospace;
+            font-size: 0.78rem;
+            color: #6B7B74;
+            background: #f0f4f2;
+            padding: 2px 7px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+    </style>
 </head>
 
 <body>
@@ -30,18 +109,11 @@
         @include("components.offcanvas")
 
         <main>
-            {{-- <div class="main-intro">
-                <p class="">Member Savings</p>
-                <h3 class="">My Savings</h3>
-                <span>Manage your share capital contributions and track your dividends</span>
-            </div> --}}
-
             <div class="card-box-parent">
                 <div class="card-box-text">
                     <h3>Total Savings Balance</h3>
                     <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
-                    {{-- ✅ fixed --}}
-                    <span>Last updated {{ $lastUpdated }} · 
+                    <span>Last updated {{ $lastUpdated }} ·
                         {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }} active
                     </span>
                 </div>
@@ -124,12 +196,14 @@
                     <div class="card-box">
                         <h4>{{ $monthYear }}</h4>
                         <div class="mt-4 overflow-x-auto">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover table-scroll">
                                 <thead>
                                     <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
                                         <th>Date</th>
                                         <th>Type</th>
+                                        <th>Reference No.</th>
                                         <th class="text-end">Amount</th>
+                                        <th class="text-end">Receipt</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,10 +211,26 @@
                                         <tr>
                                             <td>{{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}</td>
                                             <td>{{ ucfirst(str_replace('_', ' ', $tx->type)) }}</td>
+                                            <td>
+                                                @if ($tx->reference_no)
+                                                    <span class="tx-ref">{{ $tx->reference_no }}</span>
+                                                @else
+                                                    <span style="color:#ccc;font-size:0.78rem">—</span>
+                                                @endif
+                                            </td>
                                             <td class="text-end"
-                                                style="font-weight: 600; color: {{ $tx->type === 'withdrawal' ? '#DC2626' : '#1E4035' }}">
+                                                style="font-weight:600; color:{{ $tx->type === 'withdrawal' ? '#DC2626' : '#1E4035' }}">
                                                 {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
                                                 {{ number_format($tx->amount, 2) }}
+                                            </td>
+                                            <td class="text-end">
+                                                @if ($tx->reference_no)
+                                                    <a href="{{ route('savings.receipt', $tx->reference_no) }}"
+                                                       title="Download Receipt"
+                                                       style="color:#1E4035;font-size:0.9rem;">
+                                                        <i class="fa-solid fa-file-arrow-down"></i>
+                                                    </a>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -150,8 +240,8 @@
                     </div>
                 @empty
                     <div class="card-box text-center py-5">
-                        <i class="fa-solid fa-folder-open fa-2x mb-3" style="color: #d0d0d0;"></i>
-                        <p style="color: #808080; margin-top: 0.5rem;">No transactions yet.</p>
+                        <i class="fa-solid fa-folder-open fa-2x mb-3" style="color:#d0d0d0;"></i>
+                        <p style="color:#808080;margin-top:0.5rem;">No transactions yet.</p>
                     </div>
                 @endforelse
 
@@ -162,8 +252,7 @@
         {{-- ============================================================
              DEPOSIT MODAL
         ============================================================ --}}
-        <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content sm-modal-content">
 
@@ -199,16 +288,11 @@
                                         step="0.01" value="{{ old('amount') }}" />
                                 </div>
                                 <div class="sm-quick-amounts">
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('depositAmount', 500)">₱500</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('depositAmount', 1000)">₱1,000</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('depositAmount', 1500)">₱1,500</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('depositAmount', 2000)">₱2,000</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('depositAmount', 5000)">₱5,000</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 500)">₱500</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 1000)">₱1,000</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 1500)">₱1,500</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 2000)">₱2,000</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 5000)">₱5,000</button>
                                 </div>
                                 @error('amount')
                                     <div class="sm-error-msg show">{{ $message }}</div>
@@ -238,8 +322,7 @@
         {{-- ============================================================
              WITHDRAW MODAL
         ============================================================ --}}
-        <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content sm-modal-content">
 
@@ -275,16 +358,11 @@
                                         step="0.01" value="{{ old('amount') }}" />
                                 </div>
                                 <div class="sm-quick-amounts">
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('withdrawAmount', 500)">₱500</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('withdrawAmount', 1000)">₱1,000</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('withdrawAmount', 1500)">₱1,500</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('withdrawAmount', 2000)">₱2,000</button>
-                                    <button type="button" class="sm-quick-btn"
-                                        onclick="setSavingsAmount('withdrawAmount', {{ $savingsAccount->balance }})">All</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 500)">₱500</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 1000)">₱1,000</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 1500)">₱1,500</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 2000)">₱2,000</button>
+                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', {{ $savingsAccount->balance }})">All</button>
                                 </div>
                                 @error('amount')
                                     <div class="sm-error-msg show">{{ $message }}</div>
@@ -318,24 +396,49 @@
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content sm-modal-content">
                     <div class="modal-body sm-success-body">
+
                         <div class="sm-success-icon sm-success-green">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
+
                         <h5 class="sm-success-title">Deposit Successful!</h5>
+
                         <p class="sm-success-msg">
                             Your deposit of
-                            <strong>₱
-                                {{ session('deposit_amount') ? number_format(session('deposit_amount'), 2) : '0.00' }}</strong>
+                            <strong>₱ {{ session('deposit_amount') ? number_format(session('deposit_amount'), 2) : '0.00' }}</strong>
                             has been added to your savings account.
                         </p>
+
+                        {{-- Reference Number --}}
+                        @if (session('deposit_reference'))
+                            <div class="sm-ref-pill">
+                                <span class="sm-ref-label">Reference No.</span>
+                                <span class="sm-ref-value" id="deposit-ref-no">{{ session('deposit_reference') }}</span>
+                                <button class="sm-copy-btn" onclick="copyRef('deposit-ref-no')" title="Copy">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        @endif
+
+                        {{-- New Balance --}}
                         <div class="sm-success-balance-pill">
                             <span>New Balance</span>
                             <span>₱ {{ number_format($savingsAccount->balance, 2) }}</span>
                         </div>
+
+                        {{-- Download Receipt --}}
+                        @if (session('deposit_reference'))
+                            <a href="{{ route('savings.receipt', session('deposit_reference')) }}"
+                               class="sm-btn-download">
+                                <i class="fa-solid fa-file-arrow-down"></i> Download Receipt
+                            </a>
+                        @endif
+
                         <button type="button" class="sm-btn-confirm sm-deposit-confirm w-100 mt-3"
                             data-bs-dismiss="modal">
                             <i class="fa-solid fa-check"></i> Done
                         </button>
+
                     </div>
                 </div>
             </div>
@@ -349,42 +452,62 @@
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content sm-modal-content">
                     <div class="modal-body sm-success-body">
+
                         <div class="sm-success-icon sm-success-red">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
+
                         <h5 class="sm-success-title">Withdraw Successful!</h5>
+
                         <p class="sm-success-msg">
                             Your withdrawal of
-                            <strong>₱
-                                {{ session('withdraw_amount') ? number_format(session('withdraw_amount'), 2) : '0.00' }}</strong>
+                            <strong>₱ {{ session('withdraw_amount') ? number_format(session('withdraw_amount'), 2) : '0.00' }}</strong>
                             has been deducted from your savings account.
                         </p>
+
+                        {{-- Reference Number --}}
+                        @if (session('withdraw_reference'))
+                            <div class="sm-ref-pill">
+                                <span class="sm-ref-label">Reference No.</span>
+                                <span class="sm-ref-value" id="withdraw-ref-no">{{ session('withdraw_reference') }}</span>
+                                <button class="sm-copy-btn" onclick="copyRef('withdraw-ref-no')" title="Copy">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        @endif
+
+                        {{-- New Balance --}}
                         <div class="sm-success-balance-pill">
                             <span>New Balance</span>
                             <span>₱ {{ number_format($savingsAccount->balance, 2) }}</span>
                         </div>
+
+                        {{-- Download Receipt --}}
+                        @if (session('withdraw_reference'))
+                            <a href="{{ route('savings.receipt', session('withdraw_reference')) }}"
+                               class="sm-btn-download">
+                                <i class="fa-solid fa-file-arrow-down"></i> Download Receipt
+                            </a>
+                        @endif
+
                         <button type="button" class="sm-btn-confirm sm-withdraw-confirm w-100 mt-3"
                             data-bs-dismiss="modal">
                             <i class="fa-solid fa-check"></i> Done
                         </button>
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        {{-- ============================================================
-             HIDDEN TRIGGER BUTTONS
-             These bypass the "bootstrap is not defined" timing issue.
-             Bootstrap handles the data-bs-toggle itself after Vite loads.
-        ============================================================ --}}
-        <button id="triggerDepositSuccess"   data-bs-toggle="modal" data-bs-target="#depositSuccessModal"  style="display:none;"></button>
-        <button id="triggerWithdrawSuccess"  data-bs-toggle="modal" data-bs-target="#withdrawSuccessModal" style="display:none;"></button>
-        <button id="triggerDepositModal"     data-bs-toggle="modal" data-bs-target="#depositModal"         style="display:none;"></button>
-        <button id="triggerWithdrawModal"    data-bs-toggle="modal" data-bs-target="#withdrawModal"        style="display:none;"></button>
+        {{-- Hidden trigger buttons --}}
+        <button id="triggerDepositSuccess"  data-bs-toggle="modal" data-bs-target="#depositSuccessModal"  style="display:none;"></button>
+        <button id="triggerWithdrawSuccess" data-bs-toggle="modal" data-bs-target="#withdrawSuccessModal" style="display:none;"></button>
+        <button id="triggerDepositModal"    data-bs-toggle="modal" data-bs-target="#depositModal"         style="display:none;"></button>
+        <button id="triggerWithdrawModal"   data-bs-toggle="modal" data-bs-target="#withdrawModal"        style="display:none;"></button>
 
     </div>{{-- end container-fluid --}}
-
 
     {{-- AOS --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -393,9 +516,18 @@
     </script>
 
     <script>
-        /* ---- Quick amount helpers ---- */
         function setSavingsAmount(inputId, val) {
             document.getElementById(inputId).value = val;
+        }
+
+        /* Copy reference number to clipboard */
+        function copyRef(elementId) {
+            const text = document.getElementById(elementId).textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i>'; }, 1500);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', function () {

@@ -121,3 +121,6 @@ Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharec
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
+
+Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
+    ->name('savings.receipt');

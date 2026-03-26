@@ -58,11 +58,29 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="title">
+                                <div class="modal-icon">
+                                    <i class="fa fa-circle-arrow-down"></i>
+                                </div>
+                                <h5 class="modal-title sm-modal-title" id="exampleModalLabel fw-bold">Add Share Capital
+                                </h5>
+                                <p>Purchase additional shares to increase your capital</p>
+                            </div>
+                            <div class="exit">
+                                <button type="button" class="btn-close m-0" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
                         </div>
                         <div class="modal-body">
-                            ...
+                            <div class="current-balance">
+                                <p>Current Balance</p>
+
+                                <p>₱25,000 · 25 shares</p>
+                            </div>
+
+                            <p>Amount to Deposit</p>
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -73,16 +91,11 @@
             </div>
 
             <div class="parent-main">
+
                 <div class="share">
                     <button data-bs-toggle="modal" data-bs-target="#shareCapital">
                         <i class="fa fa-plus"></i>
                         <span>Add Share Capital</span>
-                    </button>
-                </div>
-                <div class="download">
-                    <button>
-                        <i class="fa fa-download"></i>
-                        <span>Download Statement</span>
                     </button>
                 </div>
             </div>
@@ -139,6 +152,13 @@
 
                     <article>Expected date</article>
                 </div>
+            </div>
+v
+            <div class="download">
+                <button>
+                    <i class="fa fa-download"></i>
+                    <span>Download Statement</span>
+                </button>
             </div>
 
             <div class="contribution-parent">

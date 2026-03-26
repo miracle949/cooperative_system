@@ -14,6 +14,7 @@ class savings_transaction_tbl extends Model
         "amount",
         "balance_after",
         "note",
+        "reference_no",
         "transaction_date",
     ];
 }
