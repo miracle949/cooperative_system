@@ -98,6 +98,13 @@
                         <span>Add Share Capital</span>
                     </button>
                 </div>
+
+                <div class="download">
+                    <button>
+                        <i class="fa fa-arrow-down"></i>
+                        <span>Download Statement</span>
+                    </button>
+                </div>
             </div>
 
             <div class="parent-share">
@@ -152,13 +159,6 @@
 
                     <article>Expected date</article>
                 </div>
-            </div>
-v
-            <div class="download">
-                <button>
-                    <i class="fa fa-download"></i>
-                    <span>Download Statement</span>
-                </button>
             </div>
 
             <div class="contribution-parent">

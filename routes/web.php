@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\lendingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersHandle;
@@ -105,6 +106,30 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
     ->name("lendingProgram")
     ->middleware("auth");
 
+Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
+    ->name('savings.receipt');
+
+Route::get('/loan-status', [lendingController::class, 'loanStatus'])
+    ->name('LoanStatus')
+    ->middleware('auth');
+
+Route::post('/repayment/store', [lendingController::class, 'storeRepayment'])
+    ->name('repayment.store')
+    ->middleware('auth');
+
+// Gcash API 
+
+Route::middleware('auth')->group(function () {
+    Route::post('/repayment/gcash', [PaymentController::class, 'payViaGcash'])
+        ->name('repayment.gcash');
+
+    Route::get('/repayment/gcash/success', [PaymentController::class, 'gcashSuccess'])
+        ->name('repayment.gcash.success');
+
+    Route::get('/repayment/gcash/failed', [PaymentController::class, 'gcashFailed'])
+        ->name('repayment.gcash.failed');
+});
+
 
 // Jhun Code
 
@@ -121,6 +146,3 @@ Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharec
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
-
-Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
-    ->name('savings.receipt');

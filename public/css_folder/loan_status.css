@@ -16,8 +16,26 @@ body {
 .container-fluid {
     /* background-color: #ECF6FF; */
     /* background-color: #F7F9F8; */
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    /* background-color: #F7F9F8; */
     /* overflow-y: hidden; */
+}
+
+.modal-header h5{
+    font-size: 16px;
+}
+
+button{
+    background-color: var(--green);
+    color: #ffffff;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.btn-repay{
+    border-radius: 10px;
+    font-size: 13.5px;
 }
 
 ::-webkit-scrollbar{
@@ -32,6 +50,7 @@ body {
     left: 0;
     top: 0;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
 }
 
 .container-fluid .sidebar h3 {
@@ -183,6 +202,7 @@ body {
     margin-left: 350px;
     overflow-y: auto;
     padding: 2rem 1.5rem 6rem 1.5rem;
+    background-color: #F7F9F8;
     /* padding-top: 2rem;
     padding-left: 1.5rem;
     padding-right: 1.5rem;

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lending_status_tbls', function (Blueprint $table) {
+        Schema::create('lending_repayments_tbls', function (Blueprint $table) {
             $table->id();
             $table->foreignId("lending_id")
                 ->constrained("lending_program_tbls")
@@ -19,13 +19,16 @@ return new class extends Migration
             $table->foreignId("member_id")
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
-            $table->decimal("remaining_balance", 10, 2);
-            $table->decimal("total_paid", 10, 2)->default("0");
-            $table->integer("payments_made")->default("0");
-            $table->integer("total_payments");
-            $table->decimal("interest_rate", 5, 2);
-            $table->date("next_due_date")->nullable();
-            $table->enum("status", ["Active", "Completed", "Overdue","Defaulted"])->default("Active");
+            $table->integer("payment_number");
+            $table->decimal("amount_paid", 10, 2);
+            $table->date("payment_date");
+            $table->string("payment_method");
+            $table->string("reference_no")->nullable();
+            $table->text("notes")->nullable();
+            $table->foreignId("recorded_by")
+                ->nullable()
+                ->constrained("users_tbls")
+                ->onDelete("cascade");
             $table->timestamps();
         });
     }
@@ -35,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lending_status_tbls');
+        Schema::dropIfExists('lending_repayments_tbls');
     }
 };

@@ -101,6 +101,7 @@
 
                 <span>Fill out the form below to apply for a loan</span>
             </div> --}}
+            {{-- <a href="{{ route("repayment.store") }}">Approved</a> --}}
             <div class="card-parent-box">
                 <div class="card-box">
                     <div class="d-flex justify-content-left align-items-center gap-4">
