@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Loan Processing - CoopAdmin')
+@section('title', 'Lending Processing - CoopAdmin')
 
 @section('content')
     <!-- Breadcrumb -->
@@ -14,7 +14,7 @@
                 </li>
                 <li class="flex items-center">
                     <i data-lucide="chevron-right" class="w-4 h-4 mx-2 text-gray-400"></i>
-                    <span class="text-gray-900 font-medium">Loan Processing</span>
+                    <span class="text-gray-900 font-medium">Lending Processing</span>
                 </li>
             </ol>
         </nav>
@@ -23,8 +23,8 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Loan Processing</h1>
-            <p class="text-sm text-gray-500">Manage loan applications and approvals</p>
+            <h1 class="text-2xl font-bold text-gray-900">Lending Processing</h1>
+            <p class="text-sm text-gray-500">Manage lending applications and approvals</p>
         </div>
         <div class="flex items-center gap-3">
             <button class="btn btn-outline">
@@ -33,7 +33,7 @@
             </button>
             <button class="btn btn-primary">
                 <i data-lucide="plus" class="w-4 h-4"></i>
-                New Loan
+                New Lends
             </button>
         </div>
     </div>

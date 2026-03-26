@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'CoopAdmin - Cooperative Savings & Loan Management')</title>
+    <title>@yield('title', 'KMPCATS')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -312,12 +312,15 @@
                 <!-- Logo -->
                 <div class="p-5 border-b border-gray-200">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <div class="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center shadow-sm">
-                            <i data-lucide="building-2" class="w-5 h-5 text-white"></i>
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm">
+                            <div class="nav-logo">
+                            {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}
+                            <img src="images/logo2.png" width="50px" height="50px" style="border-radius: 50%" alt="">
+                            </div>
                         </div>
                         <div>
-                            <h1 class="text-base font-bold text-gray-900">CoopAdmin</h1>
-                            <p class="text-xs text-gray-500">Savings & Loans</p>
+                            <h1 class="text-base font-bold text-gray-900">KMPCATS</h1>
+                            <p class="text-xs text-gray-500">KMPCATS Managment</p>
                         </div>
                     </a>
                 </div>
@@ -332,7 +335,7 @@
                     <a href="{{ route('lendings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
-                        <span>Loan Processing</span>
+                        <span>Lending process</span>
                     </a>
                     <a href="{{ route('members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('members') ? 'active' : '' }}">
@@ -366,10 +369,10 @@
                     <a href="{{ route('settings') }}"
                         class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
                         <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center shadow-sm">
-                            <span class="text-primary-600 font-semibold text-sm">JD</span>
+                            <span class="text-primary-600 font-semibold text-sm">RS</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">John Doe</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">Ronald Sales</p>
                             <p class="text-xs text-gray-500 truncate">Administrator</p>
                         </div>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
