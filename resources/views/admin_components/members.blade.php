@@ -35,136 +35,234 @@
     </div>
 
     <!-- Filters -->
-    <div class="card p-4 mb-6">
-        <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                    <input type="text" placeholder="Search by name, ID, or email..." class="input pl-10">
-                </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+            <div class="flex-1 w-full">
+                <form action="{{ route('dashboard.members') }}" method="GET">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" name="search" placeholder="Search by name, ID, or email..." class="input pl-10 w-full" value="{{ request('search') }}">
+                    </div>
+                </form>
             </div>
-            <div class="flex gap-2">
-                <button class="btn bg-primary-600 text-white hover:bg-primary-700"
-                    onclick="filterMembers('all')">All</button>
-                <button class="btn btn-outline" onclick="filterMembers('active')">Active</button>
-                <button class="btn btn-outline" onclick="filterMembers('pending')">Pending</button>
-                <button class="btn btn-outline" onclick="filterMembers('inactive')">Inactive</button>
+            <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
+                <a href="{{ route('dashboard.members', ['filter' => 'all']) }}" 
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter', 'all') === 'all' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
+                    All
+                </a>
+                <a href="{{ route('dashboard.members', ['filter' => 'active']) }}" 
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter') === 'active' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
+                    Active
+                </a>
+                <a href="{{ route('dashboard.members', ['filter' => 'pending']) }}" 
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter') === 'pending' ? 'bg-white text-yellow-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
+                    Pending
+                </a>
+                <a href="{{ route('dashboard.members', ['filter' => 'inactive']) }}" 
+                    class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter') === 'inactive' ? 'bg-white text-gray-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
+                    Inactive
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Members Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        @php
-            $members = [
-                ['name' => 'Maria Santos', 'id' => 'MEM-001', 'join' => 'Jan 15, 2024', 'status' => 'Active', 'savings' => '₱45,000', 'loans' => 2, 'avatar' => 'MS'],
-                ['name' => 'John Rivera', 'id' => 'MEM-002', 'join' => 'Feb 20, 2024', 'status' => 'Active', 'savings' => '₱32,500', 'loans' => 1, 'avatar' => 'JR'],
-                ['name' => 'Ana Garcia', 'id' => 'MEM-003', 'join' => 'Mar 10, 2024', 'status' => 'Pending', 'savings' => '₱0', 'loans' => 0, 'avatar' => 'AG'],
-                ['name' => 'Carlos Mendez', 'id' => 'MEM-004', 'join' => 'Apr 5, 2024', 'status' => 'Active', 'savings' => '₱67,000', 'loans' => 3, 'avatar' => 'CM'],
-                ['name' => 'Sofia Lopez', 'id' => 'MEM-005', 'join' => 'May 12, 2024', 'status' => 'Active', 'savings' => '₱28,000', 'loans' => 1, 'avatar' => 'SL'],
-                ['name' => 'Pedro Cruz', 'id' => 'MEM-006', 'join' => 'Jun 18, 2024', 'status' => 'Inactive', 'savings' => '₱12,000', 'loans' => 0, 'avatar' => 'PC'],
-                ['name' => 'Liza Torres', 'id' => 'MEM-007', 'join' => 'Jul 22, 2024', 'status' => 'Active', 'savings' => '₱54,000', 'loans' => 2, 'avatar' => 'LT'],
-                ['name' => 'Mark Diaz', 'id' => 'MEM-008', 'join' => 'Aug 30, 2024', 'status' => 'Pending', 'savings' => '₱0', 'loans' => 0, 'avatar' => 'MD'],
-            ];
-        @endphp
-
-        @foreach($members as $member)
-            <div class="card p-5 hover:shadow-md transition-shadow cursor-pointer" onclick="openModal('memberDetailModal')">
-                <div class="flex items-start justify-between mb-4">
+    @if($pendingRequests->count() > 0)
+    <!-- Pending Member Requests Section -->
+    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200 p-5 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-yellow-600"></i>
+                </div>
+                Pending Member Requests
+                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">{{ $pendingRequests->count() }}</span>
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            @foreach($pendingRequests as $pendingUser)
+                <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-yellow-100 hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
-                            <span class="text-primary-600 font-semibold">{{ $member['avatar'] }}</span>
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center shadow-sm">
+                            <span class="text-white font-bold text-sm">
+                                {{ strtoupper(substr($pendingUser->first_name, 0, 1)) }}{{ strtoupper(substr($pendingUser->last_name ?? '', 0, 1)) }}
+                            </span>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900">{{ $member['name'] }}</h3>
-                            <p class="text-xs text-gray-500">{{ $member['id'] }}</p>
+                            <h4 class="font-semibold text-gray-900">{{ $pendingUser->first_name }} {{ $pendingUser->last_name }}</h4>
+                            <p class="text-xs text-gray-500 truncate max-w-[160px]">{{ $pendingUser->email }}</p>
                         </div>
                     </div>
-                    <div class="dropdown relative">
-                        <button class="p-1 rounded hover:bg-gray-100"
-                            onclick="event.stopPropagation(); toggleDropdown('menu-{{ $loop->index }}')">
-                            <i data-lucide="more-vertical" class="w-4 h-4 text-gray-400"></i>
+                    <div class="flex gap-2">
+                        <a href="{{ route('approve.user', $pendingUser->id) }}" class="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" title="Approve">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </a>
+                        <form action="{{ route('decline.user', $pendingUser->id) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" title="Decline" onclick="return confirm('Are you sure you want to decline this request?')">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- Members Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        @forelse($members as $member)
+            <div class="group bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary-200 transition-all duration-300 overflow-hidden">
+                <!-- Card Header with Avatar -->
+                <div class="relative p-5 pb-4">
+                    <div class="absolute top-4 right-4">
+                        <div class="dropdown relative">
+                            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors opacity-0 group-hover:opacity-100" onclick="event.stopPropagation(); toggleDropdown('menu-{{ $member->id }}')">
+                                <i data-lucide="more-horizontal" class="w-5 h-5 text-gray-400"></i>
+                            </button>
+                            <div id="menu-{{ $member->id }}" class="dropdown-menu hidden right-0 top-full min-w-[140px] bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                                <button class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700" onclick="event.stopPropagation(); openMemberDetailModal({{ $member->id }}); closeAllDropdowns();">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Profile
+                                </button>
+                                <button class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700" onclick="event.stopPropagation(); openEditMemberModal({{ $member->id }}); closeAllDropdowns();">
+                                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                    Edit Info
+                                </button>
+                                <hr class="my-1 border-gray-100">
+                                <button class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2 text-red-600" onclick="event.stopPropagation(); closeAllDropdowns();">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-md">
+                            <span class="text-white font-bold text-lg">
+                                {{ strtoupper(substr($member->first_name, 0, 1)) }}{{ strtoupper(substr($member->last_name ?? '', 0, 1)) }}
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-gray-900 truncate">{{ $member->first_name }} {{ $member->last_name }}</h3>
+                            <p class="text-xs text-gray-400 font-medium">MEM-{{ str_pad($member->id, 4, '0', STR_PAD_LEFT) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="px-5 pb-4">
+                    <div class="space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4 text-gray-300"></i>
+                            <span class="text-sm text-gray-600 truncate flex-1" title="{{ $member->email }}">{{ $member->email }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="phone" class="w-4 h-4 text-gray-300"></i>
+                            <span class="text-sm text-gray-600">{{ $member->contact_no ?? 'No phone' }}</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="tag" class="w-4 h-4 text-gray-300"></i>
+                                <span class="text-xs text-gray-500">{{ $member->membership_category ?? 'Regular' }}</span>
+                            </div>
+                            @if($member->role === 'member' || $member->role === 'active')
+                                <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Active</span>
+                            @elseif($member->role === 'pending')
+                                <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">Pending</span>
+                            @elseif($member->role === 'inactive')
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">Inactive</span>
+                            @else
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">{{ ucfirst($member->role) }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="px-5 pb-5 pt-2">
+                    <div class="flex gap-2">
+                        <button class="flex-1 px-4 py-2.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 flex items-center justify-center gap-2"
+                            onclick="openMemberDetailModal({{ $member->id }})">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                            View Profile
                         </button>
-                        <div id="menu-{{ $loop->index }}" class="dropdown-menu hidden">
-                            <div class="dropdown-item" onclick="event.stopPropagation(); openModal('memberDetailModal')">
-                                <i data-lucide="eye" class="w-4 h-4"></i>
-                                <span>View Profile</span>
-                            </div>
-                            <div class="dropdown-item" onclick="event.stopPropagation()">
-                                <i data-lucide="edit" class="w-4 h-4"></i>
-                                <span>Edit</span>
-                            </div>
-                            <div class="dropdown-item text-danger-600" onclick="event.stopPropagation()">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                <span>Delete</span>
-                            </div>
-                        </div>
+                        <button class="flex-1 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
+                            onclick="openEditMemberModal({{ $member->id }})">
+                            <i data-lucide="edit-2" class="w-4 h-4"></i>
+                            Edit Info
+                        </button>
                     </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Join Date</span>
-                        <span class="text-sm text-gray-900">{{ $member['join'] }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Status</span>
-                        @if($member['status'] === 'Active')
-                            <span class="badge badge-success">{{ $member['status'] }}</span>
-                        @elseif($member['status'] === 'Pending')
-                            <span class="badge badge-warning">{{ $member['status'] }}</span>
-                        @else
-                            <span class="badge badge-gray">{{ $member['status'] }}</span>
-                        @endif
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Savings</span>
-                        <span class="text-sm font-semibold text-gray-900">{{ $member['savings'] }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm text-gray-500">Active Loans</span>
-                        <span class="text-sm font-semibold text-gray-900">{{ $member['loans'] }}</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 mt-4 pt-4 border-t border-gray-100">
-                    <button class="btn btn-outline flex-1 text-sm"
-                        onclick="event.stopPropagation(); openModal('memberDetailModal')">
-                        View Profile
-                    </button>
-                    <button class="btn btn-primary flex-1 text-sm" onclick="event.stopPropagation()">
-                        Edit
-                    </button>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="col-span-full">
+                <div class="text-center py-16">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                        <i data-lucide="users" class="w-10 h-10 text-gray-300"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">No members found</h3>
+                    <p class="text-sm text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+                </div>
+            </div>
+        @endforelse
     </div>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-between mt-6">
-        <p class="text-sm text-gray-500">Showing 1-8 of 1,248 members</p>
-        <div class="flex items-center gap-2">
-            <button class="btn btn-outline px-3">
-                <i data-lucide="chevron-left" class="w-4 h-4"></i>
-            </button>
-            <button class="btn btn-primary px-3">1</button>
-            <button class="btn btn-outline px-3">2</button>
-            <button class="btn btn-outline px-3">3</button>
-            <span class="px-2">...</span>
-            <button class="btn btn-outline px-3">156</button>
-            <button class="btn btn-outline px-3">
-                <i data-lucide="chevron-right" class="w-4 h-4"></i>
-            </button>
+    @if($members->hasPages())
+    <div class="flex items-center justify-between mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <p class="text-sm text-gray-500">
+            Showing {{ $members->firstItem() ?? 1 }} to {{ $members->lastItem() ?? $members->count() }} of {{ $members->total() }} members
+        </p>
+        <div class="flex items-center gap-1">
+            @if($members->onFirstPage())
+                <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+            @else
+                <a href="{{ $members->previousPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </a>
+            @endif
+
+            @foreach($members->getUrlRange(max(1, $members->currentPage() - 2), min($members->lastPage(), $members->currentPage() + 2)) as $page => $url)
+                @if($page == $members->currentPage())
+                    <span class="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}" class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            @if($members->hasMorePages())
+                <a href="{{ $members->nextPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            @else
+                <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            @endif
         </div>
     </div>
+    @endif
 
     <!-- Add Member Modal -->
     <div id="addMemberModal" class="modal-overlay hidden">
-        <div class="modal max-w-xl">
+        <div class="modal max-w-lg">
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-900">Add New Member</h2>
-                    <button onclick="closeModal('addMemberModal')" class="p-1 hover:bg-gray-100 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="user-plus" class="w-5 h-5 text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Add New Member</h2>
+                            <p class="text-xs text-gray-500">Create a new cooperative member</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('addMemberModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                         <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
                     </button>
                 </div>
@@ -172,39 +270,37 @@
             <form class="p-6 space-y-4">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">First Name</label>
                         <input type="text" class="input" placeholder="Enter first name">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Last Name</label>
                         <input type="text" class="input" placeholder="Enter last name">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
                     <input type="email" class="input" placeholder="Enter email address">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input type="tel" class="input" placeholder="Enter phone number">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+                        <input type="tel" class="input" placeholder="Enter phone number">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Date of Birth</label>
+                        <input type="date" class="input">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                    <input type="date" class="input">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
                     <textarea class="input" rows="2" placeholder="Enter address"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Initial Share Capital</label>
-                    <input type="number" class="input" placeholder="Enter amount">
                 </div>
             </form>
             <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
-                <button onclick="closeModal('addMemberModal')" class="btn btn-outline">Cancel</button>
+                <button onclick="closeModal('addMemberModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
                 <button onclick="closeModal('addMemberModal'); showToast('Success', 'Member added successfully')"
-                    class="btn btn-primary">Add Member</button>
+                    class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors">Add Member</button>
             </div>
         </div>
     </div>
@@ -214,124 +310,380 @@
         <div class="modal max-w-2xl">
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-900">Member Profile</h2>
-                    <button onclick="closeModal('memberDetailModal')" class="p-1 hover:bg-gray-100 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Member Profile</h2>
+                            <p class="text-xs text-gray-500">View member information</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('memberDetailModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                         <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
                     </button>
                 </div>
             </div>
-            <div class="p-6">
-                <div class="flex items-start gap-6 mb-6">
-                    <div class="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center">
-                        <span class="text-primary-600 text-2xl font-bold">MS</span>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <!-- Profile Header -->
+                <div class="flex items-center gap-5 mb-6 p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
+                        <span id="detail-avatar" class="text-white text-2xl font-bold">--</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-xl font-semibold text-gray-900">Maria Santos</h3>
-                        <p class="text-gray-500">MEM-001</p>
+                        <h3 id="detail-name" class="text-xl font-bold text-gray-900">--</h3>
+                        <p id="detail-member-id" class="text-sm text-gray-500 font-medium">--</p>
                         <div class="flex gap-2 mt-2">
-                            <span class="badge badge-success">Active</span>
-                            <span class="badge badge-primary">Verified</span>
+                            <span id="detail-status" class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">--</span>
+                            <span id="detail-category" class="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full">--</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <div class="space-y-3">
-                        <h4 class="font-medium text-gray-900">Personal Information</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Email</span>
-                                <span class="text-gray-900">maria.santos@email.com</span>
+                <!-- Info Grid -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4 text-primary-500"></i>
+                            Personal Information
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Email</span>
+                                <span id="detail-email" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Phone</span>
-                                <span class="text-gray-900">+63 912 345 6789</span>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Phone</span>
+                                <span id="detail-phone" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Date of Birth</span>
-                                <span class="text-gray-900">March 15, 1985</span>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Date of Birth</span>
+                                <span id="detail-dob" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Address</span>
-                                <span class="text-gray-900">123 Main St, Manila</span>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Sex</span>
+                                <span id="detail-sex" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="space-y-3">
-                        <h4 class="font-medium text-gray-900">Account Summary</h4>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Member Since</span>
-                                <span class="text-gray-900">January 15, 2024</span>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Civil Status</span>
+                                <span id="detail-civil-status" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Savings Balance</span>
-                                <span class="text-gray-900 font-semibold text-success-500">₱45,000</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Share Capital</span>
-                                <span class="text-gray-900 font-semibold">₱10,000</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Active Loans</span>
-                                <span class="text-gray-900 font-semibold">2</span>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-gray-500">Address</span>
+                                <span id="detail-address" class="text-sm font-medium text-gray-900 text-right max-w-[180px]">--</span>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="font-medium text-gray-900 mb-3">Savings History</h4>
-                    <div class="h-32 flex items-end justify-between gap-2 px-4">
-                        @foreach(['Jan' => 20, 'Feb' => 35, 'Mar' => 30, 'Apr' => 45, 'May' => 40, 'Jun' => 45] as $month => $value)
-                            <div class="flex-1 flex flex-col items-center gap-2">
-                                <div class="w-full bg-success-100 rounded-t-lg hover:bg-success-200 transition-colors"
-                                    style="height: {{ $value * 2 }}px"></div>
-                                <span class="text-xs text-gray-500">{{ $month }}</span>
+                    <div class="space-y-4">
+                        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="credit-card" class="w-4 h-4 text-primary-500"></i>
+                            Account Information
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Membership</span>
+                                <span id="detail-membership" class="text-sm font-medium text-gray-900">--</span>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="font-medium text-gray-900 mb-3">Loan History</h4>
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Loan ID</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-sm">LN-2024-001</td>
-                                    <td class="text-sm">₱50,000</td>
-                                    <td class="text-sm">Mar 15, 2024</td>
-                                    <td><span class="badge badge-success">Paid</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm">LN-2024-005</td>
-                                    <td class="text-sm">₱30,000</td>
-                                    <td class="text-sm">Jun 20, 2024</td>
-                                    <td><span class="badge badge-primary">Active</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Citizenship</span>
+                                <span id="detail-citizenship" class="text-sm font-medium text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Place of Birth</span>
+                                <span id="detail-pob" class="text-sm font-medium text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Blood Type</span>
+                                <span id="detail-blood-type" class="text-sm font-medium text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="text-sm text-gray-500">Height</span>
+                                <span id="detail-height" class="text-sm font-medium text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm text-gray-500">Weight</span>
+                                <span id="detail-weight" class="text-sm font-medium text-gray-900">--</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="p-6 border-t border-gray-100 flex justify-between">
-                <div class="flex gap-2">
-                    <button class="btn btn-danger">Deactivate Account</button>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="closeModal('memberDetailModal')" class="btn btn-outline">Close</button>
-                    <button class="btn btn-primary">Edit Record</button>
-                </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('memberDetailModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <button id="detail-edit-btn" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                    Edit Info
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Edit Member Modal -->
+    <div id="editMemberModal" class="modal-overlay hidden">
+        <div class="modal max-w-2xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="edit-2" class="w-5 h-5 text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Edit Member</h2>
+                            <p class="text-xs text-gray-500">Update member information</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('editMemberModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="editMemberForm" action="{{ route('update.member') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="id" id="edit-id">
+                <div class="p-6 max-h-[55vh] overflow-y-auto space-y-5">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4 text-blue-500"></i>
+                            Basic Information
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <input type="text" name="first_name" id="edit-first_name" class="input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Middle Name</label>
+                                <input type="text" name="middle_name" id="edit-middle_name" class="input">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <input type="text" name="last_name" id="edit-last_name" class="input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" name="email" id="edit-email" class="input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+                        <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="phone" class="w-4 h-4 text-green-500"></i>
+                            Contact Details
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                                <input type="text" name="contact_no" id="edit-contact_no" class="input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                                <input type="date" name="date_of_birth" id="edit-date_of_birth" class="input">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Present Address</label>
+                            <input type="text" name="present_address" id="edit-present_address" class="input">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
+                            <input type="text" name="permanent_address" id="edit-permanent_address" class="input">
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                        <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="heart" class="w-4 h-4 text-purple-500"></i>
+                            Personal Details
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Sex</label>
+                                <select name="sex" id="edit-sex" class="input">
+                                    <option value="">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Civil Status</label>
+                                <select name="civil_status" id="edit-civil_status" class="input">
+                                    <option value="">Select</option>
+                                    <option value="Single">Single</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Widowed">Widowed</option>
+                                    <option value="Separated">Separated</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Citizenship</label>
+                                <input type="text" name="citizenship" id="edit-citizenship" class="input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Place of Birth</label>
+                                <input type="text" name="place_of_birth" id="edit-place_of_birth" class="input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                        <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="activity" class="w-4 h-4 text-orange-500"></i>
+                            Health Information
+                        </h4>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Blood Type</label>
+                                <select name="blood_type" id="edit-blood_type" class="input">
+                                    <option value="">Select</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Height</label>
+                                <input type="text" name="height" id="edit-height" class="input">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Weight</label>
+                                <input type="text" name="weight" id="edit-weight" class="input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="settings" class="w-4 h-4 text-gray-500"></i>
+                            Account Settings
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Membership Category</label>
+                                <select name="membership_category" id="edit-membership_category" class="input">
+                                    <option value="">Select</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Associate">Associate</option>
+                                    <option value="Honorary">Honorary</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <select name="role" id="edit-role" class="input">
+                                    <option value="pending">Pending</option>
+                                    <option value="member">Member</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('editMemberModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="application/json" id="members-data">
+        {!! json_encode($members) !!}
+    </script>
+    
+    <script>
+        const membersData = {!! json_encode($members->items()) !!};
+        
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
+        }
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                closeAllDropdowns();
+            }
+        });
+        
+        function openMemberDetailModal(memberId) {
+            const member = membersData.find(m => m.id === memberId);
+            if (!member) return;
+            
+            document.getElementById('detail-avatar').textContent = (member.first_name?.charAt(0) || '') + (member.last_name?.charAt(0) || '');
+            document.getElementById('detail-name').textContent = (member.first_name || '') + ' ' + (member.last_name || '');
+            document.getElementById('detail-member-id').textContent = 'MEM-' + String(member.id).padStart(4, '0');
+            document.getElementById('detail-email').textContent = member.email || 'N/A';
+            document.getElementById('detail-phone').textContent = member.contact_no || 'N/A';
+            document.getElementById('detail-dob').textContent = member.date_of_birth || 'N/A';
+            document.getElementById('detail-sex').textContent = member.sex || 'N/A';
+            document.getElementById('detail-civil-status').textContent = member.civil_status || 'N/A';
+            document.getElementById('detail-address').textContent = member.present_address || 'N/A';
+            document.getElementById('detail-membership').textContent = member.membership_category || 'N/A';
+            document.getElementById('detail-citizenship').textContent = member.citizenship || 'N/A';
+            document.getElementById('detail-pob').textContent = member.place_of_birth || 'N/A';
+            document.getElementById('detail-blood-type').textContent = member.blood_type || 'N/A';
+            document.getElementById('detail-height').textContent = member.height || 'N/A';
+            document.getElementById('detail-weight').textContent = member.weight || 'N/A';
+            
+            const statusEl = document.getElementById('detail-status');
+            if (member.role === 'member' || member.role === 'active') {
+                statusEl.className = 'px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full';
+                statusEl.textContent = 'Active';
+            } else if (member.role === 'pending') {
+                statusEl.className = 'px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full';
+                statusEl.textContent = 'Pending';
+            } else {
+                statusEl.className = 'px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full';
+                statusEl.textContent = member.role || 'N/A';
+            }
+            
+            const categoryEl = document.getElementById('detail-category');
+            categoryEl.textContent = member.membership_category || 'N/A';
+            
+            document.getElementById('detail-edit-btn').onclick = function() {
+                closeModal('memberDetailModal');
+                openEditMemberModal(memberId);
+            };
+            
+            openModal('memberDetailModal');
+        }
+        
+        function openEditMemberModal(memberId) {
+            const member = membersData.find(m => m.id === memberId);
+            if (!member) return;
+            
+            document.getElementById('edit-id').value = member.id;
+            document.getElementById('edit-first_name').value = member.first_name || '';
+            document.getElementById('edit-middle_name').value = member.middle_name || '';
+            document.getElementById('edit-last_name').value = member.last_name || '';
+            document.getElementById('edit-email').value = member.email || '';
+            document.getElementById('edit-contact_no').value = member.contact_no || '';
+            document.getElementById('edit-date_of_birth').value = member.date_of_birth || '';
+            document.getElementById('edit-sex').value = member.sex || '';
+            document.getElementById('edit-civil_status').value = member.civil_status || '';
+            document.getElementById('edit-present_address').value = member.present_address || '';
+            document.getElementById('edit-permanent_address').value = member.permanent_address || '';
+            document.getElementById('edit-citizenship').value = member.citizenship || '';
+            document.getElementById('edit-place_of_birth').value = member.place_of_birth || '';
+            document.getElementById('edit-blood_type').value = member.blood_type || '';
+            document.getElementById('edit-height').value = member.height || '';
+            document.getElementById('edit-weight').value = member.weight || '';
+            document.getElementById('edit-membership_category').value = member.membership_category || '';
+            document.getElementById('edit-role').value = member.role || '';
+            
+            openModal('editMemberModal');
+        }
+    </script>
 @endsection

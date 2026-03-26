@@ -337,8 +337,8 @@
                         <i data-lucide="banknote" class="w-5 h-5"></i>
                         <span>Lending process</span>
                     </a>
-                    <a href="{{ route('members') }}"
-                        class="sidebar-link justify-start {{ request()->routeIs('members') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard.members') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">
                         <i data-lucide="users" class="w-5 h-5"></i>
                         <span>Members</span>
                     </a>

@@ -46,10 +46,32 @@ class UserController extends Controller
     {
         $user = Users_tbl::findOrFail($id);
 
-        // Send email notification
         Mail::to($user->email)->send(new ApprovedMail($user));
 
         return redirect()->back()->with('success', 'Member approved and email sent!');
+    }
+
+    public function declineUser($id)
+    {
+        $user = Users_tbl::findOrFail($id);
+        $user->delete();
+
+        return redirect()->back()->with('error', 'Member request declined and removed.');
+    }
+
+    public function updateMember(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $user = Users_tbl::findOrFail($request->id);
+        $user->update($request->all());
+
+        return redirect()->back()->with('success', 'Member updated successfully.');
     }
 
     public function StaticPage()
@@ -144,8 +166,22 @@ class UserController extends Controller
         return view("admin_components.dashboard");
     }
 
-    public function dashboard_members(){
-        return view("admin_components.members");
+    public function dashboard_members(Request $request){
+        $query = Users_tbl::query();
+        
+        $status = $request->get('filter', 'all');
+        if ($status === 'pending') {
+            $query->where('role', 'pending');
+        } elseif ($status === 'active') {
+            $query->where('role', 'member');
+        } elseif ($status === 'inactive') {
+            $query->where('role', 'inactive');
+        }
+        
+        $members = $query->paginate(12);
+        $pendingRequests = Users_tbl::where('role', 'pending')->get();
+        
+        return view("admin_components.members", compact('members', 'pendingRequests'));
     }
 
     public function dashboard_savings(){
