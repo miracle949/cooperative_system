@@ -57,6 +57,9 @@
                 <a href="{{ route('dashboard.members', ['filter' => 'pending']) }}" 
                     class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter') === 'pending' ? 'bg-white text-yellow-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
                     Pending
+                    @if($pendingRequests->count() > 0)
+                        <span class="ml-1 px-1.5 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">{{ $pendingRequests->count() }}</span>
+                    @endif
                 </a>
                 <a href="{{ route('dashboard.members', ['filter' => 'inactive']) }}" 
                     class="px-4 py-2 text-sm font-medium rounded-md transition-all {{ request('filter') === 'inactive' ? 'bg-white text-gray-600 shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">
@@ -66,54 +69,12 @@
         </div>
     </div>
 
-    @if($pendingRequests->count() > 0)
-    <!-- Pending Member Requests Section -->
-    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200 p-5 mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <i data-lucide="user-plus" class="w-4 h-4 text-yellow-600"></i>
-                </div>
-                Pending Member Requests
-                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">{{ $pendingRequests->count() }}</span>
-            </h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            @foreach($pendingRequests as $pendingUser)
-                <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-yellow-100 hover:shadow-md transition-shadow">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center shadow-sm">
-                            <span class="text-white font-bold text-sm">
-                                {{ strtoupper(substr($pendingUser->first_name, 0, 1)) }}{{ strtoupper(substr($pendingUser->last_name ?? '', 0, 1)) }}
-                            </span>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-gray-900">{{ $pendingUser->first_name }} {{ $pendingUser->last_name }}</h4>
-                            <p class="text-xs text-gray-500 truncate max-w-[160px]">{{ $pendingUser->email }}</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <a href="{{ route('approve.user', $pendingUser->id) }}" class="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" title="Approve">
-                            <i data-lucide="check" class="w-4 h-4"></i>
-                        </a>
-                        <form action="{{ route('decline.user', $pendingUser->id) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors" title="Decline" onclick="return confirm('Are you sure you want to decline this request?')">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
+
 
     <!-- Members Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         @forelse($members as $member)
-            <div class="group bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary-200 transition-all duration-300 overflow-hidden">
+            <div class="group bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary-200 transition-all duration-300 overflow-hidden {{ $member->role === 'pending' ? 'border-yellow-200 bg-gradient-to-br from-white to-yellow-50' : '' }}">
                 <!-- Card Header with Avatar -->
                 <div class="relative p-5 pb-4">
                     <div class="absolute top-4 right-4">
@@ -140,7 +101,7 @@
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-md">
+                        <div class="w-14 h-14 rounded-full {{ $member->role === 'pending' ? 'bg-gradient-to-br from-yellow-400 to-orange-400' : 'bg-gradient-to-br from-primary-400 to-primary-600' }} flex items-center justify-center shadow-md">
                             <span class="text-white font-bold text-lg">
                                 {{ strtoupper(substr($member->first_name, 0, 1)) }}{{ strtoupper(substr($member->last_name ?? '', 0, 1)) }}
                             </span>
@@ -183,18 +144,35 @@
 
                 <!-- Card Footer -->
                 <div class="px-5 pb-5 pt-2">
-                    <div class="flex gap-2">
-                        <button class="flex-1 px-4 py-2.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 flex items-center justify-center gap-2"
-                            onclick="openMemberDetailModal({{ $member->id }})">
-                            <i data-lucide="user" class="w-4 h-4"></i>
-                            View Profile
-                        </button>
-                        <button class="flex-1 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
-                            onclick="openEditMemberModal({{ $member->id }})">
-                            <i data-lucide="edit-2" class="w-4 h-4"></i>
-                            Edit Info
-                        </button>
-                    </div>
+                    @if($member->role === 'pending')
+                        <div class="flex gap-2">
+                            <a href="{{ route('approve.user', $member->id) }}" class="flex-1 px-4 py-2.5 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Approve
+                            </a>
+                            <form action="{{ route('decline.user', $member->id) }}" method="POST" class="flex-1 inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full px-4 py-2.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2" onclick="return confirm('Are you sure you want to decline this request?')">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                    Decline
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="flex gap-2">
+                            <button class="flex-1 px-4 py-2.5 bg-gray-50 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors border border-gray-200 flex items-center justify-center gap-2"
+                                onclick="openMemberDetailModal({{ $member->id }})">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                                View Profile
+                            </button>
+                            <button class="flex-1 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
+                                onclick="openEditMemberModal({{ $member->id }})">
+                                <i data-lucide="edit-2" class="w-4 h-4"></i>
+                                Edit Info
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         @empty
@@ -569,15 +547,6 @@
                         </h4>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Membership Category</label>
-                                <select name="membership_category" id="edit-membership_category" class="input">
-                                    <option value="">Select</option>
-                                    <option value="Regular">Regular</option>
-                                    <option value="Associate">Associate</option>
-                                    <option value="Honorary">Honorary</option>
-                                </select>
-                            </div>
-                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                                 <select name="role" id="edit-role" class="input">
                                     <option value="pending">Pending</option>
@@ -680,7 +649,6 @@
             document.getElementById('edit-blood_type').value = member.blood_type || '';
             document.getElementById('edit-height').value = member.height || '';
             document.getElementById('edit-weight').value = member.weight || '';
-            document.getElementById('edit-membership_category').value = member.membership_category || '';
             document.getElementById('edit-role').value = member.role || '';
             
             openModal('editMemberModal');

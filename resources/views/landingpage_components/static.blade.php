@@ -33,14 +33,13 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <a href={{ route('approve.user', $getTheUser->id) }}">Approved</a>
+                            <a href="{{ route('approve.user', $getTheUser->id) }}">Approved</a>
                         </div>
 
                     @endforeach
 
                 @endif
         </main>
-    </div>
     </div>
 
 </body>

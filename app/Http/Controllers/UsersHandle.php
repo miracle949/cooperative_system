@@ -383,10 +383,10 @@ class UsersHandle extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role === "Member") {
+        if ($user->role === "member" || $user->role === "pending") {
             return redirect()->route("MemberPortal")->with("message", "Login successfully!");
         } else {
-            return redirect()->route("AdminPage")->with("message", "Login successfully!");
+            return redirect()->route("dashboard")->with("message", "Login successfully!");
         }
     }
 
@@ -485,6 +485,7 @@ class UsersHandle extends Controller
                 "number_son" => $request->number_son,
                 "number_daughter" => $request->number_daughter,
                 "other_spec" => $request->other_spec,
+                "role" => "pending",
             ]);
 
             // Spouse

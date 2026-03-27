@@ -7,6 +7,7 @@ use App\Models\Membervehi_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApprovedMail;
+use App\Mail\DeclinedMail;
 
 class UserController extends Controller
 {
@@ -45,6 +46,8 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
+        $user->role = 'member';
+        $user->save();
 
         Mail::to($user->email)->send(new ApprovedMail($user));
 
@@ -54,6 +57,9 @@ class UserController extends Controller
     public function declineUser($id)
     {
         $user = Users_tbl::findOrFail($id);
+
+        Mail::to($user->email)->send(new DeclinedMail($user));
+
         $user->delete();
 
         return redirect()->back()->with('error', 'Member request declined and removed.');
@@ -69,7 +75,25 @@ class UserController extends Controller
         ]);
 
         $user = Users_tbl::findOrFail($request->id);
-        $user->update($request->all());
+
+        $user->update($request->only([
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'contact_no',
+            'date_of_birth',
+            'present_address',
+            'permanent_address',
+            'sex',
+            'civil_status',
+            'citizenship',
+            'place_of_birth',
+            'blood_type',
+            'height',
+            'weight',
+            'role',
+        ]));
 
         return redirect()->back()->with('success', 'Member updated successfully.');
     }
