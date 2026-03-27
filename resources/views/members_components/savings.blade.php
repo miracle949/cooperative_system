@@ -256,13 +256,15 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content sm-modal-content">
 
-                    <div class="modal-header sm-modal-header">
-                        <div>
+                    <div class="modal-header sm-modal-header" style="padding: 24px 20px;">
+                        <div class="modal-text">
                             <div class="sm-modal-icon sm-deposit-icon">
                                 <i class="fa-solid fa-circle-arrow-down"></i>
                             </div>
-                            <h5 class="modal-title sm-modal-title" id="depositModalLabel">Deposit Savings</h5>
-                            <p class="sm-modal-subtitle">Add funds to your savings account</p>
+                            <div class="sm-modal-text">
+                                <h1 class="modal-title sm-modal-title" id="depositModalLabel">Deposit Savings</h1>
+                                <p class="sm-modal-subtitle">Add funds to your savings account</p>
+                            </div>
                         </div>
                         <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
                             <i class="fa-solid fa-xmark"></i>
@@ -326,13 +328,15 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content sm-modal-content">
 
-                    <div class="modal-header sm-modal-header">
-                        <div>
+                    <div class="modal-header sm-modal-header" style="padding: 24px 20px;">
+                        <div class="modal-text">
                             <div class="sm-modal-icon sm-withdraw-icon">
                                 <i class="fa-solid fa-circle-arrow-up"></i>
                             </div>
-                            <h5 class="modal-title sm-modal-title" id="withdrawModalLabel">Withdraw Savings</h5>
-                            <p class="sm-modal-subtitle">Withdraw funds from your savings account</p>
+                            <div class="sm-modal-text">
+                                <h1 class="modal-title sm-modal-title" id="withdrawModalLabel">Withdraw Savings</h1>
+                                <p class="sm-modal-subtitle">Withdraw funds from your savings account</p>
+                            </div>
                         </div>
                         <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
                             <i class="fa-solid fa-xmark"></i>

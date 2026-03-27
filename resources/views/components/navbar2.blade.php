@@ -44,13 +44,17 @@
 
     <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa fa-bell" style="font-size: 20px"></i>
+            <i class="fa fa-bell" style="font-size: 17px; color: var(--green)"></i>
             <li>
                 @if ($first_name)
                     <a href="#" onclick="toggleDropdown(event)"
                         class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem]">
-                        <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt="">
+                        {{-- <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt=""> --}}
+                        <div class="first-last">
+                            <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}{{ strtoupper(substr(Auth::user()->last_name, 0, 1)) }}</p>
+                        </div>
                         <p style="margin: 0">{{ $first_name }}</p>
+                        <i class="fa fa-chevron-down"></i>
                     </a>
                 @endif
 
@@ -63,11 +67,11 @@
                         <div class="card-icon"><i class="fa fa-lock"></i></div>
                         <a href="#">Reset Password</a>
                     </li>
-                    <hr>
+                    {{-- <hr>
                     <li>
                         <div class="card-icon"><i class="fa fa-truck"></i></div>
                         <a href="{{ route('DriverPortal') }}">Switch to Driver Portal</a>
-                    </li>
+                    </li> --}}
                     <hr>
                     <li>
                         <div class="card-icon"><i class="fa fa-sign-out"></i></div>

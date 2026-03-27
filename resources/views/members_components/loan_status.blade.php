@@ -31,8 +31,9 @@
                 @forelse($loans as $loan)
                     <a href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
                         style="text-decoration: none; color: inherit;">
-                        <div
-                            class="sidebar-box {{ $selectedLoan && $selectedLoan->id == $loan->id ? 'active-sidebar' : '' }}">
+
+                        {{-- THIS must be INSIDE the @forelse, not outside --}}
+                        <div class="sidebar-box {{ $selectedLoan && $selectedLoan->id == $loan->id ? 'active-sidebar' : '' }}">
                             <div class="sidebar-header">
                                 <h4>{{ $loan->lending_type }}</h4>
                                 <div class="parent-active">
@@ -63,12 +64,14 @@
                                 </div>
                             </div>
                         </div>
+
                     </a>
                 @empty
                     <p style="padding: 1rem; color: gray; font-size: 13px;">No active loans found.</p>
                 @endforelse
             </div>
         </div>
+               
 
         {{-- RIGHTBAR --}}
         <div class="rightbar">
@@ -117,7 +120,7 @@
                                     </div>
                                     @endif
 
-                                    <button onclick="document.getElementById('successModal').style.display='none'"
+                                    <button onclick="closeSuccessModal()"
                                         style="background: #1a4a3a; color: white; border: none; border-radius: 10px; padding: 12px 40px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;">
                                         Done
                                     </button>
@@ -144,7 +147,7 @@
                                     <h4 style="font-size: 20px; font-weight: 700; color: #c0392b; margin-bottom: 8px;">Payment Failed</h4>
                                     <p style="font-size: 14px; color: #777; margin-bottom: 1.5rem;">{{ session('error') }}</p>
 
-                                    <button onclick="document.getElementById('errorModal').style.display='none'"
+                                    <button onclick="closeErrorModal()"
                                         style="background: #e03131; color: white; border: none; border-radius: 10px; padding: 12px 40px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;">
                                         Try Again
                                     </button>
@@ -204,11 +207,28 @@
                             </div>
 
                             {{-- REPAYMENT BUTTON --}}
-                            @if($lendingStatus->status === 'Active' || $lendingStatus->status === 'Overdue')
+                            @if(
+                                ($lendingStatus->status === 'Active' || $lendingStatus->status === 'Overdue') &&
+                                $lendingStatus->remaining_balance > 0 &&
+                                $lendingStatus->total_payments > 0 &&
+                                $lendingStatus->payments_made < $lendingStatus->total_payments
+                            )
                                 <div class="mt-3 d-flex gap-2">
                                     <button class="btn-repay" data-bs-toggle="modal" data-bs-target="#repayModal">
                                         Make a Payment
                                     </button>
+                                </div>
+                            @elseif(
+                                $lendingStatus->total_payments > 0 &&
+                                ($lendingStatus->status === 'Completed' ||
+                                $lendingStatus->remaining_balance <= 0 ||
+                                $lendingStatus->payments_made >= $lendingStatus->total_payments)
+                            )
+                                <div class="mt-3">
+                                    <div style="display: flex; align-items: center; gap: 8px; background: #e8f8f0; border: 1.5px solid #a8dfc4; border-radius: 10px; padding: 10px 16px; width: fit-content;">
+                                        <i class="fa-solid fa-circle-check" style="color: #1a4a3a; font-size: 16px;"></i>
+                                        <p style="margin: 0; font-size: 13px; font-weight: 600; color: #1a4a3a;">Lending fully paid</p>
+                                    </div>
                                 </div>
                             @endif
                         </div>
@@ -224,7 +244,7 @@
                                         <table class="table">
                                             <thead>
                                                 <tr>
-                                                    <th>Payment Date</th>
+                                                    <th>Payment Date & Time</th>
                                                     <th>Amount</th>
                                                     <th>Method</th>
                                                     <th>Reference No.</th>
@@ -235,8 +255,7 @@
                                             <tbody>
                                                 @forelse($paymentHistory as $payment)
                                                     <tr>
-                                                        <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('m/d/Y') }}
-                                                        </td>
+                                                        <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('m/d/Y h:i A') }}</td>
                                                         <td>₱ {{ number_format($payment->amount_paid, 2) }}</td>
                                                         <td>{{ $payment->payment_method }}</td>
                                                         <td>{{ $payment->reference_no ?? '—' }}</td>
@@ -265,13 +284,13 @@
                     </section>
 
                 @else
-                    <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+                    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
                         <p style="color: gray;">Loan status is being processed. Please check back later.</p>
                     </div>
                 @endif
 
             @else
-                <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+                <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
                     <p style="color: gray;">No loan selected or no approved loans found.</p>
                 </div>
             @endif
@@ -314,7 +333,7 @@
                                             style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a4a3a; font-weight: 700; font-size: 15px;">₱</span>
                                         <input type="number" name="amount_paid" class="form-control"
                                             value="{{ $selectedLoan->monthly_payment }}" required
-                                            style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;" disabled>
+                                            style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;" readonly>
                                     </div>
                                 </div>
 
@@ -341,11 +360,12 @@
 
                                 {{-- Reference No --}}
                                 <div style="margin-bottom: 1.1rem;">
-                                    <label
-                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Reference
-                                        / Receipt No.</label>
+                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Reference / Receipt No.
+                                        <span style="color: #aaa; font-weight: 400; font-size: 11px; text-transform: none;">(optional — auto-generated if blank)</span>
+                                    </label>
                                     <input type="text" name="reference_no" class="form-control"
-                                        placeholder="e.g. RCP-20260326-001"
+                                        placeholder="Leave blank to auto-generate"
                                         style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
                                 </div>
 
@@ -426,6 +446,42 @@
         function submitGcash() {
             document.getElementById('gcash-form').submit();
         }
+
+        function closeSuccessModal() {
+            var modal = document.getElementById('successModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function closeErrorModal() {
+            var modal = document.getElementById('errorModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Fix Bootstrap modal conflict — remove leftover backdrop after success/error modal closes
+        document.addEventListener('DOMContentLoaded', function () {
+            var successModal = document.getElementById('successModal');
+            var errorModal = document.getElementById('errorModal');
+
+            if (successModal) {
+                successModal.addEventListener('click', function(e) {
+                    if (e.target === successModal) {
+                        closeSuccessModal();
+                    }
+                });
+            }
+
+            if (errorModal) {
+                errorModal.addEventListener('click', function(e) {
+                    if (e.target === errorModal) {
+                        closeErrorModal();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 

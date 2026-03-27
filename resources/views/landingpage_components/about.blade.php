@@ -50,7 +50,7 @@
 
                     <div class="mt-4">
                         <a href="#"
-                            class="text-decoration-none btn text-uppercase fw-semibold tw:hover:bg-gray-700"
+                            class="text-decoration-none btn fw-semibold tw:hover:bg-gray-700"
                             style="font-size: 14.5px">Learn More <i class="fa fa-arrow-right"></i></a>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
             </div>
         </main>
 
-        <section class="mt-3" id="section1">
+        <section id="section1">
 
             <div class="tw:flex tw:justify-center tw:items-center gap-5 parent-vision-mission">
                 <div class="card tw:p-7 md:w-100"

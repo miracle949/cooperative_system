@@ -239,6 +239,10 @@
     }
 }
 
+#section1{
+    background-color: #F7F9F8;
+}
+
 #section1 h2 {
     font-size: 22px;
     font-weight: 600;
@@ -353,7 +357,8 @@ hr {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background-color: #F7F9F8;
 }
 
 #section3 h2 {

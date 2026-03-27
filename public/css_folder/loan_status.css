@@ -21,11 +21,11 @@ body {
     /* overflow-y: hidden; */
 }
 
-.modal-header h5{
+.modal-header h5 {
     font-size: 16px;
 }
 
-button{
+button {
     background-color: var(--green);
     color: #ffffff;
     padding: 10px 30px;
@@ -33,12 +33,12 @@ button{
     font-weight: 600;
 }
 
-.btn-repay{
+.btn-repay {
     border-radius: 10px;
     font-size: 13.5px;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     width: 7px;
 }
 
@@ -84,7 +84,7 @@ button{
     background-color: #C9A84C;
 }
 
-.container-fluid .sidebar .sidebar-parent-box .sidebar-box:nth-child(3) .sidebar-header .parent-active p{
+.container-fluid .sidebar .sidebar-parent-box .sidebar-box:nth-child(3) .sidebar-header .parent-active p {
     /* margin: 0;
     font-size: 13px;
     font-weight: 600; */
@@ -186,12 +186,12 @@ button{
     align-items: center;
 }
 
-.container-fluid .sidebar .sidebar-parent-box .sidebar-box .side-body .paid p:nth-child(1){
+.container-fluid .sidebar .sidebar-parent-box .sidebar-box .side-body .paid p:nth-child(1) {
     color: #000;
     font-weight: 500;
 }
 
-.container-fluid .sidebar .sidebar-parent-box .sidebar-box .side-body .paid p:nth-child(2){
+.container-fluid .sidebar .sidebar-parent-box .sidebar-box .side-body .paid p:nth-child(2) {
     color: #808080;
 }
 
@@ -220,6 +220,7 @@ button{
     /* align-items: center; */
     padding: 2rem;
     border-radius: 10px;
+    animation: slideIn 0.4s ease both;
 }
 
 .container-fluid .rightbar main .main-parent h3,
@@ -228,7 +229,7 @@ button{
     color: #ffffff;
 }
 
-.container-fluid .rightbar main .main-parent .main-text{
+.container-fluid .rightbar main .main-parent .main-text {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
@@ -254,14 +255,14 @@ button{
     font-size: 
 } */
 
-.container-fluid .rightbar main .main-parent .main-amount .active-parent .dot{
+.container-fluid .rightbar main .main-parent .main-amount .active-parent .dot {
     border-radius: 50%;
     width: 6px;
     height: 6px;
     background-color: var(--green);
 }
 
-.container-fluid .rightbar main .main-parent .main-amount .active-parent{
+.container-fluid .rightbar main .main-parent .main-amount .active-parent {
     background-color: #efefef;
     border-radius: 28px;
     padding: 0.2rem;
@@ -273,12 +274,12 @@ button{
     width: 80px;
 }
 
-.container-fluid .rightbar main .main-parent .main-amount .active-parent p{
+.container-fluid .rightbar main .main-parent .main-amount .active-parent p {
     margin: 0;
     font-size: 12px;
 }
 
-.container-fluid .rightbar main .main-parent .main-amount .active-parent p{
+.container-fluid .rightbar main .main-parent .main-amount .active-parent p {
     color: var(--green);
 }
 
@@ -291,7 +292,7 @@ button{
     /* color: var(--green); */
 }
 
-.container-fluid .rightbar main .main-parent .main-amount{
+.container-fluid .rightbar main .main-parent .main-amount {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
@@ -305,7 +306,7 @@ button{
     /* color: var(--green); */
 }
 
-.container-fluid .rightbar main .main-parent .main-amount p:nth-child(1){
+.container-fluid .rightbar main .main-parent .main-amount p:nth-child(1) {
     text-transform: uppercase;
 }
 
@@ -348,14 +349,14 @@ button{
     }
 }
 
-.container-fluid main .card-box-parent .card-box p{
+.container-fluid main .card-box-parent .card-box p {
     margin: 0 0 0;
     text-transform: uppercase;
     font-size: 14.5px;
     color: #808080;
 }
 
-.container-fluid main .card-box-parent .card-box span{
+.container-fluid main .card-box-parent .card-box span {
     font-size: 14.5px;
     color: #808080;
     /* padding-top: 2rem; */
@@ -383,7 +384,7 @@ button{
     background-color: #C9A84C;
 }
 
-.container-fluid main .card-box-parent .card-box:nth-child(3)::before{
+.container-fluid main .card-box-parent .card-box:nth-child(3)::before {
     content: '';
     position: absolute;
     top: 0;
@@ -405,15 +406,15 @@ button{
     font-family: "Playfair Display";
 }
 
-.container-fluid main .card-box-parent .card-box:nth-child(1) h4{
+.container-fluid main .card-box-parent .card-box:nth-child(1) h4 {
     color: var(--green);
 }
 
-.container-fluid main .card-box-parent .card-box:nth-child(2) h4{
+.container-fluid main .card-box-parent .card-box:nth-child(2) h4 {
     color: #C9A84C;
 }
 
-.container-fluid main .card-box-parent .card-box:nth-child(3) h4{
+.container-fluid main .card-box-parent .card-box:nth-child(3) h4 {
     color: #2563EB;
 }
 
@@ -454,13 +455,13 @@ button{
     color: var(--green);
 } */
 
-.container-fluid section .card-box-parent h4{
+.container-fluid section .card-box-parent h4 {
     font-size: 15px;
     margin: 0;
     font-weight: 600;
 }
 
-.container-fluid section .card-box-parent .parent-progress{
+.container-fluid section .card-box-parent .parent-progress {
     margin-top: 1.5rem;
     padding: 0.4rem;
     background-color: #efefef;
@@ -468,7 +469,7 @@ button{
     position: relative;
 }
 
-.container-fluid section .card-box-parent .parent-progress .progress-box{
+.container-fluid section .card-box-parent .parent-progress .progress-box {
     position: absolute;
     left: 0;
     top: 0;
@@ -479,28 +480,52 @@ button{
     border-radius: 28px;
 }
 
-.container-fluid section .card-box-parent .completed p:nth-child(1){
+.container-fluid section .card-box-parent .completed p:nth-child(1) {
     color: #000;
     font-weight: 500;
 }
 
-.container-fluid section .card-box-parent .completed p{
+.container-fluid section .card-box-parent .completed p {
     margin: 0;
     font-size: 13px;
     color: #808080;
 }
 
-.container-fluid section .card-box-parent .completed{
+.container-fluid section .card-box-parent .completed {
     margin-top: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.container-fluid section .card-box-parent table thead tr th, 
-.container-fluid section .card-box-parent table thead tr td{
+.container-fluid section .card-box-parent table thead tr th,
+.container-fluid section .card-box-parent table tbody tr td {
     font-size: 14.5px;
 }
+
+.active-sidebar {
+    background-color: #efefef;
+    /* border-radius: 12px; */
+    color: #1A1A1A;
+}
+
+/* .active-sidebar h4,
+.active-sidebar h5,
+.active-sidebar p {
+    color: #ffffff !important;
+} */
+
+.active-sidebar .dot {
+    background-color: #ffffff;
+}
+
+.active-sidebar .parent-progress .progress-box {
+    background-color: #ffffff;
+}
+/* 
+.active-sidebar .parent-progress {
+    background-color: rgba(255, 255, 255, 0.3);
+} */
 
 /* .container-fluid section .card-box-parent h3{
     font-size: 17px;

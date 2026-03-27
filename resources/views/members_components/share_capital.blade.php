@@ -92,17 +92,17 @@
 
             <div class="parent-main">
 
-                <div class="share">
-                    <button data-bs-toggle="modal" data-bs-target="#shareCapital">
-                        <i class="fa fa-plus"></i>
-                        <span>Add Share Capital</span>
-                    </button>
-                </div>
-
                 <div class="download">
                     <button>
                         <i class="fa fa-arrow-down"></i>
                         <span>Download Statement</span>
+                    </button>
+                </div>
+
+                <div class="share">
+                    <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                        <i class="fa fa-plus"></i>
+                        <span>Add Share Capital</span>
                     </button>
                 </div>
             </div>

@@ -19,27 +19,28 @@ class lendingController extends Controller
             'payment_method' => 'required|string',
         ]);
 
-        // Save repayment record
-        \App\Models\lending_repayment_tbl::create([
+        lending_repayments_tbl::create([
             'lending_id' => $request->lending_id,
             'member_id' => auth()->id(),
             'payment_number' => $request->payment_number,
             'amount_paid' => $request->amount_paid,
             'payment_date' => $request->payment_date,
             'payment_method' => $request->payment_method,
-            'reference_no' => $request->reference_no,
+            'reference_no' => $request->reference_no
+                ?: 'RCP-' . now()->format('YmdHis'),
             'notes' => $request->notes,
-            'recorded_by' => null, // member paid themselves
+            'recorded_by' => null,
         ]);
 
-        // Update lending status
-        $status = \App\Models\lending_status_tbl::where('lending_id', $request->lending_id)->first();
+        $status = lending_status_tbl::where('lending_id', $request->lending_id)->first();
         if ($status) {
             $status->total_paid += $request->amount_paid;
             $status->remaining_balance = max(0, $status->remaining_balance - $request->amount_paid);
             $status->payments_made += 1;
-            if ($status->remaining_balance <= 0) {
+            if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
                 $status->status = 'Completed';
+                // lending_program_tbl::where('id', $request->lending_id)
+                //     ->update(['status' => 'Completed']);
             }
             $status->save();
         }

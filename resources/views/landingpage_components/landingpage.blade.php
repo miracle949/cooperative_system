@@ -126,7 +126,7 @@
             <div class="main-text">
                 <span>Established 2010 · 1,200 - Members</span>
 
-                <h2>Built on <b>Trust</b>, Growing <b>Together</b></h2>
+                <h2>Built on <b>Trust,</b> Growing <b>Together</b></h2>
 
                 <p>Members Cooperative empowers members through shared savings, affordable loans, and community-driven
                     livelihood programs.</p>
@@ -420,9 +420,9 @@
             </div>
         </section>
 
-        <footer>
+        {{-- <footer>
 
-        </footer>
+        </footer> --}}
     </div>
 
     {{-- AOS animation link js --}}

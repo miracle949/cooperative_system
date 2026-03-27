@@ -161,6 +161,14 @@
     gap: 1.5rem;
 }
 
+.container-fluid .modal .modal-body .lending-parent-box{
+    display: flex;
+    height: 40vh;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
 .container-fluid .modal .modal-body .lending-parent .lending-icon p {
     margin: 0;
     font-size: 14.5px;

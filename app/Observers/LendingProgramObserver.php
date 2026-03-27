@@ -18,7 +18,7 @@ class LendingProgramObserver
             lending_status_tbl::create([
                 'lending_id' => $loan->id,
                 'member_id' => $loan->member_id,
-                'remaining_balance' => $loan->total_payment,
+                'remaining_balance' => $loan->total_payment, // ← must be total_payment not lending_amount
                 'total_paid' => 0,
                 'payments_made' => 0,
                 'total_payments' => (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT),

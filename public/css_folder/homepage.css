@@ -43,10 +43,10 @@
 
 .container-fluid main .main-intro h3 {
     margin: 10px 48px 0 48px;
-    font-size: 33px;
+    font-size: 30px;
     font-weight: 600;
     color: #1E4035;
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
     /* font-family: 'Cormorant Garamond', serif; */
 }
 

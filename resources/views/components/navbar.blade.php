@@ -19,8 +19,7 @@
         <div class="nav-list">
             <ul class="tw:flex tw:gap-x-[4rem] m-0 p-0">
                 <li class="tw:list-none">
-                    <a href="{{ route("Landingpage") }}"
-                        class="tw:no-underline text-decoration-none">Home</a>
+                    <a href="{{ route("Landingpage") }}" class="tw:no-underline text-decoration-none">Home</a>
                 </li>
 
                 <li class="tw:list-none">
@@ -29,8 +28,7 @@
                 </li>
 
                 <li class="tw:list-none">
-                    <a href="{{ route("ServicesPage") }}"
-                        class="tw:no-underline text-decoration-none">Services</a>
+                    <a href="{{ route("ServicesPage") }}" class="tw:no-underline text-decoration-none">Services</a>
                 </li>
 
                 {{-- <li class="tw:list-none">
@@ -39,21 +37,19 @@
                 </li> --}}
 
                 <li class="tw:list-none">
-                    <a href="{{ route("ContactPage") }}"
-                        class="tw:no-underline text-decoration-none">Contact</a>
+                    <a href="{{ route("ContactPage") }}" class="tw:no-underline text-decoration-none">Contact</a>
                 </li>
 
-                    {{-- <li class="tw:list-none">
-                        <a href="{{ route("StaticPage") }}"
-                            class="tw:no-underline tw:text-[14.5px] text-decoration-none">Static Page</a>
-                    </li> --}}
+                <li class="tw:list-none">
+                    <a href="{{ route("StaticPage") }}"
+                        class="tw:no-underline tw:text-[14.5px] text-decoration-none">Static Page</a>
+                </li>
             </ul>
         </div>
 
         <div class="nav-button">
-            <a href="{{ route("LoginPage") }}"
-            class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
-            style="border-radius: 10px">Get Started <i class="fa fa-arrow-right"></i></a>
+            <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
+                style="border-radius: 10px">Get Started <i class="fa fa-arrow-right"></i></a>
         </div>
     </div>
 </nav>

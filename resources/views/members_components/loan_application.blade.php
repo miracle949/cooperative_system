@@ -43,7 +43,7 @@
                     <div class="modal-header">
                         <div class="modal-text">
                             <h1>Interest Rates</h1>
-                            <p>Per loan type - monthly basis</p>
+                            <p>Per lending type - monthly basis</p>
                         </div>
                         <button type="button" data-bs-dismiss="modal">&times;</button>
                     </div>
@@ -53,36 +53,46 @@
                                 approval.</p>
                         </div>
 
-                        <div class="lending-parent">
-                            <div class="lending-icon">
-                                <p>Personal Lending</p>
-                                <span>General personal expenses & needs</span>
+                        <div class="lending-parent-box">
+                            <div class="lending-parent">
+                                <div class="lending-icon">
+                                    <p>Personal Lending</p>
+                                    <span>General personal expenses & needs</span>
+                                </div>
+                                <p>1.5% / mo</p>
                             </div>
-                            <p>1.5% / mo</p>
-                        </div>
 
-                        <div class="lending-parent">
-                            <div class="lending-icon">
-                                <p>Business Lending</p>
-                                <span>Livelihood & enterprise capital</span>
+                            <div class="lending-parent">
+                                <div class="lending-icon">
+                                    <p>Business Lending</p>
+                                    <span>Livelihood & enterprise capital</span>
+                                </div>
+                                <p>1.2% / mo</p>
                             </div>
-                            <p>1.2% / mo</p>
-                        </div>
 
-                        <div class="lending-parent">
-                            <div class="lending-icon">
-                                <p>Emergency Lending</p>
-                                <span>Urgent medical, calamity & crisis needs</span>
+                            <div class="lending-parent">
+                                <div class="lending-icon">
+                                    <p>Emergency Lending</p>
+                                    <span>Urgent medical, calamity & crisis needs</span>
+                                </div>
+                                <p>1.0% / mo</p>
                             </div>
-                            <p>1.0% / mo</p>
-                        </div>
 
-                        <div class="lending-parent">
-                            <div class="lending-icon">
-                                <p>Educational Lending</p>
-                                <span>Tuition, school fees & supplies</span>
+                            <div class="lending-parent">
+                                <div class="lending-icon">
+                                    <p>Educational Lending</p>
+                                    <span>Tuition, school fees & supplies</span>
+                                </div>
+                                <p>0.8% / mo</p>
                             </div>
-                            <p>0.8% / mo</p>
+
+                            <div class="lending-parent">
+                                <div class="lending-icon">
+                                    <p>Car Lending</p>
+                                    <span>Tuition, school fees & supplies</span>
+                                </div>
+                                <p>1.3% / mo</p>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -101,7 +111,7 @@
 
                 <span>Fill out the form below to apply for a loan</span>
             </div> --}}
-            {{-- <a href="{{ route("repayment.store") }}">Approved</a> --}}
+            {{-- <a href="{{ route(" repayment.store") }}">Approved</a> --}}
             <div class="card-parent-box">
                 <div class="card-box">
                     <div class="d-flex justify-content-left align-items-center gap-4">
@@ -130,11 +140,11 @@
                                 <label>Lending Type *</label>
                                 <select name="lending_type" class="form-select mt-2" onchange="recalculate()" required>
                                     <option value="">Select lending type</option>
-                                    <option value="Personal Loan">Personal Loan</option>
-                                    <option value="Emergency Loan">Emergency Loan</option>
-                                    <option value="Home Loan">Home Loan</option>
-                                    <option value="Car Loan">Car Loan</option>
-                                    <option value="Education Loan">Education Loan</option>
+                                    <option value="Personal Lending">Personal Lending</option>
+                                    <option value="Emergency Lending">Emergency Lending</option>
+                                    <option value="Business Lending">Business Lending</option>
+                                    <option value="Car Lending">Car Lending</option>
+                                    <option value="Education Lending">Education Lending</option>
                                 </select>
                             </div>
 
@@ -336,11 +346,11 @@
 
     <script>
         const RATES = {
-            'Personal Loan': 0.015,
-            'Emergency Loan': 0.010,
-            'Home Loan': 0.013,
-            'Car Loan': 0.013,
-            'Education Loan': 0.008,
+            'Personal Lending': 0.015,
+            'Emergency Lending': 0.010,
+            'Business Lending': 0.012,
+            'Car Lending': 0.013,
+            'Education Lending': 0.008,
         };
 
         function recalculate() {
