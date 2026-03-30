@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Application Form</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
     <link rel="stylesheet" href="{{ asset('css_folder/application-form.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -50,12 +50,21 @@
                         <div class="body-card">
                             <div class="form-step active">
 
+                            <div class="card-share-header">
+                                <div class="card-logo">
+                                    <i class="fa fa-file-lines"></i>
+                                </div>
+                                <p>KMPCATS</p>
+                            </div>
+
                             <div class="header-card">
                                 <h2>Membership Application Form</h2>
+
+                                <p>Your membership application has been approved! You can now proceed to complete your information.</p>
                             </div>
 
                                 {{-- PERSONAL INFORMATION --}}
-                                <h3 class="mt-3">Personal Information</h3>
+                                <h3 class="mt-4">Personal Information</h3>
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-lg-4 mt-4">
@@ -177,7 +186,7 @@
                                 <h3 class="mt-5">Government Information</h3>
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>SSS ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="sss_id" class="form-control mt-1" style="font-size: 14px">
@@ -189,7 +198,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Philhealth ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="philhealth_id" class="form-control mt-1" style="font-size: 14px">
@@ -201,7 +210,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Pagibig ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="pagibig_id" class="form-control mt-1" style="font-size: 14px">
@@ -213,7 +222,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Tin ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="tin_id" class="form-control mt-1" style="font-size: 14px">
@@ -238,7 +247,7 @@
                                         @endphp
 
                                         @foreach($eduLevels as $index => $level)
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6">
                                             <label class="mt-4">{{ strtoupper($level) }}</label>
                                             <input type="hidden" name="educational_level[]" value="{{ $level }}">
                                             @php $eduRecord = $eduData->firstWhere('educational_level', $level); @endphp
@@ -282,13 +291,13 @@
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-lg-6 mt-4">
-                                            <label>Title of Seminar/Conference/Workshop/Short Courses Attended</label>
+                                            <label>Title of Seminar</label>
                                             <input type="text" name="title_seminar"
                                                 value="{{ $seminar->title_seminar ?? '' }}"
                                                 class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-6 mt-4">
-                                            <label>Inclusive Dates of Attendance (From / To)</label>
+                                            <label>Inclusive Dates of Attend (From / To)</label>
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <input type="date" name="attendance_from"
@@ -316,7 +325,7 @@
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-lg-4 mt-4">
-                                            <label>Name of Office/Company/Cooperative</label>
+                                            <label>Name of Cooperative</label>
                                             <input type="text" name="name_office"
                                                 value="{{ $employeeHistory->name_office ?? '' }}"
                                                 class="form-control mt-1">
@@ -356,7 +365,7 @@
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-lg-6 mt-4">
-                                            <label>Date of Membership with Transport Cooperative (TC)</label>
+                                            <label>Membership with Transport Cooperative</label>
                                             <input type="date" name="date_of_membership"
                                                 value="{{ $membershipInfo->date_of_membership ?? '' }}"
                                                 class="form-control mt-1">
@@ -367,7 +376,7 @@
                                                 value="{{ $membershipInfo->date_of_cetos ?? '' }}"
                                                 class="form-control mt-1">
                                         </div>
-                                        <div class="col-lg-4 m~t-4">
+                                        <div class="col-lg-4 mt-4">
                                             <label>Membership Category</label>
                                             <input type="text" name="membership_category"
                                                 value="{{ $membershipInfo->membership_category ?? '' }}"

@@ -37,7 +37,7 @@
         }
         .sm-ref-label {
             font-size: 0.75rem;
-            color: #6B7B74;
+            color: #000000;
             font-weight: 500;
             white-space: nowrap;
         }
@@ -92,8 +92,8 @@
         .tx-ref {
             font-family: monospace;
             font-size: 0.78rem;
-            color: #6B7B74;
-            background: #f0f4f2;
+            color: #000000;
+            /* background: #f0f4f2; */
             padding: 2px 7px;
             border-radius: 5px;
             display: inline-block;
@@ -215,7 +215,7 @@
                                                 @if ($tx->reference_no)
                                                     <span class="tx-ref">{{ $tx->reference_no }}</span>
                                                 @else
-                                                    <span style="color:#ccc;font-size:0.78rem">—</span>
+                                                    <span style="color:#000000;font-size:0.78rem">—</span>
                                                 @endif
                                             </td>
                                             <td class="text-end"

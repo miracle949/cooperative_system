@@ -32,10 +32,14 @@
         <main>
             @if ($first_name)
 
-                <div class="main-intro">
-                    <p class="">Member Cooperative Portal</p>
+                <div class="main-header">
+                    <div class="main-intro">
+                        <p class="">Member Cooperative Portal</p>
 
-                    <h3 class="">Hello Welcome, {{ $first_name }}! 👋</h3>
+                        <h3 class="">Hello Welcome, {{ $first_name }}! 👋</h3>
+
+                        <p>Here's a summary of your cooperative account as of today.</p>
+                    </div>
                 </div>
 
             @endif
@@ -185,6 +189,8 @@
                     </div>
                 </div>
             </div>
+
+            
         </section>
 
         @if (session("message"))
@@ -197,10 +203,13 @@
 
             <script>
                 setTimeout(() => {
-                    document.querySelector(".message").style.display = "none";
-                }, 2000);
+                    const msg = document.querySelector(".message");
+                    if (msg) {
+                        msg.classList.add("hide");
+                        msg.addEventListener("animationend", () => msg.remove());
+                    }
+                }, 3000);
             </script>
-
         @endif
     </div>
 

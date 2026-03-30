@@ -64,7 +64,9 @@ div.container-fluid {
     padding: 0;
     padding: 0px 0px 48px 0px;
     /* background-color: #F7F9F8; */
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    /* background-color: #F7F9F8; */
+    background-color: #EAEDEB;
     /* background-color: #ffffff; */
 }
 

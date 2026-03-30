@@ -23,7 +23,8 @@
     /* background-color: #ECF6FF; */
     /* background-color: #F7F9F8; */
     /* background-color: #ffffff; */
-    background-color: #F7F9F8;
+    /* background-color: #F7F9F8; */
+    background-color: #EAEDEB;
 }
 
 .container-fluid main {
@@ -49,7 +50,7 @@
 
 .container-fluid main .main-intro h3 {
     margin: 5px 48px 5px 0px;
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
     font-size: 32px;
     font-weight: 600;
     color: #1E4035;
@@ -94,9 +95,9 @@
 
 .container-fluid main .card-box-parent .card-box-text h2 {
     color: #ffffff;
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
     font-weight: 600;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .container-fluid main .card-box-parent .card-box-text span {
@@ -253,7 +254,7 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background-color: var(--blue);
+    background-color: var(--green);
 }
 
 .container-fluid section .card-box-parent .card-box p {
@@ -264,8 +265,8 @@
 
 .container-fluid section .card-box-parent .card-box h4 {
     margin: 0 0 0.9rem 0;
-    font-family: "Playfair Display";
-    font-size: 23px;
+    /* font-family: "Playfair Display"; */
+    font-size: 21px;
     font-weight: 600;
 }
 
@@ -278,7 +279,7 @@
 }
 
 .container-fluid section .card-box-parent .card-box:nth-child(3) h4 {
-    color: var(--blue);
+    color: var(--green);
 }
 
 .container-fluid section .card-box-parent .card-box span {
@@ -309,7 +310,7 @@
 
 
 .container-fluid section .card-box-parent .card-box:nth-child(3) .card-icon .fa-solid {
-    color: var(--blue);
+    color: var(--green);
 }
 
 
@@ -365,7 +366,7 @@
 
 .table-scroll tbody {
     display: block;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
 }
 

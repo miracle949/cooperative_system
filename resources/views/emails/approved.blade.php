@@ -34,10 +34,11 @@
     well-being. Once again, welcome to the Kingsland Cooperative family! We are excited to have you on board and look forward to
     serving you.</p>
 
-    <p>Sincerely,
-    The Management Team
-    Kingsland Pala-Pala Multi-Purpose Cooperative and Transport Services</p>
+    <p class="mt-2">Sincerely,</p>
 
+    <p>The Management Team
+    Kingsland Pala-Pala Multi-Purpose Cooperative and Transport Services</p>
+    
     <a href="{{ url('/application-form/' . $user->id) }}">Fill up your information in this additional form</a>
 </body>
 

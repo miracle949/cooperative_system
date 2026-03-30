@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string("day_of");
             $table->longText("signature");
 
-            $table->enum("status", ["Pending", "Approved", "Disapproved"])
+            $table->enum("status", ["Pending", "Approved", "Declined"])
               ->default("Pending");
             $table->string("meeting_type")->nullable();
             

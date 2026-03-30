@@ -7,6 +7,7 @@ use App\Models\Membervehi_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApprovedMail;
+use App\Mail\ShareCapital;
 use App\Mail\DeclinedMail;
 
 class UserController extends Controller
@@ -16,6 +17,14 @@ class UserController extends Controller
     public function __construct()
     {
         $this->getUser = new Users_tbl();
+    }
+
+    public function sharingCapital(){
+        return view("ShareCapitalForm.share_capital_form");
+    }
+
+    public function shareCapitalForm($id){
+        return view("ShareCapitalForm.share_capital_form");
     }
 
     public function showForm($id)
@@ -46,12 +55,23 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'member';
+        $user->role = 'Member';
         $user->save();
 
         Mail::to($user->email)->send(new ApprovedMail($user));
 
         return redirect()->back()->with('success', 'Member approved and email sent!');
+    }
+
+    public function messageAboutShare($id){
+
+        $user = Users_tbl::findOrFail($id);
+        $user->role = 'Member';
+        $user->save();
+
+        Mail::to($user->email)->sendNow(new ShareCapital($user));
+
+        return redirect()->back()->with('success', 'Member share capital application!');
     }
 
     public function declineUser($id)
@@ -106,10 +126,10 @@ class UserController extends Controller
         return view("landingpage_components.static", compact("getTheUsers"));
     }
 
-    public function applicationForm()
-    {
-        return view("members_components.application_form");
-    }
+    // public function applicationForm()
+    // {
+    //     return view("members_components.application_form");
+    // }
 
     public function UserDirection()
     {

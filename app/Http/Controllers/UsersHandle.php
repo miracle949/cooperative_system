@@ -16,6 +16,7 @@ use App\Models\Users_tbl;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 
 class UsersHandle extends Controller
@@ -171,7 +172,7 @@ class UsersHandle extends Controller
 
             Membergovern_ids_tbl::updateOrCreate(
                 ['member_id' => $id],
-                $governmentData 
+                $governmentData
             );
 
             Membervehi_tbl::where('member_id', $id)->delete();
@@ -298,7 +299,7 @@ class UsersHandle extends Controller
                 'membershipInfo',
                 'membershipHistory',
                 'specialAwards',
-                'governmentIds' 
+                'governmentIds'
             ));
 
         } catch (\Exception $e) {
@@ -330,37 +331,58 @@ class UsersHandle extends Controller
     public function Savings()
     {
         $first_name = Auth::check() ? Auth::user()->first_name : null;
-        
+
         return view(
-            "members_components.savings", ["first_name" => $first_name]
-            );
+            "members_components.savings",
+            ["first_name" => $first_name]
+        );
     }
 
-    public function ShareCapital()
+    public function ShareCapitalMember()
     {
+
         $first_name = Auth::check() ? Auth::user()->first_name : null;
-        
-        return view(
-            "members_components.share_capital", ["first_name" => $first_name]
-            );
+
+        $memberId = Auth::id();
+
+        $account = DB::table('share_capital_account_tbls')
+            ->where('member_id', $memberId)
+            ->first();
+
+        $currentBalance = $account->total_amount ?? 0;
+        $currentShares = $account->total_shares ?? 0;
+
+        // Fetch real contribution history
+        $contributions = $account
+            ? DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->orderBy('created_at', 'desc')
+                ->get()
+            : collect();
+
+        return view('members_components.share_capital',
+            ["first_name" => $first_name],
+            compact('currentBalance', 'currentShares', 'contributions'));
     }
 
     public function LoanStatus()
     {
         $first_name = Auth::check() ? Auth::user()->first_name : null;
-        
+
         return view(
-            "members_components.loan_status", ["first_name" => $first_name]
-            );
+            "members_components.loan_status",
+            ["first_name" => $first_name]
+        );
     }
 
     public function ProfileMember()
     {
         $first_name = Auth::check() ? Auth::user()->first_name : null;
-        
+
         return view(
-            "members_components.profile", ["first_name" => $first_name]
-            );
+            "members_components.profile",
+            ["first_name" => $first_name]
+        );
     }
 
     public function Navbar2()
@@ -376,14 +398,16 @@ class UsersHandle extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route("LoginPage");
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route("login");
     }
 
     public function UserHandle()
     {
         $user = Auth::user();
 
-        if ($user->role === "member" || $user->role === "pending") {
+        if ($user->role === "Member") {
             return redirect()->route("MemberPortal")->with("message", "Login successfully!");
         } else {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
@@ -403,10 +427,27 @@ class UsersHandle extends Controller
                 'password' => $incomingFields['password']
             ])
         ) {
+            $otherInfo = DB::table('otherinfo_tbls')
+                ->where('member_id', auth()->id())
+                ->first();
+
+            if (!$otherInfo || $otherInfo->status !== 'Approved') {
+                auth()->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->back()
+                    ->withErrors(['email' => 'Your account is still pending approval.'])
+                    ->withInput($request->only('email'));
+            }
+
             $request->session()->regenerate();
-            return redirect()->route("UserHandle");
+            return redirect()->route('UserHandle');
+
         } else {
-            return redirect()->route("LoginPage");
+            return redirect()->back()
+                ->withErrors(['email' => 'Invalid email or password.'])
+                ->withInput($request->only('email'));
         }
     }
 
@@ -485,7 +526,7 @@ class UsersHandle extends Controller
                 "number_son" => $request->number_son,
                 "number_daughter" => $request->number_daughter,
                 "other_spec" => $request->other_spec,
-                "role" => "pending",
+                "role" => "Member",
             ]);
 
             // Spouse
@@ -496,7 +537,7 @@ class UsersHandle extends Controller
                 "spouse_place_birth" => $request->spouse_place_birth,
             ]);
 
-        
+
             $governmentIds = ['member_id' => $users->id];
             $fileFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
 

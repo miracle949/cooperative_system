@@ -21,7 +21,7 @@
             </li>
 
             <li class="tw:list-none">
-                <a href="{{ route("ShareCapital") }}"
+                <a href="{{ route("ShareCapitalMember") }}"
                     class="tw:no-underline tw:text-[15.5px] text-decoration-none">Share Capital</a>
             </li>
 
