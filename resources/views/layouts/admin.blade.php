@@ -17,16 +17,16 @@
                     },
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
                         },
                         success: {
                             50: '#ecfdf5',
@@ -74,12 +74,12 @@
 
         .sidebar-link.active {
             background-color: #e5e7eb;
-            color: #2563eb;
+            color: #1E4035;
             font-weight: 500;
         }
 
         .sidebar-link.active i {
-            color: #2563eb;
+            color: #1E4035;
         }
 
         .sidebar-link i {
@@ -110,12 +110,12 @@
         }
 
         .btn-primary {
-            background-color: #2563eb;
+            background-color: #1E4035;
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #1d4ed8;
+            background-color: #2A5C4E;
         }
 
         .btn-success {
@@ -157,8 +157,8 @@
 
         .input:focus,
         .select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #1E4035;
+            box-shadow: 0 0 0 3px rgba(30, 64, 53, 0.1);
         }
 
         .badge {
@@ -184,8 +184,8 @@
         }
 
         .badge-primary {
-            background-color: #dbeafe;
-            color: #2563eb;
+            background-color: #d1fae5;
+            color: #1E4035;
         }
 
         .badge-gray {
