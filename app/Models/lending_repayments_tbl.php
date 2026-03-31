@@ -10,7 +10,7 @@ class lending_repayments_tbl extends Model
 
     protected $fillable = [
         "lending_id",
-        "member_id",
+        "user_id",
         "payment_number",
         "amount_paid",
         "payment_date",

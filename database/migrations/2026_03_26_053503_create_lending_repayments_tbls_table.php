@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId("lending_id")
                 ->constrained("lending_program_tbls")
                 ->onDelete("cascade");
-            $table->foreignId("member_id")
+            $table->foreignId("user_id")
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
             $table->integer("payment_number");

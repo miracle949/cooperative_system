@@ -21,7 +21,7 @@ class lendingController extends Controller
 
         lending_repayments_tbl::create([
             'lending_id' => $request->lending_id,
-            'member_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'payment_number' => $request->payment_number,
             'amount_paid' => $request->amount_paid,
             'payment_date' => $request->payment_date,
@@ -56,14 +56,14 @@ class lendingController extends Controller
         $email = Auth::check() ? Auth::user()->email : null;
 
         // Get all approved loans
-        $loans = lending_program_tbl::where('member_id', $memberId)
+        $loans = lending_program_tbl::where('user_id', $memberId)
             ->where('status', 'Approved')
             ->get();
 
         // Default to first loan if no loan_id in URL
         $selectedId = $request->get('loan_id');
         $selectedLoan = $selectedId
-            ? lending_program_tbl::where('id', $selectedId)->where('member_id', $memberId)->first()
+            ? lending_program_tbl::where('id', $selectedId)->where('user_id', $memberId)->first()
             : $loans->first(); // AUTO SELECT FIRST LOAN
 
         // Get lending status
@@ -120,7 +120,7 @@ class lendingController extends Controller
             $dateFiled = now()->format('M d, Y');
 
             lending_program_tbl::create([
-                "member_id" => auth()->id(),
+                "user_id" => auth()->id(),
                 "reference_no" => $referenceNo,
                 "lending_type" => $request->lending_type,
                 "lending_amount" => $request->lending_amount,

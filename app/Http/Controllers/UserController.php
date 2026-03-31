@@ -35,11 +35,11 @@ class UserController extends Controller
     public function applicationForm($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $vehicles = Membervehi_tbl::where('member_id', $id)->get()->groupBy('vehicle_type');
-        $spouse = Spouse_tbl::where('member_id', $id)->first();
-        $other = Otherinfo_tbl::where('member_id', $id)->first();
-        $education = educational_tbl::where('member_id', $id)->get();
-        $governmentIds = Membervehi_tbl::where('member_id', $id)->first();
+        $vehicles = Membervehi_tbl::where('user_id', $id)->get()->groupBy('vehicle_type');
+        $spouse = Spouse_tbl::where('user_id', $id)->first();
+        $other = Otherinfo_tbl::where('user_id', $id)->first();
+        $education = educational_tbl::where('user_id', $id)->get();
+        $governmentIds = Membervehi_tbl::where('user_id', $id)->first();
 
         // Check if already submitted (has contact_no or any filled data)
         $alreadySubmitted = $other && !empty($other->contact_no);

@@ -9,7 +9,7 @@ class educational_tbl extends Model
     protected $table = "educational_tbls";
 
     protected $fillable = [
-        "member_id",
+        "user_id",
         "educational_level",
         "status",
         "specify"

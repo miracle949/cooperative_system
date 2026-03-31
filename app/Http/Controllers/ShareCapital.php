@@ -20,7 +20,7 @@ class ShareCapital extends Controller
         $memberId = Auth::id();
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $memberId)
+            ->where('user_id', $memberId)
             ->first();
 
         $currentBalance = $account->total_amount ?? 0;
@@ -37,7 +37,7 @@ class ShareCapital extends Controller
         $memberId = Auth::id();
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $memberId)
+            ->where('user_id', $memberId)
             ->first();
 
         $currentBalance = $account->total_amount ?? 0;
@@ -78,7 +78,7 @@ class ShareCapital extends Controller
         $type = $validated['type'];
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $memberId)
+            ->where('user_id', $memberId)
             ->first();
 
         DB::beginTransaction();
@@ -89,7 +89,7 @@ class ShareCapital extends Controller
                 // Withdrawal is pending approval — shares/balance unchanged until admin approves
                 if ($type !== 'Withdrawal') {
                     DB::table('share_capital_account_tbls')
-                        ->where('member_id', $memberId)
+                        ->where('user_id', $memberId)
                         ->update([
                             'total_shares' => $account->total_shares + $shares,
                             'total_amount' => $account->total_amount + $totalAmount,
@@ -102,7 +102,7 @@ class ShareCapital extends Controller
             } else {
                 // No existing account — only Subscription can create one
                 $accountId = DB::table('share_capital_account_tbls')->insertGetId([
-                    'member_id' => $memberId,
+                    'user_id' => $memberId,
                     'total_shares' => $shares,
                     'total_amount' => $totalAmount,
                     'status' => 'Active',
@@ -224,7 +224,7 @@ class ShareCapital extends Controller
         session()->forget(['sc_pending_shares', 'sc_pending_note', 'sc_pending_type']);
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $memberId)
+            ->where('user_id', $memberId)
             ->first();
 
         DB::beginTransaction();
@@ -234,7 +234,7 @@ class ShareCapital extends Controller
                 // ─── Only modify balance/shares for Subscription & Deposit ───
                 if ($type !== 'Withdrawal') {
                     DB::table('share_capital_account_tbls')
-                        ->where('member_id', $memberId)
+                        ->where('user_id', $memberId)
                         ->update([
                             'total_shares' => $account->total_shares + $shares,
                             'total_amount' => $account->total_amount + $totalAmount,
@@ -246,7 +246,7 @@ class ShareCapital extends Controller
                 $accountId = $account->id;
             } else {
                 $accountId = DB::table('share_capital_account_tbls')->insertGetId([
-                    'member_id' => $memberId,
+                    'user_id' => $memberId,
                     'total_shares' => $shares,
                     'total_amount' => $totalAmount,
                     'status' => 'Active',
@@ -277,7 +277,7 @@ class ShareCapital extends Controller
                 $memberName = Auth::user()->name ?? Auth::user()->username ?? 'Member';
             }
 
-            // ✅ Correct redirect: Subscription → form page, Deposit/Withdrawal → member page
+            // Correct redirect: Subscription → form page, Deposit/Withdrawal → member page
             $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
 
             return redirect()->route($redirectRoute)
@@ -322,7 +322,7 @@ class ShareCapital extends Controller
         $user = \App\Models\Users_tbl::findOrFail($id);
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $id)
+            ->where('user_id', $id)
             ->first();
 
         $currentBalance = $account->total_amount ?? 0;

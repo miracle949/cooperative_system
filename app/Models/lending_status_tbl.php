@@ -10,7 +10,7 @@ class lending_status_tbl extends Model
 
     protected $fillable = [
         "lending_id",
-        "member_id",
+        "user_id",
         "remaining_balance",
         "total_paid",
         "payments_made",

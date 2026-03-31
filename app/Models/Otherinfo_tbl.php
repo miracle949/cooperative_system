@@ -9,7 +9,7 @@ class Otherinfo_tbl extends Model
     protected $table = "otherinfo_tbls";
 
     protected $fillable = [
-        "member_id",
+        "user_id",
         "membership_category",
         "place_of_birth",
         "date_of_birth",

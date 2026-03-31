@@ -93,7 +93,7 @@ class UsersHandle extends Controller
             ]));
 
             Spouse_tbl::updateOrCreate(
-                ['member_id' => $id],
+                ['user_id' => $id],
                 [
                     'spouse_name' => $request->spouse_name,
                     'spouse_date_birth' => $request->spouse_date_birth,
@@ -105,7 +105,7 @@ class UsersHandle extends Controller
             );
 
             Otherinfo_tbl::updateOrCreate(
-                ['member_id' => $id],
+                ['user_id' => $id],
                 [
                     'date_of_birth' => $request->date_of_birth,
                     'place_of_birth' => $request->place_of_birth,
@@ -133,11 +133,11 @@ class UsersHandle extends Controller
             }
 
             Membergovern_ids_tbl::updateOrCreate(
-                ['member_id' => $id],
+                ['user_id' => $id],
                 $governmentData
             );
 
-            Membervehi_tbl::where('member_id', $id)->delete();
+            Membervehi_tbl::where('user_id', $id)->delete();
 
             $vehicleTypes = [
                 'UV' => ['plate_name' => 'uv_plate_no', 'qty_name' => 'total_uv'],
@@ -163,7 +163,7 @@ class UsersHandle extends Controller
                         continue;
 
                     Membervehi_tbl::create([
-                        'member_id' => $id,
+                        'user_id' => $id,
                         'plate_no' => $plate_no,
                         'vehicle_type' => $type,
                         'quantity' => 1,
@@ -175,7 +175,7 @@ class UsersHandle extends Controller
 
             foreach ($levels as $index => $level) {
                 educational_tbl::updateOrCreate(
-                    ['member_id' => $id, 'educational_level' => $level],
+                    ['user_id' => $id, 'educational_level' => $level],
                     [
                         'status' => $request->edu_status[$index] ?? null,
                         'specify' => $request->edu_specify[$index] ?? null,
@@ -184,11 +184,11 @@ class UsersHandle extends Controller
             }
 
             $user = Users_tbl::findOrFail($id);
-            $vehicles = Membervehi_tbl::where('member_id', $id)->get()->groupBy('vehicle_type');
-            $spouse = Spouse_tbl::where('member_id', $id)->first();
-            $other = Otherinfo_tbl::where('member_id', $id)->first();
-            $education = educational_tbl::where('member_id', $id)->get();
-            $governmentIds = Membergovern_ids_tbl::where('member_id', $id)->first();
+            $vehicles = Membervehi_tbl::where('user_id', $id)->get()->groupBy('vehicle_type');
+            $spouse = Spouse_tbl::where('user_id', $id)->first();
+            $other = Otherinfo_tbl::where('user_id', $id)->first();
+            $education = educational_tbl::where('user_id', $id)->get();
+            $governmentIds = Membergovern_ids_tbl::where('user_id', $id)->first();
 
             // return view('members_components.application_form', compact(
             //     'user',
@@ -245,7 +245,7 @@ class UsersHandle extends Controller
         $memberId = Auth::id();
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('member_id', $memberId)
+            ->where('user_id', $memberId)
             ->first();
 
         $currentBalance = $account->total_amount ?? 0;
@@ -362,7 +362,7 @@ class UsersHandle extends Controller
 
         if (auth()->attempt($credentials)) {
             $otherInfo = DB::table('otherinfo_tbls')
-                ->where('member_id', auth()->id())
+                ->where('user_id', auth()->id())
                 ->first();
 
             if (!$otherInfo || $otherInfo->status !== 'Approved') {
@@ -451,7 +451,7 @@ class UsersHandle extends Controller
 
             // Spouse
             Spouse_tbl::create([
-                "member_id" => $users->id,
+                "user_id" => $users->id,
                 "spouse_name" => $request->spouse_name,
                 "spouse_date_birth" => $request->spouse_date_birth ?: null,
                 "spouse_place_birth" => $request->spouse_place_birth,
@@ -461,7 +461,7 @@ class UsersHandle extends Controller
             ]);
 
 
-            $governmentIds = ['member_id' => $users->id];
+            $governmentIds = ['user_id' => $users->id];
             $fileFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
 
             foreach ($fileFields as $field) {
@@ -476,7 +476,7 @@ class UsersHandle extends Controller
 
             // Other info
             Otherinfo_tbl::create([
-                "member_id" => $users->id,
+                "user_id" => $users->id,
                 "membership_category" => $request->membership_category,
                 "date_of_birth" => $request->date_of_birth,
                 "place_of_birth" => $request->place_of_birth,
@@ -513,7 +513,7 @@ class UsersHandle extends Controller
                         continue;
 
                     Membervehi_tbl::create([
-                        'member_id' => $users->id,
+                        'user_id' => $users->id,
                         'plate_no' => $plate_no,
                         'vehicle_type' => $type,
                         'quantity' => 1,
