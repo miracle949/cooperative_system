@@ -23,4 +23,9 @@ class lending_program_tbl extends Model
         "purpose_loan",
         "status"
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(Users_tbl::class, 'member_id');
+    }
 }

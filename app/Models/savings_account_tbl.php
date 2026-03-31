@@ -15,4 +15,14 @@ class savings_account_tbl extends Model
         "balance_after",
         "opened_at"
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(Users_tbl::class, 'member_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(savings_transaction_tbl::class, 'savings_account_id');
+    }
 }
