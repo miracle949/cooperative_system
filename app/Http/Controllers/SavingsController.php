@@ -33,7 +33,8 @@ class SavingsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $first_name = Auth::check() ? Auth::user()->first_name : null;
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
 
         // Get or create savings account
         $savingsAccount = savings_account_tbl::where('member_id', $user->id)->first();
@@ -77,7 +78,8 @@ class SavingsController extends Controller
 
         return view(
             'members_components.savings',
-            ["first_name" => $first_name],
+            ["username" => $username,
+            "email" => $email],
             compact(
                 'savingsAccount',
                 'groupedTransactions',

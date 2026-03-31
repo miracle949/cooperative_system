@@ -31,7 +31,8 @@
             </li>
 
             <li class="tw:list-none">
-                <a href="{{ route("LoanStatus") }}" class="tw:no-underline tw:text-[15.5px] text-decoration-none">Lending
+                <a href="{{ route("LoanStatus") }}"
+                    class="tw:no-underline tw:text-[15.5px] text-decoration-none">Lending
                     Status</a>
             </li>
         </ul>
@@ -46,19 +47,29 @@
         <ul class="m-0 p-0">
             <i class="fa fa-bell" style="font-size: 17px; color: var(--green)"></i>
             <li>
-                @if ($first_name)
+                @if ($username)
                     <a href="#" onclick="toggleDropdown(event)"
                         class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem]">
-                        {{-- <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt=""> --}}
+                        {{-- <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt="">
+                        --}}
                         <div class="first-last">
-                            <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}{{ strtoupper(substr(Auth::user()->last_name, 0, 1)) }}</p>
+                            <p>{{ strtoupper(substr(Auth::user()->fullname, 0, 1)) }}</p>
                         </div>
-                        <p style="margin: 0">{{ $first_name }}</p>
+                        <p style="margin: 0">{{ $username }}</p>
                         <i class="fa fa-chevron-down"></i>
                     </a>
                 @endif
 
                 <ul>
+                    @if($email)
+                        <li>
+                            <div class="card-icon">
+                                <p>{{ strtoupper(substr(Auth::user()->fullname, 0, 1)) }}</p>
+                            </div>
+                            <p>{{ $email }}</p>
+                        </li>
+                    @endif
+                    <hr>
                     <li>
                         <div class="card-icon"><i class="fa fa-user"></i></div>
                         <a href="{{ route('ProfileMember') }}">Profile</a>
@@ -67,12 +78,6 @@
                         <div class="card-icon"><i class="fa fa-lock"></i></div>
                         <a href="#">Reset Password</a>
                     </li>
-                    {{-- <hr>
-                    <li>
-                        <div class="card-icon"><i class="fa fa-truck"></i></div>
-                        <a href="{{ route('DriverPortal') }}">Switch to Driver Portal</a>
-                    </li> --}}
-                    <hr>
                     <li>
                         <div class="card-icon"><i class="fa fa-sign-out"></i></div>
                         <a href="{{ route('logout') }}">Logout</a>

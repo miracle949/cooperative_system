@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\educational_tbl;
+use App\Models\Otherinfo_tbl;
+use App\Models\Spouse_tbl;
 use App\Models\Users_tbl;
 use App\Models\Membervehi_tbl;
 use Illuminate\Http\Request;
@@ -19,36 +22,36 @@ class UserController extends Controller
         $this->getUser = new Users_tbl();
     }
 
-    public function sharingCapital(){
+    public function sharingCapital()
+    {
         return view("ShareCapitalForm.share_capital_form");
     }
 
-    public function shareCapitalForm($id){
+    public function shareCapitalForm($id)
+    {
         return view("ShareCapitalForm.share_capital_form");
     }
 
-    public function showForm($id)
+    public function applicationForm($id)
     {
         $user = Users_tbl::findOrFail($id);
         $vehicles = Membervehi_tbl::where('member_id', $id)->get()->groupBy('vehicle_type');
-        $spouse = \App\Models\Spouse_tbl::where('member_id', $id)->first();
-        $education = \App\Models\educational_tbl::where('member_id', $id)->get();
-        $seminar = \App\Models\seminars_training_tbl::where('member_id', $id)->first();
-        $employeeHistory = \App\Models\employee_history_tbl::where('member_id', $id)->first();
-        $membershipInfo = \App\Models\employee_membership_information::where('member_id', $id)->first();
-        $membershipHistory = \App\Models\tc_membership_history_tbl::where('member_id', $id)->first();
-        $specialAwards = \App\Models\special_awards_tbl::where('member_id', $id)->first();
+        $spouse = Spouse_tbl::where('member_id', $id)->first();
+        $other = Otherinfo_tbl::where('member_id', $id)->first();
+        $education = educational_tbl::where('member_id', $id)->get();
+        $governmentIds = Membervehi_tbl::where('member_id', $id)->first();
+
+        // Check if already submitted (has contact_no or any filled data)
+        $alreadySubmitted = $other && !empty($other->contact_no);
 
         return view('members_components.application_form', compact(
             'user',
             'vehicles',
             'spouse',
+            'other',
             'education',
-            'seminar',
-            'employeeHistory',
-            'membershipInfo',
-            'membershipHistory',
-            'specialAwards'
+            'governmentIds',
+            'alreadySubmitted'
         ));
     }
 
@@ -63,7 +66,8 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Member approved and email sent!');
     }
 
-    public function messageAboutShare($id){
+    public function messageAboutShare($id)
+    {
 
         $user = Users_tbl::findOrFail($id);
         $user->role = 'Member';
@@ -206,13 +210,15 @@ class UserController extends Controller
         return view("members_components.driver_portal");
     }
 
-    public function dashboard_admin(){
+    public function dashboard_admin()
+    {
         return view("admin_components.dashboard");
     }
 
-    public function dashboard_members(Request $request){
+    public function dashboard_members(Request $request)
+    {
         $query = Users_tbl::query();
-        
+
         $status = $request->get('filter', 'all');
         if ($status === 'pending') {
             $query->where('role', 'pending');
@@ -221,30 +227,35 @@ class UserController extends Controller
         } elseif ($status === 'inactive') {
             $query->where('role', 'inactive');
         }
-        
+
         $members = $query->paginate(12);
         $pendingRequests = Users_tbl::where('role', 'pending')->get();
-        
+
         return view("admin_components.members", compact('members', 'pendingRequests'));
     }
 
-    public function dashboard_savings(){
+    public function dashboard_savings()
+    {
         return view("admin_components.savings");
     }
 
-    public function dashboard_lendings(){
+    public function dashboard_lendings()
+    {
         return view("admin_components.lending");
     }
 
-    public function dashboard_sharecapitals(){
+    public function dashboard_sharecapitals()
+    {
         return view("admin_components.sharecapitals");
     }
 
-    public function dashboard_reports(){
+    public function dashboard_reports()
+    {
         return view("admin_components.reports");
     }
 
-    public function dashboard_settings(){
+    public function dashboard_settings()
+    {
         return view("admin_components.settings");
     }
 }

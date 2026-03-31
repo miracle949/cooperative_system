@@ -30,13 +30,13 @@
 
 
         <main>
-            @if ($first_name)
+            @if ($username)
 
                 <div class="main-header">
                     <div class="main-intro">
                         <p class="">Member Cooperative Portal</p>
 
-                        <h3 class="">Hello Welcome, {{ $first_name }}! 👋</h3>
+                        <h3 class="">Hello Welcome, {{ $username }}! 👋</h3>
 
                         <p>Here's a summary of your cooperative account as of today.</p>
                     </div>

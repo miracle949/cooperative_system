@@ -97,16 +97,15 @@
                     @csrf
                     <div class="form-sub-parent">
                         @if ($errors->any())
-                            <div
-                                style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:10px; padding:0.8rem 1rem; margin-bottom:1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
+                            <div style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:10px; padding:0.8rem 1rem; margin-bottom:1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
                                 <i class="fa-solid fa-circle-xmark"></i>
-                                {{ $errors->first('email') }}
+                                {{ $errors->first('login') }}
                             </div>
                         @endif
                         
                         <div class="mt-3 form-input">
-                            <label>Email</label>
-                            <input type="text" name="email" placeholder="Enter your email" class="form-control mt-2"
+                            <label>Email or Username</label>
+                            <input type="text" name="login" value="{{ old('login') }}" placeholder="Enter your email" class="form-control mt-2"
                                 required>
                         </div>
 

@@ -52,7 +52,8 @@ class lendingController extends Controller
     public function loanStatus(Request $request)
     {
         $memberId = auth()->id();
-        $first_name = Auth::check() ? Auth::user()->first_name : null;
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
 
         // Get all approved loans
         $loans = lending_program_tbl::where('member_id', $memberId)
@@ -78,7 +79,8 @@ class lendingController extends Controller
             : collect();
 
         return view('members_components.loan_status', array_merge(
-            ['first_name' => $first_name],
+            ['username' => $username,
+            "email" => $email],
             compact('loans', 'selectedLoan', 'lendingStatus', 'paymentHistory')
         ));
     }

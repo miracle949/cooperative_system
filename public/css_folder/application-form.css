@@ -83,7 +83,7 @@ div.container-fluid {
     padding: 0;
     height: 100vh;
     overflow-y: auto;
-    padding: 0px 0px 48px 0px;
+    /* padding: 0px 0px 48px 0px; */
     /* background-color: #F7F9F8; */
     /* background-color: var(--cream); */
     background-color: #EAEDEB;
@@ -139,7 +139,8 @@ div.container-fluid {
 }
 
 .container-fluid .form-container-body {
-    padding: 2rem 48px 0 48px;
+    /* padding: 2rem 48px 0 48px; */
+    /* padding: 3rem 2rem 3rem 2rem; */
 }
 
 .container-fluid form .form-box {
@@ -312,7 +313,7 @@ div.container-fluid {
 
 .actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     margin-top: 45px;
     padding: 30px;
     background-color: #ffffff;

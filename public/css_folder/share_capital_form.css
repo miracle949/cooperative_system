@@ -518,6 +518,10 @@ select.form-select {
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
 
+#gcash-section{
+    width: 100%;
+}
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
     .container-fluid main {

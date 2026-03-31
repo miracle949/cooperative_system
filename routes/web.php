@@ -49,15 +49,19 @@ Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("Member
 // Lending Program page GET
 Route::get("/loan_application", [UsersHandle::class, "LoanApplication"])->name("LoanApplication");
 
+// Route::get("/savings", [UsersHandle::class, "Savings"])->name("savings");
+
 // Savings routes
 Route::get("/savings-page", [SavingsController::class, "index"])->name("savings.index")->middleware("auth");
+
 Route::post("/savings/deposit", [SavingsController::class, "deposit"])->name("savings.deposit")->middleware("auth");
+
 Route::post("/savings/withdraw", [SavingsController::class, "withdraw"])->name("savings.withdraw")->middleware("auth");
 
 // Share Capital page GET
-// Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
-//     ->name("ShareCapitalMember")
-//     ->middleware('auth');
+Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
+    ->name("ShareCapitalMember")
+    ->middleware('auth');
 
 Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
     ->name("ShareCapitalMember")
@@ -98,7 +102,8 @@ Route::get('/share-capital/gcash/success', [ShareCapital::class, 'gcashSuccess']
 Route::get('/share-capital/gcash/failed', [ShareCapital::class, 'gcashFailed'])->name('share_capital.gcash.failed');
 
 // Application form
-Route::get('/application-form/{id}', [UserController::class, 'showForm'])->name('applicationForm');
+Route::get('/application-form/{id}', [UserController::class, 'applicationForm'])->name('applicationForm');
+
 Route::post('/application-form/{id}', [UsersHandle::class, 'applicationFormButton'])->name('applicationFormButton');
 
 Route::get("/nav-bar2", [UsersHandle::class, "Navbar2"])->name("Navbar2");

@@ -34,19 +34,15 @@
             </div>
         </div> --}}
 
-        <div class="nav-logo">
-            <div class="logo">
-
-                <img src="images/logo2.png" alt="">
-
-                <div>
+        <nav>
+            <div class="nav-logo">
+                <img src="../images/logo2.png" alt="">
+                <div class="nav-text">
                     <h2 class="fw-bold">Membership Application Form</h2>
-
-                    <p>Ready to become part of something special? We can't wait to welcome
-                        you.</p>
+                    <p>Ready to become part of something special? We can't wait to welcome you.</p>
                 </div>
             </div>
-        </div>
+        </nav>
 
         <form action="{{ route("registration") }}" id="form" method="post" class="needs-validation" novalidate
             enctype="multipart/form-data">
@@ -65,6 +61,10 @@
                     </div>
                 </div>
             </div>
+
+            {{-- <div class="back">
+                <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
+            </div> --}}
 
             {{-- <button data-bs-toggle="modal" data-bs-target="#successModal" style="display:block;">Open</button>
 
@@ -202,7 +202,7 @@
 
                                     <div class="form-check mt-3">
                                         <input class="form-check-input" type="checkbox" name="agree1"
-                                            id="checkboxDefault1">
+                                            id="checkboxDefault1" required>
                                         <label class="form-check-label" for="checkboxDefault1">
                                             I hereby certify that the foregoing statements are true and correct to the
                                             best
@@ -213,7 +213,7 @@
 
                                     <div class="form-check mt-3">
                                         <input class="form-check-input" type="checkbox" name="agree2"
-                                            id="checkboxDefault2">
+                                            id="checkboxDefault2" required>
                                         <label class="form-check-label" for="checkboxDefault2">
                                             I agree to abide by the Constitution and By-Laws of the Cooperative and to
                                             accept the rights, responsibilities, and obligations of membership. I

@@ -10,15 +10,21 @@ class Otherinfo_tbl extends Model
 
     protected $fillable = [
         "member_id",
-        "is_member_other_coop",
-        "are_you_willing_liability",
-        "are_you_willing_abide_policy",
-        "submitted_at",
-        "day_of",
+        "membership_category",
+        "place_of_birth",
+        "date_of_birth",
+        "contact_no",
+        "present_address",
+        "permanent_address",
+        "sex",
+        "civil_status",
+        "citizenship",
+        "height",
+        "weight",
+        "blood_type",
+        "skills",
+        "profile_picture",
         "signature",
         "status",
-        "meeting_type",
-        "meeting_location",
-        "meeting_date"
     ];
 }

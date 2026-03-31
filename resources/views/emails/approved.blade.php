@@ -16,7 +16,7 @@
     <p>Your membership in the cooperative has been <strong>approved</strong>.</p>
     <p>You can now log in to your account.</p> --}}
 
-    <h2>Dear, {{ $user->first_name }}!</h2>
+    <h2>Dear, {{ $user->fullname }}!</h2>
 
     <p>We are pleased to inform you that your application to become a member of Kingsland Pala-Pala Multi-Purpose
     Cooperative and Transport Services has been successfully <strong>approved.</strong></p>

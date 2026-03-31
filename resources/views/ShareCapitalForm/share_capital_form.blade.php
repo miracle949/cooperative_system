@@ -478,12 +478,12 @@
                                     placeholder="e.g. Monthly contribution">
                             </div>
 
-                            <div id="gcash-section" style="display: none; margin-top: 0.5rem;">
+                            <div id="gcash-section" style="display: none; margin-top: 1rem;">
                                 <div style="border-top: 1.5px dashed #e8e8e8; margin: 1.2rem 0;"></div>
                                 <div
-                                    style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem;">
+                                    style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem; width: 100%;">
                                     <div
-                                        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                                        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; width: 100%;">
                                         <div style="display: flex; align-items: center; gap: 10px;">
                                             <div
                                                 style="width: 40px; height: 40px; background: #007DFF; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
@@ -558,11 +558,11 @@
 
             paymentMethod.addEventListener('change', function () {
                 if (this.value === 'gcash') {
-                    gcashSection.style.display = 'block';
+                    gcashSection.style.display = 'flex';
                     confirmBtn.style.display = 'none';
                 } else {
                     gcashSection.style.display = 'none';
-                    confirmBtn.style.display = 'block';
+                    confirmBtn.style.display = 'flex';
                 }
             });
 
@@ -603,7 +603,7 @@
             wrapper.style.cssText = `
                 position: fixed; left: -9999px; top: 0;
                 width: 400px; background: #fff;
-                border-radius: 20px; overflow: hidden;
+                overflow: hidden;
                 box-shadow: 0 8px 40px rgba(0,0,0,0.15);
             `;
 

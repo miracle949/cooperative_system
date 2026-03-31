@@ -29,7 +29,7 @@
                     @foreach ($getTheUsers as $getTheUser)
 
                         <div class="col-lg-4">
-                            <h2>{{ $getTheUser->first_name }}</h2>
+                            <h2>{{ $getTheUser->fullname }}</h2>
                         </div>
 
                         <div class="col-lg-4">

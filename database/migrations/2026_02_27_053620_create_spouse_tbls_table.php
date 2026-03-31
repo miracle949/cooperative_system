@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string("spouse_name")->nullable();
             $table->date("spouse_date_birth")->nullable();
             $table->string("spouse_place_birth")->nullable();
+            $table->integer("number_son")->nullable();
+            $table->integer("number_daughter")->nullable();
+            $table->string("other_spec")->nullable();
             $table->timestamps();
         });
     }
