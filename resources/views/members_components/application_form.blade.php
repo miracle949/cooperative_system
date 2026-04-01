@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Application Form</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
     <link rel="stylesheet" href="{{ asset('css_folder/application-form.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,12 +19,110 @@
                 <img src="../images/logo2.png" alt="">
                 <div class="nav-text">
                     <h2 class="fw-bold">Membership Application Form</h2>
-
-                    <p>Ready to become part of something special? We can't wait to welcome
-                        you.
+                    <p>Ready to become part of something special? We can't wait to welcome you.</p>
                 </div>
             </div>
         </nav>
+
+
+
+
+    @if($alreadySubmitted ?? false)
+
+            {{-- Already submitted state --}}
+            <div style="display:flex; justify-content:center; align-items:center; min-height:80vh; padding: 3rem 2rem 3rem 2rem;">
+                <div style="
+                    background:#fff;
+                    border-radius:20px;
+                    width:100%;
+                    max-width:500px;
+                    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+                    overflow:hidden;
+                    border: 1px solid #e8e8e8;
+                ">
+
+                    {{-- Header --}}
+                    <div style="text-align:center; padding: 2.5rem 1.5rem 1.5rem;">
+                        <div style="
+                            width:70px; height:70px;
+                            background:linear-gradient(135deg,#e8f5ee,#d0ede0);
+                            border-radius:50%;
+                            display:flex; align-items:center; justify-content:center;
+                            margin:0 auto 1rem;
+                        ">
+                            <i class="fa-solid fa-circle-check" style="color:#1a4a3a; font-size:2rem;"></i>
+                        </div>
+                        <h3 style="font-size:1.1rem; font-weight:700; color:#1a1a1a; margin:0 0 0.4rem;">
+                            Application Already Submitted
+                        </h3>
+                        <p style="font-size:0.85rem; color:#888; margin:0 0 1.5rem; line-height:1.5;">
+                            You have already completed your membership application form.<br>
+                            Please wait for the Board of Directors to review your application.
+                        </p>
+                    </div>
+
+                    <hr style="margin:0; border-color:#f0f0f0;">
+
+                    {{-- Info card --}}
+                    <div style="padding: 1.5rem;">
+                        <div style="
+                            background:#f9f9f9;
+                            border:1.5px solid #e8e8e8;
+                            border-radius:14px;
+                            padding:1rem 1.2rem;
+                            margin-bottom:1.2rem;
+                        ">
+                            <div style="display:flex; justify-content:space-between; padding:0.45rem 0; border-bottom:1px dashed #ececec; font-size:0.84rem;">
+                                <span style="color:#888; font-weight:500;">Member</span>
+                                <span style="color:#1a4a3a; font-weight:700;">{{ $user->fullname }}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; padding:0.45rem 0; border-bottom:1px dashed #ececec; font-size:0.84rem;">
+                                <span style="color:#888; font-weight:500;">Email</span>
+                                <span style="color:#1a4a3a; font-weight:700;">{{ $user->email }}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.45rem 0; font-size:0.84rem;">
+                                <span style="color:#888; font-weight:500;">Status</span>
+                                <span style="
+                                    display:inline-flex; align-items:center; gap:6px;
+                                    background:#fff8e1; border:1.5px solid #ffe082;
+                                    color:#b8860b; border-radius:20px;
+                                    padding:0.2rem 0.75rem; font-size:0.75rem; font-weight:700;
+                                ">
+                                    <span style="width:7px;height:7px;background:#e6a817;border-radius:50%;display:inline-block;"></span>
+                                    Pending Review
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- Email notice --}}
+                        <div style="
+                            background:#f0fdf4; border:1.5px solid #bbf7d0;
+                            border-radius:10px; padding:0.8rem 1rem;
+                            display:flex; gap:10px; align-items:flex-start;
+                            font-size:0.82rem; color:#166534; line-height:1.6;
+                            margin-bottom:1.2rem;
+                        ">
+                            <i class="fa fa-envelope" style="margin-top:2px; color:#16a34a;"></i>
+                            <p style="margin:0;">You will receive an <strong>email notification</strong> once your application has been reviewed and approved by the Board of Directors.</p>
+                        </div>
+
+                        {{-- Go to Login button --}}
+                        <a href="{{ route('LoginPage') }}" style="
+                            display:flex; align-items:center; justify-content:center; gap:8px;
+                            width:100%; padding:0.85rem;
+                            background: linear-gradient(135deg,#1a4a3a,#2d6a4f);
+                            color:#fff; border:none; border-radius:12px;
+                            font-size:0.95rem; font-weight:700;
+                            text-decoration:none; box-sizing:border-box;
+                        ">
+                            <i class="fa fa-right-to-bracket"></i> Go to Login
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+    @else
 
         <div class="form-container-body">
             <form id="form" action="{{ route('applicationFormButton', $user->id) }}" method="post" enctype="multipart/form-data">
@@ -48,27 +146,33 @@
 
                     <div class="card">
                         <div class="body-card">
+
+                            {{-- ==================== STEP 1 ==================== --}}
                             <div class="form-step active">
 
-                            <div class="header-card">
-                                <h2>Membership Application Form</h2>
-                            </div>
+                                <div class="card-share-header">
+                                    <div class="card-logo">
+                                        <i class="fa fa-file-lines"></i>
+                                    </div>
+                                    <p>KMPCATS</p>
+                                </div>
+
+                                <div class="header-card">
+                                    <h2>Membership Application Form</h2>
+                                    <p>Your membership application has been approved! You can now proceed to complete your information.</p>
+                                </div>
 
                                 {{-- PERSONAL INFORMATION --}}
-                                <h3 class="mt-3">Personal Information</h3>
+                                <h3 class="mt-4">Personal Information</h3>
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Firstname</label>
-                                            <input type="text" name="first_name" value="{{ $user->first_name ?? '' }}" class="form-control mt-1">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Fullname</label>
+                                            <input type="text" name="fullname" value="{{ $user->fullname ?? '' }}" class="form-control mt-1">
                                         </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Middle Initial</label>
-                                            <input type="text" name="middle_name" value="{{ $user->middle_name ?? '' }}" class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Lastname</label>
-                                            <input type="text" name="last_name" value="{{ $user->last_name ?? '' }}" class="form-control mt-1">
+                                        <div class="col-lg-6 mt-4">
+                                            <label>Username</label>
+                                            <input type="text" name="username" value="{{ $user->username ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Email</label>
@@ -76,23 +180,23 @@
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Date of Birth</label>
-                                            <input type="text" name="date_of_birth" value="{{ $user->date_of_birth ?? '' }}" class="form-control mt-1">
+                                            <input type="date" name="date_of_birth" value="{{ $other->date_of_birth ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Place of Birth</label>
-                                            <input type="text" name="place_of_birth" value="{{ $user->place_of_birth ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="place_of_birth" value="{{ $other->place_of_birth ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Contact No</label>
-                                            <input type="text" name="contact_no" value="{{ $user->contact_no ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="contact_no" value="{{ $other->contact_no ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Present Address</label>
-                                            <input type="text" name="present_address" value="{{ $user->present_address ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="present_address" value="{{ $other->present_address ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Permanent Address</label>
-                                            <input type="text" name="permanent_address" value="{{ $user->permanent_address ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="permanent_address" value="{{ $other->permanent_address ?? '' }}" class="form-control mt-1">
                                         </div>
                                     </div>
                                 </div>
@@ -103,35 +207,31 @@
                                     <div class="row">
                                         <div class="col-lg-4 mt-4">
                                             <label>Sex</label>
-                                            <input type="text" name="sex" value="{{ $user->sex ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="sex" value="{{ $other->sex ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Civil Status</label>
-                                            <input type="text" name="civil_status" value="{{ $user->civil_status ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="civil_status" value="{{ $other->civil_status ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Citizenship</label>
-                                            <input type="text" name="citizenship" value="{{ $user->citizenship ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="citizenship" value="{{ $other->citizenship ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Height</label>
-                                            <input type="text" name="height" value="{{ $user->height ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="height" value="{{ $other->height ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Weight</label>
-                                            <input type="text" name="weight" value="{{ $user->weight ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="weight" value="{{ $other->weight ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Blood Type</label>
-                                            <input type="text" name="blood_type" value="{{ $user->blood_type ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="blood_type" value="{{ $other->blood_type ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
-                                            <label>Name of TSC</label>
-                                            <input type="text" name="tsc_name" value="{{ $user->tsc_name ?? '' }}" class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Other Skills/Line of Expertise</label>
-                                            <input type="text" name="skills" value="{{ $user->skills ?? '' }}" class="form-control mt-1">
+                                            <label>Other Skills/ Expertise</label>
+                                            <input type="text" name="skills" value="{{ $other->skills ?? '' }}" class="form-control mt-1">
                                         </div>
                                     </div>
                                 </div>
@@ -154,15 +254,15 @@
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Son</label>
-                                            <input type="number" name="number_son" value="{{ $user->number_son ?? '' }}" class="form-control mt-1">
+                                            <input type="number" name="number_son" value="{{ $spouse->number_son ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Daughter</label>
-                                            <input type="number" name="number_daughter" value="{{ $user->number_daughter ?? '' }}" class="form-control mt-1">
+                                            <input type="number" name="number_daughter" value="{{ $spouse->number_daughter ?? '' }}" class="form-control mt-1">
                                         </div>
                                         <div class="col-lg-4 mt-4">
                                             <label>Other Specification</label>
-                                            <input type="text" name="other_spec" value="{{ $user->other_spec ?? '' }}" class="form-control mt-1">
+                                            <input type="text" name="other_spec" value="{{ $spouse->other_spec ?? '' }}" class="form-control mt-1">
                                         </div>
                                     </div>
                                 </div>
@@ -177,7 +277,7 @@
                                 <h3 class="mt-5">Government Information</h3>
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>SSS ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="sss_id" class="form-control mt-1" style="font-size: 14px">
@@ -189,7 +289,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Philhealth ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="philhealth_id" class="form-control mt-1" style="font-size: 14px">
@@ -201,7 +301,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Pagibig ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="pagibig_id" class="form-control mt-1" style="font-size: 14px">
@@ -213,7 +313,7 @@
                                                 </small>
                                             @endif
                                         </div>
-                                        <div class="col-lg-4 mt-4">
+                                        <div class="col-lg-6 mt-4">
                                             <label>Tin ID</label>
                                             <div class="card-box mt-2">
                                                 <input type="file" name="tin_id" class="form-control mt-1" style="font-size: 14px">
@@ -238,7 +338,7 @@
                                         @endphp
 
                                         @foreach($eduLevels as $index => $level)
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-6">
                                             <label class="mt-4">{{ strtoupper($level) }}</label>
                                             <input type="hidden" name="educational_level[]" value="{{ $level }}">
                                             @php $eduRecord = $eduData->firstWhere('educational_level', $level); @endphp
@@ -273,233 +373,10 @@
                                         @endforeach
                                     </div>
                                 </div>
+
                             </div>
 
-                            <div class="form-step">
-
-                                {{-- SEMINARS --}}
-                                <h3 class="mt-3">Seminars/Training Information</h3>
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Title of Seminar/Conference/Workshop/Short Courses Attended</label>
-                                            <input type="text" name="title_seminar"
-                                                value="{{ $seminar->title_seminar ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Inclusive Dates of Attendance (From / To)</label>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="attendance_from"
-                                                        value="{{ $seminar->attendance_from ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="attendance_to"
-                                                        value="{{ $seminar->attendance_to ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Conducted/Sponsored By (Write in full)</label>
-                                            <input type="text" name="sponsored_by"
-                                                value="{{ $seminar->sponsored_by ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- EMPLOYEE HISTORY --}}
-                                <h3 class="mt-5">Work/Employee History</h3>
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Name of Office/Company/Cooperative</label>
-                                            <input type="text" name="name_office"
-                                                value="{{ $employeeHistory->name_office ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Position Title</label>
-                                            <input type="text" name="position_title"
-                                                value="{{ $employeeHistory->position_title ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>Monthly Salary</label>
-                                            <input type="number" name="monthly_salary"
-                                                value="{{ $employeeHistory->monthly_salary ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Inclusive Dates (From/To)</label>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="employee_inclusive_from"
-                                                        value="{{ $employeeHistory->employee_inclusive_from ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="employee_inclusive_to"
-                                                        value="{{ $employeeHistory->employee_inclusive_to ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- TC MEMBERSHIP INFORMATION --}}
-                                <h3 class="mt-5">TC Membership Information</h3>
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Date of Membership with Transport Cooperative (TC)</label>
-                                            <input type="date" name="date_of_membership"
-                                                value="{{ $membershipInfo->date_of_membership ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Date of CETOS</label>
-                                            <input type="date" name="date_of_cetos"
-                                                value="{{ $membershipInfo->date_of_cetos ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 m~t-4">
-                                            <label>Membership Category</label>
-                                            <input type="text" name="membership_category"
-                                                value="{{ $membershipInfo->membership_category ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>TC Member I.D. No.</label>
-                                            <input type="text" name="tc_member_id_no"
-                                                value="{{ $membershipInfo->tc_member_id_no ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-4 mt-4">
-                                            <label>No. of Units Owned</label>
-                                            <input type="text" name="no_units_owned"
-                                                value="{{ $membershipInfo->no_units_owned ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Type/Mode of Unit</label>
-                                            <input type="text" name="type_mode_unit"
-                                                value="{{ $membershipInfo->type_mode_unit ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Paid-Up Capital</label>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="text" name="paid_up_capital"
-                                                        value="{{ $membershipInfo->paid_up_capital ?? '' }}"
-                                                        class="form-control mt-1" placeholder="Capital amount">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="number" name="paid_up_price"
-                                                        value="{{ $membershipInfo->paid_up_price ?? '' }}"
-                                                        class="form-control mt-1" placeholder="Price">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- TC MEMBERSHIP HISTORY --}}
-                                <h3 class="mt-5">TC Membership History</h3>
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Inclusive Dates</label>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="members_inclusive_dates_from"
-                                                        value="{{ $membershipHistory->members_inclusive_dates_from ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <input type="date" name="members_inclusive_dates_to"
-                                                        value="{{ $membershipHistory->members_inclusive_dates_to ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Membership Category</label>
-                                            <input type="text" name="membership_category_history"
-                                                value="{{ $membershipHistory->membership_category ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-12 mt-4">
-                                            <label>TC Held Positions</label>
-                                            <div class="row">
-                                                <div class="col-lg-6 mt-4">
-                                                    <label>Inclusive Dates</label>
-                                                    <div class="row">
-                                                        <div class="col-lg-6">
-                                                            <input type="date" name="tc_held_inclusive_dates_from"
-                                                                value="{{ $membershipHistory->tc_held_inclusive_dates_from ?? '' }}"
-                                                                class="form-control mt-1">
-                                                        </div>
-                                                        <div class="col-lg-6">
-                                                            <input type="date" name="tc_held_inclusive_dates_to"
-                                                                value="{{ $membershipHistory->tc_held_inclusive_dates_to ?? '' }}"
-                                                                class="form-control mt-1">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 mt-4">
-                                                    <label>Position Held</label>
-                                                    <input type="text" name="position_held"
-                                                        value="{{ $membershipHistory->position_held ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                                <div class="col-lg-6 mt-4">
-                                                    <label>Monthly Salary/Allowance</label>
-                                                    <input type="number" name="monthly_salary_allowance"
-                                                        value="{{ $membershipHistory->monthly_salary_allowance ?? '' }}"
-                                                        class="form-control mt-1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- SPECIAL AWARDS --}}
-                                <h3 class="mt-5">Special Awards/Recognition</h3>
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Title of Award/s</label>
-                                            <input type="text" name="title_awards"
-                                                value="{{ $specialAwards->title_awards ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Awarded By</label>
-                                            <input type="text" name="awarded_by"
-                                                value="{{ $specialAwards->awarded_by ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                        <div class="col-lg-6 mt-4">
-                                            <label>Membership in Other Association/Organization/Cooperative (Write in full)</label>
-                                            <input type="text" name="membership_other_association"
-                                                value="{{ $specialAwards->membership_other_association ?? '' }}"
-                                                class="form-control mt-1">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
-                        {{-- STEP 2 --}}
-                        {{-- <div class="body-card">
-                            
-                        </div> --}}
 
                         <div class="actions">
                             <button type="button" class="btn-prev" onclick="prevStep()">
@@ -516,69 +393,76 @@
                 </div>
             </form>
         </div>
-    </div>
 
-    @php
-        $existingVehicles = [
-            'UV'        => $vehicles->get('UV', collect())->pluck('plate_no')->toArray(),
-            'TAXI'      => $vehicles->get('TAXI', collect())->pluck('plate_no')->toArray(),
-            'BUS'       => $vehicles->get('BUS', collect())->pluck('plate_no')->toArray(),
-            'MINI BUS'  => $vehicles->get('MINI BUS', collect())->pluck('plate_no')->toArray(),
-            'JEEP'      => $vehicles->get('JEEP', collect())->pluck('plate_no')->toArray(),
-            'MULTI-CAB' => $vehicles->get('MULTI-CAB', collect())->pluck('plate_no')->toArray(),
-            'TRICYCLE'  => $vehicles->get('TRICYCLE', collect())->pluck('plate_no')->toArray(),
-        ];
-    @endphp
+        {{-- Move ALL scripts inside @else --}}
+        @php
+            $existingVehicles = [
+                'UV'        => $vehicles->get('UV', collect())->pluck('plate_no')->toArray(),
+                'TAXI'      => $vehicles->get('TAXI', collect())->pluck('plate_no')->toArray(),
+                'BUS'       => $vehicles->get('BUS', collect())->pluck('plate_no')->toArray(),
+                'MINI BUS'  => $vehicles->get('MINI BUS', collect())->pluck('plate_no')->toArray(),
+                'JEEP'      => $vehicles->get('JEEP', collect())->pluck('plate_no')->toArray(),
+                'MULTI-CAB' => $vehicles->get('MULTI-CAB', collect())->pluck('plate_no')->toArray(),
+                'TRICYCLE'  => $vehicles->get('TRICYCLE', collect())->pluck('plate_no')->toArray(),
+            ];
+        @endphp
 
-    <script>
-        const EXISTING_VEHICLES = @json($existingVehicles);
-    </script>
+        <script>
+            const EXISTING_VEHICLES = @json($existingVehicles);
+        </script>
 
-    <script src="{{ asset('js_folder/vehi_application.js') }}"></script>
+        <script src="{{ asset('js_folder/vehi_application.js') }}"></script>
 
+        <script>
+            let currentStep = 0;
+            const steps = document.querySelectorAll(".form-step");
+            const stepper = document.querySelectorAll(".step");
+            const nextBtn = document.querySelector(".btn-next");
+            const prevBtn = document.querySelector(".btn-prev");
+            const submitBtn = document.querySelector(".btn-submit");
 
-    <script>
-        let currentStep = 0;
-        const steps = document.querySelectorAll(".form-step");
-        const stepper = document.querySelectorAll(".step");
-        const nextBtn = document.querySelector(".btn-next");
-        const submitBtn = document.querySelector(".btn-submit");
+            updateSteps();
 
-        function updateSteps() {
-            steps.forEach((step, index) => {
-                step.classList.toggle("active", index === currentStep);
-                stepper[index].classList.toggle("active", index === currentStep);
-            });
-            if (currentStep === steps.length - 1) {
-                nextBtn.style.display = "none";
-                submitBtn.style.display = "inline-block";
-            } else {
-                nextBtn.style.display = "inline-block";
-                submitBtn.style.display = "none";
-            }
-        }
-
-        function nextStep() {
-            const currentFormStep = steps[currentStep];
-            const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
-            for (let field of requiredFields) {
-                if (!field.checkValidity()) {
-                    field.reportValidity();
-                    return;
+            function updateSteps() {
+                steps.forEach((step, index) => {
+                    step.classList.toggle("active", index === currentStep);
+                    stepper[index].classList.toggle("active", index === currentStep);
+                });
+                prevBtn.style.display = currentStep === 0 ? "none" : "inline-block";
+                if (currentStep === steps.length - 1) {
+                    nextBtn.style.display = "none";
+                    submitBtn.style.display = "inline-block";
+                } else {
+                    nextBtn.style.display = "inline-block";
+                    submitBtn.style.display = "none";
                 }
             }
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                updateSteps();
-            }
-        }
 
-        function prevStep() {
-            if (currentStep > 0) {
-                currentStep--;
-                updateSteps();
+            function nextStep() {
+                const currentFormStep = steps[currentStep];
+                const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
+                for (let field of requiredFields) {
+                    if (!field.checkValidity()) {
+                        field.reportValidity();
+                        return;
+                    }
+                }
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    updateSteps();
+                }
             }
-        }
-    </script>
+
+            function prevStep() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateSteps();
+                }
+            }
+        </script>
+
+    @endif
+
+    </div>
 </body>
 </html>

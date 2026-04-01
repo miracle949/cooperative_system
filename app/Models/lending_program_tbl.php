@@ -9,7 +9,7 @@ class lending_program_tbl extends Model
     protected $table = "lending_program_tbls";
 
     protected $fillable = [
-        "member_id",
+        "user_id",
         "reference_no",
         "lending_type",
         "lending_amount",

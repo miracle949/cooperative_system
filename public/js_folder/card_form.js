@@ -1,16 +1,24 @@
-let currentStep = 0;
-const steps = document.querySelectorAll(".form-step");
+let currentStep_form = 0;
+const steps_form = document.querySelectorAll(".form-step");
 const stepper = document.querySelectorAll(".step");
 const nextBtn = document.querySelector(".btn-next");
 const submitBtn = document.querySelector(".btn-submit");
 
 function updateSteps() {
-    steps.forEach((step, index) => {
-        step.classList.toggle("active", index === currentStep);
-        stepper[index].classList.toggle("active", index === currentStep);
+    steps_form.forEach((step, index) => {
+        step.classList.toggle("active", index === currentStep_form);
     });
 
-    if (currentStep === steps.length - 1) {
+    stepper.forEach((step, index) => {
+        step.classList.remove("active", "completed");
+        if (index === currentStep_form) {
+            step.classList.add("active");
+        } else if (index < currentStep_form) {
+            step.classList.add("completed");
+        }
+    });
+
+    if (currentStep_form === steps_form.length - 1) {
         nextBtn.style.display = "none";
         submitBtn.style.display = "inline-block";
     } else {
@@ -19,29 +27,29 @@ function updateSteps() {
     }
 }
 
-function nextStep() {
-    const currentFormStep = steps[currentStep];
+// Call on page load to set initial state
+updateSteps();
 
-    // get all required inputs & selects in CURRENT step only
+function nextStep() {
+    const currentFormStep = steps_form[currentStep_form];
     const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
 
     for (let field of requiredFields) {
         if (!field.checkValidity()) {
-            field.reportValidity(); // show browser validation message
-            return; // STOP going to next step
+            field.reportValidity();
+            return;
         }
     }
 
-    // if all fields are valid → go next
-    if (currentStep < steps.length - 1) {
-        currentStep++;
+    if (currentStep_form < steps_form.length - 1) {
+        currentStep_form++;
         updateSteps();
     }
 }
 
 function prevStep() {
-    if (currentStep > 0) {
-        currentStep--;
+    if (currentStep_form > 0) {
+        currentStep_form--;
         updateSteps();
     }
 }

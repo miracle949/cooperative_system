@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,23 +12,26 @@ return new class extends Migration
     {
         Schema::create('otherinfo_tbls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("member_id")
-                  ->constrained("users_tbls")
-                  ->onDelete("cascade");
-            $table->string("is_member_other_coop");
-            $table->boolean("are_you_willing_liability");
-            $table->boolean("are_you_willing_abide_policy");
-
-            $table->date("submitted_at");
-            $table->string("day_of");
+            $table->foreignId("user_id")
+                ->constrained("users_tbls")
+                ->onDelete("cascade");
+            $table->string("membership_category");
+            $table->string("place_of_birth")->nullable();
+            $table->string("date_of_birth")->nullable();
+            $table->string("contact_no")->nullable();
+            $table->string("present_address")->nullable();
+            $table->string("permanent_address")->nullable();
+            $table->string("sex")->nullable();
+            $table->string("civil_status")->nullable();
+            $table->string("citizenship")->nullable();
+            $table->string("height")->nullable();
+            $table->string("weight")->nullable();
+            $table->string("blood_type")->nullable();
+            $table->string("skills")->nullable();
+            $table->longText("profile_picture")->nullable();
             $table->longText("signature");
-
-            $table->enum("status", ["Pending", "Approved", "Disapproved"])
-              ->default("Pending");
-            $table->string("meeting_type")->nullable();
-            
-            $table->string("meeting_location")->nullable();
-            $table->date("meeting_date")->nullable();
+            $table->enum("status", ["Pending", "Approved", "Declined"])
+                ->default("Pending");
             $table->timestamps();
         });
     }

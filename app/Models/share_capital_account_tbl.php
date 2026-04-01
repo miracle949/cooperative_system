@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class educational_tbl extends Model
+class share_capital_account_tbl extends Model
 {
-    protected $table = "educational_tbls";
+    protected $table = "share_capital_account_tbls";
 
     protected $fillable = [
         "user_id",
-        "educational_level",
+        "total_shares",
+        "total_amount",
         "status",
-        "specify"
     ];
 }

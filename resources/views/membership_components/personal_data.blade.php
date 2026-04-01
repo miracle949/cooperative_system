@@ -52,8 +52,13 @@
                     <input type="text" name="place_of_birth" id="place_birth" class="form-control">
                 </div>
 
-                <div class="col-lg-6 mt-4">
-                    <label class="text-start">What membership category are you?</label>
+                <div class="col-lg-4 col-md-12 mt-4">
+                    <label>Username *</label>
+                    <input type="text" name="username" id="username" class="form-control">
+                </div>
+
+                <div class="col-lg-4 mt-4">
+                    <label class="text-start">Membership category?</label>
                     <select name="membership_category" id="select_type" class="form-select">
                         <option value="" disabled selected>Select category</option>
                         <option value="Operator">Operator</option>
@@ -66,7 +71,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-6 mt-4">
+                <div class="col-lg-4 mt-4">
                     <label>Civil Status *</label>
                     <select name="civil_status" id="civil_status" class="form-select">
                         <option value="">Select Status</option>
@@ -138,33 +143,6 @@
             <div class="col-lg-4 mt-4">
                 <label>Place of Birth</label>
                 <input type="text" name="spouse_place_birth" id="spouse_place_birth" class="form-control">
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-12 mt-4">
-                <label class="fw-semibold">Number of Dependents:</label>
-                <div class="row">
-                    <div class="col-lg-4 mt-4">
-                        <label>Son</label>
-                        <input type="number" name="number_son" id="number_son" class="form-control" min="0"
-                            onkeydown=" if(event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') event.preventDefault();">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>Daughter</label>
-                        <input type="number" name="number_daughter" id="number_daughter" class="form-control" min="0"
-                            onkeydown=" if(event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') event.preventDefault();">
-                    </div>
-
-                    <div class="col-lg-4 mt-4">
-                        <label>Other-Specify</label>
-                        <input type="text" name="other_spec" id="other_spec" class="form-control">
-                        <div class="reminder">
-                            <span>If not applicable, you may enter “None”</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

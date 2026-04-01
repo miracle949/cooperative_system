@@ -53,7 +53,7 @@ class PaymentController extends Controller
         // Save repayment record
         lending_repayments_tbl::create([
             'lending_id' => $lendingId,
-            'member_id' => auth()->id(),
+            'user_id' => auth()->id(),
             'payment_number' => $paymentsMade + 1,
             'amount_paid' => $loan->monthly_payment,
             'payment_date' => now()->format('Y-m-d'),

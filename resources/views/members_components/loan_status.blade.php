@@ -32,7 +32,6 @@
                     <a href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
                         style="text-decoration: none; color: inherit;">
 
-                        {{-- THIS must be INSIDE the @forelse, not outside --}}
                         <div class="sidebar-box {{ $selectedLoan && $selectedLoan->id == $loan->id ? 'active-sidebar' : '' }}">
                             <div class="sidebar-header">
                                 <h4>{{ $loan->lending_type }}</h4>
@@ -71,15 +70,11 @@
                 @endforelse
             </div>
         </div>
-               
 
         {{-- RIGHTBAR --}}
         <div class="rightbar">
             @if($selectedLoan)
                 @if($lendingStatus)
-
-                    {{-- SUCCESS / ERROR ALERTS - replace the old alert divs --}}
-                    {{-- These are now modals instead --}}
 
                     {{-- GCash Success Modal --}}
                     @if(session('success'))
@@ -87,18 +82,13 @@
                         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                             <div class="modal-content" style="border: none; border-radius: 20px; overflow: hidden; text-align: center;">
                                 <div class="modal-body" style="padding: 2.5rem 2rem;">
-
-                                    {{-- Animated checkmark --}}
                                     <div style="width: 80px; height: 80px; background: #e8f8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
                                         <div style="width: 56px; height: 56px; background: #1a4a3a; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                             <i class="fa-solid fa-check" style="color: white; font-size: 22px;"></i>
                                         </div>
                                     </div>
-
                                     <h4 style="font-size: 20px; font-weight: 700; color: #1a4a3a; margin-bottom: 8px;">Payment Successful!</h4>
                                     <p style="font-size: 14px; color: #777; margin-bottom: 0.5rem;">{{ session('success') }}</p>
-
-                                    {{-- Payment details --}}
                                     @if($lendingStatus)
                                     <div style="background: #f8fffe; border: 1.5px solid #d0ede3; border-radius: 12px; padding: 1rem; margin: 1.2rem 0; text-align: left;">
                                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
@@ -119,7 +109,6 @@
                                         </div>
                                     </div>
                                     @endif
-
                                     <button onclick="closeSuccessModal()"
                                         style="background: #1a4a3a; color: white; border: none; border-radius: 10px; padding: 12px 40px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;">
                                         Done
@@ -136,17 +125,13 @@
                         <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
                             <div class="modal-content" style="border: none; border-radius: 20px; overflow: hidden; text-align: center;">
                                 <div class="modal-body" style="padding: 2.5rem 2rem;">
-
-                                    {{-- Error icon --}}
                                     <div style="width: 80px; height: 80px; background: #fef0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
                                         <div style="width: 56px; height: 56px; background: #e03131; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                             <i class="fa-solid fa-xmark" style="color: white; font-size: 22px;"></i>
                                         </div>
                                     </div>
-
                                     <h4 style="font-size: 20px; font-weight: 700; color: #c0392b; margin-bottom: 8px;">Payment Failed</h4>
                                     <p style="font-size: 14px; color: #777; margin-bottom: 1.5rem;">{{ session('error') }}</p>
-
                                     <button onclick="closeErrorModal()"
                                         style="background: #e03131; color: white; border: none; border-radius: 10px; padding: 12px 40px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;">
                                         Try Again
@@ -206,7 +191,6 @@
                                 <p>{{ $lendingStatus->payments_made }} of {{ $lendingStatus->total_payments }} payments made</p>
                             </div>
 
-                            {{-- REPAYMENT BUTTON --}}
                             @if(
                                 ($lendingStatus->status === 'Active' || $lendingStatus->status === 'Overdue') &&
                                 $lendingStatus->remaining_balance > 0 &&
@@ -214,7 +198,7 @@
                                 $lendingStatus->payments_made < $lendingStatus->total_payments
                             )
                                 <div class="mt-3 d-flex gap-2">
-                                    <button class="btn-repay" data-bs-toggle="modal" data-bs-target="#repayModal">
+                                    <button class="btn-repay" onclick="openRepayModal()">
                                         Make a Payment
                                     </button>
                                 </div>
@@ -225,9 +209,9 @@
                                 $lendingStatus->payments_made >= $lendingStatus->total_payments)
                             )
                                 <div class="mt-3">
-                                    <div style="display: flex; align-items: center; gap: 8px; background: #e8f8f0; border: 1.5px solid #a8dfc4; border-radius: 10px; padding: 10px 16px; width: fit-content;">
-                                        <i class="fa-solid fa-circle-check" style="color: #1a4a3a; font-size: 16px;"></i>
-                                        <p style="margin: 0; font-size: 13px; font-weight: 600; color: #1a4a3a;">Lending fully paid</p>
+                                    <div style="display: flex; align-items: center; gap: 8px; background: var(--green); border: 1.5px solid var(--green); border-radius: 10px; padding: 10px 16px; width: fit-content;">
+                                        <i class="fa-solid fa-circle-check" style="color: #ffffff; font-size: 16px;"></i>
+                                        <p style="margin: 0; font-size: 13px; font-weight: 600; color: #ffffff;">Lending fully paid</p>
                                     </div>
                                 </div>
                             @endif
@@ -262,9 +246,9 @@
                                                         <td>{{ $payment->recordedBy->name ?? 'Self' }}</td>
                                                         <td>
                                                             <div class="d-flex align-items-center gap-1 card-icon"
-                                                                style="background-color: #efefef; border-radius: 28px; padding: 0.3rem 0.6rem; width: fit-content;">
-                                                                <div class="dot"></div>
-                                                                <p style="margin: 0; font-size: 13px; font-weight: 600;">Paid</p>
+                                                                style="background-color: var(--green); border-radius: 28px; padding: 0.3rem 0.6rem; width: fit-content;">
+                                                                <div class="dot" style="background-color: #ffffff;"></div>
+                                                                <p style="margin: 0; font-size: 13px; font-weight: 500; color: #ffffff;">Paid</p>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -315,7 +299,7 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
 
-                        <form action="{{ route('repayment.store') }}" method="POST">
+                        <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form">
                             @csrf
                             <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
                             <input type="hidden" name="member_id" value="{{ auth()->id() }}">
@@ -325,12 +309,11 @@
 
                                 {{-- Amount --}}
                                 <div style="margin-bottom: 1.1rem;">
-                                    <label
-                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Amount
-                                        to Pay (₱)</label>
+                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Amount to Pay (₱)
+                                    </label>
                                     <div style="position: relative;">
-                                        <span
-                                            style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a4a3a; font-weight: 700; font-size: 15px;">₱</span>
+                                        <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a4a3a; font-weight: 700; font-size: 15px;">₱</span>
                                         <input type="number" name="amount_paid" class="form-control"
                                             value="{{ $selectedLoan->monthly_payment }}" required
                                             style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;" readonly>
@@ -339,27 +322,28 @@
 
                                 {{-- Payment Date --}}
                                 <div style="margin-bottom: 1.1rem;">
-                                    <label
-                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Payment
-                                        Date</label>
+                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Payment Date
+                                    </label>
                                     <input type="date" name="payment_date" class="form-control"
                                         value="{{ now()->format('Y-m-d') }}" required
                                         style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
                                 </div>
 
-                                {{-- Payment Method --}}
+                                {{-- Payment Method — now includes GCash --}}
                                 <div style="margin-bottom: 1.1rem;">
-                                    <label
-                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Payment
-                                        Method</label>
-                                    <select name="payment_method" class="form-select"
+                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Payment Method
+                                    </label>
+                                    <select name="payment_method" id="repay-method" class="form-select"
                                         style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
-                                        <option>Cash</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="GCash">GCash</option>
                                     </select>
                                 </div>
 
-                                {{-- Reference No --}}
-                                <div style="margin-bottom: 1.1rem;">
+                                {{-- Reference No (hidden when GCash — GCash auto-generates) --}}
+                                <div id="ref-no-section" style="margin-bottom: 1.1rem;">
                                     <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
                                         Reference / Receipt No.
                                         <span style="color: #aaa; font-weight: 400; font-size: 11px; text-transform: none;">(optional — auto-generated if blank)</span>
@@ -369,41 +353,36 @@
                                         style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
                                 </div>
 
-                                {{-- Notes --}}
-                                <div style="margin-bottom: 0.5rem;">
-                                    <label
-                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Notes
-                                        (optional)</label>
-                                    <textarea name="notes" class="form-control" rows="2" placeholder="Additional remarks..."
+                                {{-- Notes (hidden when GCash) --}}
+                                <div id="notes-section" style="margin-bottom: 0.5rem;">
+                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Notes (optional)
+                                    </label>
+                                    <textarea name="notes" class="form-control" rows="2"
+                                        placeholder="Additional remarks..."
                                         style="border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 14px; color: #333; resize: none;"></textarea>
                                 </div>
 
-                                {{-- Divider --}}
-                                <div style="border-top: 1.5px dashed #e8e8e8; margin: 1.2rem 0;"></div>
-
-                                {{-- GCash Payment Option --}}
-                                <div
-                                    style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem;">
-                                    <div
-                                        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                                        <div style="display: flex; align-items: center; gap: 10px;">
-                                            <div
-                                                style="width: 40px; height: 40px; background: #007DFF; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                                <i class="fa-solid fa-mobile-screen-button"
-                                                    style="color: white; font-size: 18px;"></i>
+                                {{-- GCash section — shown only when GCash is selected --}}
+                                <div id="gcash-section" style="display: none;">
+                                    <div style="border-top: 1.5px dashed #e8e8e8; margin: 1.2rem 0;"></div>
+                                    <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem;">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div style="width: 40px; height: 40px; background: #007DFF; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fa-solid fa-mobile-screen-button" style="color: white; font-size: 18px;"></i>
+                                                </div>
+                                                <div>
+                                                    <p style="margin: 0; font-size: 14px; font-weight: 700; color: #0056b3;">Pay via GCash</p>
+                                                    <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure online payment</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p style="margin: 0; font-size: 14px; font-weight: 700; color: #0056b3;">Pay
-                                                    via GCash</p>
-                                                <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure online
-                                                    payment</p>
-                                            </div>
+                                            <button type="button" onclick="submitGcash()"
+                                                style="background: #007DFF; color: white; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                                <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
+                                                Pay Now
+                                            </button>
                                         </div>
-                                        <button type="button" onclick="submitGcash()"
-                                            style="background: #007DFF; color: white; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                                            <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
-                                            Pay Now
-                                        </button>
                                     </div>
                                 </div>
 
@@ -411,15 +390,15 @@
 
                             {{-- Modal Footer --}}
                             <div class="modal-footer"
-                                style="background: #f8f9fa; border: none; padding: 1rem 1.6rem; display: flex; justify-content: space-between; align-items: center;">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                    style="border-radius: 8px; font-size: 13px; padding: 8px 18px; background: #e0e0e0; border: none; color: #555;">
-                                    Cancel
-                                </button>
-                                <button type="submit" class="btn"
-                                    style="background: #1a4a3a; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 8px 22px; border: none; display: flex; align-items: center; gap: 6px;">
+                                style="background: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.1); padding: 1rem 1.6rem; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                <button type="submit" id="confirm-pay-btn" class="btn w-100"
+                                    style="background: #1a4a3a; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 8px 22px; border: none; display: flex; align-items: center; gap: 6px; justify-content: center;">
                                     <i class="fa-solid fa-check" style="font-size: 12px;"></i>
                                     Confirm Payment
+                                </button>
+                                <button type="button" class="btn btn-secondary w-100 text-center" data-bs-dismiss="modal"
+                                    style="border-radius: 8px; font-size: 13px; padding: 8px 18px; background: #e0e0e0; border: none; color: #555;">
+                                    Cancel
                                 </button>
                             </div>
                         </form>
@@ -441,47 +420,147 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
-        AOS.init();
+    AOS.init();
 
-        function submitGcash() {
-            document.getElementById('gcash-form').submit();
+    /* ══════════════════════════════════════
+        PAYMENT METHOD TOGGLE
+    ══════════════════════════════════════ */
+    document.getElementById('repay-method')?.addEventListener('change', function () {
+        const isGcash = this.value === 'GCash';
+
+        // Show/hide GCash panel
+        document.getElementById('gcash-section').style.display   = isGcash ? 'block' : 'none';
+
+        // Show/hide Confirm Payment button
+        document.getElementById('confirm-pay-btn').style.display = isGcash ? 'none'  : 'flex';
+
+        // Hide reference & notes fields when GCash (they're auto-handled server-side)
+        document.getElementById('ref-no-section').style.display  = isGcash ? 'none'  : 'block';
+        document.getElementById('notes-section').style.display   = isGcash ? 'none'  : 'block';
+    });
+
+    /* ══════════════════════════════════════
+        MODAL UTILITIES
+    ══════════════════════════════════════ */
+    function cleanupBootstrapModal() {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.querySelectorAll('.modal-backdrop-custom').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+    }
+
+    function openRepayModal() {
+        cleanupBootstrapModal();
+
+        // Reset method to Cash and hide GCash panel on every open
+        const methodSelect = document.getElementById('repay-method');
+        if (methodSelect) {
+            methodSelect.value = 'Cash';
+            document.getElementById('gcash-section').style.display   = 'none';
+            document.getElementById('confirm-pay-btn').style.display = 'flex';
+            document.getElementById('ref-no-section').style.display  = 'block';
+            document.getElementById('notes-section').style.display   = 'block';
         }
 
-        function closeSuccessModal() {
-            var modal = document.getElementById('successModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
+        var repayModalEl = document.getElementById('repayModal');
 
-        function closeErrorModal() {
-            var modal = document.getElementById('errorModal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
+        var backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop-custom';
+        backdrop.id = 'repay-backdrop';
+        document.body.appendChild(backdrop);
+        document.body.classList.add('modal-open');
 
-        // Fix Bootstrap modal conflict — remove leftover backdrop after success/error modal closes
-        document.addEventListener('DOMContentLoaded', function () {
-            var successModal = document.getElementById('successModal');
-            var errorModal = document.getElementById('errorModal');
+        repayModalEl.classList.add('show', 'modal-animate-in');
+        repayModalEl.style.display = 'block';
+        repayModalEl.removeAttribute('aria-hidden');
 
-            if (successModal) {
-                successModal.addEventListener('click', function(e) {
-                    if (e.target === successModal) {
-                        closeSuccessModal();
-                    }
-                });
-            }
+        setTimeout(() => {
+            repayModalEl.classList.remove('modal-animate-in');
+        }, 400);
 
-            if (errorModal) {
-                errorModal.addEventListener('click', function(e) {
-                    if (e.target === errorModal) {
-                        closeErrorModal();
-                    }
-                });
-            }
+        backdrop.addEventListener('click', function () {
+            closeRepayModal();
         });
+    }
+
+    function closeRepayModal() {
+        var repayModalEl = document.getElementById('repayModal');
+        repayModalEl.classList.add('modal-animate-out');
+        setTimeout(() => {
+            repayModalEl.classList.remove('show', 'modal-animate-out');
+            repayModalEl.style.display = 'none';
+            cleanupBootstrapModal();
+        }, 250);
+    }
+
+    function submitGcash() {
+        document.getElementById('gcash-form').submit();
+    }
+
+    function closeSuccessModal() {
+        var modal = document.getElementById('successModal');
+        if (modal) {
+            modal.classList.add('modal-animate-out');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('modal-animate-out');
+                cleanupBootstrapModal();
+            }, 250);
+        }
+    }
+
+    function closeErrorModal() {
+        var modal = document.getElementById('errorModal');
+        if (modal) {
+            modal.classList.add('modal-animate-out');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('modal-animate-out');
+                cleanupBootstrapModal();
+            }, 250);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var successModal = document.getElementById('successModal');
+        if (successModal) {
+            cleanupBootstrapModal();
+            successModal.querySelector('.modal-content').style.animation =
+                'modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+            var outerCircle = successModal.querySelector('.modal-body > div');
+            if (outerCircle) outerCircle.classList.add('success-icon-animate');
+            var checkIcon = successModal.querySelector('.fa-check');
+            if (checkIcon) checkIcon.closest('div').classList.add('success-check-animate');
+            var h4 = successModal.querySelector('h4');
+            if (h4) h4.classList.add('success-content-animate');
+            successModal.addEventListener('click', function(e) {
+                if (e.target === successModal) closeSuccessModal();
+            });
+        }
+
+        var errorModal = document.getElementById('errorModal');
+        if (errorModal) {
+            cleanupBootstrapModal();
+            errorModal.querySelector('.modal-content').style.animation =
+                'modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+            var outerCircle = errorModal.querySelector('.modal-body > div');
+            if (outerCircle) outerCircle.classList.add('success-icon-animate');
+            errorModal.addEventListener('click', function(e) {
+                if (e.target === errorModal) closeErrorModal();
+            });
+        }
+
+        var repayModalEl = document.getElementById('repayModal');
+        if (repayModalEl) {
+            repayModalEl.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function(btn) {
+                btn.addEventListener('click', function () {
+                    closeRepayModal();
+                });
+            });
+        }
+    });
     </script>
 </body>
 

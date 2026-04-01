@@ -16,14 +16,25 @@ html {
 }
 
 :root {
-    --bg: #f4f2ee;
-    --surface: #ffffff;
-    --border: #d9d5cc;
-    --text: #1a1814;
-    --text-muted: #6b6760;
-    --accent: #2b5ce6;
-    --accent-light: #eef1fd;
-    --tag-bg: #1a1814;
+    --white: #FFFFFF;
+    --off: #F7F9F8;
+    --green: #1E4035;
+    --green2: #2A5C4E;
+    --gold: #C9A84C;
+    --text: #1A1A1A;
+    --muted: #6B7B74;
+    --border: #E2E8E5;
+    --shadow: rgba(30, 64, 53, 0.09);
+    --cream: #F5F0E8;
+    /* page background */
+    --cream-dark: #EDE8DE;
+    /* inputs, dropdowns, surfaces */
+    --green-tint: #EEF2F0;
+    /* alternative subtle bg */
+    --green-mid: #2D5C4A;
+    /* hover states, accents */
+    --gold-tint: #FFF8EC;
+    /* gold-tinted surfaces */
 }
 
 /* 
@@ -62,9 +73,11 @@ div.container-fluid {
     /* background-color: #ECF6FF; */
     /* background-color: #f5f5f8; */
     padding: 0;
-    padding: 0px 0px 48px 0px;
+    padding: 0px 0px 4rem 0px;
     /* background-color: #F7F9F8; */
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    /* background-color: #F7F9F8; */
+    background-color: #EAEDEB;
     /* background-color: #ffffff; */
 }
 
@@ -173,33 +186,44 @@ div.container-fluid {
     display: none;
 }
 
-.container-fluid .nav-logo {
+.container-fluid nav {
+    padding: 1rem 1.5rem 1rem 1.5rem;
+    /* height: 70px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    /* padding: 1.5rem 5%; */
-    padding: 1.3rem 1.5rem 1.3rem 1.5rem;
+    padding: 0 32px; */
+    /* padding: 16px 32px; */
     /* background-color: #1E4035; */
-    /* background-color: #ffffff; */
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(14px);
-    /* background-color: #FFFFFF; */
-    /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
-    /* border-bottom: 1px solid #E2E8E5; */
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border-bottom: 1px solid #E2E8E5;
-    /* border-bottom: 1px solid #E2E8E5; */
-    /* max-width: 1100px;
-    margin: auto; */
-    /* margin-top: 1rem; */
-    margin: 0;
 }
 
-.container-fluid .nav-logo .logo {
+.container-fluid nav .nav-logo {
     display: flex;
-    justify-content: left;
     align-items: center;
+}
+
+.container-fluid nav .nav-logo h2 {
+    /* color: #ffffff; */
+    color: #1A1A1A;
+    /* font-size: 18px; */
+    font-size: 18px;
+    margin: 0px 0px 0px 24px;
+}
+
+.container-fluid nav .nav-logo p {
+    font-size: 13px;
+    color: #808080;
+    line-height: 30px;
+    margin: 0px 0px 0px 24px;
+}
+
+.container-fluid nav .nav-logo img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
 }
 
 /* .container-fluid .nav-logo h2, 
@@ -216,7 +240,7 @@ div.container-fluid {
     max-width: 1000px;
     /* max-width: 900px; */
     margin: auto;
-    margin-top: 3rem
+    margin-top: 3rem;
 }
 
 .choose {
@@ -229,12 +253,18 @@ div.container-fluid {
 
 .choose a {
     text-decoration: none;
-    color: #212529;
+    color: var(--green);
     /* font-size: 15px; */
 }
 
 .choose a .fa {
     font-size: 20px;
+    color: var(--green);
+}
+
+.choose a:hover .fa {
+    transform: translateX(-20%);
+    transition: all 0.6s ease-in-out;
 }
 
 .subtitle {
@@ -270,6 +300,16 @@ div.container-fluid {
     transition: background 0.4s;
 }
 
+.step.completed .circle {
+    background: #1E4035;
+    /* background-color: #ddd; */
+    color: white;
+}
+
+.step.completed::after {
+    background: #1E4035;
+}
+
 /* .step::after {
     content: "";
     position: absolute;
@@ -290,7 +330,9 @@ div.container-fluid {
     height: 40px;
     border-radius: 50%;
     background: #ddd;
-    color: #333;
+    border: 1px solid #E2E8E5;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
+    color: #1A1A1A;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -441,6 +483,12 @@ button {
     font-weight: bold;
 }
 
+.container-fluid .actions .btn-next:hover {
+    background-color: var(--green2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
+}
+
 .container-fluid .actions .btn-prev {
     background: #e5e7eb;
     font-size: 14.5px;
@@ -449,11 +497,17 @@ button {
 
 .container-fluid .actions .btn-submit {
     /* background: #16a34a; */
-    background: #C9A84C;
+    background: #1E4035;
     color: white;
     font-size: 14.5px;
     border-radius: 10px;
     font-weight: bold;
+}
+
+.container-fluid .actions .btn-submit:hover {
+    background-color: var(--green2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
 
 .parent-name-date {
@@ -484,6 +538,21 @@ button {
     width: 100%;
 }
 
+form {
+    position: relative;
+}
+
+form .back {
+    position: absolute;
+    left: 50px;
+    top: 0px;
+}
+
+form .back a {
+    font-size: 20px;
+    color: #1A1A1A;
+}
+
 .form-check label {
     /* text-transform: uppercase; */
 }
@@ -494,7 +563,7 @@ button {
     border-radius: 7px;
 }
 
-button#clear:hover{
+button#clear:hover {
     background-color: var(--green);
     color: #ffffff;
 }
@@ -508,12 +577,12 @@ button#clear:hover{
     font-weight: 600;
 }
 
-.card-box-signature button:hover{
+.card-box-signature button:hover {
     background-color: var(--green);
     color: #ffffff;
 }
 
-.card-box-signature button:active{
+.card-box-signature button:active {
     background-color: var(--green);
     color: #ffffff;
 }
@@ -541,10 +610,14 @@ button#clear:hover{
 } */
 
 .review-parent .review-first {
-    width: 50%;
+    width: 100%;
 }
 
 .review-parent .review-second {
+    width: 100%;
+}
+
+.review-parent .review-third {
     width: 100%;
 }
 

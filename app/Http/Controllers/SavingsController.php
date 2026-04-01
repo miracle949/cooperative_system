@@ -33,14 +33,15 @@ class SavingsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $first_name = Auth::check() ? Auth::user()->first_name : null;
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
 
         // Get or create savings account
-        $savingsAccount = savings_account_tbl::where('member_id', $user->id)->first();
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->first();
 
         if (!$savingsAccount) {
             $savingsAccount = savings_account_tbl::create([
-                'member_id' => $user->id,
+                'user_id' => $user->id,
                 'balance' => 0.00,
                 'status' => 'active',
                 'opened_at' => Carbon::today(),
@@ -77,7 +78,8 @@ class SavingsController extends Controller
 
         return view(
             'members_components.savings',
-            ["first_name" => $first_name],
+            ["username" => $username,
+            "email" => $email],
             compact(
                 'savingsAccount',
                 'groupedTransactions',
@@ -100,7 +102,7 @@ class SavingsController extends Controller
         ]);
 
         $user = Auth::user();
-        $savingsAccount = savings_account_tbl::where('member_id', $user->id)->firstOrFail();
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
         $newBalance = $savingsAccount->balance + $request->amount;
         $referenceNo = $this->generateReferenceNo('deposit');
 
@@ -134,7 +136,7 @@ class SavingsController extends Controller
         ]);
 
         $user = Auth::user();
-        $savingsAccount = savings_account_tbl::where('member_id', $user->id)->firstOrFail();
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
 
         if ($request->amount > $savingsAccount->balance) {
             return back()
@@ -173,7 +175,7 @@ class SavingsController extends Controller
     public function downloadReceipt(string $referenceNo)
     {
         $user = Auth::user();
-        $savingsAccount = savings_account_tbl::where('member_id', $user->id)->firstOrFail();
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
 
         $tx = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
             ->where('reference_no', $referenceNo)

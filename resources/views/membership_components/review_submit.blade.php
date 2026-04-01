@@ -68,6 +68,11 @@
                         </div>
                         <div class="review-second">
                             <div class="review mt-3">
+                                <p>Username:</p>
+                                <p id="username_display"></p>
+                            </div>
+
+                            <div class="review mt-3">
                                 <p>Spouse Name:</p>
                                 <p id="spouse_name_display"></p>
                             </div>
@@ -83,18 +88,25 @@
                             </div>
 
                             <div class="review mt-3">
-                                <p>Tin No:</p>
-                                <p id="tin_no_display"></p>
-                            </div>
-
-                            <div class="review mt-3">
-                                <p>Civil Status:</p>
-                                <p id="civil_status_display"></p>
+                                <p>Sex:</p>
+                                <p id="sex_display"></p>
                             </div>
 
                             <div class="review mt-3">
                                 <p>Membership Category:</p>
                                 <p id="membership_type_display"></p>
+                            </div>
+                        </div>
+                        <div class="review-third">
+
+                            <div class="review mt-3">
+                                <p>Citizenship:</p>
+                                <p id="citizenship_display"></p>
+                            </div>
+
+                            <div class="review mt-3">
+                                <p>Other Skills/Expertise:</p>
+                                <p id="skills_display"></p>
                             </div>
                         </div>
                     </div>
@@ -128,7 +140,7 @@
             <div class="row">
                 <div class="col-lg-12 mt-4">
                     <div class="card card-body-box">
-                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                        {{-- <div class="d-flex align-items-center gap-3 flex-wrap">
                             <label class="m-0">Submmited this</label>
                             <div class="col-lg-3">
                                 <input type="date" name="submitted_at" id="submitted_at" class="form-control"
@@ -139,9 +151,9 @@
                                 <input type="text" name="day_of" value="" class="form-control"
                                     placeholder="Enter the day e.g Thursday" style="font-size: 14.5px;">
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <label class="mt-4"><b>I HEREBY CERTIFY</b> that the foregoing statements are
+                        <label class="mt-2"><b>I HEREBY CERTIFY</b> that the foregoing statements are
                             <b>True and Correct:</b></label>
 
                         <label class="mt-4">Applicant's Signature (Type Full Name)</label>
@@ -154,7 +166,7 @@
                                     </canvas>
 
                                     <div class="mt-3 text-end">
-                                        <button type="button" id="clear" class="">
+                                        <button type="button" id="clear" class="btn">
                                             Clear
                                         </button>
                                     </div>
@@ -172,8 +184,8 @@
 
             <div class="row">
                 <div class="col-lg-12 mt-4">
-                    <div class="card alert alert-warning p-4">
-                        <p class="m-0"><b>Note:</b> By submitting this application, you authorize the cooperative to
+                    <div class="card alert alert-warning py-3 px-4">
+                        <p class="m-0" style="font-size: 14.5px"><b>Note:</b> By submitting this application, you authorize the cooperative to
                             verify
                             the information provided and to conduct necessary background checks as required by law.</p>
                     </div>

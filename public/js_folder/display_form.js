@@ -1,11 +1,14 @@
 const first_name = document.getElementById("first_name");
 const middle_name = document.getElementById("middle_name");
 const last_name = document.getElementById("last_name");
+const username = document.getElementById("username");
 const date_birth = document.getElementById("date_birth");
 const place_birth = document.getElementById("place_birth");
 const email = document.getElementById("email");
 const member_type = document.getElementById("select_type");
-const civil_status = document.getElementById("civil_status");
+const sex = document.getElementById("sex");
+const citizenship = document.getElementById("citizenship");
+const skills_expertise = document.getElementById("skills_expertise");
 // const tin_no = document.getElementById("tin_no");
 
 const spouse_name = document.getElementById("spouse_name");
@@ -28,6 +31,39 @@ const other_spec = document.getElementById("other_spec");
 
 // personal details
 
+// let currentStep = 0;
+// const steps = document.querySelectorAll('.step');
+// const formSteps = document.querySelectorAll('.form-step');
+
+// function updateStepper() {
+//     steps.forEach((step, index) => {
+//         step.classList.remove('active', 'completed');
+//         if (index === currentStep) {
+//             step.classList.add('active');
+//         } else if (index < currentStep) {
+//             step.classList.add('completed');
+//         }
+//     });
+// }
+
+// function nextStep() {
+//     if (currentStep < steps.length - 1) {
+//         formSteps[currentStep].classList.remove('active');
+//         currentStep++;
+//         formSteps[currentStep].classList.add('active');
+//         updateStepper();
+//     }
+// }
+
+// function prevStep() {
+//     if (currentStep > 0) {
+//         formSteps[currentStep].classList.remove('active');
+//         currentStep--;
+//         formSteps[currentStep].classList.add('active');
+//         updateStepper();
+//     }
+// }
+
 first_name.addEventListener("input", () => {
     document.getElementById("firstname_display").textContent = first_name.value;
 });
@@ -38,6 +74,10 @@ middle_name.addEventListener("input", () => {
 
 last_name.addEventListener("input", () => {
     document.getElementById("lastname_display").textContent = last_name.value;
+});
+
+username.addEventListener("input", () => {
+    document.getElementById("username_display").textContent = username.value;
 });
 
 date_birth.addEventListener("input", () => {
@@ -56,13 +96,18 @@ member_type.addEventListener("input", () => {
     document.getElementById("membership_type_display").textContent = member_type.value;
 });
 
-civil_status.addEventListener("input", () => {
-    document.getElementById("civil_status_display").textContent = civil_status.value;
+sex.addEventListener("input", () => {
+    document.getElementById("sex_display").textContent = sex.value;
 });
 
-// tin_no.addEventListener("input", () => {
-//     document.getElementById("tin_no_display").textContent = tin_no.value;
-// });
+
+citizenship.addEventListener("input", () => {
+    document.getElementById("citizenship_display").textContent = citizenship.value;
+});
+
+skills_expertise.addEventListener("input", () => {
+    document.getElementById("skills_display").textContent = skills_expertise.value;
+});
 
 // Spouse
 

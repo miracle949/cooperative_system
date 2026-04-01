@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('membervehi_tbls', function (Blueprint $table) {
+        Schema::create('share_capital_account_tbls', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")
-                  ->constrained("users_tbls")
-                  ->onDelete("cascade");
-            $table->string("plate_no")->nullable();
-            $table->string("vehicle_type")->nullable();
-            $table->integer("quantity")->nullable();
+                ->constrained("users_tbls")
+                ->onDelete("cascade");
+            $table->decimal("total_shares", 10, 2)->default(0);
+            $table->decimal("total_amount", 12, 2)->default(0);
+            $table->enum("status", ["Active", "Inactive", "Closed"])->default("Active");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('membervehi_tbls');
+        Schema::dropIfExists('share_capital_account_tbls');
     }
 };

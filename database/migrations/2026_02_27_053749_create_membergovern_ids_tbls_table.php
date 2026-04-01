@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('membergovern_ids_tbls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("member_id")
+            $table->foreignId("user_id")
                   ->constrained("users_tbls")
                   ->onDelete("cascade");
             $table->longText("sss_id")->nullable();

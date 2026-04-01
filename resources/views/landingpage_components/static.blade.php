@@ -28,18 +28,23 @@
 
                     @foreach ($getTheUsers as $getTheUser)
 
-                        <div class="col-lg-6">
-                            <h2>{{ $getTheUser->first_name }}</h2>
+                        <div class="col-lg-4">
+                            <h2>{{ $getTheUser->fullname }}</h2>
                         </div>
 
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <a href="{{ route('approve.user', $getTheUser->id) }}">Approved</a>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <a href="{{ route("message.user", $getTheUser->id) }}">Open Share Capital</a>
                         </div>
 
                     @endforeach
 
                 @endif
         </main>
+
     </div>
 
 </body>
