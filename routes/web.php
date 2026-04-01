@@ -117,6 +117,10 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
 Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
     ->name('savings.receipt');
 
+Route::post('/savings/gcash',          [SavingsController::class, 'payViaGcash'])->name('savings.gcash');
+Route::get('/savings/gcash/success',   [SavingsController::class, 'gcashSuccess'])->name('savings.gcash.success');
+Route::get('/savings/gcash/failed',    [SavingsController::class, 'gcashFailed'])->name('savings.gcash.failed');
+
 Route::get('/loan-status', [lendingController::class, 'loanStatus'])
     ->name('LoanStatus')
     ->middleware('auth');

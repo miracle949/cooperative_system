@@ -12,6 +12,7 @@ class savings_transaction_tbl extends Model
         "savings_account_id",
         "type",
         "amount",
+        "payment_method",
         "balance_after",
         "note",
         "reference_no",

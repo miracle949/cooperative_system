@@ -343,17 +343,6 @@ class UsersHandle extends Controller
                 ->withInput($request->only('login'));
         }
 
-        // if (!$user) {
-        //     $field = $isEmail ? 'email' : 'username';
-        //     $message = $isEmail
-        //         ? 'No account found with that email address.'
-        //         : 'No account found with that username.';
-
-        //     return redirect()->back()
-        //         ->withErrors(['login' => $message])
-        //         ->withInput($request->only('login'));
-        // }
-
         // Attempt authentication
         $credentials = [
             'email' => $user->email,
@@ -365,7 +354,7 @@ class UsersHandle extends Controller
                 ->where('user_id', auth()->id())
                 ->first();
 
-            if (!$otherInfo || $otherInfo->status !== 'Approved') {
+            if (!$otherInfo || $otherInfo->status === 'Pending') {
                 auth()->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -373,10 +362,21 @@ class UsersHandle extends Controller
                 return redirect()->back()
                     ->withErrors(['login' => 'Your account is still pending approval.'])
                     ->withInput($request->only('login'));
+            } else if (!$otherInfo || $otherInfo->status === 'Declined') {
+                auth()->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->back()
+                    ->withErrors(['login' => 'Your membership application is declined.'])
+                    ->withInput($request->only('login'));
+            } else {
+
+                $request->session()->regenerate();
+                return redirect()->route('UserHandle');
+
             }
 
-            $request->session()->regenerate();
-            return redirect()->route('UserHandle');
 
         } else {
             return redirect()->back()

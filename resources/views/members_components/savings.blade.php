@@ -93,7 +93,6 @@
             font-family: monospace;
             font-size: 0.78rem;
             color: #000000;
-            /* background: #f0f4f2; */
             padding: 2px 7px;
             border-radius: 5px;
             display: inline-block;
@@ -285,7 +284,7 @@
                                 <label class="sm-form-label" for="depositAmount">Amount to Deposit</label>
                                 <div class="sm-amount-wrap">
                                     <span class="sm-amount-prefix">₱</span>
-                                    <input class="sm-form-input @error('amount') sm-input-error @enderror"
+                                    <input class="form-input sm-form-input @error('amount') sm-input-error @enderror"
                                         type="number" id="depositAmount" name="amount" placeholder="0.00" min="1"
                                         step="0.01" value="{{ old('amount') }}" />
                                 </div>
@@ -301,6 +300,38 @@
                                 @enderror
                             </div>
 
+                            {{-- ★ NEW: Payment Method --}}
+                            <div class="sm-form-group">
+                                <label class="sm-form-label" for="depositPaymentMethod">Payment Method</label>
+                                <select class=" sm-form-select" name="payment_method" id="depositPaymentMethod" required>
+                                    <option value="" disabled selected>Select payment method...</option>
+                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
+                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash</option>
+                                </select>
+                            </div>
+
+                            {{-- ★ NEW: GCash Box — hidden until GCash is selected --}}
+                            <div id="deposit-gcash-box"
+                                style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
+                                       padding:0.75rem 1rem; align-items:center; justify-content:space-between;
+                                       gap:10px; margin: 1rem 0;">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:32px; height:32px; background:#007DFF; border-radius:8px;
+                                                display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        <i class="fa-solid fa-mobile-screen-button" style="color:#fff; font-size:14px;"></i>
+                                    </div>
+                                    <div>
+                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via GCash</p>
+                                        <p style="margin:0; font-size:11px; color:#5a8ac4;">Fast & secure payment</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="submitSavingsGcash('deposit')"
+                                    style="background:#007DFF; color:#fff; border:none; border-radius:8px;
+                                           padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;">
+                                    Pay Now
+                                </button>
+                            </div>
+
                             <div class="sm-form-group">
                                 <label class="sm-form-label" for="depositNote">Note (optional)</label>
                                 <input class="sm-form-input" type="text" id="depositNote" name="note"
@@ -308,11 +339,14 @@
                             </div>
                         </div>
 
+                        {{-- ★ UPDATED: footer — Confirm button wrapped so JS can hide it --}}
                         <div class="modal-footer sm-modal-footer">
                             <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="sm-btn-confirm sm-deposit-confirm">
-                                <i class="fa-solid fa-circle-arrow-down"></i> Confirm Deposit
-                            </button>
+                            <div id="deposit-confirm-btn-wrap">
+                                <button type="submit" class="sm-btn-confirm sm-deposit-confirm">
+                                    <i class="fa-solid fa-circle-arrow-down"></i> Confirm Deposit
+                                </button>
+                            </div>
                         </div>
                     </form>
 
@@ -373,6 +407,38 @@
                                 @enderror
                             </div>
 
+                            {{-- ★ NEW: Payment Method --}}
+                            <div class="sm-form-group">
+                                <label class="sm-form-label" for="withdrawPaymentMethod">Payment Method</label>
+                                <select class="sm-form-select" name="payment_method" id="withdrawPaymentMethod" required>
+                                    <option value="" disabled selected>Select payment method...</option>
+                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
+                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash</option>
+                                </select>
+                            </div>
+
+                            {{-- ★ NEW: GCash Box — hidden until GCash is selected --}}
+                            <div id="withdraw-gcash-box"
+                                style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
+                                       padding:0.75rem 1rem; align-items:center; justify-content:space-between;
+                                       gap:10px; margin-top:0.5rem;">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:32px; height:32px; background:#007DFF; border-radius:8px;
+                                                display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        <i class="fa-solid fa-mobile-screen-button" style="color:#fff; font-size:14px;"></i>
+                                    </div>
+                                    <div>
+                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via GCash</p>
+                                        <p style="margin:0; font-size:11px; color:#5a8ac4;">Fast & secure payment</p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="submitSavingsGcash('withdraw')"
+                                    style="background:#007DFF; color:#fff; border:none; border-radius:8px;
+                                           padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;">
+                                    Pay Now
+                                </button>
+                            </div>
+
                             <div class="sm-form-group">
                                 <label class="sm-form-label" for="withdrawNote">Note (optional)</label>
                                 <input class="sm-form-input" type="text" id="withdrawNote" name="note"
@@ -380,11 +446,14 @@
                             </div>
                         </div>
 
+                        {{-- ★ UPDATED: footer — Confirm button wrapped so JS can hide it --}}
                         <div class="modal-footer sm-modal-footer">
                             <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="sm-btn-confirm sm-withdraw-confirm">
-                                <i class="fa-solid fa-circle-arrow-up"></i> Confirm Withdraw
-                            </button>
+                            <div id="withdraw-confirm-btn-wrap">
+                                <button type="submit" class="sm-btn-confirm sm-withdraw-confirm">
+                                    <i class="fa-solid fa-circle-arrow-up"></i> Confirm Withdraw
+                                </button>
+                            </div>
                         </div>
                     </form>
 
@@ -511,6 +580,21 @@
         <button id="triggerDepositModal"    data-bs-toggle="modal" data-bs-target="#depositModal"         style="display:none;"></button>
         <button id="triggerWithdrawModal"   data-bs-toggle="modal" data-bs-target="#withdrawModal"        style="display:none;"></button>
 
+        {{-- ★ NEW: GCash hidden redirect forms --}}
+        <form id="savings-deposit-gcash-form" action="{{ route('savings.gcash') }}" method="POST" style="display:none;">
+            @csrf
+            <input type="hidden" name="transaction_type" value="deposit">
+            <input type="hidden" name="amount" id="savings-deposit-gcash-amount">
+            <input type="hidden" name="note"   id="savings-deposit-gcash-note">
+        </form>
+
+        <form id="savings-withdraw-gcash-form" action="{{ route('savings.gcash') }}" method="POST" style="display:none;">
+            @csrf
+            <input type="hidden" name="transaction_type" value="withdraw">
+            <input type="hidden" name="amount" id="savings-withdraw-gcash-amount">
+            <input type="hidden" name="note"   id="savings-withdraw-gcash-note">
+        </form>
+
     </div>{{-- end container-fluid --}}
 
     {{-- AOS --}}
@@ -520,11 +604,11 @@
     </script>
 
     <script>
+        /* ─── Existing helpers ─────────────────────────────────────── */
         function setSavingsAmount(inputId, val) {
             document.getElementById(inputId).value = val;
         }
 
-        /* Copy reference number to clipboard */
         function copyRef(elementId) {
             const text = document.getElementById(elementId).textContent.trim();
             navigator.clipboard.writeText(text).then(() => {
@@ -534,6 +618,62 @@
             });
         }
 
+        /* ─── ★ NEW: Payment method toggle — Deposit ───────────────── */
+        document.getElementById('depositPaymentMethod')?.addEventListener('change', function () {
+            const gcashBox   = document.getElementById('deposit-gcash-box');
+            const confirmBtn = document.getElementById('deposit-confirm-btn-wrap');
+            if (this.value === 'gcash') {
+                gcashBox.style.display   = 'flex';
+                confirmBtn.style.display = 'none';
+            } else {
+                gcashBox.style.display   = 'none';
+                confirmBtn.style.display = 'block';
+            }
+        });
+
+        /* ─── ★ NEW: Payment method toggle — Withdraw ──────────────── */
+        document.getElementById('withdrawPaymentMethod')?.addEventListener('change', function () {
+            const gcashBox   = document.getElementById('withdraw-gcash-box');
+            const confirmBtn = document.getElementById('withdraw-confirm-btn-wrap');
+            if (this.value === 'gcash') {
+                gcashBox.style.display   = 'flex';
+                confirmBtn.style.display = 'none';
+            } else {
+                gcashBox.style.display   = 'none';
+                confirmBtn.style.display = 'block';
+            }
+        });
+
+        /* ─── ★ NEW: Reset modal state when opened ─────────────────── */
+        document.getElementById('depositModal')?.addEventListener('show.bs.modal', function () {
+            document.getElementById('depositPaymentMethod').value = '';
+            document.getElementById('deposit-gcash-box').style.display   = 'none';
+            document.getElementById('deposit-confirm-btn-wrap').style.display = 'block';
+        });
+
+        document.getElementById('withdrawModal')?.addEventListener('show.bs.modal', function () {
+            document.getElementById('withdrawPaymentMethod').value = '';
+            document.getElementById('withdraw-gcash-box').style.display   = 'none';
+            document.getElementById('withdraw-confirm-btn-wrap').style.display = 'block';
+        });
+
+        /* ─── ★ NEW: GCash Pay Now handler ─────────────────────────── */
+        function submitSavingsGcash(type) {
+            const amountInput = document.getElementById(type === 'deposit' ? 'depositAmount' : 'withdrawAmount');
+            const noteInput   = document.getElementById(type === 'deposit' ? 'depositNote'  : 'withdrawNote');
+            const amount      = amountInput.value;
+
+            if (!amount || parseFloat(amount) < 1) {
+                alert('Please enter a valid amount first.');
+                return;
+            }
+
+            document.getElementById(`savings-${type}-gcash-amount`).value = amount;
+            document.getElementById(`savings-${type}-gcash-note`).value   = noteInput.value;
+            document.getElementById(`savings-${type}-gcash-form`).submit();
+        }
+
+        /* ─── Existing: auto-open modals on page load ──────────────── */
         window.addEventListener('DOMContentLoaded', function () {
 
             @if ($errors->any() && old('_form') === 'deposit')
