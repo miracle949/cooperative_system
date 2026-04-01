@@ -18,4 +18,9 @@ class savings_transaction_tbl extends Model
         "reference_no",
         "transaction_date",
     ];
+
+    public function savingsAccount()
+    {
+        return $this->belongsTo(savings_account_tbl::class, 'savings_account_id');
+    }
 }

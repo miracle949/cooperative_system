@@ -19,4 +19,14 @@ class Users_tbl extends Authenticatable
     public function getAllUser(){
         return $this->all();
     }
+
+    public function savingsAccount()
+    {
+        return $this->hasOne(savings_account_tbl::class, 'member_id');
+    }
+
+    public function lendingPrograms()
+    {
+        return $this->hasMany(lending_program_tbl::class, 'member_id');
+    }
 }
