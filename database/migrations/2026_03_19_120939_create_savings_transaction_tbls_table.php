@@ -18,8 +18,10 @@ return new class extends Migration
                 ->onDelete("cascade");
             $table->enum("type", ['deposit','withdrawal','regular_savings','share_capital']);
             $table->decimal("amount", 12, 2);
+            $table->string("payment_method")->nullable();
             $table->decimal("balance_after", 12, 2);
             $table->string("note")->nullable();
+            $table->string("reference_no")->nullable();
             $table->date("transaction_date");
             $table->timestamps();
         });

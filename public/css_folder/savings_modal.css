@@ -187,6 +187,34 @@
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08) !important;
 }
 
+.sm-form-select {
+    width: 100%;
+    padding: 0.82rem 0.5rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    /* font-size: 0.95rem; */
+    font-size: 14.5px;
+    color: var(--text);
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    box-shadow: none !important;
+}
+
+.sm-form-select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(30, 64, 53, 0.08) !important;
+}
+
+.sm-form-select.sm-select-error {
+    border-color: var(--red);
+}
+
+.sm-form-select.sm-select-error:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08) !important;
+}
+
 .sm-amount-wrap {
     position: relative;
 }

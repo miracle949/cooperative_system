@@ -78,8 +78,10 @@ class SavingsController extends Controller
 
         return view(
             'members_components.savings',
-            ["username" => $username,
-            "email" => $email],
+            [
+                "username" => $username,
+                "email" => $email
+            ],
             compact(
                 'savingsAccount',
                 'groupedTransactions',
@@ -99,6 +101,7 @@ class SavingsController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
+            'payment_method' => 'required|string|in:cash,gcash',
         ]);
 
         $user = Auth::user();
@@ -112,6 +115,7 @@ class SavingsController extends Controller
             'savings_account_id' => $savingsAccount->id,
             'type' => 'deposit',
             'amount' => $request->amount,
+            'payment_method' => $request->payment_method,   // ← added
             'balance_after' => $newBalance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
@@ -133,6 +137,7 @@ class SavingsController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
+            'payment_method' => 'required|string|in:cash,gcash',
         ]);
 
         $user = Auth::user();
@@ -153,6 +158,7 @@ class SavingsController extends Controller
             'savings_account_id' => $savingsAccount->id,
             'type' => 'withdrawal',
             'amount' => $request->amount,
+            'payment_method' => $request->payment_method,   // ← added
             'balance_after' => $newBalance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
@@ -164,6 +170,108 @@ class SavingsController extends Controller
             ->with('withdraw_amount', $request->amount)
             ->with('withdraw_reference', $referenceNo)
             ->with('withdraw_balance', $newBalance);
+    }
+
+    public function payViaGcash(Request $request)
+    {
+        if (!env('PAYMONGO_SECRET_KEY')) {
+            return redirect()->back()->with('error', 'Payment gateway is not configured yet.');
+        }
+
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'transaction_type' => 'required|in:deposit,withdraw',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        $amount = (float) $request->amount;
+
+        session([
+            'sav_pending_amount' => $amount,
+            'sav_pending_note' => $request->note,
+            'sav_pending_type' => $request->transaction_type,
+        ]);
+
+        $response = \Illuminate\Support\Facades\Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
+            ->post('https://api.paymongo.com/v1/sources', [
+                'data' => [
+                    'attributes' => [
+                        'amount' => (int) ($amount * 100),
+                        'currency' => 'PHP',
+                        'type' => 'gcash',
+                        'redirect' => [
+                            'success' => route('savings.gcash.success'),
+                            'failed' => route('savings.gcash.failed'),
+                        ],
+                    ],
+                ],
+            ]);
+
+        $data = $response->json();
+
+        if (isset($data['data']['attributes']['redirect']['checkout_url'])) {
+            return redirect($data['data']['attributes']['redirect']['checkout_url']);
+        }
+
+        return redirect()->back()->with('error', 'GCash payment failed. Please try again.');
+    }
+
+    // GCash success callback:
+    public function gcashSuccess(Request $request)
+    {
+        $user = Auth::user();
+        $amount = (float) session('sav_pending_amount', 0);
+        $note = session('sav_pending_note');
+        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdraw'
+        $referenceNo = 'SAV-GCASH-' . now()->format('YmdHis');
+
+        session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
+
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
+
+        if ($type === 'deposit') {
+            $newBalance = $savingsAccount->balance + $amount;
+            $txType = 'deposit';
+        } else {
+            if ($amount > $savingsAccount->balance) {
+                return redirect()->route('savings.index')
+                    ->with('error', 'Insufficient balance for GCash withdrawal.');
+            }
+            $newBalance = $savingsAccount->balance - $amount;
+            $txType = 'withdrawal';
+        }
+
+        $savingsAccount->update(['balance' => $newBalance]);
+
+        savings_transaction_tbl::create([
+            'savings_account_id' => $savingsAccount->id,
+            'type' => $txType,
+            'amount' => $amount,
+            'payment_method' => 'gcash',
+            'balance_after' => $newBalance,
+            'note' => $note,
+            'reference_no' => $referenceNo,
+            'transaction_date' => Carbon::today(),
+        ]);
+
+        $successKey = $type === 'deposit' ? 'deposit_success' : 'withdraw_success';
+        $amountKey = $type === 'deposit' ? 'deposit_amount' : 'withdraw_amount';
+        $referenceKey = $type === 'deposit' ? 'deposit_reference' : 'withdraw_reference';
+        $balanceKey = $type === 'deposit' ? 'deposit_balance' : 'withdraw_balance';
+
+        return redirect()->route('savings.index')
+            ->with($successKey, true)
+            ->with($amountKey, $amount)
+            ->with($referenceKey, $referenceNo)
+            ->with($balanceKey, $newBalance);
+    }
+
+    // GCash failed callback:
+    public function gcashFailed(Request $request)
+    {
+        session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
+        return redirect()->route('savings.index')
+            ->with('error', 'GCash payment failed. Please try again.');
     }
 
     /**

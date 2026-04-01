@@ -240,7 +240,8 @@
 }
 
 #section1{
-    background-color: #F7F9F8;
+    /* background-color: #F7F9F8; */
+    background-color: #EAEDEB;
 }
 
 #section1 h2 {
@@ -358,7 +359,8 @@ hr {
     justify-content: space-between;
     align-items: center;
     /* background-color: #ffffff; */
-    background-color: #F7F9F8;
+    /* background-color: #F7F9F8; */
+    background-color: #EAEDEB;
 }
 
 #section3 h2 {
