@@ -30,98 +30,6 @@
         @include("components.offcanvas")
 
         <main class="z-1">
-            {{-- <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel"
-                data-bs-interval="2000">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="0"
-                        class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="2"
-                        aria-label="Slide 3"></button>
-                    <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="3"
-                        aria-label="Slide 4"></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="images/1.jpg" class="d-block w-100" alt="...">
-                        <div
-                            class="carousel-caption top-0 d-flex justify-content-center align-items-center flex-column gap-4">
-                            <h5 class="fs-1" style="margin: 0">Built for Our Members</h5>
-                            <p class="mw-100 w-75">Empowering every cooperative member through shared ownership, mutual
-                                support, and sustainable growth.</p>
-                            <button class="btn btn-light text-black py-2 px-4">Discover More</button>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/2.jpg" class="d-block w-100" alt="...">
-                        <div
-                            class="carousel-caption top-0 d-flex justify-content-center align-items-center flex-column gap-4">
-                            <h5 class="fs-1" style="margin: 0">Stronger Together</h5>
-                            <p class="mw-100 w-75">We grow as one community—where trust, transparency, and collaboration
-                                drive our success.</p>
-                            <button class="btn btn-light text-black py-2 px-4">Discover More</button>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/3.jpg" class="d-block w-100" alt="...">
-                        <div
-                            class="carousel-caption top-0 d-flex justify-content-center align-items-center flex-column gap-4">
-                            <h5 class="fs-1" style="margin: 0">Supporting Member Progress</h5>
-                            <p class="mw-100 w-75">Providing accessible financial services and opportunities that help
-                                members achieve their goals..</p>
-                            <button class="btn btn-light text-black py-2 px-4">Discover More</button>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/4.jpg" class="d-block w-100" alt="...">
-                        <div
-                            class="carousel-caption top-0 d-flex justify-content-center align-items-center flex-column gap-4">
-                            <h5 class="fs-1" style="margin: 0">Growing With Purpose</h5>
-                            <p class="mw-100 w-75">Committed to long-term development that benefits our members,
-                                families, and community.</p>
-                            <button class="btn btn-light text-black py-2 px-4">Discover More</button>
-                        </div>
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div> --}}
-            {{-- <div data-aos="fade-zoom-in" data-aos-easing="ease-in-back" data-aos-delay="800"
-                id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="images/1.jpg" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/2.jpg" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/3.jpg" class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="images/4.jpg" class="d-block w-100" alt="...">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div> --}}
 
             <div class="main-text">
                 <span>Established 2010 · 1,200 - Members</span>
@@ -171,7 +79,7 @@
         </main>
 
         <section class="d-flex justify-center align-items-center flex-column pe-5 ps-5 pb-5 pt-3" id="section1">
-            <h2 class="text-center mt-5 pt-5">Why Choose Our Cooperative?</h2>
+            <h2 class="text-center mt-5">Why Choose Our Cooperative?</h2>
 
             <p class="text-center mt-2 mw-100 tw:w-[650px] tw:text-[#808080]">We offer more than just financial services
                 - we

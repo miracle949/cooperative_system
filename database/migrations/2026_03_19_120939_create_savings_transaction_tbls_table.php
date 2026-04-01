@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId("savings_account_id")
                 ->constrained("savings_account_tbls")
                 ->onDelete("cascade");
-            $table->enum("type", ['deposit','withdrawal','regular_savings','share_capital']);
+            $table->enum("type", ['deposit','withdrawal']);
             $table->decimal("amount", 12, 2);
             $table->string("payment_method")->nullable();
             $table->decimal("balance_after", 12, 2);

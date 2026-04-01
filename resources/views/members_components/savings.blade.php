@@ -421,7 +421,7 @@
                             <div id="withdraw-gcash-box"
                                 style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
                                        padding:0.75rem 1rem; align-items:center; justify-content:space-between;
-                                       gap:10px; margin-top:0.5rem;">
+                                       gap:10px; margin: 1rem 0;">
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     <div style="width:32px; height:32px; background:#007DFF; border-radius:8px;
                                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;">

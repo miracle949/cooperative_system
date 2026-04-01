@@ -115,7 +115,7 @@ class SavingsController extends Controller
             'savings_account_id' => $savingsAccount->id,
             'type' => 'deposit',
             'amount' => $request->amount,
-            'payment_method' => $request->payment_method,   // ← added
+            'payment_method' => $request->payment_method,  
             'balance_after' => $newBalance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
@@ -223,7 +223,7 @@ class SavingsController extends Controller
         $amount = (float) session('sav_pending_amount', 0);
         $note = session('sav_pending_note');
         $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdraw'
-        $referenceNo = 'SAV-GCASH-' . now()->format('YmdHis');
+        $referenceNo = 'GCASH-' . now()->format('YmdHis');
 
         session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
 
