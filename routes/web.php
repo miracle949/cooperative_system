@@ -63,10 +63,6 @@ Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
     ->name("ShareCapitalMember")
     ->middleware('auth');
 
-Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
-    ->name("ShareCapitalMember")
-    ->middleware('auth');
-
 // Loan Status page GET
 Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus");
 

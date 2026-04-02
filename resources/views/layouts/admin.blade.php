@@ -414,10 +414,10 @@
                         <a href="{{ route('settings') }}"
                             class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                <span class="text-primary-600 text-sm font-semibold">JD</span>
+                                <span class="text-primary-600 text-sm font-semibold">RS</span>
                             </div>
                             <div class="hidden md:block text-left">
-                                <p class="text-sm font-medium text-gray-900">John Doe</p>
+                                <p class="text-sm font-medium text-gray-900">Ronald Sales</p>
                                 <p class="text-xs text-gray-500">Admin</p>
                             </div>
                         </a>
