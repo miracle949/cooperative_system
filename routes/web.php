@@ -135,6 +135,7 @@ Route::middleware('auth')->group(function () {
 Route::get("/dashboard-admin", [UserController::class, "dashboard_admin"])->name("dashboard");
 Route::get("/dashboard-members", [UserController::class, "dashboard_members"])->name("dashboard.members");
 Route::put("/dashboard-members/update", [UserController::class, "updateMember"])->name("update.member");
+Route::get("/dashboard-members/send-share-email/{id}", [UserController::class, "sendShareCapitalEmail"])->name("send.share.capital.email");
 Route::delete("/dashboard-members/decline/{id}", [UserController::class, "declineUser"])->name("decline.user");
 Route::get("/dashboard-savings", [UserController::class, "dashboard_savings"])->name("savings");
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");

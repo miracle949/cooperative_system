@@ -62,8 +62,12 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'Member';
+        $user->role = 'member';
         $user->save();
+
+        DB::table('otherinfo_tbls')
+            ->where('user_id', $id)
+            ->update(['status' => 'Approved']);
 
         Mail::to($user->email)->send(new ApprovedMail($user));
 
@@ -72,14 +76,17 @@ class UserController extends Controller
 
     public function messageAboutShare($id)
     {
-
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'Member';
+        $user->role = 'member';
         $user->save();
+
+        DB::table('otherinfo_tbls')
+            ->where('user_id', $id)
+            ->update(['status' => 'Approved']);
 
         Mail::to($user->email)->sendNow(new ShareCapital($user));
 
-        return redirect()->back()->with('success', 'Member share capital application!');
+        return redirect()->back()->with('success', 'Share capital invitation sent!');
     }
 
     public function declineUser($id)
@@ -103,6 +110,7 @@ class UserController extends Controller
         ]);
 
         $user = Users_tbl::findOrFail($request->id);
+        $previousRole = $user->role;
 
         $user->update($request->only([
             'first_name',
@@ -123,7 +131,20 @@ class UserController extends Controller
             'role',
         ]));
 
+        if ($request->role === 'member' && $previousRole !== 'member') {
+            DB::table('otherinfo_tbls')
+                ->where('user_id', $request->id)
+                ->update(['status' => 'Approved']);
+        }
+
         return redirect()->back()->with('success', 'Member updated successfully.');
+    }
+
+    public function sendShareCapitalEmail($id)
+    {
+        $user = Users_tbl::findOrFail($id);
+        Mail::to($user->email)->sendNow(new ShareCapital($user));
+        return redirect()->back()->with('success', 'Share capital email sent to member!');
     }
 
     public function StaticPage()
@@ -362,6 +383,20 @@ public function dashboard_admin()
 
         $members = $query->paginate(12);
         $pendingRequests = Users_tbl::where('role', 'pending')->get();
+
+        $memberIds = $members->pluck('id')->toArray();
+        $shareCapitals = DB::table('share_capital_account_tbls')
+            ->whereIn('user_id', $memberIds)
+            ->get()
+            ->keyBy('user_id');
+
+        $members->getCollection()->transform(function ($member) use ($shareCapitals) {
+            $sc = $shareCapitals->get($member->id);
+            $member->sc_total_amount = $sc->total_amount ?? 0;
+            $member->sc_total_shares = $sc->total_shares ?? 0;
+            $member->sc_status = $sc->status ?? 'No Account';
+            return $member;
+        });
 
         return view("admin_components.members", compact('members', 'pendingRequests'));
     }

@@ -168,8 +168,8 @@
                             </button>
                             <button class="flex-1 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
                                 onclick="openEditMemberModal({{ $member->id }})">
-                                <i data-lucide="edit-2" class="w-4 h-4"></i>
-                                Edit Info
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                                Manage Member
                             </button>
                         </div>
                     @endif
@@ -384,13 +384,42 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="space-y-4">
+                        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="coins" class="w-4 h-4 text-primary-500"></i>
+                            Share Capital
+                        </h4>
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-100">
+                            <div class="grid grid-cols-3 gap-4 mb-4">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Total Amount</p>
+                                    <p id="detail-sc-amount" class="text-lg font-bold text-gray-900">₱0.00</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Total Shares</p>
+                                    <p id="detail-sc-shares" class="text-lg font-bold text-gray-900">0</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Status</p>
+                                    <span id="detail-sc-status" class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">No Account</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a id="detail-sc-see-more" href="#" target="_blank" class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    See More in Share Capital
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
                 <button onclick="closeModal('memberDetailModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
                 <button id="detail-edit-btn" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                    <i data-lucide="edit-2" class="w-4 h-4"></i>
-                    Edit Info
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Manage Member
                 </button>
             </div>
         </div>
@@ -403,11 +432,11 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                            <i data-lucide="edit-2" class="w-5 h-5 text-primary-600"></i>
+                            <i data-lucide="settings" class="w-5 h-5 text-primary-600"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">Edit Member</h2>
-                            <p class="text-xs text-gray-500">Update member information</p>
+                            <h2 class="text-xl font-bold text-gray-900">Manage Member</h2>
+                            <p class="text-xs text-gray-500">Update member information and send emails</p>
                         </div>
                     </div>
                     <button onclick="closeModal('editMemberModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -545,7 +574,7 @@
                             <i data-lucide="settings" class="w-4 h-4 text-gray-500"></i>
                             Account Settings
                         </h4>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                                 <select name="role" id="edit-role" class="input">
@@ -555,6 +584,16 @@
                                     <option value="admin">Admin</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="border-t border-gray-200 pt-4 mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Actions</label>
+                            <div class="flex gap-2">
+                                <a id="edit-send-sc-email" href="#" class="flex-1 px-4 py-2.5 bg-amber-500 text-white text-sm font-medium rounded-lg hover:bg-amber-600 transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="mail" class="w-4 h-4"></i>
+                                    Send Share Capital Email
+                                </a>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Send an email to this member reminding them to complete their share capital contribution.</p>
                         </div>
                     </div>
                 </div>
@@ -621,6 +660,24 @@
             const categoryEl = document.getElementById('detail-category');
             categoryEl.textContent = member.membership_category || 'N/A';
             
+            document.getElementById('detail-sc-amount').textContent = '₱' + (member.sc_total_amount || 0).toLocaleString('en-PH', {minimumFractionDigits: 2});
+            document.getElementById('detail-sc-shares').textContent = member.sc_total_shares || 0;
+            
+            const scStatusEl = document.getElementById('detail-sc-status');
+            if (member.sc_status === 'Active') {
+                scStatusEl.className = 'inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full';
+                scStatusEl.textContent = 'Active';
+            } else if (member.sc_status === 'No Account') {
+                scStatusEl.className = 'inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full';
+                scStatusEl.textContent = 'No Account';
+            } else {
+                scStatusEl.className = 'inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full';
+                scStatusEl.textContent = member.sc_status || 'Inactive';
+            }
+            
+            const scSeeMore = document.getElementById('detail-sc-see-more');
+            scSeeMore.href = '/dashboard-sharecapitals?member=' + member.id;
+            
             document.getElementById('detail-edit-btn').onclick = function() {
                 closeModal('memberDetailModal');
                 openEditMemberModal(memberId);
@@ -650,6 +707,9 @@
             document.getElementById('edit-height').value = member.height || '';
             document.getElementById('edit-weight').value = member.weight || '';
             document.getElementById('edit-role').value = member.role || '';
+            
+            const sendScEmailBtn = document.getElementById('edit-send-sc-email');
+            sendScEmailBtn.href = '/dashboard-members/send-share-email/' + member.id;
             
             openModal('editMemberModal');
         }
