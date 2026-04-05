@@ -265,7 +265,13 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex justify-end gap-3">
+                    <a href="{{ route('logout') }}" class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
+                    </form>
                     <button onclick="showToast('Saved', 'Company settings updated successfully')" class="btn btn-primary">
                         Save Changes
                     </button>
