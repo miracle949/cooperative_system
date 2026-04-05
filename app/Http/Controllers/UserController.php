@@ -10,6 +10,7 @@ use App\Models\Membervehi_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
 use App\Models\lending_program_tbl;
+use App\Models\lending_status_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
@@ -406,9 +407,42 @@ public function dashboard_admin()
         return view("admin_components.savings");
     }
 
-    public function dashboard_lendings()
+    public function dashboard_lendings(Request $request)
     {
-        return view("admin_components.lending");
+        $statusFilter = $request->get('status', 'all');
+        
+        $query = lending_program_tbl::with('user');
+        
+        if ($statusFilter !== 'all') {
+            $query->where('status', ucfirst($statusFilter));
+        }
+        
+        $loans = $query->orderBy('created_at', 'desc')->paginate(10);
+        
+        return view("admin_components.lending", compact('loans', 'statusFilter'));
+    }
+
+    public function approveLoan(Request $request, $id)
+    {
+        $loan = lending_program_tbl::findOrFail($id);
+        $loan->status = 'Approved';
+        $loan->save();
+
+        return redirect()->back()->with('success', 'Loan application approved successfully.');
+    }
+
+    public function declineLoan(Request $request, $id)
+    {
+        $request->validate([
+            'decline_reason' => 'required|string|max:500'
+        ]);
+
+        $loan = lending_program_tbl::findOrFail($id);
+        $loan->status = 'Declined';
+        $loan->decline_reason = $request->decline_reason;
+        $loan->save();
+
+        return redirect()->back()->with('error', 'Loan application declined.');
     }
 
     public function dashboard_sharecapitals()

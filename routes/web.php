@@ -139,6 +139,8 @@ Route::get("/dashboard-members/send-share-email/{id}", [UserController::class, "
 Route::delete("/dashboard-members/decline/{id}", [UserController::class, "declineUser"])->name("decline.user");
 Route::get("/dashboard-savings", [UserController::class, "dashboard_savings"])->name("savings");
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
+Route::post("/loan/approve/{id}", [UserController::class, "approveLoan"])->name("loan.approve");
+Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name("loan.decline");
 Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");

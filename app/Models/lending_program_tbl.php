@@ -21,11 +21,12 @@ class lending_program_tbl extends Model
         "valid_id",
         "proof_of_income",
         "purpose_loan",
-        "status"
+        "status",
+        "decline_reason"
     ];
 
     public function user()
     {
-        return $this->belongsTo(Users_tbl::class, 'member_id');
+        return $this->belongsTo(Users_tbl::class);
     }
 }
