@@ -9,11 +9,15 @@ use App\Models\Users_tbl;
 use App\Models\Membervehi_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
+use App\Models\share_capital_account_tbl;
+use App\Models\share_capital_transaction_tbl;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
+use App\Models\system_settings_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\ApprovedMail;
 use App\Mail\ShareCapital;
 use App\Mail\DeclinedMail;
@@ -402,16 +406,84 @@ public function dashboard_admin()
         return view("admin_components.members", compact('members', 'pendingRequests'));
     }
 
-    public function dashboard_savings()
+    public function dashboard_savings(Request $request)
     {
-        return view("admin_components.savings");
+        $search = $request->get('search', '');
+        $typeFilter = $request->get('type', 'all');
+        $statusFilter = $request->get('status', 'all');
+
+        $query = savings_transaction_tbl::with('savingsAccount.user')
+            ->where('archived', '!=', 1);
+
+        if ($search) {
+            $query->whereHas('savingsAccount.user', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($typeFilter !== 'all') {
+            $query->where('type', $typeFilter);
+        }
+
+        if ($statusFilter !== 'all') {
+            $query->where('status', $statusFilter);
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        $currentBalance = savings_account_tbl::sum('balance') ?? 0;
+        
+        $monthlyAvg = savings_transaction_tbl::where('type', 'deposit')
+            ->whereYear('created_at', '>=', now()->subMonths(6)->format('Y'))
+            ->whereMonth('created_at', '>=', now()->subMonths(6)->format('m'))
+            ->sum('amount') / 6;
+
+        $lastContribution = savings_transaction_tbl::orderBy('created_at', 'desc')->first();
+
+        $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')->sum('amount') ?? 0;
+        
+        $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
+            ->select('id', 'first_name', 'last_name')
+            ->orderBy('first_name')
+            ->get();
+
+        return view("admin_components.savings", compact(
+            'transactions',
+            'currentBalance',
+            'monthlyAvg',
+            'lastContribution',
+            'totalDeposits',
+            'totalWithdrawals',
+            'allMembers'
+        ));
+    }
+
+    public function archiveSavings($id)
+    {
+        $transaction = savings_transaction_tbl::findOrFail($id);
+        $transaction->archived = 1;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Transaction archived successfully.');
+    }
+
+    public function unarchiveSavings($id)
+    {
+        $transaction = savings_transaction_tbl::findOrFail($id);
+        $transaction->archived = 0;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Transaction restored successfully.');
     }
 
     public function dashboard_lendings(Request $request)
     {
         $statusFilter = $request->get('status', 'all');
         
-        $query = lending_program_tbl::with('user');
+        $query = lending_program_tbl::with('user')
+            ->where('status', '!=', 'Archived');
         
         if ($statusFilter !== 'all') {
             $query->where('status', ucfirst($statusFilter));
@@ -445,18 +517,265 @@ public function dashboard_admin()
         return redirect()->back()->with('error', 'Loan application declined.');
     }
 
-    public function dashboard_sharecapitals()
+    public function archiveLoan($id)
     {
-        return view("admin_components.sharecapitals");
+        $loan = lending_program_tbl::findOrFail($id);
+        $loan->status = 'Archived';
+        $loan->save();
+
+        return redirect()->back()->with('success', 'Loan archived successfully.');
     }
 
-    public function dashboard_reports()
+    public function unarchiveLoan($id)
     {
-        return view("admin_components.reports");
+        $loan = lending_program_tbl::findOrFail($id);
+        $loan->status = 'Approved';
+        $loan->save();
+
+        return redirect()->back()->with('success', 'Loan restored successfully.');
     }
 
-    public function dashboard_settings()
+    public function dashboard_sharecapitals(Request $request)
     {
-        return view("admin_components.settings");
+        $search = $request->get('search', '');
+        $typeFilter = $request->get('type', 'all');
+        $statusFilter = $request->get('status', 'all');
+
+        $query = share_capital_transaction_tbl::with('shareCapitalAccount.user')
+            ->where('archived', '!=', 1);
+
+        if ($search) {
+            $query->whereHas('shareCapitalAccount.user', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($typeFilter !== 'all') {
+            $query->where('type', $typeFilter);
+        }
+
+        if ($statusFilter !== 'all') {
+            $query->where('status', $statusFilter);
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        $totalContributions = share_capital_transaction_tbl::where('type', 'subscription')
+            ->where('status', 'completed')
+            ->sum('total_amount') ?? 0;
+        
+        $perShareValue = 100;
+        $totalShares = share_capital_account_tbl::sum('total_shares') ?? 0;
+        $currentValue = $totalShares * $perShareValue;
+        
+        $lastContribution = share_capital_transaction_tbl::orderBy('created_at', 'desc')->first();
+        
+        $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
+            ->select('id', 'first_name', 'last_name')
+            ->orderBy('first_name')
+            ->get();
+
+        return view("admin_components.sharecapitals", compact(
+            'transactions',
+            'totalContributions',
+            'currentValue',
+            'perShareValue',
+            'lastContribution',
+            'allMembers'
+        ));
+    }
+
+    public function archiveShareCapital($id)
+    {
+        $transaction = share_capital_transaction_tbl::findOrFail($id);
+        $transaction->archived = 1;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Share capital transaction archived successfully.');
+    }
+
+    public function unarchiveShareCapital($id)
+    {
+        $transaction = share_capital_transaction_tbl::findOrFail($id);
+        $transaction->archived = 0;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Share capital transaction restored successfully.');
+    }
+
+    public function dashboard_reports(Request $request)
+    {
+        $fromDate = $request->get('from_date', now()->startOfMonth()->format('Y-m-d'));
+        $toDate = $request->get('to_date', now()->endOfMonth()->format('Y-m-d'));
+        $reportType = $request->get('report_type', 'all');
+        $chartType = $request->get('chart', 'all');
+        
+        $totalDeposits = savings_transaction_tbl::where('type', 'deposit')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->sum('amount') ?? 0;
+        
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->sum('amount') ?? 0;
+        
+        $loansIssued = lending_program_tbl::where('status', 'Approved')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->sum('lending_amount') ?? 0;
+        
+        $loanInterest = lending_program_tbl::where('status', 'Approved')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->sum('total_interest') ?? 0;
+        
+        $netIncome = $loanInterest;
+        
+        $savingsTrend = [];
+        $lendingTrend = [];
+        $shareCapitalTrend = [];
+        $months = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $months[] = $month->format('M');
+            $monthNum = $month->format('n');
+            $year = $month->format('Y');
+            
+            $deposits = savings_transaction_tbl::where('type', 'deposit')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('amount') ?? 0;
+            
+            $loans = lending_program_tbl::where('status', 'Approved')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('lending_amount') ?? 0;
+            
+            $shareCap = share_capital_transaction_tbl::where('type', 'subscription')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('total_amount') ?? 0;
+            
+            $savingsTrend[] = round($deposits / 1000, 1);
+            $lendingTrend[] = round($loans / 1000, 1);
+            $shareCapitalTrend[] = round($shareCap / 1000, 1);
+        }
+        
+        $savingsByMonth = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthName = $month->format('M');
+            $monthNum = $month->format('n');
+            $year = $month->format('Y');
+            
+            $deposits = savings_transaction_tbl::where('type', 'deposit')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('amount') ?? 0;
+            
+            $loans = lending_program_tbl::where('status', 'Approved')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('lending_amount') ?? 0;
+            
+            $savingsByMonth[$monthName] = [
+                'savings' => round($deposits / 1000, 1),
+                'loans' => round($loans / 1000, 1)
+            ];
+        }
+        
+        $transactions = DB::table('savings_transaction_tbls as st')
+            ->select(
+                'st.created_at',
+                'st.reference_no',
+                'st.amount',
+                'st.type',
+                DB::raw("CONCAT(u.first_name, ' ', u.last_name) as member_name"),
+                DB::raw("'Savings' as category")
+            )
+            ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
+            ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
+            ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->orderBy('st.created_at', 'desc')
+            ->limit(50)
+            ->get();
+        
+        return view("admin_components.reports", compact(
+            'fromDate',
+            'toDate',
+            'reportType',
+            'chartType',
+            'totalDeposits',
+            'totalWithdrawals',
+            'loansIssued',
+            'netIncome',
+            'savingsByMonth',
+            'savingsTrend',
+            'lendingTrend',
+            'shareCapitalTrend',
+            'months',
+            'transactions'
+        ));
+    }
+
+    public function dashboard_settings(Request $request)
+    {
+        $adminUser = Auth::user();
+        $companySettings = [
+            'company_name' => system_settings_tbl::getValue('company_name', 'CoopAdmin Savings and Loan Cooperative'),
+            'registration_number' => system_settings_tbl::getValue('registration_number', 'RN-2024-001234'),
+            'company_address' => system_settings_tbl::getValue('company_address', ''),
+            'company_phone' => system_settings_tbl::getValue('company_phone', ''),
+            'company_email' => system_settings_tbl::getValue('company_email', ''),
+        ];
+
+        return view("admin_components.settings", compact('adminUser', 'companySettings'));
+    }
+
+    public function dashboard_archives(Request $request)
+    {
+        $activeTab = $request->get('tab', 'savings');
+        $fromDate = $request->get('from_date', '');
+        $toDate = $request->get('to_date', '');
+        
+        $savingsQuery = savings_transaction_tbl::with('savingsAccount.user')
+            ->where('archived', 1);
+            
+        $shareCapitalQuery = share_capital_transaction_tbl::with('shareCapitalAccount.user')
+            ->where('archived', 1);
+            
+        $lendingQuery = lending_program_tbl::with('user')
+            ->where('status', 'Archived');
+        
+        if ($fromDate) {
+            $savingsQuery->whereDate('created_at', '>=', $fromDate);
+            $shareCapitalQuery->whereDate('created_at', '>=', $fromDate);
+            $lendingQuery->whereDate('created_at', '>=', $fromDate);
+        }
+        
+        if ($toDate) {
+            $savingsQuery->whereDate('created_at', '<=', $toDate);
+            $shareCapitalQuery->whereDate('created_at', '<=', $toDate);
+            $lendingQuery->whereDate('created_at', '<=', $toDate);
+        }
+        
+        $savingsArchives = (clone $savingsQuery)->orderBy('created_at', 'desc')->paginate(15);
+        $shareCapitalArchives = (clone $shareCapitalQuery)->orderBy('created_at', 'desc')->paginate(15);
+        $lendingArchives = (clone $lendingQuery)->orderBy('created_at', 'desc')->paginate(15);
+        
+        $savingsCount = (clone $savingsQuery)->count();
+        $shareCapitalCount = (clone $shareCapitalQuery)->count();
+        $lendingCount = (clone $lendingQuery)->count();
+        
+        return view("admin_components.archives", compact(
+            'activeTab',
+            'fromDate',
+            'toDate',
+            'savingsArchives',
+            'shareCapitalArchives',
+            'lendingArchives',
+            'savingsCount',
+            'shareCapitalCount',
+            'lendingCount'
+        ));
     }
 }

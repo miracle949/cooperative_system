@@ -40,10 +40,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Current Balance</p>
-                    <p class="text-2xl font-bold text-gray-900">₱4,250,000</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($currentBalance, 2) }}</p>
                     <p class="text-xs text-success-500 mt-1 flex items-center">
                         <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        +12% from last month
+                        Total balance
                     </p>
                 </div>
                 <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
@@ -56,7 +56,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Monthly Average</p>
-                    <p class="text-2xl font-bold text-gray-900">₱425,000</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($monthlyAvg, 2) }}</p>
                     <p class="text-xs text-gray-500 mt-1">Last 6 months</p>
                 </div>
                 <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
@@ -69,8 +69,8 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Last Contribution</p>
-                    <p class="text-2xl font-bold text-gray-900">₱15,000</p>
-                    <p class="text-xs text-gray-500 mt-1">Today, 10:30 AM</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($lastContribution->amount ?? 0, 2) }}</p>
+                    <p class="text-xs text-gray-500 mt-1">{{ $lastContribution ? $lastContribution->created_at->format('M d, Y g:i A') : 'No transactions' }}</p>
                 </div>
                 <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
                     <i data-lucide="calendar" class="w-6 h-6 text-warning-600"></i>
@@ -80,36 +80,30 @@
     </div>
 
     <!-- Filters -->
-    <div class="card p-4 mb-6">
-        <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                    <input type="text" placeholder="Search transactions..." class="input pl-10">
+    <form method="GET" action="{{ route('savings') }}">
+        <div class="card p-4 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by member name..." class="input pl-10">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <select name="type" class="select w-40" onchange="this.form.submit()">
+                        <option value="all">All Types</option>
+                        <option value="deposit" {{ request('type') === 'deposit' ? 'selected' : '' }}>Deposit</option>
+                        <option value="withdraw" {{ request('type') === 'withdraw' ? 'selected' : '' }}>Withdrawal</option>
+                    </select>
+                    <select name="status" class="select w-32" onchange="this.form.submit()">
+                        <option value="all">All Status</option>
+                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    </select>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <select class="select w-40">
-                    <option>All Members</option>
-                    <option>Maria Santos</option>
-                    <option>John Rivera</option>
-                    <option>Ana Garcia</option>
-                    <option>Carlos Mendez</option>
-                </select>
-                <select class="select w-32">
-                    <option>All Types</option>
-                    <option>Deposit</option>
-                    <option>Withdrawal</option>
-                </select>
-                <select class="select w-32">
-                    <option>All Status</option>
-                    <option>Completed</option>
-                    <option>Pending</option>
-                    <option>Failed</option>
-                </select>
-            </div>
         </div>
-    </div>
+    </form>
 
     <!-- Transactions Table -->
     <div class="card">
@@ -127,192 +121,75 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($transactions as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">Mar 13, 2026</td>
+                        <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <span class="text-xs text-primary-600 font-medium">MS</span>
+                                    <span class="text-xs text-primary-600 font-medium">
+                                        {{ strtoupper(substr($tx->savingsAccount->user->first_name ?? 'U', 0, 1) . substr($tx->savingsAccount->user->last_name ?? '', 0, 1)) }}
+                                    </span>
                                 </div>
-                                <span class="text-sm text-gray-900">Maria Santos</span>
+                                <span class="text-sm text-gray-900">
+                                    {{ $tx->savingsAccount->user->first_name ?? 'Unknown' }} {{ $tx->savingsAccount->user->last_name ?? '' }}
+                                </span>
                             </div>
                         </td>
-                        <td class="text-sm font-semibold text-gray-900">₱5,000</td>
-                        <td><span class="badge badge-success">Deposit</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
+                        <td class="text-sm font-semibold text-gray-900">₱{{ number_format($tx->amount, 2) }}</td>
+                        <td>
+                            @if($tx->type === 'deposit')
+                                <span class="badge badge-success">Deposit</span>
+                            @else
+                                <span class="badge badge-danger">Withdrawal</span>
+                            @endif
+                        </td>
+                        <td class="text-sm text-gray-600">{{ $tx->payment_method ?? 'N/A' }}</td>
+                        <td>
+                            @if($tx->status === 'completed' || $tx->type === 'deposit')
+                                <span class="badge badge-success">Completed</span>
+                            @elseif($tx->status === 'pending')
+                                <span class="badge badge-warning">Pending</span>
+                            @else
+                                <span class="badge badge-success">Completed</span>
+                            @endif
+                        </td>
                         <td>
                             <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
+                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Receipt">
+                                    <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
+                                <form method="POST" action="{{ route('savings.archive', $tx->id) }}">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 hover:bg-gray-100 rounded" title="Archive">
+                                        <i data-lucide="archive" class="w-4 h-4 text-gray-500"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
+                    @empty
                     <tr>
-                        <td class="text-sm text-gray-900">Mar 12, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-success-100 flex items-center justify-center">
-                                    <span class="text-xs text-success-600 font-medium">JR</span>
-                                </div>
-                                <span class="text-sm text-gray-900">John Rivera</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-semibold text-gray-900">₱3,000</td>
-                        <td><span class="badge badge-success">Deposit</span></td>
-                        <td class="text-sm text-gray-600">Bank Transfer</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
+                        <td colspan="7" class="text-center py-8">
+                            <div class="flex flex-col items-center text-gray-500">
+                                <i data-lucide="inbox" class="w-12 h-12 mb-3 opacity-50"></i>
+                                <p>No transactions found</p>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 12, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-warning-100 flex items-center justify-center">
-                                    <span class="text-xs text-warning-600 font-medium">AG</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Ana Garcia</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-semibold text-gray-900">₱2,000</td>
-                        <td><span class="badge badge-danger">Withdrawal</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 11, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-danger-100 flex items-center justify-center">
-                                    <span class="text-xs text-danger-600 font-medium">CM</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Carlos Mendez</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-semibold text-gray-900">₱10,000</td>
-                        <td><span class="badge badge-success">Deposit</span></td>
-                        <td class="text-sm text-gray-600">GCash</td>
-                        <td><span class="badge badge-warning">Pending</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 10, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <span class="text-xs text-primary-600 font-medium">SL</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Sofia Lopez</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-semibold text-gray-900">₱5,000</td>
-                        <td><span class="badge badge-success">Deposit</span></td>
-                        <td class="text-sm text-gray-600">Bank Transfer</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 10, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <span class="text-xs text-gray-600 font-medium">PC</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Pedro Cruz</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-semibold text-gray-900">₱1,500</td>
-                        <td><span class="badge badge-danger">Withdrawal</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
         <div class="p-4 border-t border-gray-100 flex items-center justify-between">
-            <p class="text-sm text-gray-500">Showing 1-6 of 1,245 transactions</p>
-            <div class="flex items-center gap-2">
-                <button class="btn btn-outline px-3">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                </button>
-                <button class="btn btn-primary px-3">1</button>
-                <button class="btn btn-outline px-3">2</button>
-                <button class="btn btn-outline px-3">3</button>
-                <span class="px-2">...</span>
-                <button class="btn btn-outline px-3">208</button>
-                <button class="btn btn-outline px-3">
-                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Automatic Deductions Toggle -->
-    <div class="card p-6 mt-6">
-        <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-500">
+                Showing {{ $transactions->firstItem() ?? 0 }}-{{ $transactions->lastItem() ?? 0 }} of {{ $transactions->total() }} transactions
+            </p>
             <div>
-                <h3 class="font-semibold text-gray-900">Automatic Monthly Deductions</h3>
-                <p class="text-sm text-gray-500">Enable automatic deduction from member salaries</p>
+                {{ $transactions->appends(request()->query())->links() }}
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" class="sr-only peer" checked>
-                <div
-                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                </div>
-            </label>
         </div>
     </div>
 
@@ -332,11 +209,9 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
                     <select class="select">
                         <option>Select member</option>
-                        <option>Maria Santos</option>
-                        <option>John Rivera</option>
-                        <option>Ana Garcia</option>
-                        <option>Carlos Mendez</option>
-                        <option>Sofia Lopez</option>
+                        @foreach($allMembers as $member)
+                        <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div>

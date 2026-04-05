@@ -103,10 +103,20 @@
                                 @endif
                             </td>
                             <td>
-                                <button class="btn btn-outline text-sm"
-                                    onclick="event.stopPropagation(); openLoanModal({{ $loop->index }})">
-                                    View Details
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <button class="btn btn-outline text-sm px-2 py-1"
+                                        onclick="event.stopPropagation(); openLoanModal({{ $loop->index }})">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                    @if($loan->status === 'Approved' || $loan->status === 'Declined')
+                                    <form method="POST" action="{{ route('loan.archive', $loan->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline text-sm px-2 py-1" title="Archive">
+                                            <i data-lucide="archive" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

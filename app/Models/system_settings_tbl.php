@@ -8,22 +8,35 @@ class system_settings_tbl extends Model
 {
     protected $table = "system_settings_tbls";
 
-    protected $fillable = [
-        "key",
-        "value",
-    ];
-
     public static function getValue($key, $default = null)
     {
-        $setting = self::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
+        $columns = [
+            'company_name' => 'company_name',
+            'registration_number' => 'registration_no',
+            'company_address' => 'address',
+            'company_phone' => 'phone',
+            'company_email' => 'email',
+        ];
+        
+        $column = $columns[$key] ?? $key;
+        $setting = self::first();
+        return $setting ? $setting->$column : $default;
     }
 
     public static function setValue($key, $value)
     {
+        $columns = [
+            'company_name' => 'company_name',
+            'registration_number' => 'registration_no',
+            'company_address' => 'address',
+            'company_phone' => 'phone',
+            'company_email' => 'email',
+        ];
+        
+        $column = $columns[$key] ?? $key;
         return self::updateOrCreate(
-            ['key' => $key],
-            ['value' => $value]
+            [$column => $key],
+            [$column => $value]
         );
     }
 }

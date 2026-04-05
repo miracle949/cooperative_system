@@ -7,6 +7,7 @@
     <title>@yield('title', 'KMPCATS')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -356,6 +357,11 @@
                         class="sidebar-link justify-start {{ request()->routeIs('reports') ? 'active' : '' }}">
                         <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
                         <span>Reports</span>
+                    </a>
+                    <a href="{{ route('archives') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('archives') ? 'active' : '' }}">
+                        <i data-lucide="archive" class="w-5 h-5"></i>
+                        <span>Archives</span>
                     </a>
                     <a href="{{ route('settings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('settings') ? 'active' : '' }}">
