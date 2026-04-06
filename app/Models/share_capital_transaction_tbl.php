@@ -20,4 +20,9 @@ class share_capital_transaction_tbl extends Model
         "status",
         "transaction_date",
     ];
+
+    public function shareCapitalAccount()
+    {
+        return $this->belongsTo(share_capital_account_tbl::class, 'share_capital_account_id');
+    }
 }

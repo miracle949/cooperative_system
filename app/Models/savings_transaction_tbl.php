@@ -17,6 +17,7 @@ class savings_transaction_tbl extends Model
         "note",
         "reference_no",
         "transaction_date",
+        "status",
     ];
 
     public function savingsAccount()

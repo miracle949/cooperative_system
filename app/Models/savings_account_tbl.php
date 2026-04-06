@@ -18,7 +18,7 @@ class savings_account_tbl extends Model
 
     public function user()
     {
-        return $this->belongsTo(Users_tbl::class, 'member_id');
+        return $this->belongsTo(Users_tbl::class, 'user_id');
     }
 
     public function transactions()

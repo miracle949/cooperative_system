@@ -14,4 +14,14 @@ class share_capital_account_tbl extends Model
         "total_amount",
         "status",
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(Users_tbl::class, 'user_id');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(share_capital_transaction_tbl::class, 'share_capital_account_id');
+    }
 }

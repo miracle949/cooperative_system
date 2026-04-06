@@ -7,6 +7,7 @@
     <title>@yield('title', 'KMPCATS')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -357,6 +358,11 @@
                         <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
                         <span>Reports</span>
                     </a>
+                    <a href="{{ route('archives') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('archives') ? 'active' : '' }}">
+                        <i data-lucide="archive" class="w-5 h-5"></i>
+                        <span>Archives</span>
+                    </a>
                     <a href="{{ route('settings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('settings') ? 'active' : '' }}">
                         <i data-lucide="settings" class="w-5 h-5"></i>
@@ -414,11 +420,13 @@
                         <a href="{{ route('settings') }}"
                             class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                <span class="text-primary-600 text-sm font-semibold">RS</span>
+                                <span class="text-primary-600 text-sm font-semibold">
+                                    {{ strtoupper(substr(auth()->user()->first_name ?? 'A', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)) }}
+                                </span>
                             </div>
                             <div class="hidden md:block text-left">
-                                <p class="text-sm font-medium text-gray-900">Ronald Sales</p>
-                                <p class="text-xs text-gray-500">Admin</p>
+                                <p class="text-sm font-medium text-gray-900">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</p>
+                                <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role ?? 'Admin') }}</p>
                             </div>
                         </a>
                     </div>

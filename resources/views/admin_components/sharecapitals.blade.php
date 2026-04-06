@@ -40,10 +40,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Contributions</p>
-                    <p class="text-2xl font-bold text-gray-900">₱1,850,000</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalContributions, 2) }}</p>
                     <p class="text-xs text-success-500 mt-1 flex items-center">
                         <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        +15% from last month
+                        Total subscriptions
                     </p>
                 </div>
                 <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
@@ -56,8 +56,8 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Current Value</p>
-                    <p class="text-2xl font-bold text-gray-900">₱1,680,000</p>
-                    <p class="text-xs text-gray-500 mt-1">Per share: ₱100</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($currentValue, 2) }}</p>
+                    <p class="text-xs text-gray-500 mt-1">Per share: ₱{{ $perShareValue }}</p>
                 </div>
                 <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
                     <i data-lucide="trending-up" class="w-6 h-6 text-success-500"></i>
@@ -69,8 +69,8 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Last Contribution</p>
-                    <p class="text-2xl font-bold text-gray-900">₱5,000</p>
-                    <p class="text-xs text-gray-500 mt-1">Today, 9:45 AM</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($lastContribution->total_amount ?? 0, 2) }}</p>
+                    <p class="text-xs text-gray-500 mt-1">{{ $lastContribution ? $lastContribution->created_at->format('M d, Y g:i A') : 'No transactions' }}</p>
                 </div>
                 <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
                     <i data-lucide="calendar" class="w-6 h-6 text-warning-600"></i>
@@ -80,35 +80,30 @@
     </div>
 
     <!-- Filters -->
-    <div class="card p-4 mb-6">
-        <div class="flex flex-col md:flex-row gap-4">
-            <div class="flex-1">
-                <div class="relative">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                    <input type="text" placeholder="Search transactions..." class="input pl-10">
+    <form method="GET" action="{{ route('sharecapitals') }}">
+        <div class="card p-4 mb-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by member name..." class="input pl-10">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <select name="type" class="select w-40" onchange="this.form.submit()">
+                        <option value="all">All Types</option>
+                        <option value="subscription" {{ request('type') === 'subscription' ? 'selected' : '' }}>Subscription</option>
+                        <option value="withdrawal" {{ request('type') === 'withdrawal' ? 'selected' : '' }}>Withdrawal</option>
+                    </select>
+                    <select name="status" class="select w-32" onchange="this.form.submit()">
+                        <option value="all">All Status</option>
+                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    </select>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <select class="select w-40">
-                    <option>All Members</option>
-                    <option>Maria Santos</option>
-                    <option>John Rivera</option>
-                    <option>Ana Garcia</option>
-                    <option>Carlos Mendez</option>
-                </select>
-                <select class="select w-32">
-                    <option>All Types</option>
-                    <option>Subscription</option>
-                    <option>Withdrawal</option>
-                </select>
-                <select class="select w-32">
-                    <option>All Status</option>
-                    <option>Completed</option>
-                    <option>Pending</option>
-                </select>
-            </div>
         </div>
-    </div>
+    </form>
 
     <!-- Transactions Table -->
     <div class="card">
@@ -127,198 +122,82 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($transactions as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">Mar 13, 2026</td>
+                        <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <span class="text-xs text-primary-600 font-medium">MS</span>
+                                    <span class="text-xs text-primary-600 font-medium">
+                                        {{ strtoupper(substr($tx->shareCapitalAccount->user->first_name ?? 'U', 0, 1) . substr($tx->shareCapitalAccount->user->last_name ?? '', 0, 1)) }}
+                                    </span>
                                 </div>
-                                <span class="text-sm text-gray-900">Maria Santos</span>
+                                <span class="text-sm text-gray-900">
+                                    {{ $tx->shareCapitalAccount->user->first_name ?? 'Unknown' }} {{ $tx->shareCapitalAccount->user->last_name ?? '' }}
+                                </span>
                             </div>
                         </td>
-                        <td class="text-sm font-medium text-gray-900">50 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱5,000</td>
-                        <td><span class="badge badge-success">Subscription</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
+                        <td class="text-sm font-medium text-gray-900">
+                            @if($tx->shares > 0)
+                                +{{ $tx->shares }} shares
+                            @else
+                                {{ $tx->shares }} shares
+                            @endif
+                        </td>
+                        <td class="text-sm font-semibold text-gray-900">₱{{ number_format($tx->total_amount, 2) }}</td>
+                        <td>
+                            @if($tx->type === 'subscription')
+                                <span class="badge badge-success">Subscription</span>
+                            @else
+                                <span class="badge badge-danger">Withdrawal</span>
+                            @endif
+                        </td>
+                        <td class="text-sm text-gray-600">{{ $tx->payment_method ?? 'N/A' }}</td>
+                        <td>
+                            @if($tx->status === 'completed')
+                                <span class="badge badge-success">Completed</span>
+                            @elseif($tx->status === 'pending')
+                                <span class="badge badge-warning">Pending</span>
+                            @else
+                                <span class="badge badge-danger">Failed</span>
+                            @endif
+                        </td>
                         <td>
                             <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
+                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details">
+                                    <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
+                                <form method="POST" action="{{ route('sharecapital.archive', $tx->id) }}">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 hover:bg-gray-100 rounded" title="Archive">
+                                        <i data-lucide="archive" class="w-4 h-4 text-gray-500"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
+                    @empty
                     <tr>
-                        <td class="text-sm text-gray-900">Mar 12, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-success-100 flex items-center justify-center">
-                                    <span class="text-xs text-success-600 font-medium">JR</span>
-                                </div>
-                                <span class="text-sm text-gray-900">John Rivera</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-medium text-gray-900">30 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱3,000</td>
-                        <td><span class="badge badge-success">Subscription</span></td>
-                        <td class="text-sm text-gray-600">Bank Transfer</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
+                        <td colspan="8" class="text-center py-8">
+                            <div class="flex flex-col items-center text-gray-500">
+                                <i data-lucide="inbox" class="w-12 h-12 mb-3 opacity-50"></i>
+                                <p>No transactions found</p>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 11, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-warning-100 flex items-center justify-center">
-                                    <span class="text-xs text-warning-600 font-medium">AG</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Ana Garcia</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-medium text-gray-900">20 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱2,000</td>
-                        <td><span class="badge badge-success">Subscription</span></td>
-                        <td class="text-sm text-gray-600">GCash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 10, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-danger-100 flex items-center justify-center">
-                                    <span class="text-xs text-danger-600 font-medium">CM</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Carlos Mendez</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-medium text-gray-900">100 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱10,000</td>
-                        <td><span class="badge badge-success">Subscription</span></td>
-                        <td class="text-sm text-gray-600">Bank Transfer</td>
-                        <td><span class="badge badge-warning">Pending</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 9, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <span class="text-xs text-primary-600 font-medium">SL</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Sofia Lopez</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-medium text-gray-900">50 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱5,000</td>
-                        <td><span class="badge badge-success">Subscription</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-sm text-gray-900">Mar 8, 2026</td>
-                        <td>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <span class="text-xs text-gray-600 font-medium">PC</span>
-                                </div>
-                                <span class="text-sm text-gray-900">Pedro Cruz</span>
-                            </div>
-                        </td>
-                        <td class="text-sm font-medium text-gray-900">-25 shares</td>
-                        <td class="text-sm font-semibold text-gray-900">₱2,500</td>
-                        <td><span class="badge badge-danger">Withdrawal</span></td>
-                        <td class="text-sm text-gray-600">Cash</td>
-                        <td><span class="badge badge-success">Completed</span></td>
-                        <td>
-                            <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
         <div class="p-4 border-t border-gray-100 flex items-center justify-between">
-            <p class="text-sm text-gray-500">Showing 1-6 of 856 transactions</p>
-            <div class="flex items-center gap-2">
-                <button class="btn btn-outline px-3">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                </button>
-                <button class="btn btn-primary px-3">1</button>
-                <button class="btn btn-outline px-3">2</button>
-                <button class="btn btn-outline px-3">3</button>
-                <span class="px-2">...</span>
-                <button class="btn btn-outline px-3">143</button>
-                <button class="btn btn-outline px-3">
-                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Automatic Deductions Toggle -->
-    <div class="card p-6 mt-6">
-        <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-500">
+                Showing {{ $transactions->firstItem() ?? 0 }}-{{ $transactions->lastItem() ?? 0 }} of {{ $transactions->total() }} transactions
+            </p>
             <div>
-                <h3 class="font-semibold text-gray-900">Automatic Monthly Deductions</h3>
-                <p class="text-sm text-gray-500">Enable automatic share capital deduction from member salaries</p>
+                {{ $transactions->appends(request()->query())->links() }}
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" class="sr-only peer" checked>
-                <div
-                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                </div>
-            </label>
         </div>
     </div>
 
@@ -338,11 +217,9 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
                     <select class="select">
                         <option>Select member</option>
-                        <option>Maria Santos</option>
-                        <option>John Rivera</option>
-                        <option>Ana Garcia</option>
-                        <option>Carlos Mendez</option>
-                        <option>Sofia Lopez</option>
+                        @foreach($allMembers as $member)
+                        <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div>
@@ -350,7 +227,7 @@
                     <input type="number" class="input" placeholder="Enter number of shares">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱100 per share)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱{{ $perShareValue }} per share)</label>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
                         <input type="number" class="input pl-8" placeholder="0.00">

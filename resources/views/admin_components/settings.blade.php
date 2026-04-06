@@ -61,7 +61,9 @@
 
                 <div class="flex items-center gap-6 mb-6">
                     <div class="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center">
-                        <span class="text-primary-600 text-2xl font-bold">JD</span>
+                        <span class="text-primary-600 text-2xl font-bold">
+                            {{ strtoupper(substr($adminUser->first_name ?? 'A', 0, 1) . substr($adminUser->last_name ?? '', 0, 1)) }}
+                        </span>
                     </div>
                     <div>
                         <button class="btn btn-primary mb-2">Change Photo</button>
@@ -72,23 +74,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" class="input" value="John">
+                        <input type="text" class="input" value="{{ $adminUser->first_name ?? '' }}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input type="text" class="input" value="Doe">
+                        <input type="text" class="input" value="{{ $adminUser->last_name ?? '' }}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" class="input" value="john.doe@coopadmin.com">
+                        <input type="email" class="input" value="{{ $adminUser->email ?? '' }}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                        <input type="tel" class="input" value="+63 912 345 6789">
+                        <input type="tel" class="input" value="{{ $adminUser->contact_no ?? '' }}">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                        <textarea class="input" rows="2">123 Main Street, Manila, Philippines</textarea>
+                        <textarea class="input" rows="2">{{ $adminUser->present_address ?? '' }}</textarea>
                     </div>
                 </div>
 
@@ -152,23 +154,11 @@
                                         <i data-lucide="monitor" class="w-5 h-5 text-primary-600"></i>
                                     </div>
                                     <div>
-                                        <p class="font-medium text-gray-900">MacBook Pro - Chrome</p>
-                                        <p class="text-sm text-gray-500">Manila, Philippines - Current session</p>
+                                        <p class="font-medium text-gray-900">Current Device</p>
+                                        <p class="text-sm text-gray-500">This session</p>
                                     </div>
                                 </div>
                                 <span class="badge badge-success">Active</span>
-                            </div>
-                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                                        <i data-lucide="smartphone" class="w-5 h-5 text-gray-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-900">iPhone 14 - Safari</p>
-                                        <p class="text-sm text-gray-500">Manila, Philippines - 2 days ago</p>
-                                    </div>
-                                </div>
-                                <button class="text-danger-600 text-sm hover:underline">Revoke</button>
                             </div>
                         </div>
                     </div>
@@ -253,29 +243,35 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                        <input type="text" class="input" value="CoopAdmin Savings and Loan Cooperative">
+                        <input type="text" class="input" value="{{ $companySettings['company_name'] }}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Registration Number</label>
-                        <input type="text" class="input" value="RN-2024-001234">
+                        <input type="text" class="input" value="{{ $companySettings['registration_number'] }}">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                        <textarea class="input" rows="2">123 Cooperative Street, Manila, Philippines 1000</textarea>
+                        <textarea class="input" rows="2">{{ $companySettings['company_address'] }}</textarea>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                            <input type="tel" class="input" value="+63 2 1234 5678">
+                            <input type="tel" class="input" value="{{ $companySettings['company_phone'] }}">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input type="email" class="input" value="info@coopadmin.coop">
+                            <input type="email" class="input" value="{{ $companySettings['company_email'] }}">
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
+                <div class="mt-6 flex justify-end gap-3">
+                    <a href="{{ route('logout') }}" class="btn btn-danger" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
+                    </form>
                     <button onclick="showToast('Saved', 'Company settings updated successfully')" class="btn btn-primary">
                         Save Changes
                     </button>
