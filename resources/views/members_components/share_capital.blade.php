@@ -479,7 +479,7 @@
                             style="border: none; padding: 0 1.5rem 1.25rem; flex-direction: column; gap: 8px;">
                             <button type="submit" form="modal-sc-form" id="modal-submit-btn"
                                 style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="fa fa-coins"></i> Add Share Capital
+                                <i class="fa fa-coins"></i> Confirm Transaction
                             </button>
                             <button type="button" data-bs-dismiss="modal"
                                 style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
