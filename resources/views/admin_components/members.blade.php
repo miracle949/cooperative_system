@@ -285,7 +285,7 @@
 
     <!-- Member Detail Modal -->
     <div id="memberDetailModal" class="modal-overlay hidden">
-        <div class="modal max-w-2xl">
+        <div class="modal max-w-3xl">
             <div class="p-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -302,14 +302,16 @@
                     </button>
                 </div>
             </div>
-            <div class="p-6 max-h-[60vh] overflow-y-auto">
+            <div class="p-6 max-h-[70vh] overflow-y-auto">
                 <!-- Profile Header -->
                 <div class="flex items-center gap-5 mb-6 p-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg overflow-hidden">
+                        <img id="detail-profile-pic" src="" alt="" class="w-full h-full object-cover hidden">
                         <span id="detail-avatar" class="text-white text-2xl font-bold">--</span>
                     </div>
                     <div class="flex-1">
                         <h3 id="detail-name" class="text-xl font-bold text-gray-900">--</h3>
+                        <p id="detail-middle-name" class="text-sm text-gray-500">--</p>
                         <p id="detail-member-id" class="text-sm text-gray-500 font-medium">--</p>
                         <div class="flex gap-2 mt-2">
                             <span id="detail-status" class="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">--</span>
@@ -384,33 +386,168 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="space-y-4">
-                        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
-                            <i data-lucide="coins" class="w-4 h-4 text-primary-500"></i>
-                            Share Capital
-                        </h4>
-                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-100">
-                            <div class="grid grid-cols-3 gap-4 mb-4">
-                                <div class="text-center">
-                                    <p class="text-xs text-gray-500 mb-1">Total Amount</p>
-                                    <p id="detail-sc-amount" class="text-lg font-bold text-gray-900">₱0.00</p>
+                </div>
+
+                <!-- Family Information -->
+                <div class="mt-6 space-y-4">
+                    <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="heart" class="w-4 h-4 text-pink-500"></i>
+                        Family Information
+                    </h4>
+                    <div class="bg-pink-50 rounded-lg p-4 border border-pink-100">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Spouse Name</p>
+                                <p id="detail-spouse-name" class="text-sm font-medium text-gray-900">Not specified</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Spouse Date of Birth</p>
+                                <p id="detail-spouse-dob" class="text-sm font-medium text-gray-900">Not specified</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-pink-100">
+                            <p class="text-xs text-gray-500 mb-2">Children</p>
+                            <div class="flex gap-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center">
+                                        <i data-lucide="baby" class="w-4 h-4 text-pink-600"></i>
+                                    </span>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Sons</p>
+                                        <p id="detail-number-son" class="text-sm font-semibold text-gray-900">0</p>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <p class="text-xs text-gray-500 mb-1">Total Shares</p>
-                                    <p id="detail-sc-shares" class="text-lg font-bold text-gray-900">0</p>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-xs text-gray-500 mb-1">Status</p>
-                                    <span id="detail-sc-status" class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">No Account</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center">
+                                        <i data-lucide="baby" class="w-4 h-4 text-pink-600"></i>
+                                    </span>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Daughters</p>
+                                        <p id="detail-number-daughter" class="text-sm font-semibold text-gray-900">0</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex gap-2">
-                                <a id="detail-sc-see-more" href="#" target="_blank" class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
-                                    <i data-lucide="external-link" class="w-4 h-4"></i>
-                                    See More in Share Capital
-                                </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills & Expertise -->
+                <div class="mt-6 space-y-4">
+                    <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="star" class="w-4 h-4 text-yellow-500"></i>
+                        Skills & Expertise
+                    </h4>
+                    <div id="detail-skills-container" class="bg-yellow-50 rounded-lg p-4 border border-yellow-100">
+                        <p id="detail-skills" class="text-sm font-medium text-gray-900">No skills specified</p>
+                    </div>
+                </div>
+
+                <!-- Government IDs -->
+                <div class="mt-6 space-y-4">
+                    <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="id-card" class="w-4 h-4 text-blue-500"></i>
+                        Government IDs
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-xs">SSS</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">SSS ID</p>
+                                    <p id="detail-sss-id" class="text-sm font-medium text-gray-900">Not provided</p>
+                                </div>
                             </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-xs">PH</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">PhilHealth ID</p>
+                                    <p id="detail-philhealth-id" class="text-sm font-medium text-gray-900">Not provided</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-xs">PAG</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">PAG-IBIG ID</p>
+                                    <p id="detail-pagibig-id" class="text-sm font-medium text-gray-900">Not provided</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <span class="text-blue-600 font-bold text-xs">TIN</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">TIN ID</p>
+                                    <p id="detail-tin-id" class="text-sm font-medium text-gray-900">Not provided</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicles -->
+                <div class="mt-6 space-y-4">
+                    <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="car" class="w-4 h-4 text-green-500"></i>
+                        Vehicle Information
+                    </h4>
+                    <div class="bg-green-50 rounded-lg border border-green-100 overflow-hidden">
+                        <div id="detail-vehicles-container">
+                            <table class="w-full">
+                                <thead class="bg-green-100">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Vehicle Type</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Plate Number</th>
+                                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detail-vehicles-body">
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-6 text-center text-sm text-gray-500">No vehicles registered</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share Capital -->
+                <div class="mt-6 space-y-4">
+                    <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="coins" class="w-4 h-4 text-amber-500"></i>
+                        Share Capital
+                    </h4>
+                    <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-100">
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 mb-1">Total Amount</p>
+                                <p id="detail-sc-amount" class="text-lg font-bold text-gray-900">₱0.00</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 mb-1">Total Shares</p>
+                                <p id="detail-sc-shares" class="text-lg font-bold text-gray-900">0</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 mb-1">Status</p>
+                                <span id="detail-sc-status" class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">No Account</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a id="detail-sc-see-more" href="#" target="_blank" class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                                See More in Share Capital
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -629,8 +766,12 @@
             const member = membersData.find(m => m.id === memberId);
             if (!member) return;
             
-            document.getElementById('detail-avatar').textContent = (member.first_name?.charAt(0) || '') + (member.last_name?.charAt(0) || '');
-            document.getElementById('detail-name').textContent = (member.first_name || '') + ' ' + (member.last_name || '');
+            const initials = (member.first_name?.charAt(0) || '') + (member.last_name?.charAt(0) || '');
+            const fullName = (member.first_name || '') + ' ' + (member.last_name || '');
+            
+            document.getElementById('detail-avatar').textContent = initials.toUpperCase();
+            document.getElementById('detail-name').textContent = fullName;
+            document.getElementById('detail-middle-name').textContent = member.middle_name ? member.middle_name : '';
             document.getElementById('detail-member-id').textContent = 'MEM-' + String(member.id).padStart(4, '0');
             document.getElementById('detail-email').textContent = member.email || 'N/A';
             document.getElementById('detail-phone').textContent = member.contact_no || 'N/A';
@@ -644,6 +785,54 @@
             document.getElementById('detail-blood-type').textContent = member.blood_type || 'N/A';
             document.getElementById('detail-height').textContent = member.height || 'N/A';
             document.getElementById('detail-weight').textContent = member.weight || 'N/A';
+            
+            const profilePic = document.getElementById('detail-profile-pic');
+            const avatar = document.getElementById('detail-avatar');
+            if (member.profile_picture) {
+                profilePic.src = '/' + member.profile_picture;
+                profilePic.classList.remove('hidden');
+                avatar.classList.add('hidden');
+            } else {
+                profilePic.classList.add('hidden');
+                avatar.classList.remove('hidden');
+            }
+            
+            document.getElementById('detail-spouse-name').textContent = member.spouse_name || 'Not specified';
+            document.getElementById('detail-spouse-dob').textContent = member.spouse_date_birth || 'Not specified';
+            document.getElementById('detail-number-son').textContent = member.number_son || 0;
+            document.getElementById('detail-number-daughter').textContent = member.number_daughter || 0;
+            
+            const skillsEl = document.getElementById('detail-skills');
+            if (member.skills && member.skills.trim()) {
+                const skillsArray = member.skills.split(',').map(s => s.trim()).filter(s => s);
+                if (skillsArray.length > 0) {
+                    skillsEl.innerHTML = skillsArray.map(skill => 
+                        `<span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-medium rounded-full mr-2 mb-1">${skill}</span>`
+                    ).join('');
+                } else {
+                    skillsEl.textContent = 'No skills specified';
+                }
+            } else {
+                skillsEl.textContent = 'No skills specified';
+            }
+            
+            document.getElementById('detail-sss-id').textContent = member.sss_id || 'Not provided';
+            document.getElementById('detail-philhealth-id').textContent = member.philhealth_id || 'Not provided';
+            document.getElementById('detail-pagibig-id').textContent = member.pagibig_id || 'Not provided';
+            document.getElementById('detail-tin-id').textContent = member.tin_id || 'Not provided';
+            
+            const vehiclesBody = document.getElementById('detail-vehicles-body');
+            if (member.vehicles && member.vehicles.length > 0) {
+                vehiclesBody.innerHTML = member.vehicles.map(v => `
+                    <tr class="border-t border-green-100">
+                        <td class="px-4 py-3 text-sm text-gray-900">${v.vehicle_type || 'N/A'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900 font-mono">${v.plate_no || 'N/A'}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900 text-center">${v.quantity || 1}</td>
+                    </tr>
+                `).join('');
+            } else {
+                vehiclesBody.innerHTML = '<tr><td colspan="3" class="px-4 py-6 text-center text-sm text-gray-500">No vehicles registered</td></tr>';
+            }
             
             const statusEl = document.getElementById('detail-status');
             if (member.role === 'member' || member.role === 'active') {
@@ -682,6 +871,10 @@
                 closeModal('memberDetailModal');
                 openEditMemberModal(memberId);
             };
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
             
             openModal('memberDetailModal');
         }

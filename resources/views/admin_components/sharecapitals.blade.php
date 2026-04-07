@@ -36,7 +36,7 @@
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="stat-card">
+        <a href="{{ route('sharecapitals') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Contributions</p>
@@ -46,33 +46,36 @@
                         Total subscriptions
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
                     <i data-lucide="coins" class="w-6 h-6 text-primary-600"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ route('sharecapitals') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Current Value</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($currentValue, 2) }}</p>
                     <p class="text-xs text-gray-500 mt-1">Per share: ₱{{ $perShareValue }}</p>
                 </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
                     <i data-lucide="trending-up" class="w-6 h-6 text-success-500"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group" onclick="openLastContributionModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Last Contribution</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($lastContribution->total_amount ?? 0, 2) }}</p>
-                    <p class="text-xs text-gray-500 mt-1">{{ $lastContribution ? $lastContribution->created_at->format('M d, Y g:i A') : 'No transactions' }}</p>
+                    <p class="text-xs text-gray-500 mt-1 flex items-center">
+                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
+                        {{ $lastContribution ? $lastContribution->created_at->format('M d, Y g:i A') : 'No transactions' }}
+                    </p>
                 </div>
-                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center group-hover:bg-warning-200 transition-colors">
                     <i data-lucide="calendar" class="w-6 h-6 text-warning-600"></i>
                 </div>
             </div>
@@ -266,4 +269,87 @@
             </div>
         </div>
     </div>
+
+    <!-- Last Contribution Detail Modal -->
+    <div id="lastContributionModal" class="modal-overlay hidden">
+        <div class="modal max-w-lg">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-warning-100 flex items-center justify-center">
+                            <i data-lucide="calendar" class="w-5 h-5 text-warning-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Last Contribution</h2>
+                            <p class="text-xs text-gray-500">Most recent share capital transaction</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('lastContributionModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                @if($lastContribution)
+                <div class="bg-gradient-to-r from-warning-50 to-orange-50 rounded-xl p-6 border border-warning-100 mb-6">
+                    <div class="text-center mb-4">
+                        <p class="text-3xl font-bold text-gray-900">₱{{ number_format($lastContribution->total_amount, 2) }}</p>
+                        <p class="text-sm text-gray-500 mt-1">{{ $lastContribution->shares ?? 0 }} shares</p>
+                        <span class="inline-block mt-2 px-3 py-1 bg-primary-100 text-primary-700 text-sm font-semibold rounded-full">
+                            {{ ucfirst($lastContribution->type) }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Member</span>
+                        <span class="text-sm font-medium text-gray-900">
+                            {{ $lastContribution->shareCapitalAccount && $lastContribution->shareCapitalAccount->user ? $lastContribution->shareCapitalAccount->user->first_name . ' ' . $lastContribution->shareCapitalAccount->user->last_name : 'Unknown' }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Reference No.</span>
+                        <span class="text-sm font-medium text-gray-900 font-mono">{{ $lastContribution->reference_no ?? 'N/A' }}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Date & Time</span>
+                        <span class="text-sm font-medium text-gray-900">{{ $lastContribution->created_at->format('M d, Y g:i A') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Payment Method</span>
+                        <span class="text-sm font-medium text-gray-900">{{ $lastContribution->payment_method ?? 'N/A' }}</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Status</span>
+                        <span class="badge badge-success">{{ ucfirst($lastContribution->status ?? 'Completed') }}</span>
+                    </div>
+                </div>
+                @else
+                <div class="text-center py-12">
+                    <i data-lucide="inbox" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
+                    <p class="text-gray-500">No contributions found</p>
+                </div>
+                @endif
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('lastContributionModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                @if($lastContribution)
+                <a href="{{ route('sharecapitals') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                    View All Transactions
+                </a>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openLastContributionModal() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            openModal('lastContributionModal');
+        }
+    </script>
 @endsection

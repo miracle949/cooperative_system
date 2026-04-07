@@ -17,7 +17,7 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="stat-card">
+        <a href="{{ route('dashboard.members') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Members</p>
@@ -27,13 +27,13 @@
                         Active members
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
                     <i data-lucide="users" class="w-6 h-6 text-primary-600"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group" onclick="openSavingsHistoryModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Savings</p>
@@ -43,13 +43,13 @@
                         Total balance
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
                     <i data-lucide="piggy-bank" class="w-6 h-6 text-success-500"></i>
                 </div>
             </div>
         </div>
 
-        <div class="stat-card">
+        <a href="{{ route('lendings') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Active Loans</p>
@@ -59,13 +59,13 @@
                         Approved loans
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center group-hover:bg-warning-200 transition-colors">
                     <i data-lucide="banknote" class="w-6 h-6 text-warning-600"></i>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="{{ route('dashboard.members', ['filter' => 'pending']) }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-danger-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Pending Requests</p>
@@ -75,11 +75,11 @@
                         Awaiting approval
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center group-hover:bg-danger-200 transition-colors">
                     <i data-lucide="hourglass" class="w-6 h-6 text-danger-600"></i>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Recent Activity & Two Column Layout -->
@@ -350,4 +350,134 @@
             </div>
         </div>
     </div>
+
+    <!-- Savings Transaction History Modal -->
+    <div id="savingsHistoryModal" class="modal-overlay hidden">
+        <div class="modal max-w-4xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-success-100 flex items-center justify-center">
+                            <i data-lucide="piggy-bank" class="w-5 h-5 text-success-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Savings Overview</h2>
+                            <p class="text-xs text-gray-500">Recent savings transactions</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('savingsHistoryModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-success-50 rounded-lg p-4 border border-success-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Total Savings</p>
+                        <p id="savings-modal-total" class="text-xl font-bold text-gray-900">₱0.00</p>
+                    </div>
+                    <div class="bg-primary-50 rounded-lg p-4 border border-primary-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Total Transactions</p>
+                        <p id="savings-modal-count" class="text-xl font-bold text-gray-900">0</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Average</p>
+                        <p id="savings-modal-avg" class="text-xl font-bold text-gray-900">₱0.00</p>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="flex gap-3 mb-6">
+                    <a href="{{ route('savings') }}" class="flex-1 px-4 py-2.5 bg-success-600 text-white text-sm font-medium rounded-lg hover:bg-success-700 transition-colors flex items-center justify-center gap-2">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        View Full Savings Page
+                    </a>
+                </div>
+
+                <!-- Recent Transactions -->
+                <h4 class="font-semibold text-gray-900 mb-4">Recent Transactions</h4>
+                <div id="savings-modal-transactions" class="space-y-3">
+                    <!-- Transactions will be loaded here -->
+                </div>
+                @if(isset($recentSavingsTransactions) && $recentSavingsTransactions->count() > 0)
+                    <div class="hidden" id="savings-transactions-data">
+                        {!! json_encode($recentSavingsTransactions) !!}
+                    </div>
+                @endif
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('savingsHistoryModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <a href="{{ route('savings') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    Go to Savings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Transactions Data -->
+    @php
+        $savingsData = isset($recentSavingsTransactions) ? $recentSavingsTransactions : collect();
+    @endphp
+    <script type="application/json" id="savings-modal-data">
+        {!! json_encode([
+            'total' => $totalSavings,
+            'transactions' => $recentSavingsTransactions ?? collect()
+        ]) !!}
+    </script>
+
+    <script>
+        const savingsModalData = JSON.parse(document.getElementById('savings-modal-data').textContent);
+        
+        function openSavingsHistoryModal() {
+            const transactions = savingsModalData.transactions || [];
+            const total = savingsModalData.total || 0;
+            
+            document.getElementById('savings-modal-total').textContent = '₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
+            document.getElementById('savings-modal-count').textContent = transactions.length || 0;
+            document.getElementById('savings-modal-avg').textContent = transactions.length > 0 ? '₱' + (total / transactions.length).toLocaleString('en-PH', {minimumFractionDigits: 2}) : '₱0.00';
+            
+            const container = document.getElementById('savings-modal-transactions');
+            if (transactions.length > 0) {
+                container.innerHTML = transactions.slice(0, 10).map(tx => {
+                    const isDeposit = tx.type === 'deposit' || tx.type === 'Deposit';
+                    const bgColor = isDeposit ? 'bg-success-50 border-success-100' : 'bg-danger-50 border-danger-100';
+                    const iconBg = isDeposit ? 'bg-success-100' : 'bg-danger-100';
+                    const iconColor = isDeposit ? 'text-success-600' : 'text-danger-600';
+                    const amountColor = isDeposit ? 'text-success-600' : 'text-danger-600';
+                    const amountPrefix = isDeposit ? '+' : '-';
+                    const date = new Date(tx.created_at).toLocaleDateString('en-PH', {month: 'short', day: 'numeric', year: 'numeric'});
+                    return `
+                        <div class="flex items-center gap-4 p-4 ${bgColor} rounded-lg border hover:bg-opacity-70 transition-colors">
+                            <div class="w-10 h-10 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="${isDeposit ? 'arrow-down-circle' : 'arrow-up-circle'}" class="w-5 h-5 ${iconColor}"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900">${tx.user_name || 'Member'}</p>
+                                <p class="text-xs text-gray-500">${date} ${tx.reference_no ? '• ' + tx.reference_no : ''}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold ${amountColor}">${amountPrefix}₱${parseFloat(tx.amount || tx.total_amount || 0).toLocaleString('en-PH', {minimumFractionDigits: 2})}</p>
+                                <p class="text-xs text-gray-500">${tx.type || 'Transaction'}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                        <p>No savings transactions found</p>
+                    </div>
+                `;
+            }
+            
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            openModal('savingsHistoryModal');
+        }
+    </script>
 @endsection

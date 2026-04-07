@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'KMPCATS')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="{{ asset('vendor/tailwind/tailwind.min.js') }}"></script>
+    <link href="{{ asset('vendor/fonts/inter.css') }}" rel="stylesheet">
+    <script src="{{ asset('vendor/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ asset('vendor/lucide/lucide.min.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {

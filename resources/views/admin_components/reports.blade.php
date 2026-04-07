@@ -61,49 +61,65 @@
 
     <!-- Summary Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group" onclick="openDepositsModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Deposits</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalDeposits, 2) }}</p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center">
+                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
+                        Click for details
+                    </p>
                 </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
                     <i data-lucide="arrow-down-circle" class="w-6 h-6 text-success-500"></i>
                 </div>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-danger-200 transition-all group" onclick="openWithdrawalsModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Total Withdrawals</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalWithdrawals, 2) }}</p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center">
+                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
+                        Click for details
+                    </p>
                 </div>
-                <div class="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-danger-100 rounded-xl flex items-center justify-center group-hover:bg-danger-200 transition-colors">
                     <i data-lucide="arrow-up-circle" class="w-6 h-6 text-danger-600"></i>
                 </div>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group" onclick="openLoansModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Loans Issued</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($loansIssued, 2) }}</p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center">
+                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
+                        Click for details
+                    </p>
                 </div>
-                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center group-hover:bg-warning-200 transition-colors">
                     <i data-lucide="banknote" class="w-6 h-6 text-warning-600"></i>
                 </div>
             </div>
         </div>
 
-        <div class="stat-card">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group" onclick="openNetIncomeModal()">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500 mb-1">Net Income</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($netIncome, 2) }}</p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center">
+                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
+                        Click for breakdown
+                    </p>
                 </div>
-                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
                     <i data-lucide="trending-up" class="w-6 h-6 text-primary-600"></i>
                 </div>
             </div>
@@ -281,6 +297,313 @@
             </div>
         </div>
     </div>
+
+    <!-- Deposits Modal -->
+    <div id="depositsModal" class="modal-overlay hidden">
+        <div class="modal max-w-4xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-success-100 flex items-center justify-center">
+                            <i data-lucide="arrow-down-circle" class="w-5 h-5 text-success-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Savings Deposits</h2>
+                            <p class="text-xs text-gray-500">All deposit transactions</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('depositsModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-success-50 rounded-lg p-4 border border-success-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Total Deposits</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ number_format($totalDeposits, 2) }}</p>
+                    </div>
+                    <div class="bg-primary-50 rounded-lg p-4 border border-primary-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Transactions</p>
+                        <p class="text-xl font-bold text-gray-900">{{ $depositsCount ?? 0 }}</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Average</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ $depositsCount > 0 ? number_format($totalDeposits / $depositsCount, 2) : 0 }}</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-4">Recent Deposits</h4>
+                <div class="space-y-3">
+                    @forelse($deposits ?? [] as $deposit)
+                    <div class="flex items-center gap-4 p-4 bg-success-50 rounded-lg border border-success-100">
+                        <div class="w-10 h-10 bg-success-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="arrow-down-circle" class="w-5 h-5 text-success-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">{{ $deposit->member_name ?? 'Member' }}</p>
+                            <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($deposit->created_at)->format('M d, Y') }} {{ $deposit->reference_no ? '• ' . $deposit->reference_no : '' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-success-600">+₱{{ number_format($deposit->amount, 2) }}</p>
+                            <span class="badge badge-success">Completed</span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-8 text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                        <p>No deposits found</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('depositsModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <a href="{{ route('savings') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    Go to Savings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawals Modal -->
+    <div id="withdrawalsModal" class="modal-overlay hidden">
+        <div class="modal max-w-4xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-danger-100 flex items-center justify-center">
+                            <i data-lucide="arrow-up-circle" class="w-5 h-5 text-danger-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Withdrawals</h2>
+                            <p class="text-xs text-gray-500">All withdrawal transactions</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('withdrawalsModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-danger-50 rounded-lg p-4 border border-danger-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Total Withdrawals</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ number_format($totalWithdrawals, 2) }}</p>
+                    </div>
+                    <div class="bg-primary-50 rounded-lg p-4 border border-primary-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Transactions</p>
+                        <p class="text-xl font-bold text-gray-900">{{ $withdrawalsCount ?? 0 }}</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Average</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ $withdrawalsCount > 0 ? number_format($totalWithdrawals / $withdrawalsCount, 2) : 0 }}</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-4">Recent Withdrawals</h4>
+                <div class="space-y-3">
+                    @forelse($withdrawals ?? [] as $withdrawal)
+                    <div class="flex items-center gap-4 p-4 bg-danger-50 rounded-lg border border-danger-100">
+                        <div class="w-10 h-10 bg-danger-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="arrow-up-circle" class="w-5 h-5 text-danger-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">{{ $withdrawal->member_name ?? 'Member' }}</p>
+                            <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($withdrawal->created_at)->format('M d, Y') }} {{ $withdrawal->reference_no ? '• ' . $withdrawal->reference_no : '' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-danger-600">-₱{{ number_format($withdrawal->amount, 2) }}</p>
+                            <span class="badge badge-danger">Completed</span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-8 text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                        <p>No withdrawals found</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('withdrawalsModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <a href="{{ route('savings') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    Go to Savings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loans Modal -->
+    <div id="loansModal" class="modal-overlay hidden">
+        <div class="modal max-w-4xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-warning-100 flex items-center justify-center">
+                            <i data-lucide="banknote" class="w-5 h-5 text-warning-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Loans Issued</h2>
+                            <p class="text-xs text-gray-500">All loan disbursements</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('loansModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-warning-50 rounded-lg p-4 border border-warning-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Total Loans</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ number_format($loansIssued, 2) }}</p>
+                    </div>
+                    <div class="bg-primary-50 rounded-lg p-4 border border-primary-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Loans Count</p>
+                        <p class="text-xl font-bold text-gray-900">{{ $loansCount ?? 0 }}</p>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                        <p class="text-xs text-gray-500 mb-1">Average Loan</p>
+                        <p class="text-xl font-bold text-gray-900">₱{{ $loansCount > 0 ? number_format($loansIssued / $loansCount, 2) : 0 }}</p>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-gray-900 mb-4">Recent Loans</h4>
+                <div class="space-y-3">
+                    @forelse($loans ?? [] as $loan)
+                    <div class="flex items-center gap-4 p-4 bg-warning-50 rounded-lg border border-warning-100">
+                        <div class="w-10 h-10 bg-warning-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="banknote" class="w-5 h-5 text-warning-600"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">{{ $loan['member_name'] ?? 'Member' }}</p>
+                            <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($loan['created_at'])->format('M d, Y') }} {{ isset($loan['reference_no']) ? '• ' . $loan['reference_no'] : '' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-warning-600">₱{{ number_format($loan['amount'], 2) }}</p>
+                            <span class="badge badge-warning">{{ $loan['purpose'] ?? 'Loan' }}</span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-8 text-gray-500">
+                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
+                        <p>No loans found</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('loansModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <a href="{{ route('lendings') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    Go to Lending
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Net Income Breakdown Modal -->
+    <div id="netIncomeModal" class="modal-overlay hidden">
+        <div class="modal max-w-lg">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Net Income Breakdown</h2>
+                            <p class="text-xs text-gray-500">Financial summary</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('netIncomeModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 max-h-[60vh] overflow-y-auto">
+                <div class="bg-gradient-to-r from-primary-50 to-success-50 rounded-xl p-6 border border-primary-100 mb-6 text-center">
+                    <p class="text-xs text-gray-500 mb-1">Net Income</p>
+                    <p class="text-3xl font-bold text-gray-900">₱{{ number_format($netIncome, 2) }}</p>
+                </div>
+
+                <h4 class="font-semibold text-gray-900 mb-4">Income Sources</h4>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-success-50 rounded-lg border border-success-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-success-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="arrow-down-circle" class="w-5 h-5 text-success-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Total Deposits</span>
+                        </div>
+                        <span class="text-sm font-semibold text-success-600">+₱{{ number_format($totalDeposits, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-danger-50 rounded-lg border border-danger-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-danger-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="arrow-up-circle" class="w-5 h-5 text-danger-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Total Withdrawals</span>
+                        </div>
+                        <span class="text-sm font-semibold text-danger-600">-₱{{ number_format($totalWithdrawals, 2) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-warning-50 rounded-lg border border-warning-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-warning-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="banknote" class="w-5 h-5 text-warning-600"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">Loans Issued</span>
+                        </div>
+                        <span class="text-sm font-semibold text-warning-600">₱{{ number_format($loansIssued, 2) }}</span>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 mt-6 pt-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-900">Net Income</span>
+                        <span class="text-lg font-bold text-primary-600">₱{{ number_format($netIncome, 2) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeModal('netIncomeModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+                <button onclick="showToast('Report Generated', 'Net income report has been generated', 'success')" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDepositsModal() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            openModal('depositsModal');
+        }
+
+        function openWithdrawalsModal() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            openModal('withdrawalsModal');
+        }
+
+        function openLoansModal() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            openModal('loansModal');
+        }
+
+        function openNetIncomeModal() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            openModal('netIncomeModal');
+        }
+    </script>
 
     <script>
         const chartType = '{{ $chartType }}';

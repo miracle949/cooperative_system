@@ -358,6 +358,23 @@ public function dashboard_admin()
         ];
     }
 
+    // Recent Savings Transactions (for modal)
+    $recentSavingsTransactions = savings_transaction_tbl::with('savingsAccount.user')
+        ->orderByDesc('created_at')
+        ->take(10)
+        ->get()
+        ->map(function ($tx) {
+            return [
+                'id' => $tx->id,
+                'amount' => $tx->amount,
+                'total_amount' => $tx->total_amount,
+                'type' => $tx->type,
+                'reference_no' => $tx->reference_no,
+                'created_at' => $tx->created_at,
+                'user_name' => $tx->savingsAccount && $tx->savingsAccount->user ? $tx->savingsAccount->user->first_name . ' ' . $tx->savingsAccount->user->last_name : 'Unknown'
+            ];
+        });
+
     return view("admin_components.dashboard", compact(
         'totalMembers',
         'totalSavings',
@@ -369,7 +386,8 @@ public function dashboard_admin()
         'recentActivities',
         'savingsByMonth',
         'memberActivity',
-        'loansByPurpose'
+        'loansByPurpose',
+        'recentSavingsTransactions'
     ));
 }
 
@@ -390,16 +408,64 @@ public function dashboard_admin()
         $pendingRequests = Users_tbl::where('role', 'pending')->get();
 
         $memberIds = $members->pluck('id')->toArray();
+
         $shareCapitals = DB::table('share_capital_account_tbls')
             ->whereIn('user_id', $memberIds)
             ->get()
             ->keyBy('user_id');
 
-        $members->getCollection()->transform(function ($member) use ($shareCapitals) {
+        $otherInfo = DB::table('otherinfo_tbls')
+            ->whereIn('user_id', $memberIds)
+            ->get()
+            ->keyBy('user_id');
+
+        $spouseInfo = DB::table('spouse_tbls')
+            ->whereIn('user_id', $memberIds)
+            ->get()
+            ->keyBy('user_id');
+
+        $govIds = DB::table('membergovern_ids_tbls')
+            ->whereIn('user_id', $memberIds)
+            ->get()
+            ->keyBy('user_id');
+
+        $vehicles = DB::table('membervehi_tbls')
+            ->whereIn('user_id', $memberIds)
+            ->get()
+            ->groupBy('user_id');
+
+        $members->getCollection()->transform(function ($member) use ($shareCapitals, $otherInfo, $spouseInfo, $govIds, $vehicles) {
             $sc = $shareCapitals->get($member->id);
             $member->sc_total_amount = $sc->total_amount ?? 0;
             $member->sc_total_shares = $sc->total_shares ?? 0;
             $member->sc_status = $sc->status ?? 'No Account';
+
+            $other = $otherInfo->get($member->id);
+            $member->profile_picture = $other->profile_picture ?? null;
+            $member->skills = $other->skills ?? null;
+
+            $spouse = $spouseInfo->get($member->id);
+            $member->spouse_name = $spouse->spouse_name ?? null;
+            $member->spouse_date_birth = $spouse->spouse_date_birth ?? null;
+            $member->spouse_place_birth = $spouse->spouse_place_birth ?? null;
+            $member->number_son = $spouse->number_son ?? 0;
+            $member->number_daughter = $spouse->number_daughter ?? 0;
+
+            $gov = $govIds->get($member->id);
+            $member->sss_id = $gov->sss_id ?? null;
+            $member->philhealth_id = $gov->philhealth_id ?? null;
+            $member->pagibig_id = $gov->pagibig_id ?? null;
+            $member->tin_id = $gov->tin_id ?? null;
+
+            $memberVehicles = $vehicles->get($member->id, collect());
+            $member->vehicles = $memberVehicles->map(function ($v) {
+                return [
+                    'vehicle_type' => $v->vehicle_type,
+                    'plate_no' => $v->plate_no,
+                    'quantity' => $v->quantity ?? 1,
+                ];
+            })->values()->toArray();
+
             return $member;
         });
 
@@ -434,12 +500,12 @@ public function dashboard_admin()
 
         $currentBalance = savings_account_tbl::sum('balance') ?? 0;
         
+        $sixMonthsAgo = now()->subMonths(6)->startOfMonth();
         $monthlyAvg = savings_transaction_tbl::where('type', 'deposit')
-            ->whereYear('created_at', '>=', now()->subMonths(6)->format('Y'))
-            ->whereMonth('created_at', '>=', now()->subMonths(6)->format('m'))
+            ->where('created_at', '>=', $sixMonthsAgo)
             ->sum('amount') / 6;
 
-        $lastContribution = savings_transaction_tbl::orderBy('created_at', 'desc')->first();
+        $lastContribution = savings_transaction_tbl::orderByDesc('created_at')->first();
 
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
         $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')->sum('amount') ?? 0;
@@ -449,6 +515,38 @@ public function dashboard_admin()
             ->orderBy('first_name')
             ->get();
 
+        $monthlyData = [];
+        $maxAmount = 0;
+        for ($i = 5; $i >= 0; $i--) {
+            $monthDate = now()->subMonths($i);
+            $amount = savings_transaction_tbl::where('type', 'deposit')
+                ->whereYear('created_at', $monthDate->format('Y'))
+                ->whereMonth('created_at', $monthDate->format('m'))
+                ->sum('amount');
+            $monthlyData[] = [
+                'name' => $monthDate->format('F'),
+                'year' => $monthDate->format('Y'),
+                'amount' => $amount,
+                'bar_height' => 0
+            ];
+            if ($amount > $maxAmount) {
+                $maxAmount = $amount;
+            }
+        }
+        foreach ($monthlyData as &$data) {
+            $data['bar_height'] = $maxAmount > 0 ? ($data['amount'] / $maxAmount) * 150 : 0;
+        }
+        
+        $highestMonth = [
+            'name' => 'N/A',
+            'amount' => 0
+        ];
+        foreach ($monthlyData as $data) {
+            if ($data['amount'] > $highestMonth['amount']) {
+                $highestMonth = $data;
+            }
+        }
+
         return view("admin_components.savings", compact(
             'transactions',
             'currentBalance',
@@ -456,7 +554,9 @@ public function dashboard_admin()
             'lastContribution',
             'totalDeposits',
             'totalWithdrawals',
-            'allMembers'
+            'allMembers',
+            'monthlyData',
+            'highestMonth'
         ));
     }
 
@@ -698,6 +798,69 @@ public function dashboard_admin()
             ->orderBy('st.created_at', 'desc')
             ->limit(50)
             ->get();
+
+        $deposits = DB::table('savings_transaction_tbls as st')
+            ->select(
+                'st.created_at',
+                'st.reference_no',
+                'st.amount',
+                'st.type',
+                DB::raw("CONCAT(u.first_name, ' ', u.last_name) as member_name")
+            )
+            ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
+            ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
+            ->where('st.type', 'deposit')
+            ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->orderBy('st.created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $withdrawals = DB::table('savings_transaction_tbls as st')
+            ->select(
+                'st.created_at',
+                'st.reference_no',
+                'st.amount',
+                'st.type',
+                DB::raw("CONCAT(u.first_name, ' ', u.last_name) as member_name")
+            )
+            ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
+            ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
+            ->where('st.type', 'withdraw')
+            ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->orderBy('st.created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        $loans = lending_program_tbl::with('user')
+            ->where('status', 'Approved')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($loan) {
+                return [
+                    'created_at' => $loan->created_at,
+                    'reference_no' => $loan->reference_no,
+                    'amount' => $loan->lending_amount,
+                    'purpose' => $loan->purpose_loan,
+                    'status' => $loan->status,
+                    'member_name' => ($loan->user->first_name ?? 'Unknown') . ' ' . ($loan->user->last_name ?? '')
+                ];
+            });
+
+        $depositsCount = DB::table('savings_transaction_tbls as st')
+            ->where('st.type', 'deposit')
+            ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->count();
+
+        $withdrawalsCount = DB::table('savings_transaction_tbls as st')
+            ->where('st.type', 'withdraw')
+            ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->count();
+
+        $loansCount = lending_program_tbl::where('status', 'Approved')
+            ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
+            ->count();
         
         return view("admin_components.reports", compact(
             'fromDate',
@@ -713,7 +876,13 @@ public function dashboard_admin()
             'lendingTrend',
             'shareCapitalTrend',
             'months',
-            'transactions'
+            'transactions',
+            'deposits',
+            'withdrawals',
+            'loans',
+            'depositsCount',
+            'withdrawalsCount',
+            'loansCount'
         ));
     }
 
