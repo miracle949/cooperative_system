@@ -185,11 +185,11 @@
                                         was
                                         scheduled within two (2) years, and agrees to pay atleast 25% as initial payment
                                         of
-                                        subscription within a Membership Fee of Two Thousand (P2000.00) Pessos.</label>
+                                        subscription within a Membership Fee of Two Thousand (P2,000.00) Pesos.</label>
 
                                     <label class="lh-lg mt-4">The undersigned agrees further to pay Fifty Thousand
                                         (P50,000.00) Pesos (For Tourist Unit) as entrance fee for my vehicle and
-                                        Mobilization Fee of Three Thousand (P3000.00) of the Transport / Vehicle
+                                        Mobilization Fee of Three Thousand (P3,000.00) of the Transport / Vehicle
                                         Operation
                                         of KPMPCATS.</label>
 
@@ -258,7 +258,7 @@
         </form>
     </div>
 
-    {{--
+
     <script>
 
         const select_type = document.getElementById("select_type");
@@ -280,8 +280,11 @@
             }
 
         });
-    </script> --}}
+    </script>
 
+
+
+    <script src="js_folder/otherinfo_form.js"></script>
     <script src="js_folder/vehicle_form.js"></script>
     <script src="js_folder/display_form.js"></script>
     <script src="js_folder/card_form.js"></script>
@@ -310,6 +313,50 @@
 
         document.getElementById('clear').addEventListener('click', function () {
             signaturePad.clear();
+        });
+    </script>
+
+    <script>
+        const dobInput = document.getElementById('date_birth');
+        const dobError = document.getElementById('dob_error');
+        const form = document.querySelector('form'); // your form
+
+        function validateDOB() {
+            const birthDate = new Date(dobInput.value);
+            const today = new Date();
+
+            if (!dobInput.value) {
+                dobError.textContent = 'Date of Birth is required.';
+                dobInput.classList.add('is-invalid');
+                return false;
+            }
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                dobError.textContent = 'You must be at least 18 years old above.';
+                dobInput.classList.add('is-invalid');
+                return false;
+            }
+
+            dobError.textContent = '';
+            dobInput.classList.remove('is-invalid');
+            return true;
+        }
+
+        // Real-time validation
+        dobInput.addEventListener('input', validateDOB);
+
+        // Prevent form submission / next page
+        form.addEventListener('submit', function (e) {
+            if (!validateDOB()) {
+                e.preventDefault(); // stop going to next page
+            }
         });
     </script>
 
@@ -383,6 +430,22 @@
                 });
             });
         </script>
+
+        {{--
+        <script>
+            const dobInput = document.getElementById('date_birth');
+
+            const today = new Date();
+            const minAgeDate = new Date(
+                today.getFullYear() - 18,
+                today.getMonth(),
+                today.getDate()
+            );
+
+            // Format to YYYY-MM-DD
+            const maxDate = minAgeDate.toISOString().split('T')[0];
+            dobInput.max = maxDate;
+        </script> --}}
     @endif
 
 </body>

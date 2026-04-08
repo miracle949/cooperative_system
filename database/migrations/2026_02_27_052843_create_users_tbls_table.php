@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('users_tbls', function (Blueprint $table) {
             $table->id();
-            $table->string("fullname");
+            $table->string("first_name");
+            $table->string("middle_name");
+            $table->string("last_name");
             $table->string("username");
             $table->string("email")->unique();
             $table->string("password");

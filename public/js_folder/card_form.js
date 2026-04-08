@@ -30,10 +30,28 @@ function updateSteps() {
 // Call on page load to set initial state
 updateSteps();
 
+// function nextStep() {
+//     const currentFormStep = steps_form[currentStep_form];
+//     const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
+
+//     for (let field of requiredFields) {
+//         if (!field.checkValidity()) {
+//             field.reportValidity();
+//             return;
+//         }
+//     }
+
+//     if (currentStep_form < steps_form.length - 1) {
+//         currentStep_form++;
+//         updateSteps();
+//     }
+// }
+
 function nextStep() {
     const currentFormStep = steps_form[currentStep_form];
     const requiredFields = currentFormStep.querySelectorAll("input[required], select[required]");
 
+    // ✅ Check required fields first
     for (let field of requiredFields) {
         if (!field.checkValidity()) {
             field.reportValidity();
@@ -41,6 +59,32 @@ function nextStep() {
         }
     }
 
+    // ✅ 👉 ADD THIS BLOCK (DOB VALIDATION)
+    const dobInput = currentFormStep.querySelector('#date_birth');
+
+    if (dobInput) {
+        const dobError = document.getElementById('dob_error');
+        const birthDate = new Date(dobInput.value);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        if (age < 18) {
+            dobError.textContent = 'You must be at least 18 years old above.';
+            dobInput.classList.add('is-invalid');
+            return; // ❌ STOP next step
+        } else {
+            dobError.textContent = '';
+            dobInput.classList.remove('is-invalid');
+        }
+    }
+
+    // ✅ Proceed to next step
     if (currentStep_form < steps_form.length - 1) {
         currentStep_form++;
         updateSteps();

@@ -617,9 +617,17 @@ button#clear:hover {
     width: 100%;
 }
 
+.review-parent .review-second .review:nth-child(6) p:nth-child(1){
+    width: 102px;
+}
+
 .review-parent .review-third {
     width: 100%;
 }
+/* 
+.review-parent .review-third .review:nth-child(2) p:nth-child(1){
+    width: 130px;
+} */
 
 #date_birth {
     color: #6F7174;

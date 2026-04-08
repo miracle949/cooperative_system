@@ -73,7 +73,7 @@
 
                 <div class="members">
                     <h4>99.9%</h4>
-                    <span>Upptime</span>
+                    <span>Uptime</span>
                 </div>
 
                 <div class="members">
