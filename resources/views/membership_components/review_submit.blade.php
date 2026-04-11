@@ -105,7 +105,7 @@
                             </div>
 
                             <div class="review mt-3">
-                                <p>Other Skills/Expertise:</p>
+                                <p>Skills/Expertise:</p>
                                 <p id="skills_display"></p>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                         <label class="mt-2"><b>I HEREBY CERTIFY</b> that the foregoing statements are
                             <b>True and Correct:</b></label>
 
-                        <label class="mt-4">Applicant's Signature (Type Full Name)</label>
+                        <label class="mt-4">Applicant's Signature</label>
 
                         <div class="row">
                             <div class="col-lg-5 mt-2">
@@ -177,7 +177,7 @@
                             </div>
                         </div>
 
-                        <label class="mt-3" style="color: #808080">(Signature Over Printed Name)</label>
+                        {{-- <label class="mt-3" style="color: #808080">(Signature Over Printed Name)</label> --}}
                     </div>
                 </div>
             </div>

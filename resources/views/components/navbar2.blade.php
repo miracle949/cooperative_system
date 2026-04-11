@@ -53,7 +53,7 @@
                         {{-- <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt="">
                         --}}
                         <div class="first-last">
-                            <p>{{ strtoupper(substr(Auth::user()->fullname, 0, 1)) }}</p>
+                            <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</p>
                         </div>
                         <p style="margin: 0">{{ $username }}</p>
                         <i class="fa fa-chevron-down"></i>
@@ -64,7 +64,7 @@
                     @if($email)
                         <li>
                             <div class="card-icon">
-                                <p>{{ strtoupper(substr(Auth::user()->fullname, 0, 1)) }}</p>
+                                <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</p>
                             </div>
                             <p>{{ $email }}</p>
                         </li>

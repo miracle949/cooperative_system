@@ -310,7 +310,7 @@ class UsersHandle extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role === "admin") {
+        if ($user->role === "Admin") {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
         } else {
             return redirect()->route("MemberPortal")->with("message", "Login successfully!");

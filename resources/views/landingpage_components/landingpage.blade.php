@@ -40,7 +40,7 @@
                     livelihood programs.</p>
 
                 <div class="main-buttons">
-                    <a href="#">Become a Member <i class="fa fa-arrow-right"></i></a>
+                    <a href="{{ route("RegisterPage") }}">Become a Member <i class="fa fa-arrow-right"></i></a>
 
                     <a href="#">Learn More</a>
                 </div>
@@ -322,7 +322,7 @@
             </div>
 
             <div class="become-buttons">
-                <a href="#">Become a Member <i class="fa fa-arrow-right"></i></a>
+                <a href="{{ route("RegisterPage") }}">Become a Member <i class="fa fa-arrow-right"></i></a>
 
                 <a href="#">Member Login <i class="fa fa-arrow-right"></i></a>
             </div>
