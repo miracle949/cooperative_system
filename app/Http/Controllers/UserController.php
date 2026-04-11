@@ -596,23 +596,14 @@ class UserController extends Controller
         }
 
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
-<<<<<<< HEAD
-
-        return view("admin_components.lending", compact('loans', 'statusFilter'));
-=======
         
         $allMembers = Users_tbl::where('role', 'member')
             ->orderBy('first_name')
             ->get();
         
-<<<<<<< HEAD
         $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
         
         return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings'));
-=======
-        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers'));
->>>>>>> 50f9da2746925b8ecdb14cd8532f9393f7675cce
->>>>>>> ced5fb9941061a6877e805c9998897ca4e58847c
     }
 
     public function approveLoan(Request $request, $id)
