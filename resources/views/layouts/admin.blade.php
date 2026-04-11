@@ -243,6 +243,20 @@
             margin: 0 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal.max-w-4xl {
+            max-width: 56rem;
+        }
+
+        .modal > div:first-child {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+            flex-shrink: 0;
         }
 
         .dropdown {
@@ -336,7 +350,7 @@
                     <a href="{{ route('lendings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
-                        <span>Lending process</span>
+                        <span>Assistance process</span>
                     </a>
                     <a href="{{ route('dashboard.members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">
