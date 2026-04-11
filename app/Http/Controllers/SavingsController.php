@@ -39,6 +39,12 @@ class SavingsController extends Controller
         // Get or create savings account
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->first();
 
+        $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
+            ->where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->where('total_shares', '>', 0)
+            ->exists();
+
         if (!$savingsAccount) {
             $savingsAccount = savings_account_tbl::create([
                 'user_id' => $user->id,
@@ -88,7 +94,8 @@ class SavingsController extends Controller
                 'totalMonths',
                 'monthlyAverage',
                 'lastUpdated',
-                'monthsActive'
+                'monthsActive',
+                'hasShareCapital'
             )
         );
     }
@@ -111,11 +118,22 @@ class SavingsController extends Controller
 
         $savingsAccount->update(['balance' => $newBalance]);
 
+        $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
+            ->where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->where('total_shares', '>', 0)
+            ->exists();
+
+        if (!$hasShareCapital) {
+            return redirect()->route('savings.index')
+                ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
+        }
+
         savings_transaction_tbl::create([
             'savings_account_id' => $savingsAccount->id,
             'type' => 'deposit',
             'amount' => $request->amount,
-            'payment_method' => $request->payment_method,  
+            'payment_method' => $request->payment_method,
             'balance_after' => $newBalance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
@@ -142,6 +160,17 @@ class SavingsController extends Controller
 
         $user = Auth::user();
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
+
+        $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
+            ->where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->where('total_shares', '>', 0)
+            ->exists();
+
+        if (!$hasShareCapital) {
+            return redirect()->route('savings.index')
+                ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
+        }
 
         if ($request->amount > $savingsAccount->balance) {
             return back()

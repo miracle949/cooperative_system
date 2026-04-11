@@ -81,7 +81,16 @@ username.addEventListener("input", () => {
 });
 
 date_birth.addEventListener("input", () => {
-    document.getElementById("date_birth_display").textContent = date_birth.value;
+
+    const ConvertDate = new Date(date_birth.value);
+
+    let readableDate =  ConvertDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    document.getElementById("date_birth_display").textContent = readableDate;
 });
 
 place_birth.addEventListener("input", () => {
@@ -116,7 +125,16 @@ spouse_name.addEventListener("input", () => {
 });
 
 spouse_date_birth.addEventListener("input", () => {
-    document.getElementById("spouse_date_birth_display").textContent = spouse_date_birth.value;
+
+    const ConvertDate = new Date(spouse_date_birth.value);
+
+    let readableDate =  ConvertDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    document.getElementById("spouse_date_birth_display").textContent = readableDate;
 });
 
 spouse_place_birth.addEventListener("input", () => {

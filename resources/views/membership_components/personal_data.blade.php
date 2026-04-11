@@ -83,13 +83,13 @@
                     <label class="text-start">Membership category?</label>
                     <select name="membership_category" id="select_type" class="form-select" required>
                         <option value="" disabled selected>Select category</option>
-                        <option value="Operator">Operator</option>
-                        <option value="Driver">Driver</option>
-                        <option value="Dispatcher">Dispatcher</option>
-                        <option value="Driver-Operator">Driver-Operator</option>
-                        <option value="Investor Associate">Investor Associate</option>
-                        <option value="Allied Workers">Allied Workers</option>
-                        <option value="Transport Entrepreneur">Transport Entrepreneur</option>
+                        <option value="Operator">Operator - (Manages transport operations.)</option>
+                        <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
+                        <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
+                        <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)</option>
+                        <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff, helper).)</option>
+                        <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple transport units.)</option>
+                        <option value="Investor Associate">Investor Associate - (Provides capital but not involved in daily operations.)</option>
                     </select>
                 </div>
             </div>

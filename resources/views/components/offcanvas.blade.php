@@ -11,7 +11,7 @@
     <div class="offcanvas-links">
       <ul>
         <li>
-          <a href="{{ route("Landingpage") }}">Home</a>
+          <a href="{{ route("index") }}">Home</a>
         </li>
 
         <li>

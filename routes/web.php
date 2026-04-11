@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 Route::get("/", [UserController::class, "UserDirection"]);
 
-Route::get("/landing-page", [UserController::class, "Landingpage"])->name("Landingpage");
+Route::get("/index", [UserController::class, "index"])->name("index");
 
 // ✅ THIS IS THE KEY FIX - named 'login' must point to the login PAGE view
 Route::get("/login", [UserController::class, "LoginPage"])->name("login");
@@ -47,7 +47,7 @@ Route::get("/static-page", [UserController::class, "StaticPage"])->name("StaticP
 Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("MemberPortal")->middleware("auth");
 
 // Lending Program page GET
-Route::get("/loan_application", [UsersHandle::class, "LoanApplication"])->name("LoanApplication");
+Route::get("/loan_application", [lendingController::class, "index"])->name("LoanApplication");
 
 // Route::get("/savings", [UsersHandle::class, "Savings"])->name("savings");
 
@@ -58,8 +58,9 @@ Route::post("/savings/deposit", [SavingsController::class, "deposit"])->name("sa
 
 Route::post("/savings/withdraw", [SavingsController::class, "withdraw"])->name("savings.withdraw")->middleware("auth");
 
+
 // Share Capital page GET
-Route::get('/share-capital', [UsersHandle::class, "ShareCapitalMember"])
+Route::get('/share-capital', [ShareCapital::class, 'memberIndex'])
     ->name("ShareCapitalMember")
     ->middleware('auth');
 

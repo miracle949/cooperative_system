@@ -35,12 +35,14 @@
             margin: 0.75rem 0;
             gap: 0.5rem;
         }
+
         .sm-ref-label {
             font-size: 0.75rem;
             color: #000000;
             font-weight: 500;
             white-space: nowrap;
         }
+
         .sm-ref-value {
             font-family: monospace;
             font-size: 0.88rem;
@@ -50,6 +52,7 @@
             word-break: break-all;
             text-align: right;
         }
+
         .sm-copy-btn {
             background: none;
             border: none;
@@ -61,7 +64,10 @@
             transition: color 0.2s;
             flex-shrink: 0;
         }
-        .sm-copy-btn:hover { color: #1E4035; }
+
+        .sm-copy-btn:hover {
+            color: #1E4035;
+        }
 
         /* ── Download receipt button ── */
         .sm-btn-download {
@@ -83,6 +89,7 @@
             transition: all 0.2s;
             margin-top: 0.5rem;
         }
+
         .sm-btn-download:hover {
             background: #1E4035;
             color: #fff;
@@ -108,32 +115,86 @@
         @include("components.offcanvas")
 
         <main>
+            @if(!$hasShareCapital)
+                {{-- Lock overlay banner --}}
+                <div style="
+                        width: 100%;
+                        background: #fff8e1;
+                        border: 1.5px solid #ffe082;
+                        border-radius: 12px;
+                        padding: 0.75rem 1.25rem 1rem;
+                        margin-bottom: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        font-size: 0.88rem;
+                        color: #856404;
+                                ">
+                    <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
+                    <span>
+                        Your savings features are <strong>locked</strong>.
+                        Please <a href="{{ route('ShareCapitalMember') }}"
+                            style="color:#1a4a3a;font-weight:700;text-decoration:underline;">subscribe to Share
+                            Capital</a> first to unlock deposits, withdrawals, and your savings stats.
+                    </span>
+                </div>
+            @endif
             <div class="card-box-parent">
                 <div class="card-box-text">
                     <h3>Total Savings Balance</h3>
                     <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
                     <span>Last updated {{ $lastUpdated }} ·
-                        {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }} active
+                        {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
+                        active
                     </span>
                 </div>
 
                 <div class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
 
                     {{-- Deposit --}}
-                    <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal" style="cursor:pointer;">
-                        <div class="card-icon">
-                            <i class="fa-solid fa-circle-arrow-down"></i>
+                    @if($hasShareCapital)
+                        <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal" style="cursor:pointer;">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-circle-arrow-down"></i>
+                            </div>
+                            <div>
+                                <p>Deposit</p>
+                            </div>
                         </div>
-                        <div><p>Deposit</p></div>
-                    </div>
+                    @else
+                        <div class="card-box" disabled style="opacity:0.45; cursor:not-allowed;"
+                            title="You must have active share capital to use savings.">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-circle-arrow-down"></i>
+                            </div>
+                            <div>
+                                <p>Deposit</p>
+                            </div>
+                        </div>
+                    @endif
 
                     {{-- Withdraw --}}
-                    <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal" style="cursor:pointer;">
-                        <div class="card-icon">
-                            <i class="fa-solid fa-circle-arrow-up"></i>
+                    @if($hasShareCapital)
+                        <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                            style="cursor:pointer;">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-circle-arrow-up"></i>
+                            </div>
+                            <div>
+                                <p>Withdraw</p>
+                            </div>
                         </div>
-                        <div><p>Withdraw</p></div>
-                    </div>
+                    @else
+                        <div class="card-box" disabled style="cursor:not-allowed; opacity:0.45;"
+                            title="You must have active share capital to use savings.">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-circle-arrow-up"></i>
+                            </div>
+                            <div>
+                                <p>Withdraw</p>
+                            </div>
+                        </div>
+                    @endif
 
                 </div>
             </div>
@@ -141,35 +202,76 @@
 
         <section>
             <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
-                <div class="card-box tw:bg-white">
-                    <div class="card-accent"></div>
-                    <div class="card-icon d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-peso-sign"></i>
-                    </div>
-                    <p>Total Savings</p>
-                    <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
-                    <span>All time contributions</span>
-                </div>
 
-                <div class="card-box tw:bg-white">
-                    <div class="card-accent"></div>
-                    <div class="card-icon d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-                    </div>
-                    <p>Monthly Average</p>
-                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                    <span>Per month average</span>
-                </div>
+                @if($hasShareCapital)
 
-                <div class="card-box tw:bg-white">
-                    <div class="card-accent"></div>
-                    <div class="card-icon d-flex justify-content-center align-items-center">
-                        <i class="fa-solid fa-calendar-days"></i>
+                    <div class="card-box tw:bg-white">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-peso-sign"></i>
+                        </div>
+                        <p>Total Savings</p>
+                        <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                        <span>All time contributions</span>
                     </div>
-                    <p>Total Months</p>
-                    <h4>{{ $totalMonths }} Months</h4>
-                    <span>Months saving</span>
-                </div>
+
+                    <div class="card-box tw:bg-white">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                        <p>Monthly Average</p>
+                        <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                        <span>Per month average</span>
+                    </div>
+
+                    <div class="card-box tw:bg-white">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <p>Total Months</p>
+                        <h4>{{ $totalMonths }} Months</h4>
+                        <span>Months saving</span>
+                    </div>
+
+                @else
+
+                    <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                        title="You must have active share capital to use savings.">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-peso-sign"></i>
+                        </div>
+                        <p>Total Savings</p>
+                        <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                        <span>All time contributions</span>
+                    </div>
+
+                    <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                        title="You must have active share capital to use savings.">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                        <p>Monthly Average</p>
+                        <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                        <span>Per month average</span>
+                    </div>
+
+                    <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                        title="You must have active share capital to use savings.">
+                        <div class="card-accent"></div>
+                        <div class="card-icon d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+                        <p>Total Months</p>
+                        <h4>{{ $totalMonths }} Months</h4>
+                        <span>Months saving</span>
+                    </div>
+
+                @endif
+
             </div>
         </section>
 
@@ -177,8 +279,8 @@
             <div class="card-box-parent">
                 <div class="d-flex justify-content-between align-items-center card-box-title">
                     <div class="title">
-                        <h3>Contribution History</h3>
-                        <p class="tw:text-[#808080]">View your monthly contributions breakdown</p>
+                        <h3>Transaction History</h3>
+                        <p class="tw:text-[#808080]">View your monthly transactions breakdown</p>
                     </div>
                     <div class="gap-3 print">
                         <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
@@ -225,8 +327,7 @@
                                             <td class="text-end">
                                                 @if ($tx->reference_no)
                                                     <a href="{{ route('savings.receipt', $tx->reference_no) }}"
-                                                       title="Download Receipt"
-                                                       style="color:#1E4035;font-size:0.9rem;">
+                                                        title="Download Receipt" style="color:#1E4035;font-size:0.9rem;">
                                                         <i class="fa-solid fa-file-arrow-down"></i>
                                                     </a>
                                                 @endif
@@ -249,7 +350,7 @@
 
 
         {{-- ============================================================
-             DEPOSIT MODAL
+        DEPOSIT MODAL
         ============================================================ --}}
         <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -289,11 +390,16 @@
                                         step="0.01" value="{{ old('amount') }}" />
                                 </div>
                                 <div class="sm-quick-amounts">
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 500)">₱500</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 1000)">₱1,000</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 1500)">₱1,500</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 2000)">₱2,000</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('depositAmount', 5000)">₱5,000</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('depositAmount', 500)">₱500</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('depositAmount', 1000)">₱1,000</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('depositAmount', 1500)">₱1,500</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('depositAmount', 2000)">₱2,000</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('depositAmount', 5000)">₱5,000</button>
                                 </div>
                                 @error('amount')
                                     <div class="sm-error-msg show">{{ $message }}</div>
@@ -303,25 +409,30 @@
                             {{-- ★ NEW: Payment Method --}}
                             <div class="sm-form-group">
                                 <label class="sm-form-label" for="depositPaymentMethod">Payment Method</label>
-                                <select class=" sm-form-select" name="payment_method" id="depositPaymentMethod" required>
+                                <select class=" sm-form-select" name="payment_method" id="depositPaymentMethod"
+                                    required>
                                     <option value="" disabled selected>Select payment method...</option>
-                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
-                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash</option>
+                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash
+                                    </option>
+                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash
+                                    </option>
                                 </select>
                             </div>
 
                             {{-- ★ NEW: GCash Box — hidden until GCash is selected --}}
-                            <div id="deposit-gcash-box"
-                                style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
+                            <div id="deposit-gcash-box" style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
                                        padding:0.75rem 1rem; align-items:center; justify-content:space-between;
                                        gap:10px; margin: 1rem 0;">
                                 <div style="display:flex; align-items:center; gap:10px;">
-                                    <div style="width:32px; height:32px; background:#007DFF; border-radius:8px;
+                                    <div
+                                        style="width:32px; height:32px; background:#007DFF; border-radius:8px;
                                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                        <i class="fa-solid fa-mobile-screen-button" style="color:#fff; font-size:14px;"></i>
+                                        <i class="fa-solid fa-mobile-screen-button"
+                                            style="color:#fff; font-size:14px;"></i>
                                     </div>
                                     <div>
-                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via GCash</p>
+                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via
+                                            GCash</p>
                                         <p style="margin:0; font-size:11px; color:#5a8ac4;">Fast & secure payment</p>
                                     </div>
                                 </div>
@@ -356,9 +467,10 @@
 
 
         {{-- ============================================================
-             WITHDRAW MODAL
+        WITHDRAW MODAL
         ============================================================ --}}
-        <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel" aria-hidden="true">
+        <div class="modal fade" id="withdrawModal" tabindex="-1" aria-labelledby="withdrawModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content sm-modal-content">
 
@@ -391,16 +503,21 @@
                                 <label class="sm-form-label" for="withdrawAmount">Amount to Withdraw</label>
                                 <div class="sm-amount-wrap">
                                     <span class="sm-amount-prefix">₱</span>
-                                    <input class="sm-form-input @error('amount') sm-input-error @enderror"
-                                        type="number" id="withdrawAmount" name="amount" placeholder="0.00" min="1"
-                                        step="0.01" value="{{ old('amount') }}" />
+                                    <input class="sm-form-input @error('amount') sm-input-error @enderror" type="number"
+                                        id="withdrawAmount" name="amount" placeholder="0.00" min="1" step="0.01"
+                                        value="{{ old('amount') }}" />
                                 </div>
                                 <div class="sm-quick-amounts">
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 500)">₱500</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 1000)">₱1,000</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 1500)">₱1,500</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', 2000)">₱2,000</button>
-                                    <button type="button" class="sm-quick-btn" onclick="setSavingsAmount('withdrawAmount', {{ $savingsAccount->balance }})">All</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('withdrawAmount', 500)">₱500</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('withdrawAmount', 1000)">₱1,000</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('withdrawAmount', 1500)">₱1,500</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('withdrawAmount', 2000)">₱2,000</button>
+                                    <button type="button" class="sm-quick-btn"
+                                        onclick="setSavingsAmount('withdrawAmount', {{ $savingsAccount->balance }})">All</button>
                                 </div>
                                 @error('amount')
                                     <div class="sm-error-msg show">{{ $message }}</div>
@@ -410,25 +527,30 @@
                             {{-- ★ NEW: Payment Method --}}
                             <div class="sm-form-group">
                                 <label class="sm-form-label" for="withdrawPaymentMethod">Payment Method</label>
-                                <select class="sm-form-select" name="payment_method" id="withdrawPaymentMethod" required>
+                                <select class="sm-form-select" name="payment_method" id="withdrawPaymentMethod"
+                                    required>
                                     <option value="" disabled selected>Select payment method...</option>
-                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
-                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash</option>
+                                    <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash
+                                    </option>
+                                    <option value="gcash" {{ old('payment_method') === 'gcash' ? 'selected' : '' }}>GCash
+                                    </option>
                                 </select>
                             </div>
 
                             {{-- ★ NEW: GCash Box — hidden until GCash is selected --}}
-                            <div id="withdraw-gcash-box"
-                                style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
+                            <div id="withdraw-gcash-box" style="display:none; background:#f0f7ff; border:1.5px solid #c2deff; border-radius:12px;
                                        padding:0.75rem 1rem; align-items:center; justify-content:space-between;
                                        gap:10px; margin: 1rem 0;">
                                 <div style="display:flex; align-items:center; gap:10px;">
-                                    <div style="width:32px; height:32px; background:#007DFF; border-radius:8px;
+                                    <div
+                                        style="width:32px; height:32px; background:#007DFF; border-radius:8px;
                                                 display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                        <i class="fa-solid fa-mobile-screen-button" style="color:#fff; font-size:14px;"></i>
+                                        <i class="fa-solid fa-mobile-screen-button"
+                                            style="color:#fff; font-size:14px;"></i>
                                     </div>
                                     <div>
-                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via GCash</p>
+                                        <p style="margin:0; font-size:13px; font-weight:700; color:#0056b3;">Pay via
+                                            GCash</p>
                                         <p style="margin:0; font-size:11px; color:#5a8ac4;">Fast & secure payment</p>
                                     </div>
                                 </div>
@@ -463,7 +585,7 @@
 
 
         {{-- ============================================================
-             SUCCESS MODAL — Deposit
+        SUCCESS MODAL — Deposit
         ============================================================ --}}
         <div class="modal fade" id="depositSuccessModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -478,7 +600,8 @@
 
                         <p class="sm-success-msg">
                             Your deposit of
-                            <strong>₱ {{ session('deposit_amount') ? number_format(session('deposit_amount'), 2) : '0.00' }}</strong>
+                            <strong>₱
+                                {{ session('deposit_amount') ? number_format(session('deposit_amount'), 2) : '0.00' }}</strong>
                             has been added to your savings account.
                         </p>
 
@@ -501,8 +624,7 @@
 
                         {{-- Download Receipt --}}
                         @if (session('deposit_reference'))
-                            <a href="{{ route('savings.receipt', session('deposit_reference')) }}"
-                               class="sm-btn-download">
+                            <a href="{{ route('savings.receipt', session('deposit_reference')) }}" class="sm-btn-download">
                                 <i class="fa-solid fa-file-arrow-down"></i> Download Receipt
                             </a>
                         @endif
@@ -519,7 +641,7 @@
 
 
         {{-- ============================================================
-             SUCCESS MODAL — Withdraw
+        SUCCESS MODAL — Withdraw
         ============================================================ --}}
         <div class="modal fade" id="withdrawSuccessModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -534,7 +656,8 @@
 
                         <p class="sm-success-msg">
                             Your withdrawal of
-                            <strong>₱ {{ session('withdraw_amount') ? number_format(session('withdraw_amount'), 2) : '0.00' }}</strong>
+                            <strong>₱
+                                {{ session('withdraw_amount') ? number_format(session('withdraw_amount'), 2) : '0.00' }}</strong>
                             has been deducted from your savings account.
                         </p>
 
@@ -557,8 +680,7 @@
 
                         {{-- Download Receipt --}}
                         @if (session('withdraw_reference'))
-                            <a href="{{ route('savings.receipt', session('withdraw_reference')) }}"
-                               class="sm-btn-download">
+                            <a href="{{ route('savings.receipt', session('withdraw_reference')) }}" class="sm-btn-download">
                                 <i class="fa-solid fa-file-arrow-down"></i> Download Receipt
                             </a>
                         @endif
@@ -575,24 +697,29 @@
 
 
         {{-- Hidden trigger buttons --}}
-        <button id="triggerDepositSuccess"  data-bs-toggle="modal" data-bs-target="#depositSuccessModal"  style="display:none;"></button>
-        <button id="triggerWithdrawSuccess" data-bs-toggle="modal" data-bs-target="#withdrawSuccessModal" style="display:none;"></button>
-        <button id="triggerDepositModal"    data-bs-toggle="modal" data-bs-target="#depositModal"         style="display:none;"></button>
-        <button id="triggerWithdrawModal"   data-bs-toggle="modal" data-bs-target="#withdrawModal"        style="display:none;"></button>
+        <button id="triggerDepositSuccess" data-bs-toggle="modal" data-bs-target="#depositSuccessModal"
+            style="display:none;"></button>
+        <button id="triggerWithdrawSuccess" data-bs-toggle="modal" data-bs-target="#withdrawSuccessModal"
+            style="display:none;"></button>
+        <button id="triggerDepositModal" data-bs-toggle="modal" data-bs-target="#depositModal"
+            style="display:none;"></button>
+        <button id="triggerWithdrawModal" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+            style="display:none;"></button>
 
         {{-- ★ NEW: GCash hidden redirect forms --}}
         <form id="savings-deposit-gcash-form" action="{{ route('savings.gcash') }}" method="POST" style="display:none;">
             @csrf
             <input type="hidden" name="transaction_type" value="deposit">
             <input type="hidden" name="amount" id="savings-deposit-gcash-amount">
-            <input type="hidden" name="note"   id="savings-deposit-gcash-note">
+            <input type="hidden" name="note" id="savings-deposit-gcash-note">
         </form>
 
-        <form id="savings-withdraw-gcash-form" action="{{ route('savings.gcash') }}" method="POST" style="display:none;">
+        <form id="savings-withdraw-gcash-form" action="{{ route('savings.gcash') }}" method="POST"
+            style="display:none;">
             @csrf
             <input type="hidden" name="transaction_type" value="withdraw">
             <input type="hidden" name="amount" id="savings-withdraw-gcash-amount">
-            <input type="hidden" name="note"   id="savings-withdraw-gcash-note">
+            <input type="hidden" name="note" id="savings-withdraw-gcash-note">
         </form>
 
     </div>{{-- end container-fluid --}}
@@ -620,26 +747,26 @@
 
         /* ─── ★ NEW: Payment method toggle — Deposit ───────────────── */
         document.getElementById('depositPaymentMethod')?.addEventListener('change', function () {
-            const gcashBox   = document.getElementById('deposit-gcash-box');
+            const gcashBox = document.getElementById('deposit-gcash-box');
             const confirmBtn = document.getElementById('deposit-confirm-btn-wrap');
             if (this.value === 'gcash') {
-                gcashBox.style.display   = 'flex';
+                gcashBox.style.display = 'flex';
                 confirmBtn.style.display = 'none';
             } else {
-                gcashBox.style.display   = 'none';
+                gcashBox.style.display = 'none';
                 confirmBtn.style.display = 'block';
             }
         });
 
         /* ─── ★ NEW: Payment method toggle — Withdraw ──────────────── */
         document.getElementById('withdrawPaymentMethod')?.addEventListener('change', function () {
-            const gcashBox   = document.getElementById('withdraw-gcash-box');
+            const gcashBox = document.getElementById('withdraw-gcash-box');
             const confirmBtn = document.getElementById('withdraw-confirm-btn-wrap');
             if (this.value === 'gcash') {
-                gcashBox.style.display   = 'flex';
+                gcashBox.style.display = 'flex';
                 confirmBtn.style.display = 'none';
             } else {
-                gcashBox.style.display   = 'none';
+                gcashBox.style.display = 'none';
                 confirmBtn.style.display = 'block';
             }
         });
@@ -647,21 +774,21 @@
         /* ─── ★ NEW: Reset modal state when opened ─────────────────── */
         document.getElementById('depositModal')?.addEventListener('show.bs.modal', function () {
             document.getElementById('depositPaymentMethod').value = '';
-            document.getElementById('deposit-gcash-box').style.display   = 'none';
+            document.getElementById('deposit-gcash-box').style.display = 'none';
             document.getElementById('deposit-confirm-btn-wrap').style.display = 'block';
         });
 
         document.getElementById('withdrawModal')?.addEventListener('show.bs.modal', function () {
             document.getElementById('withdrawPaymentMethod').value = '';
-            document.getElementById('withdraw-gcash-box').style.display   = 'none';
+            document.getElementById('withdraw-gcash-box').style.display = 'none';
             document.getElementById('withdraw-confirm-btn-wrap').style.display = 'block';
         });
 
         /* ─── ★ NEW: GCash Pay Now handler ─────────────────────────── */
         function submitSavingsGcash(type) {
             const amountInput = document.getElementById(type === 'deposit' ? 'depositAmount' : 'withdrawAmount');
-            const noteInput   = document.getElementById(type === 'deposit' ? 'depositNote'  : 'withdrawNote');
-            const amount      = amountInput.value;
+            const noteInput = document.getElementById(type === 'deposit' ? 'depositNote' : 'withdrawNote');
+            const amount = amountInput.value;
 
             if (!amount || parseFloat(amount) < 1) {
                 alert('Please enter a valid amount first.');
@@ -669,7 +796,7 @@
             }
 
             document.getElementById(`savings-${type}-gcash-amount`).value = amount;
-            document.getElementById(`savings-${type}-gcash-note`).value   = noteInput.value;
+            document.getElementById(`savings-${type}-gcash-note`).value = noteInput.value;
             document.getElementById(`savings-${type}-gcash-form`).submit();
         }
 

@@ -18,7 +18,13 @@ class Users_tbl extends Authenticatable
         "role",
     ];
 
-    public function getAllUser(){
+    public function otherinfo()
+    {
+        return $this->hasOne(\App\Models\otherinfo_tbl::class, 'user_id', 'id');
+    }
+
+    public function getAllUser()
+    {
         return $this->all();
     }
 

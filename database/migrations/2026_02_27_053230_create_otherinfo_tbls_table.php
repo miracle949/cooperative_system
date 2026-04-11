@@ -30,8 +30,10 @@ return new class extends Migration {
             $table->string("skills")->nullable();
             $table->longText("profile_picture")->nullable();
             $table->longText("signature");
-            $table->enum("status", ["Pending", "Approved", "Declined"])
+            $table->enum("approval_status", ["Pending", "Approved", "Declined"])
                 ->default("Pending");
+            $table->enum("membership_status", ["Unofficial", "Active", "Not Active"])
+                ->default("Unofficial");
             $table->timestamps();
         });
     }

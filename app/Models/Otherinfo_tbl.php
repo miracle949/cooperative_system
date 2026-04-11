@@ -25,6 +25,7 @@ class Otherinfo_tbl extends Model
         "skills",
         "profile_picture",
         "signature",
-        "status",
+        "approval_status",
+        "membership_status",
     ];
 }

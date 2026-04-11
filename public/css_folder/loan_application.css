@@ -19,9 +19,9 @@
 
 .container-fluid main {
     padding: 48px;
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; */
     /* display: flex; */
     /* justify-content: space-between; */
     /* gap: 2rem; */
@@ -168,7 +168,7 @@
     gap: 1.5rem;
 }
 
-.container-fluid .modal .modal-body .lending-parent-box{
+.container-fluid .modal .modal-body .lending-parent-box {
     display: flex;
     height: 40vh;
     flex-direction: column;
@@ -420,6 +420,13 @@
     background-color: #1E4035;
     font-size: 14.5px;
     color: #ffffff;
+    font-weight: 600;
+}
+
+.container-fluid form .form-parent button:hover {
+    background-color: var(--green2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
 
 .container-fluid form .form-parent button:active {
@@ -544,6 +551,278 @@
 
 .sm-btn:hover {
     background: #2A5C4E;
+}
+
+/* ── Upload Cards ─────────────────────────────────────── */
+
+.docs-heading {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin-top: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.upload-card {
+    position: relative;
+    background: #f8f9fa;
+    border: 1.5px dashed #ced4da;
+    border-radius: 12px;
+    padding: 1.4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    text-align: center;
+}
+
+.upload-card:hover {
+    border-color: #1E4035;
+    background: #ffffff;
+}
+
+.upload-card.has-file {
+    border-style: solid;
+    border-color: #1E4035;
+    background: #ffffff;
+}
+
+/* Hidden native file input stretched over entire card */
+.upload-card input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* ── Icon circle ─────────────────────────────────────── */
+
+.upload-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(30, 64, 53, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.upload-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: #1E4035;
+    fill: none;
+    stroke-width: 1.8;
+}
+
+/* Arrow shown by default, hidden after file picked */
+.upload-arrow {
+    display: block;
+}
+
+.upload-check {
+    display: none;
+}
+
+.upload-card.has-file .upload-arrow {
+    display: none;
+}
+
+.upload-card.has-file .upload-check {
+    display: block;
+    stroke: #1E4035;
+}
+
+/* ── Text ────────────────────────────────────────────── */
+
+.upload-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.upload-sub {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+.upload-card.has-file .upload-sub {
+    display: none;
+}
+
+/* ── Badges ──────────────────────────────────────────── */
+
+.upload-badge {
+    font-size: 10px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-weight: 500;
+}
+
+.badge-required {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-optional {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+/* ── Filename shown after pick ───────────────────────── */
+
+.upload-filename {
+    display: none;
+    font-size: 11px;
+    font-weight: 500;
+    color: #1E4035;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-card.has-file .upload-filename {
+    display: block;
+}
+
+/* ── Share Capital Alert ── */
+
+.sc-parent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sc-requirement-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    width: 1130px;
+    /* background: #fef2f2; */
+    background: #fff8e1;
+    /* border: 1.5px solid #fca5a5; */
+    border: 1.5px solid #ffe082;
+    border-radius: 14px;
+    margin-bottom: 1.5rem;
+}
+
+.sc-requirement-alert .alert-icon-wrap {
+    width: 40px;
+    height: 40px;
+    /* background: #fee2e2; */
+    /* background: #fff8e1; */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sc-requirement-alert .alert-icon-wrap i {
+    /* color: #dc2626; */
+    color: #856404;
+    font-size: 16px;
+}
+
+.sc-requirement-alert .alert-body h5 {
+    font-size: 15px;
+    font-weight: 700;
+    /* color: #991b1b; */
+    color: #856404;
+    margin: 0 0 6px;
+}
+
+.sc-requirement-alert .alert-body p {
+    font-size: 13.5px;
+    /* color: #7f1d1d; */
+    color: #856404;
+    /* margin: 0 0 12px; */
+    margin: 0;
+    line-height: 1.65;
+}
+
+.sc-requirement-alert .alert-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.sc-requirement-alert .alert-progress-track {
+    flex: 1;
+    height: 7px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.sc-requirement-alert .alert-progress-fill {
+    height: 100%;
+    background: #f87171;
+    border-radius: 99px;
+}
+
+.sc-requirement-alert .alert-progress-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #dc2626;
+    white-space: nowrap;
+}
+
+.sc-requirement-alert .alert-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: #1a3c34;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.sc-requirement-alert .alert-link:hover {
+    opacity: 0.85;
+    color: #fff;
+}
+
+/* ── Form disabled state ── */
+.form-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    user-select: none;
+    position: relative;
+}
+
+.form-disabled::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    cursor: not-allowed;
+    z-index: 10;
+}
+
+.form-disabled button[type="submit"],
+.form-disabled .btn {
+    background-color: #9ca3af !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
 }
 
 @keyframes fadeIn {
