@@ -591,7 +591,11 @@ public function dashboard_admin()
         
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
         
-        return view("admin_components.lending", compact('loans', 'statusFilter'));
+        $allMembers = Users_tbl::where('role', 'member')
+            ->orderBy('first_name')
+            ->get();
+        
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers'));
     }
 
     public function approveLoan(Request $request, $id)
@@ -946,5 +950,64 @@ public function dashboard_admin()
             'shareCapitalCount',
             'lendingCount'
         ));
+    }
+
+    public function createLoanAdmin(Request $request)
+    {
+        try {
+            $request->validate([
+                "member_id" => "required|exists:users_tbls,id",
+                "lending_type" => "required|string",
+                "lending_amount" => "required|numeric|min:1",
+                "lending_type_term" => "required|string",
+                "monthly_income" => "required|numeric|min:1",
+                "monthly_payment" => "required|numeric",
+                "total_payment" => "required|numeric",
+                "total_interest" => "required|numeric",
+                "purpose_loan" => "required|string",
+                "valid_id" => "nullable|file|mimes:jpg,jpeg,png,pdf|max:2048",
+                "proof_of_income" => "nullable|file|mimes:jpg,jpeg,png,pdf|max:2048",
+            ]);
+
+            // Store files and get their paths
+            $validIdPath = null;
+            $proofOfIncomePath = null;
+
+            if ($request->hasFile('valid_id')) {
+                $validIdPath = $request->file('valid_id')->store('documents/valid_id', 'public');
+            }
+
+            if ($request->hasFile('proof_of_income')) {
+                $proofOfIncomePath = $request->file('proof_of_income')->store('documents/proof_of_income', 'public');
+            }
+
+            // Generate reference number
+            $referenceNo = 'LN-' . date('YmdHis') . rand(10, 99);
+
+            // Create loan as Pending first
+            $loan = lending_program_tbl::create([
+                "user_id" => $request->member_id,
+                "reference_no" => $referenceNo,
+                "lending_type" => $request->lending_type,
+                "lending_amount" => $request->lending_amount,
+                "lending_type_term" => $request->lending_type_term,
+                "monthly_income" => $request->monthly_income,
+                "monthly_payment" => $request->monthly_payment,
+                "total_payment" => $request->total_payment,
+                "total_interest" => $request->total_interest,
+                "purpose_loan" => $request->purpose_loan,
+                "valid_id" => $validIdPath,
+                "proof_of_income" => $proofOfIncomePath,
+                "status" => "Pending",
+            ]);
+
+            // Immediately approve the loan
+            $loan->status = 'Approved';
+            $loan->save();
+
+            return redirect()->route('lendings')->with('success', 'Loan created and approved successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error creating loan: ' . $e->getMessage())->withInput();
+        }
     }
 }

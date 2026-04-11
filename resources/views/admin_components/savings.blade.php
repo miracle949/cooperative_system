@@ -29,7 +29,7 @@
         <div class="flex items-center gap-3">
             <button onclick="openModal('addContributionModal')" class="btn btn-primary">
                 <i data-lucide="plus" class="w-4 h-4"></i>
-                Add Contribution
+                Manage Savings
             </button>
         </div>
     </div>
@@ -199,17 +199,114 @@
         </div>
     </div>
 
-    <!-- Add Contribution Modal -->
+    <!-- Manage Savings Modal -->
     <div id="addContributionModal" class="modal-overlay hidden">
-        <div class="modal max-w-lg">
-            <div class="p-6 border-b border-gray-100">
+        <div class="modal max-w-lg" style="border-radius: 16px; overflow: hidden;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-900">Add Contribution</h2>
-                    <button onclick="closeModal('addContributionModal')" class="p-1 hover:bg-gray-100 rounded-lg">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="piggy-bank" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold" style="color: #fff; margin: 0;">Manage Savings</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Add or withdraw funds</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('addContributionModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
                     </button>
                 </div>
             </div>
+
+            <div style="padding: 1.25rem;">
+                <form class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
+                        <select class="select" style="width: 100%;">
+                            <option>Select member</option>
+                            @foreach($allMembers as $member)
+                            <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Balance Pill -->
+                    <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1a4a3a;">
+                        <span style="font-size: 13px; color: #666;">Current Balance</span>
+                        <span style="font-size: 14px; font-weight: 700; color: #1a4a3a;">₱0.00</span>
+                    </div>
+
+                    <!-- Amount -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                            <input type="number" class="input pl-8" placeholder="0.00" style="width: 100%;">
+                        </div>
+                        <!-- Quick Amounts -->
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                            <button type="button" onclick="this.parentElement.previousElementSibling.querySelector('input').value = 500" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱500</button>
+                            <button type="button" onclick="this.parentElement.previousElementSibling.querySelector('input').value = 1000" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱1,000</button>
+                            <button type="button" onclick="this.parentElement.previousElementSibling.querySelector('input').value = 2000" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱2,000</button>
+                            <button type="button" onclick="this.parentElement.previousElementSibling.querySelector('input').value = 5000" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱5,000</button>
+                        </div>
+                    </div>
+
+                    <!-- Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select class="select" style="width: 100%;">
+                            <option value="">Select type...</option>
+                            <option>Deposit</option>
+                            <option>Withdrawal</option>
+                        </select>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                        <select class="select" style="width: 100%;">
+                            <option value="">Select payment method...</option>
+                            <option>Cash</option>
+                            <option>Bank Transfer</option>
+                            <option>GCash</option>
+                            <option>Check</option>
+                        </select>
+                    </div>
+
+                    <!-- Notes -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #999;">(optional)</span></label>
+                        <textarea class="input" rows="2" placeholder="Add any notes..." style="width: 100%;"></textarea>
+                    </div>
+                </form>
+
+                <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
+                    <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
+                        style="width: 100%; padding: 0.7rem; background: #1a4a3a; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
+                    </button>
+                    <button onclick="closeModal('addContributionModal')" 
+                        style="width: 100%; padding: 0.65rem; background: #fff; color: #666; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+                        <div>
+                            <h2 class="text-lg font-semibold" style="color: #fff;">Manage Savings</h2>
+                            <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Add or withdraw funds</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('addContributionModal')" class="p-1 hover:bg-white/10 rounded-lg">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
+                    </button>
+                </div>
+            </div>
+
             <form class="p-6 space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
@@ -218,45 +315,69 @@
                         @foreach($allMembers as $member)
                         <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
                         @endforeach
-                    </select>
                 </div>
+
+                <!-- Balance Pill -->
+                <div style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #888;">Current Balance</span>
+                    <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">₱0.00</span>
+                </div>
+
+                <!-- Amount -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
                         <input type="number" class="input pl-8" placeholder="0.00">
                     </div>
+                    <!-- Quick Amounts -->
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                        <button type="button" onclick="this.previousElementSibling.value = 500" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">₱500</button>
+                        <button type="button" onclick="this.previousElementSibling.previousElementSibling.value = 1000" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">₱1,000</button>
+                        <button type="button" onclick="this.previousElementSibling.previousElementSibling.previousElementSibling.value = 1500" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">₱1,500</button>
+                        <button type="button" onclick="this.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.value = 2000" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">₱2,000</button>
+                        <button type="button" onclick="this.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.value = 5000" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">₱5,000</button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" class="input">
-                </div>
+
+                <!-- Type -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
                     <select class="select">
+                        <option>Select type...</option>
                         <option>Deposit</option>
                         <option>Withdrawal</option>
                     </select>
                 </div>
+
+                <!-- Payment Method -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
                     <select class="select">
+                        <option>Select payment method...</option>
                         <option>Cash</option>
                         <option>Bank Transfer</option>
                         <option>GCash</option>
                         <option>Check</option>
                     </select>
                 </div>
+
+                <!-- Notes -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                    <textarea class="input" rows="3" placeholder="Add any notes..."></textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #bbb;">(optional)</span></label>
+                    <textarea class="input" rows="2" placeholder="Add any notes..."></textarea>
                 </div>
             </form>
-            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
-                <button onclick="closeModal('addContributionModal')" class="btn btn-outline">Cancel</button>
-                <button
-                    onclick="closeModal('addContributionModal'); showToast('Success', 'Contribution added successfully')"
-                    class="btn btn-primary">Save</button>
+
+            <div class="p-6 border-t border-gray-100 flex flex-col gap-2">
+                <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
+                    style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
+                </button>
+                <button onclick="closeModal('addContributionModal')" 
+                    style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
@@ -438,5 +559,12 @@
         function showMonthDetail(monthName, amount) {
             showToast(monthName + ' ' + new Date().getFullYear(), 'Total Savings: ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2}), 'info');
         }
+
+        // Initialize icons when modal opens
+        document.getElementById('addContributionModal')?.addEventListener('transitionend', function() {
+            if (!this.classList.contains('hidden') && typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
     </script>
 @endsection

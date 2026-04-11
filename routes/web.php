@@ -143,6 +143,7 @@ Route::post("/savings/unarchive/{id}", [UserController::class, "unarchiveSavings
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
 Route::post("/loan/approve/{id}", [UserController::class, "approveLoan"])->name("loan.approve");
 Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name("loan.decline");
+Route::post("/loan/create-admin", [UserController::class, "createLoanAdmin"])->name("loan.create-admin");
 Route::post("/loan/archive/{id}", [UserController::class, "archiveLoan"])->name("loan.archive");
 Route::post("/loan/unarchive/{id}", [UserController::class, "unarchiveLoan"])->name("loan.unarchive");
 Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
