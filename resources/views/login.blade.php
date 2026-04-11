@@ -85,7 +85,7 @@
         <div class="form-box-parent">
             <div class="form-parent">
                 <div class="logo tw:flex tw:justify-center tw:items-center">
-                    <a href="{{ route("Landingpage") }}"><img src="images/logo2.png" alt=""></a>
+                    <a href="{{ route("index") }}"><img src="images/logo2.png" alt=""></a>
                 </div>
 
                 <h2 class="fw-semibold mt-4 text-center">Login your account</h2>

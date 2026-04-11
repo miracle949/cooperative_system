@@ -75,6 +75,7 @@
         "rollup": "^4.54.0",
         "rxjs": "^7.8.2",
         "shell-quote": "^1.8.3",
+        "signature_pad": "^4.0.0",
         "source-map-js": "^1.2.1",
         "string-width": "^4.2.3",
         "strip-ansi": "^6.0.1",

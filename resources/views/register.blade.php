@@ -290,7 +290,9 @@
     <script src="js_folder/card_form.js"></script>
     <script src="js_folder/picture_display.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script> --}}
+
+    <script src="js_folder/signature_pad.umd.min.js"></script>
 
     <script>
         window.addEventListener('load', function () {
@@ -315,6 +317,7 @@
             signaturePad.clear();
         });
     </script>
+
 
     <script>
         const dobInput = document.getElementById('date_birth');

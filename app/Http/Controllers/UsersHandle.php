@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\educational_tbl;
 use App\Models\Membergovern_ids_tbl;
 use App\Models\Membervehi_tbl;
+use App\Models\savings_account_tbl;
+use App\Models\dividend_rates_tbl;
+use App\Models\lending_program_tbl;
+use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
 use App\Models\Spouse_tbl;
 use App\Models\Users_tbl;
@@ -208,31 +212,132 @@ class UsersHandle extends Controller
 
     public function MemberPortal()
     {
-        $username = Auth::check() ? Auth::user()->username : null;
-        $email = Auth::check() ? Auth::user()->email : null;
+        $user = Auth::user();
+        $member = $user->otherinfo;  // ← keep only this, delete the $member = null line
+        $username = $user->username ?? null;
+        $email = $user->email ?? null;
 
+        // dd([
+        //     'user_id' => $user->id,
+        //     'member' => $member,
+        //     'raw' => DB::table('otherinfo_tbls')->where('user_id', $user->id)->first(),
+        // ]);
 
-        return view(
-            "members_components.member_portal",
-            [
-                "username" => $username,
-                "email" => $email
-            ]
-        );
+        $firstName = $user->first_name ?? '';
+        $middleName = $user->middle_name ?? '';
+        $lastName = $user->last_name ?? '';
+
+        // ── Savings ──────────────────────────────────────────────────────────────
+        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->first();
+
+        if (!$savingsAccount) {
+            $savingsAccount = savings_account_tbl::create([
+                'user_id' => $user->id,
+                'balance' => 0.00,
+                'status' => 'active',
+                'opened_at' => Carbon::today(),
+            ]);
+        }
+
+        // ── Share Capital ─────────────────────────────────────────────────────────
+        $shareCapitalAccount = DB::table('share_capital_account_tbls')
+            ->where('user_id', $user->id)
+            ->first();
+
+        $shareCapitalBalance = $shareCapitalAccount->total_amount ?? 0;
+        $shareCapitalShares = $shareCapitalAccount->total_shares ?? 0;
+
+        // Dividend rate
+        $dividendRateRecord = null;
+        try {
+            if (DB::getSchemaBuilder()->hasTable('dividend_rates_tbls')) {
+                $dividendRateRecord = DB::table('dividend_rates_tbls')
+                    ->orderByDesc('effective_year')
+                    ->orderByDesc('created_at')
+                    ->first();
+            }
+        } catch (\Throwable) {
+        }
+        $dividendRate = $dividendRateRecord->rate ?? 8.5;
+
+        // Next dividend date
+        $today = Carbon::today();
+        $jun15ThisYear = Carbon::create($today->year, 6, 15);
+        $dec15ThisYear = Carbon::create($today->year, 12, 15);
+        $jun15NextYear = Carbon::create($today->year + 1, 6, 15);
+
+        if ($today->lte($jun15ThisYear)) {
+            $nextDividendDate = $jun15ThisYear;
+        } elseif ($today->lte($dec15ThisYear)) {
+            $nextDividendDate = $dec15ThisYear;
+        } else {
+            $nextDividendDate = $jun15NextYear;
+        }
+
+        // ── Loans ─────────────────────────────────────────────────────────────────
+        $loans = lending_program_tbl::where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $activeLoansCount = $loans->where('status', 'Approved')->count();
+
+        return view('members_components.member_portal', [
+            'username' => $username,
+            'email' => $email,
+            'firstName' => $firstName,
+            'middleName' => $middleName,
+            'lastName' => $lastName,
+            'member' => $member,
+
+            // Savings
+            'savingsAccount' => $savingsAccount,
+
+            // Share Capital
+            'shareCapitalBalance' => $shareCapitalBalance,
+            'shareCapitalShares' => $shareCapitalShares,
+            'dividendRate' => $dividendRate,
+            'nextDividendDate' => $nextDividendDate,
+
+            // Loans
+            'loans' => $loans,
+            'activeLoansCount' => $activeLoansCount,
+        ]);
     }
+
+    // public function LoanApplication()
+    // {
+
+    //     $username = Auth::check() ? Auth::user()->username : null;
+    //     $email = Auth::check() ? Auth::user()->email : null;
+
+    //     return view(
+    //         "members_components.loan_application",
+    //         [
+    //             "username" => $username,
+    //             "email" => $email
+    //         ]
+    //     );
+    // }
 
     public function LoanApplication()
     {
-
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
+        
+        $account = DB::table('share_capital_account_tbls')
+            ->where('user_id', auth()->id())
+            ->first();
+
+        $currentShares = $account->total_shares ?? 0;
+        $canApplyLoan = $currentShares >= 25;
 
         return view(
-            "members_components.loan_application",
+            'members_components.loan_application',
             [
                 "username" => $username,
                 "email" => $email
-            ]
+            ],
+            compact('currentShares', 'canApplyLoan')
         );
     }
 
@@ -346,15 +451,7 @@ class UsersHandle extends Controller
                 ->where('user_id', auth()->id())
                 ->first();
 
-            if (!$otherInfo || $otherInfo->status === 'Pending') {
-                auth()->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-
-                return redirect()->back()
-                    ->withErrors(['login' => 'Your account is still pending approval.'])
-                    ->withInput($request->only('login'));
-            } else if (!$otherInfo || $otherInfo->status === 'Declined') {
+            if (!$otherInfo || $otherInfo->approval_status === 'Declined') {
                 auth()->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -375,6 +472,41 @@ class UsersHandle extends Controller
                 ->withErrors(['login' => 'Incorrect password. Please try again.'])
                 ->withInput($request->only('login'));
         }
+
+        // if (auth()->attempt($credentials)) {
+        //     $otherInfo = DB::table('otherinfo_tbls')
+        //         ->where('user_id', auth()->id())
+        //         ->first();
+
+        //     if (!$otherInfo || $otherInfo->status === 'Pending') {
+        //         auth()->logout();
+        //         $request->session()->invalidate();
+        //         $request->session()->regenerateToken();
+
+        //         return redirect()->back()
+        //             ->withErrors(['login' => 'Your account is still pending approval.'])
+        //             ->withInput($request->only('login'));
+        //     } else if (!$otherInfo || $otherInfo->status === 'Declined') {
+        //         auth()->logout();
+        //         $request->session()->invalidate();
+        //         $request->session()->regenerateToken();
+
+        //         return redirect()->back()
+        //             ->withErrors(['login' => 'Your membership application is declined.'])
+        //             ->withInput($request->only('login'));
+        //     } else {
+
+        //         $request->session()->regenerate();
+        //         return redirect()->route('UserHandle');
+
+        //     }
+
+
+        // } else {
+        //     return redirect()->back()
+        //         ->withErrors(['login' => 'Incorrect password. Please try again.'])
+        //         ->withInput($request->only('login'));
+        // }
     }
 
     public function registration(Request $request)
@@ -479,7 +611,8 @@ class UsersHandle extends Controller
                 "skills" => $request->skills,
                 "signature" => $request->signature,
                 "profile_picture" => $profilePicturePath,
-                "status" => "Pending",
+                "approval_status" => "Pending",
+                "membership_status" => "Unofficial",
             ]);
 
             // Vehicles

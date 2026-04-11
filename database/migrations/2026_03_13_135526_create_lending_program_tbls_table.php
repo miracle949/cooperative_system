@@ -23,9 +23,28 @@ return new class extends Migration {
             $table->decimal("monthly_payment", 10, 2)->nullable();
             $table->decimal("total_payment", 10, 2)->nullable();
             $table->decimal("total_interest", 10, 2)->nullable();
-            $table->longText("valid_id")->nullable();
-            $table->longText("proof_of_income")->nullable();
             $table->text("purpose_loan")->nullable();
+
+            // Shared documents
+            $table->string("valid_id")->nullable();
+            $table->string("proof_of_income")->nullable();
+
+            // Emergency Lending
+            $table->string("proof_of_emergency")->nullable();
+
+            // Business Lending
+            $table->string("business_permit")->nullable();
+            $table->string("financial_statement")->nullable();
+
+            // Car Lending
+            $table->string("vehicle_quotation")->nullable();
+            $table->string("drivers_license")->nullable();
+
+            // Education Lending
+            $table->string("school_id")->nullable();
+            $table->string("cor")->nullable();
+            $table->string("cog")->nullable();
+
             $table->enum("status", ["Pending", "Approved", "Declined"])->default("Pending");
             $table->timestamps();
         });

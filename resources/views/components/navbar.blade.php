@@ -19,7 +19,7 @@
         <div class="nav-list">
             <ul class="tw:flex tw:gap-x-[4rem] m-0 p-0">
                 <li class="tw:list-none">
-                    <a href="{{ route("Landingpage") }}" class="tw:no-underline text-decoration-none">Home</a>
+                    <a href="{{ route("index") }}" class="tw:no-underline text-decoration-none">Home</a>
                 </li>
 
                 <li class="tw:list-none">

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string("payment_method")->nullable();
             $table->string("reference_no")->nullable();
             $table->text("note")->nullable();
-            $table->enum("status", ["Pending", "Approved", "Rejected"])->default("Pending");
+            $table->enum("status", ["Pending", "Completed" , "Approved", "Rejected"])->default("Pending");
             $table->date("transaction_date");
             $table->timestamps();
         });

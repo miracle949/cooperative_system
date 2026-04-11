@@ -68,18 +68,20 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'member';
+        $user->role = 'Member';
         $user->save();
 
         DB::table('otherinfo_tbls')
             ->where('user_id', $id)
-            ->update(['status' => 'Approved']);
+            ->update([
+                'membership_status' => 'Active',
+                'approval_status' => 'Approved',
+            ]);
 
         Mail::to($user->email)->send(new ApprovedMail($user));
 
         return redirect()->back()->with('success', 'Member approved and email sent!');
     }
-
     public function messageAboutShare($id)
     {
         $user = Users_tbl::findOrFail($id);
@@ -168,7 +170,7 @@ class UserController extends Controller
 
     public function UserDirection()
     {
-        return view("landingpage_components.landingpage");
+        return view("landingpage_components.index");
     }
 
     public function LoginPage()
@@ -176,9 +178,9 @@ class UserController extends Controller
         return view("login");
     }
 
-    public function Landingpage()
+    public function index()
     {
-        return view("landingpage_components.landingpage");
+        return view("landingpage_components.index");
     }
 
     public function RegisterPage()
@@ -242,155 +244,155 @@ class UserController extends Controller
     }
 
 
-public function dashboard_admin()
-{
-    // Stats Cards
-    $totalMembers = Users_tbl::where('role', 'member')->count();
-    $totalSavings = savings_account_tbl::sum('balance') ?? 0;
-    $activeLoans = lending_program_tbl::where('status', 'Approved')->sum('lending_amount') ?? 0;
-    $pendingRequests = Users_tbl::where('role', 'pending')->count();
+    public function dashboard_admin()
+    {
+        // Stats Cards
+        $totalMembers = Users_tbl::where('role', 'member')->count();
+        $totalSavings = savings_account_tbl::sum('balance') ?? 0;
+        $activeLoans = lending_program_tbl::where('status', 'Approved')->sum('lending_amount') ?? 0;
+        $pendingRequests = Users_tbl::where('role', 'pending')->count();
 
-    // User Roles
-    $adminCount = Users_tbl::where('role', 'admin')->count();
-    $memberCount = Users_tbl::where('role', 'member')->count();
-    $pendingCount = Users_tbl::where('role', 'pending')->count();
+        // User Roles
+        $adminCount = Users_tbl::where('role', 'admin')->count();
+        $memberCount = Users_tbl::where('role', 'member')->count();
+        $pendingCount = Users_tbl::where('role', 'pending')->count();
 
-    // Recent Activities - Combine savings, lending, and member registrations
-    $recentSavings = savings_transaction_tbl::with('savingsAccount.user')
-        ->orderBy('created_at', 'desc')
-        ->limit(5)
-        ->get()
-        ->map(function ($tx) {
-            return [
-                'type' => 'savings',
-                'title' => $tx->type === 'deposit' ? 'Savings Deposit' : 'Savings Withdrawal',
-                'description' => ($tx->savingsAccount->user->first_name ?? 'Unknown') . ' ' . 
-                                 ($tx->savingsAccount->user->last_name ?? '') . ' - ₱' . number_format($tx->amount, 2),
-                'status' => $tx->type === 'deposit' ? 'Completed' : 'Completed',
-                'time' => $tx->created_at->diffForHumans(),
-                'initials' => strtoupper(substr($tx->savingsAccount->user->first_name ?? 'U', 0, 1)),
-                'created_at' => $tx->created_at
-            ];
-        });
+        // Recent Activities - Combine savings, lending, and member registrations
+        $recentSavings = savings_transaction_tbl::with('savingsAccount.user')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($tx) {
+                return [
+                    'type' => 'savings',
+                    'title' => $tx->type === 'deposit' ? 'Savings Deposit' : 'Savings Withdrawal',
+                    'description' => ($tx->savingsAccount->user->first_name ?? 'Unknown') . ' ' .
+                        ($tx->savingsAccount->user->last_name ?? '') . ' - ₱' . number_format($tx->amount, 2),
+                    'status' => $tx->type === 'deposit' ? 'Completed' : 'Completed',
+                    'time' => $tx->created_at->diffForHumans(),
+                    'initials' => strtoupper(substr($tx->savingsAccount->user->first_name ?? 'U', 0, 1)),
+                    'created_at' => $tx->created_at
+                ];
+            });
 
-    $recentLoans = lending_program_tbl::with('user')
-        ->orderBy('created_at', 'desc')
-        ->limit(5)
-        ->get()
-        ->map(function ($loan) {
-            return [
-                'type' => 'loan',
-                'title' => $loan->status === 'Approved' ? 'Loan Approved' : ($loan->status === 'Declined' ? 'Loan Declined' : 'Loan Request'),
-                'description' => ($loan->user->first_name ?? 'Unknown') . ' ' . 
-                                 ($loan->user->last_name ?? '') . ' - ₱' . number_format($loan->lending_amount, 2),
-                'status' => $loan->status,
-                'time' => $loan->created_at->diffForHumans(),
-                'initials' => strtoupper(substr($loan->user->first_name ?? 'U', 0, 1)),
-                'created_at' => $loan->created_at
-            ];
-        });
+        $recentLoans = lending_program_tbl::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($loan) {
+                return [
+                    'type' => 'loan',
+                    'title' => $loan->status === 'Approved' ? 'Loan Approved' : ($loan->status === 'Declined' ? 'Loan Declined' : 'Loan Request'),
+                    'description' => ($loan->user->first_name ?? 'Unknown') . ' ' .
+                        ($loan->user->last_name ?? '') . ' - ₱' . number_format($loan->lending_amount, 2),
+                    'status' => $loan->status,
+                    'time' => $loan->created_at->diffForHumans(),
+                    'initials' => strtoupper(substr($loan->user->first_name ?? 'U', 0, 1)),
+                    'created_at' => $loan->created_at
+                ];
+            });
 
-    $recentMembers = Users_tbl::whereIn('role', ['member', 'pending'])
-        ->orderBy('created_at', 'desc')
-        ->limit(5)
-        ->get()
-        ->map(function ($user) {
-            return [
-                'type' => 'member',
-                'title' => $user->role === 'pending' ? 'New Member Registration' : 'Member Activated',
-                'description' => $user->first_name . ' ' . $user->last_name . ' joined as a new member',
-                'status' => $user->role === 'pending' ? 'Pending' : 'Active',
-                'time' => $user->created_at->diffForHumans(),
-                'initials' => strtoupper(substr($user->first_name, 0, 1)),
-                'created_at' => $user->created_at
-            ];
-        });
+        $recentMembers = Users_tbl::whereIn('role', ['member', 'pending'])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'type' => 'member',
+                    'title' => $user->role === 'pending' ? 'New Member Registration' : 'Member Activated',
+                    'description' => $user->first_name . ' ' . $user->last_name . ' joined as a new member',
+                    'status' => $user->role === 'pending' ? 'Pending' : 'Active',
+                    'time' => $user->created_at->diffForHumans(),
+                    'initials' => strtoupper(substr($user->first_name, 0, 1)),
+                    'created_at' => $user->created_at
+                ];
+            });
 
-    // Merge and sort all activities by date
-    $recentActivities = $recentSavings->concat($recentLoans)->concat($recentMembers)
-        ->sortByDesc('created_at')
-        ->take(10)
-        ->values();
+        // Merge and sort all activities by date
+        $recentActivities = $recentSavings->concat($recentLoans)->concat($recentMembers)
+            ->sortByDesc('created_at')
+            ->take(10)
+            ->values();
 
-    // Savings by Month (last 6 months)
-    $savingsByMonth = [];
-    for ($i = 5; $i >= 0; $i--) {
-        $month = now()->subMonths($i)->format('M');
-        $monthNum = now()->subMonths($i)->format('n');
-        $year = now()->subMonths($i)->format('Y');
-        
-        $total = savings_transaction_tbl::whereYear('created_at', $year)
-            ->whereMonth('created_at', $monthNum)
-            ->where('type', 'deposit')
-            ->sum('amount') ?? 0;
-        
-        $savingsByMonth[$month] = round($total / 1000, 1); // Convert to thousands
-    }
+        // Savings by Month (last 6 months)
+        $savingsByMonth = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i)->format('M');
+            $monthNum = now()->subMonths($i)->format('n');
+            $year = now()->subMonths($i)->format('Y');
 
-    // Member Activity (for pie chart)
-    $activeMembers = Users_tbl::where('role', 'member')->count();
-    $pendingMembers = Users_tbl::where('role', 'pending')->count();
-    $totalUsers = $activeMembers + $pendingMembers;
-    
-    $memberActivity = [
-        'active' => $totalUsers > 0 ? round(($activeMembers / $totalUsers) * 100) : 0,
-        'new' => $totalUsers > 0 ? round(($pendingMembers / $totalUsers) * 100) : 0,
-        'inactive' => 0
-    ];
+            $total = savings_transaction_tbl::whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->where('type', 'deposit')
+                ->sum('amount') ?? 0;
 
-    // Loans by Purpose (for loan distribution)
-    $loansByPurpose = lending_program_tbl::where('status', 'Approved')
-        ->select('purpose_loan', DB::raw('SUM(lending_amount) as total'))
-        ->groupBy('purpose_loan')
-        ->get()
-        ->mapWithKeys(function ($item) {
-            $purpose = $item->purpose_loan ?? 'Other';
-            return [$purpose => $item->total];
-        })
-        ->toArray();
+            $savingsByMonth[$month] = round($total / 1000, 1); // Convert to thousands
+        }
 
-    // If no loans, use sample data structure
-    if (empty($loansByPurpose)) {
-        $loansByPurpose = [
-            'Business Capital' => 0,
-            'Personal Loan' => 0,
-            'Emergency Loan' => 0,
-            'Housing Loan' => 0
+        // Member Activity (for pie chart)
+        $activeMembers = Users_tbl::where('role', 'member')->count();
+        $pendingMembers = Users_tbl::where('role', 'pending')->count();
+        $totalUsers = $activeMembers + $pendingMembers;
+
+        $memberActivity = [
+            'active' => $totalUsers > 0 ? round(($activeMembers / $totalUsers) * 100) : 0,
+            'new' => $totalUsers > 0 ? round(($pendingMembers / $totalUsers) * 100) : 0,
+            'inactive' => 0
         ];
-    }
 
-    // Recent Savings Transactions (for modal)
-    $recentSavingsTransactions = savings_transaction_tbl::with('savingsAccount.user')
-        ->orderByDesc('created_at')
-        ->take(10)
-        ->get()
-        ->map(function ($tx) {
-            return [
-                'id' => $tx->id,
-                'amount' => $tx->amount,
-                'total_amount' => $tx->total_amount,
-                'type' => $tx->type,
-                'reference_no' => $tx->reference_no,
-                'created_at' => $tx->created_at,
-                'user_name' => $tx->savingsAccount && $tx->savingsAccount->user ? $tx->savingsAccount->user->first_name . ' ' . $tx->savingsAccount->user->last_name : 'Unknown'
+        // Loans by Purpose (for loan distribution)
+        $loansByPurpose = lending_program_tbl::where('status', 'Approved')
+            ->select('purpose_loan', DB::raw('SUM(lending_amount) as total'))
+            ->groupBy('purpose_loan')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                $purpose = $item->purpose_loan ?? 'Other';
+                return [$purpose => $item->total];
+            })
+            ->toArray();
+
+        // If no loans, use sample data structure
+        if (empty($loansByPurpose)) {
+            $loansByPurpose = [
+                'Business Capital' => 0,
+                'Personal Loan' => 0,
+                'Emergency Loan' => 0,
+                'Housing Loan' => 0
             ];
-        });
+        }
 
-    return view("admin_components.dashboard", compact(
-        'totalMembers',
-        'totalSavings',
-        'activeLoans',
-        'pendingRequests',
-        'adminCount',
-        'memberCount',
-        'pendingCount',
-        'recentActivities',
-        'savingsByMonth',
-        'memberActivity',
-        'loansByPurpose',
-        'recentSavingsTransactions'
-    ));
-}
+        // Recent Savings Transactions (for modal)
+        $recentSavingsTransactions = savings_transaction_tbl::with('savingsAccount.user')
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get()
+            ->map(function ($tx) {
+                return [
+                    'id' => $tx->id,
+                    'amount' => $tx->amount,
+                    'total_amount' => $tx->total_amount,
+                    'type' => $tx->type,
+                    'reference_no' => $tx->reference_no,
+                    'created_at' => $tx->created_at,
+                    'user_name' => $tx->savingsAccount && $tx->savingsAccount->user ? $tx->savingsAccount->user->first_name . ' ' . $tx->savingsAccount->user->last_name : 'Unknown'
+                ];
+            });
+
+        return view("admin_components.dashboard", compact(
+            'totalMembers',
+            'totalSavings',
+            'activeLoans',
+            'pendingRequests',
+            'adminCount',
+            'memberCount',
+            'pendingCount',
+            'recentActivities',
+            'savingsByMonth',
+            'memberActivity',
+            'loansByPurpose',
+            'recentSavingsTransactions'
+        ));
+    }
 
     public function dashboard_members(Request $request)
     {
@@ -485,7 +487,7 @@ public function dashboard_admin()
         if ($search) {
             $query->whereHas('savingsAccount.user', function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%");
             });
         }
 
@@ -500,7 +502,7 @@ public function dashboard_admin()
         $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
 
         $currentBalance = savings_account_tbl::sum('balance') ?? 0;
-        
+
         $sixMonthsAgo = now()->subMonths(6)->startOfMonth();
         $monthlyAvg = savings_transaction_tbl::where('type', 'deposit')
             ->where('created_at', '>=', $sixMonthsAgo)
@@ -510,7 +512,7 @@ public function dashboard_admin()
 
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
         $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')->sum('amount') ?? 0;
-        
+
         $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
             ->select('id', 'first_name', 'last_name')
             ->orderBy('first_name')
@@ -541,7 +543,7 @@ public function dashboard_admin()
         foreach ($monthlyData as &$data) {
             $data['bar_height'] = $maxAmount > 0 ? ($data['amount'] / $maxAmount) * 150 : 0;
         }
-        
+
         $highestMonth = [
             'name' => 'N/A',
             'amount' => 0
@@ -585,23 +587,32 @@ public function dashboard_admin()
     public function dashboard_lendings(Request $request)
     {
         $statusFilter = $request->get('status', 'all');
-        
+
         $query = lending_program_tbl::with('user')
             ->where('status', '!=', 'Archived');
-        
+
         if ($statusFilter !== 'all') {
             $query->where('status', ucfirst($statusFilter));
         }
-        
+
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
+<<<<<<< HEAD
+
+        return view("admin_components.lending", compact('loans', 'statusFilter'));
+=======
         
         $allMembers = Users_tbl::where('role', 'member')
             ->orderBy('first_name')
             ->get();
         
+<<<<<<< HEAD
         $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
         
         return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings'));
+=======
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers'));
+>>>>>>> 50f9da2746925b8ecdb14cd8532f9393f7675cce
+>>>>>>> ced5fb9941061a6877e805c9998897ca4e58847c
     }
 
     public function approveLoan(Request $request, $id)
@@ -657,7 +668,7 @@ public function dashboard_admin()
         if ($search) {
             $query->whereHas('shareCapitalAccount.user', function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%");
+                    ->orWhere('last_name', 'like', "%{$search}%");
             });
         }
 
@@ -674,13 +685,13 @@ public function dashboard_admin()
         $totalContributions = share_capital_transaction_tbl::where('type', 'subscription')
             ->where('status', 'completed')
             ->sum('total_amount') ?? 0;
-        
+
         $perShareValue = 100;
         $totalShares = share_capital_account_tbl::sum('total_shares') ?? 0;
         $currentValue = $totalShares * $perShareValue;
-        
+
         $lastContribution = share_capital_transaction_tbl::orderBy('created_at', 'desc')->first();
-        
+
         $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
             ->select('id', 'first_name', 'last_name')
             ->orderBy('first_name')
@@ -720,79 +731,79 @@ public function dashboard_admin()
         $toDate = $request->get('to_date', now()->endOfMonth()->format('Y-m-d'));
         $reportType = $request->get('report_type', 'all');
         $chartType = $request->get('chart', 'all');
-        
+
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
-        
+
         $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
-        
+
         $loansIssued = lending_program_tbl::where('status', 'Approved')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('lending_amount') ?? 0;
-        
+
         $loanInterest = lending_program_tbl::where('status', 'Approved')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('total_interest') ?? 0;
-        
+
         $netIncome = $loanInterest;
-        
+
         $savingsTrend = [];
         $lendingTrend = [];
         $shareCapitalTrend = [];
         $months = [];
-        
+
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
             $months[] = $month->format('M');
             $monthNum = $month->format('n');
             $year = $month->format('Y');
-            
+
             $deposits = savings_transaction_tbl::where('type', 'deposit')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('amount') ?? 0;
-            
+
             $loans = lending_program_tbl::where('status', 'Approved')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
-            
+
             $shareCap = share_capital_transaction_tbl::where('type', 'subscription')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('total_amount') ?? 0;
-            
+
             $savingsTrend[] = round($deposits / 1000, 1);
             $lendingTrend[] = round($loans / 1000, 1);
             $shareCapitalTrend[] = round($shareCap / 1000, 1);
         }
-        
+
         $savingsByMonth = [];
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
             $monthName = $month->format('M');
             $monthNum = $month->format('n');
             $year = $month->format('Y');
-            
+
             $deposits = savings_transaction_tbl::where('type', 'deposit')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('amount') ?? 0;
-            
+
             $loans = lending_program_tbl::where('status', 'Approved')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
-            
+
             $savingsByMonth[$monthName] = [
                 'savings' => round($deposits / 1000, 1),
                 'loans' => round($loans / 1000, 1)
             ];
         }
-        
+
         $transactions = DB::table('savings_transaction_tbls as st')
             ->select(
                 'st.created_at',
@@ -871,7 +882,7 @@ public function dashboard_admin()
         $loansCount = lending_program_tbl::where('status', 'Approved')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->count();
-        
+
         return view("admin_components.reports", compact(
             'fromDate',
             'toDate',
@@ -941,36 +952,36 @@ public function dashboard_admin()
         $activeTab = $request->get('tab', 'savings');
         $fromDate = $request->get('from_date', '');
         $toDate = $request->get('to_date', '');
-        
+
         $savingsQuery = savings_transaction_tbl::with('savingsAccount.user')
             ->where('archived', 1);
-            
+
         $shareCapitalQuery = share_capital_transaction_tbl::with('shareCapitalAccount.user')
             ->where('archived', 1);
-            
+
         $lendingQuery = lending_program_tbl::with('user')
             ->where('status', 'Archived');
-        
+
         if ($fromDate) {
             $savingsQuery->whereDate('created_at', '>=', $fromDate);
             $shareCapitalQuery->whereDate('created_at', '>=', $fromDate);
             $lendingQuery->whereDate('created_at', '>=', $fromDate);
         }
-        
+
         if ($toDate) {
             $savingsQuery->whereDate('created_at', '<=', $toDate);
             $shareCapitalQuery->whereDate('created_at', '<=', $toDate);
             $lendingQuery->whereDate('created_at', '<=', $toDate);
         }
-        
+
         $savingsArchives = (clone $savingsQuery)->orderBy('created_at', 'desc')->paginate(15);
         $shareCapitalArchives = (clone $shareCapitalQuery)->orderBy('created_at', 'desc')->paginate(15);
         $lendingArchives = (clone $lendingQuery)->orderBy('created_at', 'desc')->paginate(15);
-        
+
         $savingsCount = (clone $savingsQuery)->count();
         $shareCapitalCount = (clone $shareCapitalQuery)->count();
         $lendingCount = (clone $lendingQuery)->count();
-        
+
         return view("admin_components.archives", compact(
             'activeTab',
             'fromDate',
