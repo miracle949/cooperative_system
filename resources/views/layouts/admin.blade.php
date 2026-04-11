@@ -243,8 +243,14 @@
             margin: 0 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
             display: flex;
             flex-direction: column;
+        }
+
+        /* Hide scrollbar for Chrome/Safari/Edge */
+        .modal::-webkit-scrollbar {
+            display: none;
         }
 
         .modal.max-w-4xl {

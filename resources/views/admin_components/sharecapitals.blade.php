@@ -206,7 +206,7 @@ Manage Share-capital
 
     <!-- Add Contribution Modal -->
     <div id="addContributionModal" class="modal-overlay hidden">
-        <div class="modal max-w-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal max-w-lg" style="border-radius: 16px;">
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
@@ -310,102 +310,6 @@ Manage Share-capital
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-                        <div>
-                            <h2 class="text-lg font-semibold" style="color: #fff;">Manage Share-capital</h2>
-                            <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase or withdraw shares</p>
-                        </div>
-                    </div>
-                    <button onclick="closeModal('addContributionModal')" class="p-1 hover:bg-white/10 rounded-lg">
-                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
-                    </button>
-                </div>
-            </div>
-
-            <form class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
-                    <select class="select">
-                        <option>Select member</option>
-                        @foreach($allMembers as $member)
-                        <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
-                        @endforeach
-                </div>
-
-                <!-- Balance Pill -->
-                <div style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 13px; color: #888;">Current Balance</span>
-                    <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">₱0.00 · 0 shares</span>
-                </div>
-
-                <!-- Shares counter -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Number of shares</label>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <button type="button" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1); updateShareCost()" style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                        <input type="number" id="adminSharesInput" value="1" min="1" readonly style="width: 60px; text-align: center; font-size: 14.5px; font-weight: 600; color: #1a4a3a; border: 1.5px solid #ddd; border-radius: 10px; padding: 6px;">
-                        <button type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateShareCost()" style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
-                    </div>
-                    <!-- Quick select -->
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 1; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1 share</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 5; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5 shares</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 10; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10 shares</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 25; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25 shares</button>
-                    </div>
-                    <p style="font-size: 12px; color: #888; margin-bottom: 0;">Cost: <strong id="adminShareCost" style="color: #1a4a3a;">₱{{ number_format($perShareValue, 0) }}</strong> · ₱{{ number_format($perShareValue, 0) }} per share</p>
-                </div>
-
-                <!-- Amount -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱{{ number_format($perShareValue, 0) }} per share)</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                        <input type="number" class="input pl-8" placeholder="0.00">
-                    </div>
-                </div>
-
-                <!-- Type -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                    <select class="select">
-                        <option>Select type...</option>
-                        <option>Subscription</option>
-                        <option>Withdrawal</option>
-                    </select>
-                </div>
-
-                <!-- Payment Method -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                    <select class="select">
-                        <option>Select payment method...</option>
-                        <option>Cash</option>
-                        <option>Bank Transfer</option>
-                        <option>GCash</option>
-                        <option>Check</option>
-                    </select>
-                </div>
-
-                <!-- Notes -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #bbb;">(optional)</span></label>
-                    <textarea class="input" rows="2" placeholder="Add any notes..."></textarea>
-                </div>
-            </form>
-
-            <div class="p-6 border-t border-gray-100 flex flex-col gap-2">
-                <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
-                    style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
-                </button>
-                <button onclick="closeModal('addContributionModal')" 
-                    style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
-                    Cancel
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- Last Contribution Detail Modal -->

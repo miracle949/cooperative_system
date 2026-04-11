@@ -310,7 +310,7 @@ class UsersHandle extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role === "Admin") {
+        if (strtolower($user->role) === "admin") {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
         } else {
             return redirect()->route("MemberPortal")->with("message", "Login successfully!");
@@ -325,21 +325,13 @@ class UsersHandle extends Controller
         ]);
 
         $loginInput = $incomingFields['login'];
-        $isEmail = filter_var($loginInput, FILTER_VALIDATE_EMAIL);
 
-        // Check if the user exists first
-        $user = $isEmail
-            ? DB::table('users_tbls')->where('email', $loginInput)->first()
-            : DB::table('users_tbls')->where('username', $loginInput)->first();
+        // Check if user exists by email
+        $user = DB::table('users_tbls')->where('email', $loginInput)->first();
 
         if (!$user) {
-            $field = $isEmail ? 'email' : 'username';
-            $message = $isEmail
-                ? 'That email isn’t registered yet.'
-                : 'That username isn’t registered yet.';
-
             return redirect()->back()
-                ->withErrors(['login' => $message])
+                ->withErrors(['login' => 'That email isn\'t registered yet.'])
                 ->withInput($request->only('login'));
         }
 

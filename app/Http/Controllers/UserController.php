@@ -13,6 +13,7 @@ use App\Models\share_capital_account_tbl;
 use App\Models\share_capital_transaction_tbl;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
+use App\Models\Loan_settings_tbl;
 use App\Models\system_settings_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -517,22 +518,26 @@ public function dashboard_admin()
 
         $monthlyData = [];
         $maxAmount = 0;
+        
+        // Use simple sequential months from current month backward
         for ($i = 5; $i >= 0; $i--) {
             $monthDate = now()->subMonths($i);
-            $amount = savings_transaction_tbl::where('type', 'deposit')
+            
+            $amount = (float) savings_transaction_tbl::where('type', 'deposit')
                 ->whereYear('created_at', $monthDate->format('Y'))
                 ->whereMonth('created_at', $monthDate->format('m'))
                 ->sum('amount');
+            
             $monthlyData[] = [
                 'name' => $monthDate->format('F'),
                 'year' => $monthDate->format('Y'),
-                'amount' => $amount,
-                'bar_height' => 0
+                'amount' => $amount
             ];
             if ($amount > $maxAmount) {
                 $maxAmount = $amount;
             }
         }
+        
         foreach ($monthlyData as &$data) {
             $data['bar_height'] = $maxAmount > 0 ? ($data['amount'] / $maxAmount) * 150 : 0;
         }
@@ -555,7 +560,6 @@ public function dashboard_admin()
             'totalDeposits',
             'totalWithdrawals',
             'allMembers',
-            'monthlyData',
             'highestMonth'
         ));
     }
@@ -595,7 +599,9 @@ public function dashboard_admin()
             ->orderBy('first_name')
             ->get();
         
-        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers'));
+        $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+        
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings'));
     }
 
     public function approveLoan(Request $request, $id)
@@ -901,7 +907,33 @@ public function dashboard_admin()
             'company_email' => system_settings_tbl::getValue('company_email', ''),
         ];
 
-        return view("admin_components.settings", compact('adminUser', 'companySettings'));
+        $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+
+        if ($request->isMethod('POST')) {
+            $request->validate([
+                'interest_personal' => 'nullable|numeric|min:0|max:20',
+                'interest_emergency' => 'nullable|numeric|min:0|max:20',
+                'interest_business' => 'nullable|numeric|min:0|max:20',
+                'interest_education' => 'nullable|numeric|min:0|max:20',
+            ]);
+
+            if ($request->has('interest_personal')) {
+                Loan_settings_tbl::where('loan_type', 'Personal Loan')->update(['interest_rate' => $request->interest_personal]);
+            }
+            if ($request->has('interest_emergency')) {
+                Loan_settings_tbl::where('loan_type', 'Emergency Loan')->update(['interest_rate' => $request->interest_emergency]);
+            }
+            if ($request->has('interest_business')) {
+                Loan_settings_tbl::where('loan_type', 'Business Loan')->update(['interest_rate' => $request->interest_business]);
+            }
+            if ($request->has('interest_education')) {
+                Loan_settings_tbl::where('loan_type', 'Education Loan')->update(['interest_rate' => $request->interest_education]);
+            }
+
+            $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+        }
+
+        return view("admin_components.settings", compact('adminUser', 'companySettings', 'loanSettings'));
     }
 
     public function dashboard_archives(Request $request)

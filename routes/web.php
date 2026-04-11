@@ -113,6 +113,14 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
 Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
     ->name('savings.receipt');
 
+Route::post('/savings/admin/store', [SavingsController::class, 'adminStoreSavings'])
+    ->name('savings.admin.store')
+    ->middleware('auth');
+
+Route::get('/savings/admin/balance/{memberId}', [SavingsController::class, 'getMemberBalance'])
+    ->name('savings.admin.balance')
+    ->middleware('auth');
+
 Route::post('/savings/gcash',          [SavingsController::class, 'payViaGcash'])->name('savings.gcash');
 Route::get('/savings/gcash/success',   [SavingsController::class, 'gcashSuccess'])->name('savings.gcash.success');
 Route::get('/savings/gcash/failed',    [SavingsController::class, 'gcashFailed'])->name('savings.gcash.failed');
@@ -151,4 +159,5 @@ Route::post("/sharecapital/archive/{id}", [UserController::class, "archiveShareC
 Route::post("/sharecapital/unarchive/{id}", [UserController::class, "unarchiveShareCapital"])->name("sharecapital.unarchive");
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
+Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update");
 Route::get("/dashboard-archives", [UserController::class, "dashboard_archives"])->name("archives");
