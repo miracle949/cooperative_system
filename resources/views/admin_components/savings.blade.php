@@ -647,16 +647,19 @@
 
         function closeMonthlyBreakdownModal() {
             document.getElementById('monthlyBreakdownDynamic')?.remove();
+            document.body.style.overflow = '';
         }
 
         function closeLastContributionModal() {
             document.getElementById('lastContributionDynamic')?.remove();
+            document.body.style.overflow = '';
         }
 
         function closeAddContributionModal() {
             const modal = document.getElementById('addContributionModal');
             modal.classList.add('hidden');
             modal.style.cssText = '';
+            document.body.style.overflow = '';
         }
 
         function showMonthDetail(monthName, amount) {

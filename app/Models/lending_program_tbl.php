@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class lending_program_tbl extends Model
 {
+    public $incrementing = true;
     protected $table = "lending_program_tbls";
 
     protected $fillable = [

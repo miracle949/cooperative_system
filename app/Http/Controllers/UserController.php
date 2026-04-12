@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Mail\ApprovedMail;
 use App\Mail\ShareCapital;
 use App\Mail\DeclinedMail;
@@ -677,7 +678,7 @@ class UserController extends Controller
             ->where('status', 'completed')
             ->sum('total_amount') ?? 0;
 
-        $perShareValue = 100;
+        $perShareValue = 1000;
         $totalShares = share_capital_account_tbl::sum('total_shares') ?? 0;
         $currentValue = $totalShares * $perShareValue;
 
@@ -714,6 +715,89 @@ class UserController extends Controller
         $transaction->save();
 
         return redirect()->back()->with('success', 'Share capital transaction restored successfully.');
+    }
+
+    public function adminStoreShareCapital(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|exists:users_tbls,id',
+            'shares' => 'required|numeric|min:1',
+            'type' => 'required|string|in:subscription,withdrawal',
+            'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        $memberId = $request->member_id;
+        $shares = (int) $request->shares;
+        $amountPerShare = 1000;
+        $totalAmount = $shares * $amountPerShare;
+        $type = $request->type;
+        $perShareValue = 1000;
+
+        $account = share_capital_account_tbl::where('user_id', $memberId)->first();
+
+        if (!$account) {
+            $account = share_capital_account_tbl::create([
+                'user_id' => $memberId,
+                'total_shares' => 0,
+                'total_amount' => 0,
+                'status' => 'Active',
+                'acquired_date' => Carbon::now(),
+            ]);
+        }
+
+        if ($type === 'withdrawal') {
+            if ($account->total_shares < $shares) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient shares. Available: ' . $account->total_shares . ' shares'
+                ], 422);
+            }
+            $newShares = $account->total_shares - $shares;
+            $newAmount = $account->total_amount - $totalAmount;
+        } else {
+            $newShares = $account->total_shares + $shares;
+            $newAmount = $account->total_amount + $totalAmount;
+        }
+
+        $account->update([
+            'total_shares' => $newShares,
+            'total_amount' => $newAmount,
+        ]);
+
+        $referenceNo = 'SC-' . date('YmdHis') . rand(10, 99);
+
+        share_capital_transaction_tbl::create([
+            'share_capital_account_id' => $account->id,
+            'user_id' => $memberId,
+            'type' => $type,
+            'shares' => $shares,
+            'amount_per_share' => $amountPerShare,
+            'total_amount' => $totalAmount,
+            'payment_method' => $request->payment_method,
+            'reference_no' => $referenceNo,
+            'transaction_date' => Carbon::today(),
+            'status' => 'completed',
+            'note' => $request->note,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($type) . ' of ' . $shares . ' shares (₱' . number_format($totalAmount, 2) . ') successful!',
+            'reference_no' => $referenceNo,
+            'new_shares' => $newShares,
+            'new_amount' => $newAmount,
+        ]);
+    }
+
+    public function getMemberShareCapitalBalance($memberId)
+    {
+        $account = share_capital_account_tbl::where('user_id', $memberId)->first();
+        
+        return response()->json([
+            'total_shares' => $account ? $account->total_shares : 0,
+            'total_amount' => $account ? $account->total_amount : 0,
+        ]);
     }
 
     public function dashboard_reports(Request $request)

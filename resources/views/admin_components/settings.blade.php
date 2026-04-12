@@ -287,7 +287,7 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-6">Loan Settings</h2>
                 <p class="text-sm text-gray-500 mb-6">Configure interest rates for each loan type. Values are in percentage (%) per month.</p>
 
-                <form method="POST" action="{{ route('settings') }}">
+                <form method="POST" action="{{ route('settings.update') }}">
                     @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>

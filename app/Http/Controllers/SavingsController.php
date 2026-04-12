@@ -523,7 +523,6 @@ class SavingsController extends Controller
             'note' => $request->note,
             'reference_no' => $referenceNo,
             'transaction_date' => Carbon::today(),
-            'status' => 'completed',
         ]);
 
         return response()->json([

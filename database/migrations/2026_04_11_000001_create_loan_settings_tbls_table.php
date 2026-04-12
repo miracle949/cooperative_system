@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('loan_settings_tbls', function (Blueprint $table) {
             $table->id();
-            $table->string('loan_type')->unique();
+            $table->string('loan_type', 191)->unique();
             $table->decimal('interest_rate', 5, 2)->default(2.00);
             $table->decimal('max_amount', 12, 2)->nullable();
             $table->timestamps();

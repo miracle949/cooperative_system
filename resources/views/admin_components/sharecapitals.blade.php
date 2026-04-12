@@ -226,11 +226,12 @@ Manage Share-capital
             </div>
 
             <div style="padding: 1.25rem;">
-                <form class="space-y-4">
+                <form id="adminShareCapitalForm">
+                    @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
-                        <select class="select" style="width: 100%;">
-                            <option>Select member</option>
+                        <select name="member_id" id="shareMemberSelect" class="select" style="width: 100%;" onchange="updateMemberShares()" required>
+                            <option value="">Select member</option>
                             @foreach($allMembers as $member)
                             <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
                             @endforeach
@@ -239,8 +240,8 @@ Manage Share-capital
 
                     <!-- Balance Pill -->
                     <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1a4a3a;">
-                        <span style="font-size: 13px; color: #666;">Current Balance</span>
-                        <span style="font-size: 14px; font-weight: 700; color: #1a4a3a;">₱0.00 · 0 shares</span>
+                        <span style="font-size: 13px; color: #666;">Current Shares</span>
+                        <span id="currentSharesDisplay" style="font-size: 14px; font-weight: 700; color: #1a4a3a;">0 shares · ₱0.00</span>
                     </div>
 
                     <!-- Shares counter -->
@@ -248,7 +249,7 @@ Manage Share-capital
                         <label class="block text-sm font-medium text-gray-700 mb-1">Number of shares</label>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <button type="button" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1); updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                            <input type="number" id="adminSharesInput" value="1" min="1" readonly style="width: 50px; text-align: center; font-size: 14px; font-weight: 600; color: #1a4a3a; border: 1px solid #ddd; border-radius: 8px; padding: 4px;">
+                            <input type="number" name="shares" id="adminSharesInput" value="1" min="1" readonly style="width: 50px; text-align: center; font-size: 14px; font-weight: 600; color: #1a4a3a; border: 1px solid #ddd; border-radius: 8px; padding: 4px;">
                             <button type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
                         </div>
                         <!-- Quick select -->
@@ -261,46 +262,40 @@ Manage Share-capital
                         <p style="font-size: 12px; color: #888; margin: 0;">Cost: <strong id="adminShareCost" style="color: #1a4a3a;">₱{{ number_format($perShareValue, 0) }}</strong> · ₱{{ number_format($perShareValue, 0) }}/share</p>
                     </div>
 
-                    <!-- Amount -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱{{ number_format($perShareValue, 0) }}/share)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                            <input type="number" class="input pl-8" placeholder="0.00" style="width: 100%;">
-                        </div>
-                    </div>
+                    <!-- Amount (calculated) -->
+                    <input type="hidden" name="amount" id="adminTotalAmount">
 
                     <!-- Type -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select class="select" style="width: 100%;">
+                        <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required>
                             <option value="">Select type...</option>
-                            <option>Subscription</option>
-                            <option>Withdrawal</option>
+                            <option value="subscription">Subscription</option>
+                            <option value="withdrawal">Withdrawal</option>
                         </select>
                     </div>
 
                     <!-- Payment Method -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                        <select class="select" style="width: 100%;">
+                        <select name="payment_method" class="select" style="width: 100%;" required>
                             <option value="">Select payment method...</option>
-                            <option>Cash</option>
-                            <option>Bank Transfer</option>
-                            <option>GCash</option>
-                            <option>Check</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="gcash">GCash</option>
+                            <option value="check">Check</option>
                         </select>
                     </div>
 
                     <!-- Notes -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #999;">(optional)</span></label>
-                        <textarea class="input" rows="2" placeholder="Add any notes..." style="width: 100%;"></textarea>
+                        <textarea name="note" class="input" rows="2" placeholder="Add any notes..." style="width: 100%;"></textarea>
                     </div>
                 </form>
 
                 <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
-                    <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
+                    <button onclick="submitAdminShareCapital()" 
                         style="width: 100%; padding: 0.7rem; background: #1a4a3a; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
                     </button>
@@ -408,6 +403,79 @@ Manage Share-capital
             const shares = parseInt(document.getElementById('adminSharesInput')?.value) || 1;
             const perShare = {{ $perShareValue }};
             document.getElementById('adminShareCost').textContent = '₱' + (shares * perShare).toLocaleString();
+            document.getElementById('adminTotalAmount').value = shares * perShare;
         }
+
+        // Update member shares display
+        window.updateMemberShares = function() {
+            const memberId = document.getElementById('shareMemberSelect').value;
+            const display = document.getElementById('currentSharesDisplay');
+            
+            if (!memberId) {
+                display.textContent = '0 shares · ₱0.00';
+                return;
+            }
+
+            fetch('/sharecapital/member/' + memberId + '/balance')
+                .then(response => response.json())
+                .then(data => {
+                    const shares = data.total_shares || 0;
+                    const amount = data.total_amount || 0;
+                    display.textContent = shares + ' shares · ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    display.textContent = '0 shares · ₱0.00';
+                });
+        };
+
+        // Submit admin share capital form
+        window.submitAdminShareCapital = function() {
+            const form = document.getElementById('adminShareCapitalForm');
+            const formData = new FormData(form);
+            
+            if (!formData.get('member_id')) {
+                showToast('Error', 'Please select a member');
+                return;
+            }
+            if (!formData.get('shares') || parseInt(formData.get('shares')) <= 0) {
+                showToast('Error', 'Please enter valid shares');
+                return;
+            }
+            if (!formData.get('type')) {
+                showToast('Error', 'Please select transaction type');
+                return;
+            }
+            if (!formData.get('payment_method')) {
+                showToast('Error', 'Please select payment method');
+                return;
+            }
+
+            fetch('/sharecapital/admin/store', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('addContributionModal');
+                    showToast('Success', data.message);
+                    form.reset();
+                    document.getElementById('currentSharesDisplay').textContent = '0 shares · ₱0.00';
+                    document.getElementById('adminSharesInput').value = 1;
+                    updateShareCost();
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast('Error', data.message || 'Transaction failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', 'An error occurred. Please try again.');
+            });
+        };
     </script>
 @endsection
