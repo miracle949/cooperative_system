@@ -160,6 +160,7 @@ Route::post("/sharecapital/admin/store", [UserController::class, "adminStoreShar
 Route::get("/sharecapital/member/{id}/balance", [UserController::class, "getMemberShareCapitalBalance"])->name("sharecapital.member.balance");
 Route::post("/sharecapital/archive/{id}", [UserController::class, "archiveShareCapital"])->name("sharecapital.archive");
 Route::post("/sharecapital/unarchive/{id}", [UserController::class, "unarchiveShareCapital"])->name("sharecapital.unarchive");
+Route::post("/sharecapital/withdrawal/{id}/status", [UserController::class, "updateWithdrawalStatus"])->name("sharecapital.withdrawal.status");
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
 Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update");

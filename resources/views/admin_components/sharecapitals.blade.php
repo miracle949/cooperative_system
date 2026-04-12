@@ -95,13 +95,13 @@ Manage Share-capital
                 <div class="flex gap-2">
                     <select name="type" class="select w-40" onchange="this.form.submit()">
                         <option value="all">All Types</option>
-                        <option value="subscription" {{ request('type') === 'subscription' ? 'selected' : '' }}>Subscription</option>
-                        <option value="withdrawal" {{ request('type') === 'withdrawal' ? 'selected' : '' }}>Withdrawal</option>
+                        <option value="Deposit" {{ request('type') === 'Deposit' ? 'selected' : '' }}>Deposit</option>
+                        <option value="Withdrawal" {{ request('type') === 'Withdrawal' ? 'selected' : '' }}>Withdrawal</option>
                     </select>
                     <select name="status" class="select w-32" onchange="this.form.submit()">
                         <option value="all">All Status</option>
-                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Completed" {{ request('status') === 'Completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="Pending" {{ request('status') === 'Pending' ? 'selected' : '' }}>Pending</option>
                     </select>
                 </div>
             </div>
@@ -141,33 +141,37 @@ Manage Share-capital
                             </div>
                         </td>
                         <td class="text-sm font-medium text-gray-900">
-                            @if($tx->shares > 0)
-                                +{{ $tx->shares }} shares
+                            @if($tx->type === 'Deposit')
+                                +{{ $tx->shares }}
                             @else
-                                {{ $tx->shares }} shares
+                                -{{ $tx->shares }}
                             @endif
                         </td>
                         <td class="text-sm font-semibold text-gray-900">₱{{ number_format($tx->total_amount, 2) }}</td>
                         <td>
-                            @if($tx->type === 'subscription')
-                                <span class="badge badge-success">Subscription</span>
+                            @if($tx->type === 'Deposit')
+                                <span class="badge badge-success">Deposit</span>
                             @else
                                 <span class="badge badge-danger">Withdrawal</span>
                             @endif
                         </td>
                         <td class="text-sm text-gray-600">{{ $tx->payment_method ?? 'N/A' }}</td>
                         <td>
-                            @if($tx->status === 'completed')
+                            @if($tx->status === 'Completed')
                                 <span class="badge badge-success">Completed</span>
-                            @elseif($tx->status === 'pending')
+                            @elseif($tx->status === 'Pending')
                                 <span class="badge badge-warning">Pending</span>
+                            @elseif($tx->status === 'Approved')
+                                <span class="badge badge-success">Approved</span>
+                            @elseif($tx->status === 'Rejected')
+                                <span class="badge badge-danger">Rejected</span>
                             @else
                                 <span class="badge badge-danger">Failed</span>
                             @endif
                         </td>
                         <td>
                             <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details">
+                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details" onclick="viewShareCapitalDetail('{{ $tx->id }}', '{{ $tx->type }}', '{{ $tx->status }}', '{{ $tx->shareCapitalAccount->user->first_name ?? '' }} {{ $tx->shareCapitalAccount->user->last_name ?? '' }}', '{{ $tx->shares }}', '{{ $tx->total_amount }}', '{{ $tx->payment_method ?? 'N/A' }}', '{{ $tx->reference_no ?? 'N/A' }}', '{{ $tx->transaction_date }}')">
                                     <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
                                 <form method="POST" action="{{ route('sharecapital.archive', $tx->id) }}">
@@ -270,8 +274,8 @@ Manage Share-capital
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
                         <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required>
                             <option value="">Select type...</option>
-                            <option value="subscription">Subscription</option>
-                            <option value="withdrawal">Withdrawal</option>
+                            <option value="Deposit">Deposit</option>
+                            <option value="Withdrawal">Withdrawal</option>
                         </select>
                     </div>
 
@@ -470,6 +474,114 @@ Manage Share-capital
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     showToast('Error', data.message || 'Transaction failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', 'An error occurred. Please try again.');
+            });
+        };
+
+        // Transaction Detail Modal Functions
+        let currentTransactionId = null;
+
+        window.viewShareCapitalDetail = function(id, type, status, memberName, shares, amount, paymentMethod, referenceNo, transactionDate) {
+            const existingModal = document.getElementById('scTransactionModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            const modal = document.createElement('div');
+            modal.id = 'scTransactionModal';
+            modal.style.cssText = 'display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999999; align-items:center; justify-content:center;';
+            
+            currentTransactionId = id;
+            const isWithdrawal = type === 'Withdrawal';
+            const isPending = status === 'Pending';
+            
+            let badge = '';
+            if (status === 'Completed' || status === 'Approved') badge = '<span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:4px;font-size:12px;">Completed</span>';
+            else if (status === 'Pending') badge = '<span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:4px;font-size:12px;">Pending</span>';
+            else if (status === 'Rejected') badge = '<span style="background:#fee2e2;color:#991b1b;padding:4px 8px;border-radius:4px;font-size:12px;">Rejected</span>';
+            else badge = '<span style="background:#f3f4f6;color:#374151;padding:4px 8px;border-radius:4px;font-size:12px;">' + status + '</span>';
+            
+            let actionsHtml = '';
+            if (isWithdrawal && isPending) {
+                actionsHtml = '<div style="display:flex;gap:12px;margin-top:24px;"><button onclick="processWithdrawalSC(\'accept\')" style="flex:1;padding:10px;background:#16a34a;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Accept</button><button onclick="processWithdrawalSC(\'reject\')" style="flex:1;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Reject</button></div>';
+            } else {
+                actionsHtml = '<div style="margin-top:24px;"><button onclick="document.getElementById(\'scTransactionModal\').remove();document.body.style.overflow=\'auto\';" style="width:100%;padding:10px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Close</button></div>';
+            }
+            
+            modal.innerHTML = `
+                <div style="background:white; border-radius:12px; max-width:450px; width:90%; max-height:90vh; overflow:auto; box-shadow:0 25px 50px rgba(0,0,0,0.25);">
+                    <div style="padding:16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#1a4a3a,#2d6a4f); border-radius:12px 12px 0 0;">
+                        <h3 style="margin:0; font-size:18px; font-weight:600; color:white;">Transaction Details</h3>
+                        <button onclick="document.getElementById('scTransactionModal').remove();document.body.style.overflow='auto';" style="background:rgba(255,255,255,0.1); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; color:white; font-size:18px;">&times;</button>
+                    </div>
+                    <div style="padding:20px;">
+                        <div style="display:grid;gap:12px;">
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Member</span>
+                                <span style="color:#111827;font-size:14px;font-weight:500;">${memberName}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Type</span>
+                                <span style="color:${isWithdrawal ? '#dc2626' : '#16a34a'};font-size:14px;font-weight:500;">${type}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Shares</span>
+                                <span style="color:#111827;font-size:14px;font-weight:500;">${shares} shares</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Amount</span>
+                                <span style="color:#111827;font-size:14px;font-weight:700;">₱${parseFloat(amount).toLocaleString('en-PH', {minimumFractionDigits:2})}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Payment</span>
+                                <span style="color:#111827;font-size:14px;">${paymentMethod}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Reference</span>
+                                <span style="color:#111827;font-size:14px;font-family:monospace;">${referenceNo}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Date</span>
+                                <span style="color:#111827;font-size:14px;">${transactionDate}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid #e5e7eb;">
+                                <span style="color:#6b7280;font-size:14px;">Status</span>
+                                ${badge}
+                            </div>
+                        </div>
+                        ${actionsHtml}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.processWithdrawalSC = function(action) {
+            if (!currentTransactionId) return;
+
+            fetch('/sharecapital/withdrawal/' + currentTransactionId + '/status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success', data.message);
+                    document.getElementById('scTransactionModal').remove();
+                    document.body.style.overflow = 'auto';
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast('Error', data.message || 'Failed to process withdrawal');
                 }
             })
             .catch(error => {

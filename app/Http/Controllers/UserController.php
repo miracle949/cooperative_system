@@ -655,7 +655,8 @@ class UserController extends Controller
         $statusFilter = $request->get('status', 'all');
 
         $query = share_capital_transaction_tbl::with('shareCapitalAccount.user')
-            ->where('archived', '!=', 1);
+            ->where('archived', '!=', 1)
+            ->where('status', '!=', 'failed');
 
         if ($search) {
             $query->whereHas('shareCapitalAccount.user', function ($q) use ($search) {
@@ -674,12 +675,27 @@ class UserController extends Controller
 
         $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        $totalContributions = share_capital_transaction_tbl::where('type', 'subscription')
-            ->where('status', 'completed')
+        $totalContributions = share_capital_transaction_tbl::where('type', 'Deposit')
+            ->where('status', 'Completed')
             ->sum('total_amount') ?? 0;
 
+        $totalContributions = $totalContributions - (
+            share_capital_transaction_tbl::where('type', 'Withdrawal')
+            ->where('status', 'Approved')
+            ->sum('total_amount') ?? 0
+        );
+
         $perShareValue = 1000;
-        $totalShares = share_capital_account_tbl::sum('total_shares') ?? 0;
+        
+        $deposits = share_capital_transaction_tbl::where('type', 'Deposit')
+            ->where('status', 'Completed')
+            ->sum('shares') ?? 0;
+        
+        $withdrawals = share_capital_transaction_tbl::where('type', 'Withdrawal')
+            ->where('status', 'Approved')
+            ->sum('shares') ?? 0;
+        
+        $totalShares = $deposits - $withdrawals;
         $currentValue = $totalShares * $perShareValue;
 
         $lastContribution = share_capital_transaction_tbl::orderBy('created_at', 'desc')->first();
@@ -722,7 +738,7 @@ class UserController extends Controller
         $request->validate([
             'member_id' => 'required|exists:users_tbls,id',
             'shares' => 'required|numeric|min:1',
-            'type' => 'required|string|in:subscription,withdrawal',
+            'type' => 'required|string|in:Deposit,Withdrawal',
             'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
             'note' => 'nullable|string|max:255',
         ]);
@@ -746,7 +762,7 @@ class UserController extends Controller
             ]);
         }
 
-        if ($type === 'withdrawal') {
+        if ($type === 'Withdrawal') {
             if ($account->total_shares < $shares) {
                 return response()->json([
                     'success' => false,
@@ -777,7 +793,7 @@ class UserController extends Controller
             'payment_method' => $request->payment_method,
             'reference_no' => $referenceNo,
             'transaction_date' => Carbon::today(),
-            'status' => 'completed',
+            'status' => 'Completed',
             'note' => $request->note,
         ]);
 
@@ -798,6 +814,68 @@ class UserController extends Controller
             'total_shares' => $account ? $account->total_shares : 0,
             'total_amount' => $account ? $account->total_amount : 0,
         ]);
+    }
+
+    public function updateWithdrawalStatus(Request $request, $id)
+    {
+        $request->validate([
+            'action' => 'required|string|in:accept,reject',
+        ]);
+
+        $transaction = share_capital_transaction_tbl::findOrFail($id);
+
+        if ($transaction->type !== 'Withdrawal') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This is not a withdrawal transaction.',
+            ], 400);
+        }
+
+        if ($transaction->status !== 'Pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This withdrawal has already been processed.',
+            ], 400);
+        }
+
+        $action = $request->action;
+
+        if ($action === 'accept') {
+            $account = DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->first();
+
+            if (!$account || $account->total_shares < $transaction->shares) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient shares to process this withdrawal.',
+                ], 400);
+            }
+
+            DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->decrement('total_shares', $transaction->shares);
+
+            DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->decrement('total_amount', $transaction->total_amount);
+
+            $transaction->status = 'Approved';
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal request accepted successfully.',
+            ]);
+        } else {
+            $transaction->status = 'Rejected';
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal request rejected.',
+            ]);
+        }
     }
 
     public function dashboard_reports(Request $request)
@@ -846,10 +924,19 @@ class UserController extends Controller
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
 
-            $shareCap = share_capital_transaction_tbl::where('type', 'subscription')
+            $depositCap = share_capital_transaction_tbl::where('type', 'Deposit')
+                ->where('status', 'Completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('total_amount') ?? 0;
+
+            $withdrawCap = share_capital_transaction_tbl::where('type', 'Withdrawal')
+                ->where('status', 'Approved')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('total_amount') ?? 0;
+
+            $shareCap = $depositCap - $withdrawCap;
 
             $savingsTrend[] = round($deposits / 1000, 1);
             $lendingTrend[] = round($loans / 1000, 1);

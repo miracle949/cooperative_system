@@ -244,8 +244,20 @@ class UsersHandle extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        $shareCapitalBalance = $shareCapitalAccount->total_amount ?? 0;
-        $shareCapitalShares = $shareCapitalAccount->total_shares ?? 0;
+        if ($shareCapitalAccount) {
+            $shareCapitalBalance = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->where('status', 'completed')
+                ->sum('total_amount') ?? 0;
+
+            $shareCapitalShares = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->where('status', 'completed')
+                ->sum('shares') ?? 0;
+        } else {
+            $shareCapitalBalance = 0;
+            $shareCapitalShares = 0;
+        }
 
         // Dividend rate
         $dividendRateRecord = null;
@@ -353,13 +365,26 @@ class UsersHandle extends Controller
             ->where('user_id', $memberId)
             ->first();
 
-        $currentBalance = $account->total_amount ?? 0;
-        $currentShares = $account->total_shares ?? 0;
+        if ($account) {
+            $currentBalance = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('status', 'completed')
+                ->sum('total_amount') ?? 0;
+
+            $currentShares = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('status', 'completed')
+                ->sum('shares') ?? 0;
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
 
         // Fetch real contribution history
         $contributions = $account
             ? DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
+                ->where('status', '!=', 'failed')
                 ->orderBy('created_at', 'desc')
                 ->get()
             : collect();
