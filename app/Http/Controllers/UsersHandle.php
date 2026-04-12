@@ -247,12 +247,12 @@ class UsersHandle extends Controller
         if ($shareCapitalAccount) {
             $shareCapitalBalance = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $shareCapitalAccount->id)
-                ->where('status', 'completed')
+                ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
             $shareCapitalShares = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $shareCapitalAccount->id)
-                ->where('status', 'completed')
+                ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
         } else {
             $shareCapitalBalance = 0;
@@ -366,15 +366,33 @@ class UsersHandle extends Controller
             ->first();
 
         if ($account) {
-            $currentBalance = DB::table('share_capital_transaction_tbls')
+            $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('status', 'completed')
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
-            $currentShares = DB::table('share_capital_transaction_tbls')
+            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('status', 'completed')
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $currentBalance = $depositAmount - $withdrawalAmount;
+
+            $deposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
+
+            $withdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('shares') ?? 0;
+
+            $currentShares = $deposits - $withdrawals;
         } else {
             $currentBalance = 0;
             $currentShares = 0;

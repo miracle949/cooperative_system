@@ -18,7 +18,20 @@ class lendingController extends Controller
 
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', $memberId)->first();
-        $currentShares = $account->total_shares ?? 0;
+
+        $deposits = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Deposit')
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+
+        $withdrawals = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+
+        $currentShares = $deposits - $withdrawals;
         $canApplyLoan = $currentShares >= 10;
 
         $maxLoan = 25000;
@@ -44,10 +57,25 @@ class lendingController extends Controller
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
 
+        $dbSettings = DB::table('loan_settings_tbls')->pluck('interest_rate', 'loan_type')->toArray();
+        
+        $loanSettings = [];
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+        
+        foreach ($typeMap as $formType => $dbType) {
+            $rate = $dbSettings[$dbType] ?? 2;
+            $loanSettings[$formType] = $rate / 100;
+        }
+
         return view(
             'members_components.loan_application',
             array_merge(
-                ['username' => $username, 'email' => $email],
+                ['username' => $username, 'email' => $email, 'loanSettings' => $loanSettings],
                 $this->getLoanPageData()
             )
         );
@@ -62,7 +90,20 @@ class lendingController extends Controller
         // Share capital check
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', $memberId)->first();
-        $currentShares = $account->total_shares ?? 0;
+
+        $deposits = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Deposit')
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+
+        $withdrawals = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+
+        $currentShares = $deposits - $withdrawals;
 
         if ($currentShares < 10) {
             return redirect()->back()

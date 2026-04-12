@@ -252,7 +252,7 @@ class SavingsController extends Controller
         $user = Auth::user();
         $amount = (float) session('sav_pending_amount', 0);
         $note = session('sav_pending_note');
-        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdraw'
+        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdrawal'
         $referenceNo = 'GCASH-' . now()->format('YmdHis');
 
         session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);

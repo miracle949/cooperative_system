@@ -512,7 +512,7 @@ class UserController extends Controller
         $lastContribution = savings_transaction_tbl::orderByDesc('created_at')->first();
 
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
-        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')->sum('amount') ?? 0;
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')->sum('amount') ?? 0;
 
         $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
             ->select('id', 'first_name', 'last_name')
@@ -681,18 +681,18 @@ class UserController extends Controller
 
         $totalContributions = $totalContributions - (
             share_capital_transaction_tbl::where('type', 'Withdrawal')
-            ->where('status', 'Approved')
+            ->whereIn('status', ['Approved', 'approved'])
             ->sum('total_amount') ?? 0
         );
 
         $perShareValue = 1000;
         
         $deposits = share_capital_transaction_tbl::where('type', 'Deposit')
-            ->where('status', 'Completed')
+            ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
         
         $withdrawals = share_capital_transaction_tbl::where('type', 'Withdrawal')
-            ->where('status', 'Approved')
+            ->whereIn('status', ['Approved', 'approved'])
             ->sum('shares') ?? 0;
         
         $totalShares = $deposits - $withdrawals;
@@ -889,7 +889,7 @@ class UserController extends Controller
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
 
-        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
 
@@ -931,7 +931,7 @@ class UserController extends Controller
                 ->sum('total_amount') ?? 0;
 
             $withdrawCap = share_capital_transaction_tbl::where('type', 'Withdrawal')
-                ->where('status', 'Approved')
+                ->whereIn('status', ['Approved', 'approved'])
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('total_amount') ?? 0;
@@ -1008,7 +1008,7 @@ class UserController extends Controller
             )
             ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
             ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
-            ->where('st.type', 'withdraw')
+            ->where('st.type', 'withdrawal')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->orderBy('st.created_at', 'desc')
             ->limit(10)
@@ -1037,7 +1037,7 @@ class UserController extends Controller
             ->count();
 
         $withdrawalsCount = DB::table('savings_transaction_tbls as st')
-            ->where('st.type', 'withdraw')
+            ->where('st.type', 'withdrawal')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->count();
 

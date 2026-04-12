@@ -183,7 +183,7 @@
                         <div class="row form-parent">
                             <div class="col-lg-6 col-md-12 mt-4">
                                 <label>Lending Type *</label>
-                                <select name="lending_type" class="form-select mt-2" onchange="recalculate()"
+                                <select name="lending_type" class="form-select mt-2" onchange="updateTermOptions()"
                                     id="lending_type" required>
                                     <option value="">Select lending type</option>
                                     <option value="Personal Lending">Personal Lending</option>
@@ -224,15 +224,18 @@
 
                             <div class="col-lg-6 col-md-12 mt-4">
                                 <label>Lending Term *</label>
-                                <select name="lending_type_term" class="form-select mt-2" onchange="recalculate()"
-                                    required>
+                                <select name="lending_type_term_nonbusiness" id="lending_type_term_nonbusiness" class="form-select mt-2" 
+                                    onchange="recalculate()">
                                     <option value="">Select lending term</option>
-                                    <option value="3 months">3 months</option>
+                                    <option value="6 months">6 months</option>
+                                </select>
+                                <select name="lending_type_term_business" id="lending_type_term_business" class="form-select mt-2" 
+                                    style="display:none;" onchange="recalculate()">
+                                    <option value="">Select lending term</option>
                                     <option value="6 months">6 months</option>
                                     <option value="12 months">12 months</option>
-                                    <option value="24 months">24 months</option>
-                                    <option value="36 months">36 months</option>
                                 </select>
+                                <input type="hidden" name="lending_type_term" id="lending_type_term">
                             </div>
 
                             <div class="col-lg-6 col-md-12 mt-4">
@@ -944,41 +947,74 @@
             const nameEl = document.getElementById(nameId);
             if (input.files && input.files[0]) {
                 card.classList.add('has-file');
-                nameEl.textContent = input.files[0].name;
+                if (nameEl) nameEl.textContent = input.files[0].name;
             } else {
                 card.classList.remove('has-file');
-                nameEl.textContent = '';
+                if (nameEl) nameEl.textContent = '';
             }
         }
     </script>
 
     <script>
-        const RATES = {
-            'Personal Lending': 0.002,
-            'Emergency Lending': 0.002,
-            'Business Lending': 0.002,
-            // 'Car Lending': 0.002,
-            'Education Lending': 0.002,
-        };
+        const RATES = @json($loanSettings);
+
+        function updateTermOptions() {
+            const type = document.querySelector('[name="lending_type"]').value;
+            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
+            const termBusiness = document.getElementById('lending_type_term_business');
+            const hiddenTerm = document.getElementById('lending_type_term');
+            
+            // Remove required from both first
+            termNonBusiness.required = false;
+            termBusiness.required = false;
+            
+            if (type === 'Business Lending') {
+                termNonBusiness.style.display = 'none';
+                termBusiness.style.display = 'block';
+                termBusiness.required = true;
+                if (termBusiness.options.length > 1) {
+                    termBusiness.selectedIndex = 1;
+                }
+                hiddenTerm.value = termBusiness.value;
+            } else if (type) {
+                termNonBusiness.style.display = 'block';
+                termBusiness.style.display = 'none';
+                termNonBusiness.required = true;
+                if (termNonBusiness.options.length > 1) {
+                    termNonBusiness.selectedIndex = 1;
+                }
+                hiddenTerm.value = termNonBusiness.value;
+            } else {
+                termNonBusiness.style.display = 'block';
+                termBusiness.style.display = 'none';
+            }
+            
+            recalculate();
+        }
 
         function recalculate() {
             const type = document.querySelector('[name="lending_type"]').value;
-            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value);
-            const termRaw = document.querySelector('[name="lending_type_term"]').value;
-            const term = parseInt(termRaw);
+            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
+            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
+            const termBusiness = document.getElementById('lending_type_term_business');
+            const hiddenTerm = document.getElementById('lending_type_term');
+            
+            // Get term from visible dropdown
+            const term = termBusiness.style.display === 'block' ? termBusiness.value : termNonBusiness.value;
+            hiddenTerm.value = term;
+            
+            const termMonths = term ? parseInt(term.split(' ')[0]) : 0;
 
             showDocs(type);
 
-
             document.getElementById('calc-type').textContent = type || '-';
 
-
-            if (!type || !amount || !term || amount <= 0) {
+            if (!type || !amount || !termMonths || amount <= 0) {
                 document.getElementById('calc-monthly').textContent = '₱-';
                 document.getElementById('calc-term-sub').textContent = 'Fill in amount & term to compute.';
                 document.getElementById('calc-amount').textContent = amount > 0 ? '₱' + fmt(amount) : '-';
                 document.getElementById('calc-rate').textContent = type && RATES[type] ? (RATES[type] * 100).toFixed(1) + '% / mo' : '-';
-                document.getElementById('calc-term').textContent = term ? termRaw : '-';
+                document.getElementById('calc-term').textContent = term || '-';
                 document.getElementById('calc-total').textContent = '-';
                 document.getElementById('calc-interest').textContent = '-';
                 return;
@@ -986,18 +1022,17 @@
 
             const r = RATES[type] ?? 0.015;
 
-            const monthly = amount * r * Math.pow(1 + r, term) / (Math.pow(1 + r, term) - 1);
-            const total = monthly * term;
+            const monthly = amount * r * Math.pow(1 + r, termMonths) / (Math.pow(1 + r, termMonths) - 1);
+            const total = monthly * termMonths;
             const interest = total - amount;
 
             document.getElementById('calc-monthly').textContent = '₱' + fmt(monthly);
-            document.getElementById('calc-term-sub').textContent = 'Over ' + termRaw;
+            document.getElementById('calc-term-sub').textContent = 'Over ' + term;
             document.getElementById('calc-amount').textContent = '₱' + fmt(amount);
             document.getElementById('calc-rate').textContent = (r * 100).toFixed(1) + '% / mo';
-            document.getElementById('calc-term').textContent = termRaw;
+            document.getElementById('calc-term').textContent = term;
             document.getElementById('calc-total').textContent = '₱' + fmt(total);
             document.getElementById('calc-interest').textContent = '₱' + fmt(interest);
-
 
             document.getElementById('hidden-monthly').value = monthly.toFixed(2);
             document.getElementById('hidden-total').value = total.toFixed(2);
