@@ -356,7 +356,7 @@
                     <a href="{{ route('lendings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
-                        <span>Assistance process</span>
+                        <span>Assistance Process</span>
                     </a>
                     <a href="{{ route('dashboard.members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">
