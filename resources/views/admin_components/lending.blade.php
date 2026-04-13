@@ -144,6 +144,94 @@
         </div>
     </div>
 
+    <!-- Late Fee Settings & Penalty Table -->
+    <div class="card mt-6">
+        <div class="p-4 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-900">Late Fee Penalty Settings</h3>
+            <p class="text-sm text-gray-500">Configure penalty for overdue loans</p>
+        </div>
+        <div class="p-4">
+            <form method="POST" action="{{ route('loan.settings.update') }}" class="flex flex-wrap items-end gap-4">
+                @csrf
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Late Fee (%)</label>
+                    <input type="number" name="late_fee_percentage" step="0.01" min="0" max="100" 
+                        value="{{ $lateFeePercentage ?? 2.00 }}" 
+                        class="input" style="width: 120px;" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Grace Period (months)</label>
+                    <input type="number" name="grace_period_months" step="1" min="0" max="12" 
+                        value="{{ $gracePeriodMonths ?? 1 }}" 
+                        class="input" style="width: 120px;" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="save" class="w-4 h-4"></i>
+                    Update
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overdue Penalties Table -->
+    @if(count($penalizedLoans ?? []) > 0)
+    <div class="card mt-6">
+        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">Overdue Penalties</h3>
+                <p class="text-sm text-gray-500">Loans with applied late fees</p>
+            </div>
+            <span class="badge badge-danger">{{ count($penalizedLoans) }} Overdue</span>
+        </div>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Loan Amount</th>
+                        <th>Due Date</th>
+                        <th>Months Overdue</th>
+                        <th>Late Fee</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($penalizedLoans as $penalty)
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                                        <span class="text-red-600 font-semibold">
+                                            {{ strtoupper(substr(explode(' ', $penalty['member_name'])[0] ?? 'U', 0, 1) . substr(explode(' ', $penalty['member_name'])[1] ?? '', 0, 1)) }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">{{ $penalty['member_name'] }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-sm font-semibold text-gray-900">₱{{ number_format($penalty['lending_amount'], 0) }}</td>
+                            <td class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($penalty['due_date'])->format('M d, Y') }}</td>
+                            <td class="text-sm text-gray-600">{{ $penalty['months_overdue'] }}</td>
+                            <td class="text-sm font-semibold text-red-600">₱{{ number_format($penalty['late_fee'], 2) }}</td>
+                            <td>
+                                <span class="badge badge-danger">Overdue</span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @else
+    <div class="card mt-6">
+        <div class="p-6 text-center">
+            <i data-lucide="check-circle" class="w-12 h-12 mx-auto mb-3 text-green-500"></i>
+            <p class="text-gray-500">No overdue penalties at this time</p>
+        </div>
+    </div>
+    @endif
+
     <!-- Loan Detail Modal -->
     <div id="loanDetailModal" class="modal-overlay hidden">
         <div class="modal max-w-2xl">

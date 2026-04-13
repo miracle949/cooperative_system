@@ -293,6 +293,25 @@ class lendingController extends Controller
             ? lending_status_tbl::where('lending_id', $selectedLoan->id)->first()
             : null;
 
+        if ($selectedLoan && !$lendingStatus && $selectedLoan->status === 'Approved') {
+            $termMonths = (int) filter_var($selectedLoan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            $interestRate = ($selectedLoan->lending_amount > 0 && $selectedLoan->total_interest > 0)
+                ? round(($selectedLoan->total_interest / $selectedLoan->lending_amount) * 100, 2)
+                : 0;
+
+            $lendingStatus = lending_status_tbl::create([
+                'lending_id' => $selectedLoan->id,
+                'user_id' => $selectedLoan->user_id,
+                'remaining_balance' => $selectedLoan->total_payment,
+                'total_paid' => 0,
+                'payments_made' => 0,
+                'total_payments' => $termMonths,
+                'interest_rate' => $interestRate,
+                'next_due_date' => now()->addMonth()->format('Y-m-d'),
+                'status' => 'Active',
+            ]);
+        }
+
         $paymentHistory = $selectedLoan
             ? lending_repayments_tbl::where('lending_id', $selectedLoan->id)
                 ->orderBy('payment_date', 'desc')->get()

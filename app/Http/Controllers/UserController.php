@@ -604,7 +604,80 @@ class UserController extends Controller
         
         $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
         
-        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings'));
+        $lateFeeSettings = Loan_settings_tbl::first();
+        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
+        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
+        
+        $penalizedLoans = $this->calculatePenalties($lateFeePercentage, $gracePeriodMonths);
+        
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings', 'lateFeePercentage', 'gracePeriodMonths', 'penalizedLoans'));
+    }
+
+    private function calculatePenalties($lateFeePercentage, $gracePeriodMonths)
+    {
+        $today = now();
+        $penalizedLoans = [];
+        
+        $approvedLoans = lending_program_tbl::with('user')
+            ->where('status', 'Approved')
+            ->get();
+        
+        foreach ($approvedLoans as $loan) {
+            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            
+            if (!$loan->due_date && $loan->created_at) {
+                $dueDate = $loan->created_at->addMonths($termMonths);
+                $loan->due_date = $dueDate->format('Y-m-d');
+                $loan->save();
+            }
+            
+            if (!$loan->due_date) {
+                continue;
+            }
+            
+            $dueDate = \Carbon\Carbon::parse($loan->due_date);
+            $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
+            
+            if ($today->gte($penaltyStartDate)) {
+                $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
+                $monthsOverdue = max(0, $monthsOverdue);
+                
+                if ($monthsOverdue > 0) {
+                    $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
+                    
+                    $loan->late_fee = $lateFee;
+                    $loan->penalty_applied_at = now();
+                    $loan->save();
+                    
+                    $penalizedLoans[] = [
+                        'id' => $loan->id,
+                        'member_name' => ($loan->user->first_name ?? 'Unknown') . ' ' . ($loan->user->last_name ?? ''),
+                        'lending_amount' => $loan->lending_amount,
+                        'due_date' => $loan->due_date,
+                        'months_overdue' => $monthsOverdue,
+                        'late_fee' => $lateFee,
+                        'status' => 'Overdue'
+                    ];
+                }
+            }
+        }
+        
+        return $penalizedLoans;
+    }
+
+    public function updateLoanSettings(Request $request)
+    {
+        $request->validate([
+            'late_fee_percentage' => 'required|numeric|min:0|max:100',
+            'grace_period_months' => 'required|integer|min:0|max:12'
+        ]);
+        
+        Loan_settings_tbl::query()->update([
+            'late_fee_percentage' => $request->late_fee_percentage,
+            'grace_period_months' => $request->grace_period_months
+        ]);
+        
+        return redirect()->back()->with('success', 'Loan penalty settings updated successfully.');
     }
 
     public function approveLoan(Request $request, $id)

@@ -8,6 +8,7 @@ use App\Models\Membervehi_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\dividend_rates_tbl;
 use App\Models\lending_program_tbl;
+use App\Models\Loan_settings_tbl;
 use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
 use App\Models\Spouse_tbl;
@@ -293,6 +294,56 @@ class UsersHandle extends Controller
 
         $activeLoansCount = $loans->where('status', 'Approved')->count();
 
+        // ── Late Fee Penalties ────────────────────────────────────────────────────
+        $lateFeeSettings = Loan_settings_tbl::first();
+        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
+        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
+        $today = Carbon::today();
+        $penalizedLoans = [];
+        $totalLateFees = 0;
+
+        foreach ($loans->where('status', 'Approved') as $loan) {
+            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            
+            if (!$loan->due_date && $loan->created_at) {
+                $dueDate = $loan->created_at->copy()->addMonths($termMonths);
+                $loan->due_date = $dueDate->format('Y-m-d');
+                $loan->save();
+            }
+            
+            if (!$loan->due_date) {
+                continue;
+            }
+            
+            $dueDate = Carbon::parse($loan->due_date);
+            $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
+            
+            if ($today->gte($penaltyStartDate)) {
+                $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
+                $monthsOverdue = max(0, $monthsOverdue);
+                
+                if ($monthsOverdue > 0) {
+                    $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
+                    
+                    $loan->late_fee = $lateFee;
+                    $loan->penalty_applied_at = now();
+                    $loan->save();
+                    
+                    $penalizedLoans[] = [
+                        'id' => $loan->id,
+                        'lending_type' => $loan->lending_type,
+                        'lending_amount' => $loan->lending_amount,
+                        'due_date' => $loan->due_date,
+                        'months_overdue' => $monthsOverdue,
+                        'late_fee' => $lateFee,
+                    ];
+                    $totalLateFees += $lateFee;
+                }
+            }
+        }
+
+        $overdueCount = count($penalizedLoans);
+
         return view('members_components.member_portal', [
             'username' => $username,
             'email' => $email,
@@ -313,6 +364,13 @@ class UsersHandle extends Controller
             // Loans
             'loans' => $loans,
             'activeLoansCount' => $activeLoansCount,
+
+            // Late Fee Penalties
+            'penalizedLoans' => $penalizedLoans,
+            'totalLateFees' => $totalLateFees,
+            'overdueCount' => $overdueCount,
+            'lateFeePercentage' => $lateFeePercentage,
+            'gracePeriodMonths' => $gracePeriodMonths,
         ]);
     }
 

@@ -80,20 +80,23 @@
                     </div>
                 </div>
 
-                {{-- Credit Score (static as requested) --}}
-                <div class="card-box">
+                {{-- Overdue Loans / Late Fees --}}
+                <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
                     <div class="card-transparent">
                         <div class="card-head"></div>
-                        <div class="card-icon mt-2 d-flex justify-content-center align-items-center"
-                            style="border-radius: 10px">
-                            <i class="fa-solid fa-award"></i>
+                        <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius: 10px">
+                            <i class="fa-solid fa-exclamation-triangle" style="color: {{ $overdueCount > 0 ? '#dc2626' : '#22c55e' }}"></i>
                         </div>
-                        <p class="mt-4">Credit score</p>
-                        <span>80 pts</span>
+                        <p class="mt-4">Overdue Loans</p>
+                        <span>{{ $overdueCount }} Loan(s)</span>
                     </div>
                     <div class="card-update">
                         <div class="update">
-                            <p>Good Standing</p>
+                            @if($overdueCount > 0)
+                                <p style="color: #dc2626;">Total: ₱{{ number_format($totalLateFees, 2) }}</p>
+                            @else
+                                <p style="color: #22c55e;">No overdue</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -159,6 +162,8 @@
                                         : 0;
 
                                     $statusGroup = in_array($loan->status, ['Rejected', 'Declined']) ? 'Rejected' : $loan->status;
+
+                                    $penaltyInfo = collect($penalizedLoans ?? [])->firstWhere('id', $loan->id);
                                 @endphp
                                 <div class="loan-box" data-status="{{ $statusGroup }}">
                                     <div class="box-head">
@@ -167,8 +172,13 @@
                                             <p>Applied on {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</p>
                                         </div>
                                         <div class="box-icon">
-                                            <div class="dot"></div>
-                                            <span>{{ $loan->status }}</span>
+                                            @if($penaltyInfo)
+                                                <div class="dot" style="background: #dc2626;"></div>
+                                                <span style="color: #dc2626;">Overdue</span>
+                                            @else
+                                                <div class="dot"></div>
+                                                <span>{{ $loan->status }}</span>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -191,6 +201,15 @@
                                                 <h5>₱{{ number_format($remainingBalance, 2) }}</h5>
                                             </div>
                                         </div>
+
+                                        @if($penaltyInfo)
+                                        <div class="parent-box" style="margin-top: 10px;">
+                                            <div class="box remaining-balance" style="border: 1px solid #dc2626; background: #fef2f2;">
+                                                <p style="color: #dc2626;">Late Fee ({{ $penaltyInfo['months_overdue'] }} month(s) overdue)</p>
+                                                <h5 style="color: #dc2626;">₱{{ number_format($penaltyInfo['late_fee'], 2) }}</h5>
+                                            </div>
+                                        </div>
+                                        @endif
 
                                         <div class="parent-progress">
                                             <div class="progress-head">

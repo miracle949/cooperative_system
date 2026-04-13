@@ -12,6 +12,8 @@ class Loan_settings_tbl extends Model
         "loan_type",
         "interest_rate",
         "max_amount",
+        "late_fee_percentage",
+        "grace_period_months",
     ];
 
     public static function getRate($loanType)

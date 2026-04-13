@@ -155,6 +155,7 @@ Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name(
 Route::post("/loan/create-admin", [UserController::class, "createLoanAdmin"])->name("loan.create-admin");
 Route::post("/loan/archive/{id}", [UserController::class, "archiveLoan"])->name("loan.archive");
 Route::post("/loan/unarchive/{id}", [UserController::class, "unarchiveLoan"])->name("loan.unarchive");
+Route::post("/loan/settings/update", [UserController::class, "updateLoanSettings"])->name("loan.settings.update");
 Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
 Route::post("/sharecapital/admin/store", [UserController::class, "adminStoreShareCapital"])->name("sharecapital.admin.store");
 Route::get("/sharecapital/member/{id}/balance", [UserController::class, "getMemberShareCapitalBalance"])->name("sharecapital.member.balance");
