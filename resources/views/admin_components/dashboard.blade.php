@@ -192,10 +192,13 @@
             </div>
 
             <div class="h-64 flex items-end justify-between gap-2 px-4">
+                @php
+                    $maxValue = max($savingsByMonth) ?: 1;
+                @endphp
                 @forelse($savingsByMonth as $month => $value)
                     <div class="flex-1 flex flex-col items-center gap-2">
                         <div class="w-full bg-primary-100 rounded-t-lg hover:bg-primary-200 transition-colors cursor-pointer relative group"
-                            style="height: {{ max($value * 2.5, 10) }}px">
+                            style="height: {{ max(($value / $maxValue) * 200, 5) }}px">
                             <div
                                 class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">
                                 ₱{{ $value }}K
@@ -207,7 +210,7 @@
                     @foreach(['Jan' => 0, 'Feb' => 0, 'Mar' => 0, 'Apr' => 0, 'May' => 0, 'Jun' => 0] as $month => $value)
                     <div class="flex-1 flex flex-col items-center gap-2">
                         <div class="w-full bg-primary-100 rounded-t-lg hover:bg-primary-200 transition-colors cursor-pointer relative group"
-                            style="height: 10px">
+                            style="height: 5px">
                             <div
                                 class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">
                                 ₱0K

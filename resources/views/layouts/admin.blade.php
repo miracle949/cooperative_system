@@ -243,8 +243,14 @@
             margin: 0 1rem;
             max-height: 90vh;
             overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
             display: flex;
             flex-direction: column;
+        }
+
+        /* Hide scrollbar for Chrome/Safari/Edge */
+        .modal::-webkit-scrollbar {
+            display: none;
         }
 
         .modal.max-w-4xl {
@@ -350,7 +356,7 @@
                     <a href="{{ route('lendings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
-                        <span>Assistance process</span>
+                        <span>Assistance Management</span>
                     </a>
                     <a href="{{ route('dashboard.members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">

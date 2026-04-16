@@ -49,6 +49,10 @@
                         <i data-lucide="building-2" class="w-5 h-5"></i>
                         Company
                     </a>
+                    <a href="#loans" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
+                        <i data-lucide="percent" class="w-5 h-5"></i>
+                        Loan Settings
+                    </a>
                 </nav>
             </div>
         </div>
@@ -276,6 +280,40 @@
                         Save Changes
                     </button>
                 </div>
+            </div>
+
+            <!-- Loan Settings -->
+            <div id="loans" class="card p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-6">Loan Settings</h2>
+                <p class="text-sm text-gray-500 mb-6">Configure interest rates for each loan type. Values are in percentage (%) per month.</p>
+
+                <form method="POST" action="{{ route('settings.update') }}">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Personal Loan Interest Rate (%)</label>
+                            <input type="number" name="interest_personal" class="input" step="0.1" min="0" max="20" value="{{ $loanSettings['Personal Loan'] ?? 2 }}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Emergency Loan Interest Rate (%)</label>
+                            <input type="number" name="interest_emergency" class="input" step="0.1" min="0" max="20" value="{{ $loanSettings['Emergency Loan'] ?? 2 }}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Business Loan Interest Rate (%)</label>
+                            <input type="number" name="interest_business" class="input" step="0.1" min="0" max="20" value="{{ $loanSettings['Business Loan'] ?? 2 }}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Education Loan Interest Rate (%)</label>
+                            <input type="number" name="interest_education" class="input" step="0.1" min="0" max="20" value="{{ $loanSettings['Education Loan'] ?? 2 }}">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" class="btn btn-primary">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

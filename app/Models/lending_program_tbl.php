@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class lending_program_tbl extends Model
 {
+    public $incrementing = true;
     protected $table = "lending_program_tbls";
 
     protected $fillable = [
@@ -21,6 +22,9 @@ class lending_program_tbl extends Model
         'purpose_loan',
         'status',
         'decline_reason',
+        'due_date',
+        'late_fee',
+        'penalty_applied_at',
 
         // Shared
         'valid_id',

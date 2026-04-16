@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
+use App\Models\Users_tbl;
 use Carbon\Carbon;
 
 class SavingsController extends Controller
@@ -251,7 +252,7 @@ class SavingsController extends Controller
         $user = Auth::user();
         $amount = (float) session('sav_pending_amount', 0);
         $note = session('sav_pending_note');
-        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdraw'
+        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdrawal'
         $referenceNo = 'GCASH-' . now()->format('YmdHis');
 
         session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
@@ -309,14 +310,28 @@ class SavingsController extends Controller
     /**
      * Download receipt as JPG image.
      */
-    public function downloadReceipt(string $referenceNo)
+    public function downloadReceipt(string $referenceNo, Request $request)
     {
         $user = Auth::user();
-        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
+        
+        // Check if this is admin requesting - find transaction by reference_no
+        $tx = savings_transaction_tbl::where('reference_no', $referenceNo)->first();
+        
+        if (!$tx) {
+            // Fall back to member lookup
+            $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
+            $tx = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+                ->where('reference_no', $referenceNo)
+                ->firstOrFail();
+        }
 
-        $tx = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
-            ->where('reference_no', $referenceNo)
-            ->firstOrFail();
+        // Get user for the transaction
+        $savingsAccount = savings_account_tbl::find($tx->savings_account_id);
+        $transactionUser = $savingsAccount ? Users_tbl::find($savingsAccount->user_id) : null;
+        
+        if (!$transactionUser) {
+            $transactionUser = $user;
+        }
 
         $type = ucfirst($tx->type);
         $date = \Carbon\Carbon::parse($tx->transaction_date)->format('F d, Y');
@@ -324,7 +339,7 @@ class SavingsController extends Controller
         $amount = 'PHP ' . number_format($tx->amount, 2);
         $balance = 'PHP ' . number_format($tx->balance_after, 2);
         $note = $tx->note ?? 'N/A';
-        $member = $user->first_name . ' ' . $user->last_name;
+        $member = $transactionUser->first_name . ' ' . $transactionUser->last_name;
         $isDeposit = $tx->type === 'deposit';
 
         // Font paths
@@ -438,9 +453,94 @@ class SavingsController extends Controller
         $imageData = ob_get_clean();
         imagedestroy($img);
 
+        // Check if request is for inline view (for admin modal display)
+        if ($request->query('view') === 'inline') {
+            $base64 = 'data:image/jpeg;base64,' . base64_encode($imageData);
+            return response()->json(['image' => $base64]);
+        }
+
         return response($imageData, 200, [
             'Content-Type' => 'image/jpeg',
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
+    }
+
+    /**
+     * Handle admin savings transaction (deposit/withdrawal for any member).
+     */
+    public function adminStoreSavings(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|exists:users_tbls,id',
+            'amount' => 'required|numeric|min:1',
+            'type' => 'required|string|in:deposit,withdrawal',
+            'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        // Get member's savings account
+        $savingsAccount = savings_account_tbl::where('user_id', $request->member_id)->first();
+
+        // If no savings account exists, create one
+        if (!$savingsAccount) {
+            $savingsAccount = savings_account_tbl::create([
+                'user_id' => $request->member_id,
+                'balance' => 0,
+                'status' => 'active',
+                'opened_at' => Carbon::today(),
+            ]);
+        }
+
+        $amount = $request->amount;
+        $type = $request->type;
+        
+        // Handle withdrawal - check balance
+        if ($type === 'withdrawal') {
+            if ($savingsAccount->balance < $amount) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient balance. Available: ₱' . number_format($savingsAccount->balance, 2)
+                ], 422);
+            }
+            $newBalance = $savingsAccount->balance - $amount;
+        } else {
+            $newBalance = $savingsAccount->balance + $amount;
+        }
+
+        // Update balance
+        $savingsAccount->update(['balance' => $newBalance]);
+
+        // Generate reference number
+        $referenceNo = $this->generateReferenceNo($type);
+
+        // Create transaction record
+        $transaction = savings_transaction_tbl::create([
+            'savings_account_id' => $savingsAccount->id,
+            'type' => $type,
+            'amount' => $amount,
+            'payment_method' => $request->payment_method,
+            'balance_after' => $newBalance,
+            'note' => $request->note,
+            'reference_no' => $referenceNo,
+            'transaction_date' => Carbon::today(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($type) . ' of ₱' . number_format($amount, 2) . ' successful!',
+            'reference_no' => $referenceNo,
+            'new_balance' => $newBalance,
+        ]);
+    }
+
+    /**
+     * Get member's current savings balance.
+     */
+    public function getMemberBalance($memberId)
+    {
+        $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
+        $balance = $savingsAccount ? $savingsAccount->balance : 0;
+        
+        return response()->json(['balance' => $balance]);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class share_capital_transaction_tbl extends Model
 {
+    public $incrementing = true;
     protected $table = "share_capital_transaction_tbls";
 
     protected $fillable = [

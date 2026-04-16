@@ -13,11 +13,13 @@ use App\Models\share_capital_account_tbl;
 use App\Models\share_capital_transaction_tbl;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
+use App\Models\Loan_settings_tbl;
 use App\Models\system_settings_tbl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Mail\ApprovedMail;
 use App\Mail\ShareCapital;
 use App\Mail\DeclinedMail;
@@ -511,7 +513,7 @@ class UserController extends Controller
         $lastContribution = savings_transaction_tbl::orderByDesc('created_at')->first();
 
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
-        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')->sum('amount') ?? 0;
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')->sum('amount') ?? 0;
 
         $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
             ->select('id', 'first_name', 'last_name')
@@ -520,22 +522,26 @@ class UserController extends Controller
 
         $monthlyData = [];
         $maxAmount = 0;
+        
+        // Use simple sequential months from current month backward
         for ($i = 5; $i >= 0; $i--) {
             $monthDate = now()->subMonths($i);
-            $amount = savings_transaction_tbl::where('type', 'deposit')
+            
+            $amount = (float) savings_transaction_tbl::where('type', 'deposit')
                 ->whereYear('created_at', $monthDate->format('Y'))
                 ->whereMonth('created_at', $monthDate->format('m'))
                 ->sum('amount');
+            
             $monthlyData[] = [
                 'name' => $monthDate->format('F'),
                 'year' => $monthDate->format('Y'),
-                'amount' => $amount,
-                'bar_height' => 0
+                'amount' => $amount
             ];
             if ($amount > $maxAmount) {
                 $maxAmount = $amount;
             }
         }
+        
         foreach ($monthlyData as &$data) {
             $data['bar_height'] = $maxAmount > 0 ? ($data['amount'] / $maxAmount) * 150 : 0;
         }
@@ -558,7 +564,6 @@ class UserController extends Controller
             'totalDeposits',
             'totalWithdrawals',
             'allMembers',
-            'monthlyData',
             'highestMonth'
         ));
     }
@@ -593,8 +598,92 @@ class UserController extends Controller
         }
 
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
+<<<<<<< HEAD
 
         return view("admin_components.lending", compact('loans', 'statusFilter'));
+=======
+        
+        $allMembers = Users_tbl::where('role', 'member')
+            ->orderBy('first_name')
+            ->get();
+        
+        $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+        
+        $lateFeeSettings = Loan_settings_tbl::first();
+        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
+        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
+        
+        $penalizedLoans = $this->calculatePenalties($lateFeePercentage, $gracePeriodMonths);
+        
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings', 'lateFeePercentage', 'gracePeriodMonths', 'penalizedLoans'));
+    }
+
+    private function calculatePenalties($lateFeePercentage, $gracePeriodMonths)
+    {
+        $today = now();
+        $penalizedLoans = [];
+        
+        $approvedLoans = lending_program_tbl::with('user')
+            ->where('status', 'Approved')
+            ->get();
+        
+        foreach ($approvedLoans as $loan) {
+            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            
+            if (!$loan->due_date && $loan->created_at) {
+                $dueDate = $loan->created_at->addMonths($termMonths);
+                $loan->due_date = $dueDate->format('Y-m-d');
+                $loan->save();
+            }
+            
+            if (!$loan->due_date) {
+                continue;
+            }
+            
+            $dueDate = \Carbon\Carbon::parse($loan->due_date);
+            $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
+            
+            if ($today->gte($penaltyStartDate)) {
+                $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
+                $monthsOverdue = max(0, $monthsOverdue);
+                
+                if ($monthsOverdue > 0) {
+                    $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
+                    
+                    $loan->late_fee = $lateFee;
+                    $loan->penalty_applied_at = now();
+                    $loan->save();
+                    
+                    $penalizedLoans[] = [
+                        'id' => $loan->id,
+                        'member_name' => ($loan->user->first_name ?? 'Unknown') . ' ' . ($loan->user->last_name ?? ''),
+                        'lending_amount' => $loan->lending_amount,
+                        'due_date' => $loan->due_date,
+                        'months_overdue' => $monthsOverdue,
+                        'late_fee' => $lateFee,
+                        'status' => 'Overdue'
+                    ];
+                }
+            }
+        }
+        
+        return $penalizedLoans;
+    }
+
+    public function updateLoanSettings(Request $request)
+    {
+        $request->validate([
+            'late_fee_percentage' => 'required|numeric|min:0|max:100',
+            'grace_period_months' => 'required|integer|min:0|max:12'
+        ]);
+        
+        Loan_settings_tbl::query()->update([
+            'late_fee_percentage' => $request->late_fee_percentage,
+            'grace_period_months' => $request->grace_period_months
+        ]);
+        
+        return redirect()->back()->with('success', 'Loan penalty settings updated successfully.');
+>>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
     }
 
     public function approveLoan(Request $request, $id)
@@ -645,7 +734,8 @@ class UserController extends Controller
         $statusFilter = $request->get('status', 'all');
 
         $query = share_capital_transaction_tbl::with('shareCapitalAccount.user')
-            ->where('archived', '!=', 1);
+            ->where('archived', '!=', 1)
+            ->where('status', '!=', 'failed');
 
         if ($search) {
             $query->whereHas('shareCapitalAccount.user', function ($q) use ($search) {
@@ -664,12 +754,27 @@ class UserController extends Controller
 
         $transactions = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        $totalContributions = share_capital_transaction_tbl::where('type', 'subscription')
-            ->where('status', 'completed')
+        $totalContributions = share_capital_transaction_tbl::where('type', 'Deposit')
+            ->where('status', 'Completed')
             ->sum('total_amount') ?? 0;
 
-        $perShareValue = 100;
-        $totalShares = share_capital_account_tbl::sum('total_shares') ?? 0;
+        $totalContributions = $totalContributions - (
+            share_capital_transaction_tbl::where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('total_amount') ?? 0
+        );
+
+        $perShareValue = 1000;
+        
+        $deposits = share_capital_transaction_tbl::where('type', 'Deposit')
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+        
+        $withdrawals = share_capital_transaction_tbl::where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+        
+        $totalShares = $deposits - $withdrawals;
         $currentValue = $totalShares * $perShareValue;
 
         $lastContribution = share_capital_transaction_tbl::orderBy('created_at', 'desc')->first();
@@ -707,6 +812,151 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Share capital transaction restored successfully.');
     }
 
+    public function adminStoreShareCapital(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|exists:users_tbls,id',
+            'shares' => 'required|numeric|min:1',
+            'type' => 'required|string|in:Deposit,Withdrawal',
+            'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
+            'note' => 'nullable|string|max:255',
+        ]);
+
+        $memberId = $request->member_id;
+        $shares = (int) $request->shares;
+        $amountPerShare = 1000;
+        $totalAmount = $shares * $amountPerShare;
+        $type = $request->type;
+        $perShareValue = 1000;
+
+        $account = share_capital_account_tbl::where('user_id', $memberId)->first();
+
+        if (!$account) {
+            $account = share_capital_account_tbl::create([
+                'user_id' => $memberId,
+                'total_shares' => 0,
+                'total_amount' => 0,
+                'status' => 'Active',
+                'acquired_date' => Carbon::now(),
+            ]);
+        }
+
+        if ($type === 'Withdrawal') {
+            if ($account->total_shares < $shares) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient shares. Available: ' . $account->total_shares . ' shares'
+                ], 422);
+            }
+            $newShares = $account->total_shares - $shares;
+            $newAmount = $account->total_amount - $totalAmount;
+        } else {
+            $newShares = $account->total_shares + $shares;
+            $newAmount = $account->total_amount + $totalAmount;
+        }
+
+        $account->update([
+            'total_shares' => $newShares,
+            'total_amount' => $newAmount,
+        ]);
+
+        $referenceNo = 'SC-' . date('YmdHis') . rand(10, 99);
+
+        share_capital_transaction_tbl::create([
+            'share_capital_account_id' => $account->id,
+            'user_id' => $memberId,
+            'type' => $type,
+            'shares' => $shares,
+            'amount_per_share' => $amountPerShare,
+            'total_amount' => $totalAmount,
+            'payment_method' => $request->payment_method,
+            'reference_no' => $referenceNo,
+            'transaction_date' => Carbon::today(),
+            'status' => 'Completed',
+            'note' => $request->note,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($type) . ' of ' . $shares . ' shares (₱' . number_format($totalAmount, 2) . ') successful!',
+            'reference_no' => $referenceNo,
+            'new_shares' => $newShares,
+            'new_amount' => $newAmount,
+        ]);
+    }
+
+    public function getMemberShareCapitalBalance($memberId)
+    {
+        $account = share_capital_account_tbl::where('user_id', $memberId)->first();
+        
+        return response()->json([
+            'total_shares' => $account ? $account->total_shares : 0,
+            'total_amount' => $account ? $account->total_amount : 0,
+        ]);
+    }
+
+    public function updateWithdrawalStatus(Request $request, $id)
+    {
+        $request->validate([
+            'action' => 'required|string|in:accept,reject',
+        ]);
+
+        $transaction = share_capital_transaction_tbl::findOrFail($id);
+
+        if ($transaction->type !== 'Withdrawal') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This is not a withdrawal transaction.',
+            ], 400);
+        }
+
+        if ($transaction->status !== 'Pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This withdrawal has already been processed.',
+            ], 400);
+        }
+
+        $action = $request->action;
+
+        if ($action === 'accept') {
+            $account = DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->first();
+
+            if (!$account || $account->total_shares < $transaction->shares) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient shares to process this withdrawal.',
+                ], 400);
+            }
+
+            DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->decrement('total_shares', $transaction->shares);
+
+            DB::table('share_capital_account_tbls')
+                ->where('id', $transaction->share_capital_account_id)
+                ->decrement('total_amount', $transaction->total_amount);
+
+            $transaction->status = 'Approved';
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal request accepted successfully.',
+            ]);
+        } else {
+            $transaction->status = 'Rejected';
+            $transaction->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal request rejected.',
+            ]);
+        }
+    }
+
     public function dashboard_reports(Request $request)
     {
         $fromDate = $request->get('from_date', now()->startOfMonth()->format('Y-m-d'));
@@ -718,7 +968,7 @@ class UserController extends Controller
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
 
-        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdraw')
+        $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')
             ->whereBetween('created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->sum('amount') ?? 0;
 
@@ -753,10 +1003,19 @@ class UserController extends Controller
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
 
-            $shareCap = share_capital_transaction_tbl::where('type', 'subscription')
+            $depositCap = share_capital_transaction_tbl::where('type', 'Deposit')
+                ->where('status', 'Completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
                 ->sum('total_amount') ?? 0;
+
+            $withdrawCap = share_capital_transaction_tbl::where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNum)
+                ->sum('total_amount') ?? 0;
+
+            $shareCap = $depositCap - $withdrawCap;
 
             $savingsTrend[] = round($deposits / 1000, 1);
             $lendingTrend[] = round($loans / 1000, 1);
@@ -828,7 +1087,7 @@ class UserController extends Controller
             )
             ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
             ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
-            ->where('st.type', 'withdraw')
+            ->where('st.type', 'withdrawal')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->orderBy('st.created_at', 'desc')
             ->limit(10)
@@ -857,7 +1116,7 @@ class UserController extends Controller
             ->count();
 
         $withdrawalsCount = DB::table('savings_transaction_tbls as st')
-            ->where('st.type', 'withdraw')
+            ->where('st.type', 'withdrawal')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
             ->count();
 
@@ -900,7 +1159,33 @@ class UserController extends Controller
             'company_email' => system_settings_tbl::getValue('company_email', ''),
         ];
 
-        return view("admin_components.settings", compact('adminUser', 'companySettings'));
+        $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+
+        if ($request->isMethod('POST')) {
+            $request->validate([
+                'interest_personal' => 'nullable|numeric|min:0|max:20',
+                'interest_emergency' => 'nullable|numeric|min:0|max:20',
+                'interest_business' => 'nullable|numeric|min:0|max:20',
+                'interest_education' => 'nullable|numeric|min:0|max:20',
+            ]);
+
+            if ($request->has('interest_personal')) {
+                Loan_settings_tbl::where('loan_type', 'Personal Loan')->update(['interest_rate' => $request->interest_personal]);
+            }
+            if ($request->has('interest_emergency')) {
+                Loan_settings_tbl::where('loan_type', 'Emergency Loan')->update(['interest_rate' => $request->interest_emergency]);
+            }
+            if ($request->has('interest_business')) {
+                Loan_settings_tbl::where('loan_type', 'Business Loan')->update(['interest_rate' => $request->interest_business]);
+            }
+            if ($request->has('interest_education')) {
+                Loan_settings_tbl::where('loan_type', 'Education Loan')->update(['interest_rate' => $request->interest_education]);
+            }
+
+            $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+        }
+
+        return view("admin_components.settings", compact('adminUser', 'companySettings', 'loanSettings'));
     }
 
     public function dashboard_archives(Request $request)

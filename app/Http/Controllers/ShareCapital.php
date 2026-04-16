@@ -23,8 +23,38 @@ class ShareCapital extends Controller
             ->where('user_id', $memberId)
             ->first();
 
-        $currentBalance = $account->total_amount ?? 0;
-        $currentShares = $account->total_shares ?? 0;
+        if ($account) {
+            $depositAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $currentBalance = $depositAmount - $withdrawalAmount;
+
+            $deposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('shares') ?? 0;
+
+            $withdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('shares') ?? 0;
+
+            $currentShares = $deposits - $withdrawals;
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
 
         // Dividend rate
         $dividendRateRecord = null;
@@ -59,6 +89,7 @@ class ShareCapital extends Controller
         // Contributions
         $contributions = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('status', '!=', 'failed')
             ->orderByDesc('transaction_date')
             ->get();
 
@@ -141,11 +172,42 @@ class ShareCapital extends Controller
             ->where('user_id', $memberId)
             ->first();
 
-        $currentBalance = $account->total_amount ?? 0;
-        $currentShares = $account->total_shares ?? 0;
+        if ($account) {
+            $depositAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $currentBalance = $depositAmount - $withdrawalAmount;
+
+            $deposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('shares') ?? 0;
+
+            $withdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('shares') ?? 0;
+
+            $currentShares = $deposits - $withdrawals;
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
 
         $contributions = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('status', '!=', 'failed')
             ->orderByDesc('transaction_date')
             ->get();
 
@@ -364,8 +426,13 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
+=======
+
+            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+>>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
 
             return redirect()->route($redirectRoute)
                 ->with('success', 'Share capital request submitted successfully!')
@@ -423,7 +490,11 @@ class ShareCapital extends Controller
         session([
             'sc_pending_shares' => $shares,
             'sc_pending_note' => $request->input('note'),
+<<<<<<< HEAD
             'sc_pending_type' => $type,
+=======
+            'sc_pending_type' => $request->input('type', 'Deposit'),
+>>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
         ]);
 
         $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
@@ -459,7 +530,7 @@ class ShareCapital extends Controller
         $amountPerShare = 1000;
         $shares = (int) session('sc_pending_shares', 1);
         $note = session('sc_pending_note');
-        $type = session('sc_pending_type', 'Subscription');
+        $type = session('sc_pending_type', 'Deposit');
         $totalAmount = $shares * $amountPerShare;
         $now = Carbon::now();
         $referenceNo = 'GCASH-' . now()->format('YmdHis');
@@ -531,8 +602,12 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
+=======
+            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+>>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
 
             return redirect()->route($redirectRoute)
                 ->with('success', 'GCash payment successful!')
@@ -546,8 +621,12 @@ class ShareCapital extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
+=======
+            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+>>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
             return redirect()->route($redirectRoute)
                 ->with('error', 'GCash payment was received but failed to save. Please contact support.');
         }
@@ -558,10 +637,10 @@ class ShareCapital extends Controller
      */
     public function gcashFailed(Request $request)
     {
-        $type = session('sc_pending_type', 'Subscription');
+        $type = session('sc_pending_type', 'Deposit');
         session()->forget(['sc_pending_shares', 'sc_pending_note', 'sc_pending_type']);
 
-        $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
+        $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
         return redirect()->route($redirectRoute)
             ->with('error', 'GCash payment failed. Please try again.');
     }
@@ -574,11 +653,41 @@ class ShareCapital extends Controller
         $user = \App\Models\Users_tbl::findOrFail($id);
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('user_id', $id)
+            ->where('user_id', $memberId)
             ->first();
 
-        $currentBalance = $account->total_amount ?? 0;
-        $currentShares = $account->total_shares ?? 0;
+        if ($account) {
+            $depositAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $currentBalance = $depositAmount - $withdrawalAmount;
+
+            $deposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('shares') ?? 0;
+
+            $withdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('shares') ?? 0;
+
+            $currentShares = $deposits - $withdrawals;
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
 
         $dividendRateRecord = null;
         if ($this->tableExists('dividend_rates_tbls')) {

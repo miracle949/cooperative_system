@@ -555,7 +555,7 @@
                                         @if($row->status === 'Completed' || $row->status === null)
                                             <i class="fa fa-check-circle" style="color: #1a4a3a;"></i>
                                             <span>Completed</span>
-                                        @elseif($row->status === 'Pending')
+                                        @elseif($row->status === 'Pending' && strtolower($row->type) === 'withdrawal')
                                             <i class="fa fa-clock" style="color: #e6a817;"></i>
                                             <span>Pending</span>
                                         @else

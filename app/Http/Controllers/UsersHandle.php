@@ -8,6 +8,7 @@ use App\Models\Membervehi_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\dividend_rates_tbl;
 use App\Models\lending_program_tbl;
+use App\Models\Loan_settings_tbl;
 use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
 use App\Models\Family_tbl;
@@ -245,8 +246,20 @@ class UsersHandle extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-        $shareCapitalBalance = $shareCapitalAccount->total_amount ?? 0;
-        $shareCapitalShares = $shareCapitalAccount->total_shares ?? 0;
+        if ($shareCapitalAccount) {
+            $shareCapitalBalance = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $shareCapitalShares = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('shares') ?? 0;
+        } else {
+            $shareCapitalBalance = 0;
+            $shareCapitalShares = 0;
+        }
 
         // Dividend rate
         $dividendRateRecord = null;
@@ -282,6 +295,56 @@ class UsersHandle extends Controller
 
         $activeLoansCount = $loans->where('status', 'Approved')->count();
 
+        // ── Late Fee Penalties ────────────────────────────────────────────────────
+        $lateFeeSettings = Loan_settings_tbl::first();
+        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
+        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
+        $today = Carbon::today();
+        $penalizedLoans = [];
+        $totalLateFees = 0;
+
+        foreach ($loans->where('status', 'Approved') as $loan) {
+            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            
+            if (!$loan->due_date && $loan->created_at) {
+                $dueDate = $loan->created_at->copy()->addMonths($termMonths);
+                $loan->due_date = $dueDate->format('Y-m-d');
+                $loan->save();
+            }
+            
+            if (!$loan->due_date) {
+                continue;
+            }
+            
+            $dueDate = Carbon::parse($loan->due_date);
+            $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
+            
+            if ($today->gte($penaltyStartDate)) {
+                $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
+                $monthsOverdue = max(0, $monthsOverdue);
+                
+                if ($monthsOverdue > 0) {
+                    $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
+                    
+                    $loan->late_fee = $lateFee;
+                    $loan->penalty_applied_at = now();
+                    $loan->save();
+                    
+                    $penalizedLoans[] = [
+                        'id' => $loan->id,
+                        'lending_type' => $loan->lending_type,
+                        'lending_amount' => $loan->lending_amount,
+                        'due_date' => $loan->due_date,
+                        'months_overdue' => $monthsOverdue,
+                        'late_fee' => $lateFee,
+                    ];
+                    $totalLateFees += $lateFee;
+                }
+            }
+        }
+
+        $overdueCount = count($penalizedLoans);
+
         return view('members_components.member_portal', [
             'username' => $username,
             'email' => $email,
@@ -302,6 +365,13 @@ class UsersHandle extends Controller
             // Loans
             'loans' => $loans,
             'activeLoansCount' => $activeLoansCount,
+
+            // Late Fee Penalties
+            'penalizedLoans' => $penalizedLoans,
+            'totalLateFees' => $totalLateFees,
+            'overdueCount' => $overdueCount,
+            'lateFeePercentage' => $lateFeePercentage,
+            'gracePeriodMonths' => $gracePeriodMonths,
         ]);
     }
 
@@ -354,13 +424,44 @@ class UsersHandle extends Controller
             ->where('user_id', $memberId)
             ->first();
 
-        $currentBalance = $account->total_amount ?? 0;
-        $currentShares = $account->total_shares ?? 0;
+        if ($account) {
+            $depositAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $currentBalance = $depositAmount - $withdrawalAmount;
+
+            $deposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Deposit')
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('shares') ?? 0;
+
+            $withdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $account->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('shares') ?? 0;
+
+            $currentShares = $deposits - $withdrawals;
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
 
         // Fetch real contribution history
         $contributions = $account
             ? DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
+                ->where('status', '!=', 'failed')
                 ->orderBy('created_at', 'desc')
                 ->get()
             : collect();
@@ -416,7 +517,7 @@ class UsersHandle extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role === "Admin") {
+        if (strtolower($user->role) === "admin") {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
         } else {
             return redirect()->route("MemberPortal")->with("message", "Login successfully!");
@@ -431,21 +532,13 @@ class UsersHandle extends Controller
         ]);
 
         $loginInput = $incomingFields['login'];
-        $isEmail = filter_var($loginInput, FILTER_VALIDATE_EMAIL);
 
-        // Check if the user exists first
-        $user = $isEmail
-            ? DB::table('users_tbls')->where('email', $loginInput)->first()
-            : DB::table('users_tbls')->where('username', $loginInput)->first();
+        // Check if user exists by email
+        $user = DB::table('users_tbls')->where('email', $loginInput)->first();
 
         if (!$user) {
-            $field = $isEmail ? 'email' : 'username';
-            $message = $isEmail
-                ? 'That email isn’t registered yet.'
-                : 'That username isn’t registered yet.';
-
             return redirect()->back()
-                ->withErrors(['login' => $message])
+                ->withErrors(['login' => 'That email isn\'t registered yet.'])
                 ->withInput($request->only('login'));
         }
 

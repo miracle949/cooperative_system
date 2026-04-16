@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId("user_id")
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
-            $table->string("reference_no")->nullable()->unique();
+            $table->string("reference_no", 191)->nullable()->unique();
             $table->string("lending_type")->nullable();
             $table->decimal("lending_amount", 10, 2)->nullable();
             $table->string("lending_type_term")->nullable();

@@ -117,6 +117,14 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
 Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
     ->name('savings.receipt');
 
+Route::post('/savings/admin/store', [SavingsController::class, 'adminStoreSavings'])
+    ->name('savings.admin.store')
+    ->middleware('auth');
+
+Route::get('/savings/admin/balance/{memberId}', [SavingsController::class, 'getMemberBalance'])
+    ->name('savings.admin.balance')
+    ->middleware('auth');
+
 Route::post('/savings/gcash',          [SavingsController::class, 'payViaGcash'])->name('savings.gcash');
 Route::get('/savings/gcash/success',   [SavingsController::class, 'gcashSuccess'])->name('savings.gcash.success');
 Route::get('/savings/gcash/failed',    [SavingsController::class, 'gcashFailed'])->name('savings.gcash.failed');
@@ -160,9 +168,14 @@ Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name(
 Route::post("/loan/create-admin", [UserController::class, "createLoanAdmin"])->name("loan.create-admin");
 Route::post("/loan/archive/{id}", [UserController::class, "archiveLoan"])->name("loan.archive");
 Route::post("/loan/unarchive/{id}", [UserController::class, "unarchiveLoan"])->name("loan.unarchive");
+Route::post("/loan/settings/update", [UserController::class, "updateLoanSettings"])->name("loan.settings.update");
 Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
+Route::post("/sharecapital/admin/store", [UserController::class, "adminStoreShareCapital"])->name("sharecapital.admin.store");
+Route::get("/sharecapital/member/{id}/balance", [UserController::class, "getMemberShareCapitalBalance"])->name("sharecapital.member.balance");
 Route::post("/sharecapital/archive/{id}", [UserController::class, "archiveShareCapital"])->name("sharecapital.archive");
 Route::post("/sharecapital/unarchive/{id}", [UserController::class, "unarchiveShareCapital"])->name("sharecapital.unarchive");
+Route::post("/sharecapital/withdrawal/{id}/status", [UserController::class, "updateWithdrawalStatus"])->name("sharecapital.withdrawal.status");
 Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->name("reports");
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
+Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update");
 Route::get("/dashboard-archives", [UserController::class, "dashboard_archives"])->name("archives");

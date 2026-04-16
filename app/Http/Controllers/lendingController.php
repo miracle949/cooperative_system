@@ -18,7 +18,20 @@ class lendingController extends Controller
 
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', $memberId)->first();
-        $currentShares = $account->total_shares ?? 0;
+
+        $deposits = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Deposit')
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+
+        $withdrawals = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+
+        $currentShares = $deposits - $withdrawals;
         $canApplyLoan = $currentShares >= 10;
 
         $maxLoan = 25000;
@@ -48,10 +61,25 @@ class lendingController extends Controller
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
 
+        $dbSettings = DB::table('loan_settings_tbls')->pluck('interest_rate', 'loan_type')->toArray();
+        
+        $loanSettings = [];
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+        
+        foreach ($typeMap as $formType => $dbType) {
+            $rate = $dbSettings[$dbType] ?? 2;
+            $loanSettings[$formType] = $rate / 100;
+        }
+
         return view(
             'members_components.loan_application',
             array_merge(
-                ['username' => $username, 'email' => $email],
+                ['username' => $username, 'email' => $email, 'loanSettings' => $loanSettings],
                 $this->getLoanPageData()
             )
         );
@@ -66,7 +94,20 @@ class lendingController extends Controller
         // Share capital check
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', $memberId)->first();
-        $currentShares = $account->total_shares ?? 0;
+
+        $deposits = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Deposit')
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+
+        $withdrawals = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+
+        $currentShares = $deposits - $withdrawals;
 
         if ($currentShares < 10) {
             return redirect()->back()
@@ -278,6 +319,25 @@ class lendingController extends Controller
         $lendingStatus = $selectedLoan
             ? lending_status_tbl::where('lending_id', $selectedLoan->id)->first()
             : null;
+
+        if ($selectedLoan && !$lendingStatus && $selectedLoan->status === 'Approved') {
+            $termMonths = (int) filter_var($selectedLoan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            $interestRate = ($selectedLoan->lending_amount > 0 && $selectedLoan->total_interest > 0)
+                ? round(($selectedLoan->total_interest / $selectedLoan->lending_amount) * 100, 2)
+                : 0;
+
+            $lendingStatus = lending_status_tbl::create([
+                'lending_id' => $selectedLoan->id,
+                'user_id' => $selectedLoan->user_id,
+                'remaining_balance' => $selectedLoan->total_payment,
+                'total_paid' => 0,
+                'payments_made' => 0,
+                'total_payments' => $termMonths,
+                'interest_rate' => $interestRate,
+                'next_due_date' => now()->addMonth()->format('Y-m-d'),
+                'status' => 'Active',
+            ]);
+        }
 
         $paymentHistory = $selectedLoan
             ? lending_repayments_tbl::where('lending_id', $selectedLoan->id)

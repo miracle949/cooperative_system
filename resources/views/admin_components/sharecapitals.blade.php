@@ -95,13 +95,13 @@ Manage Share-capital
                 <div class="flex gap-2">
                     <select name="type" class="select w-40" onchange="this.form.submit()">
                         <option value="all">All Types</option>
-                        <option value="subscription" {{ request('type') === 'subscription' ? 'selected' : '' }}>Subscription</option>
-                        <option value="withdrawal" {{ request('type') === 'withdrawal' ? 'selected' : '' }}>Withdrawal</option>
+                        <option value="Deposit" {{ request('type') === 'Deposit' ? 'selected' : '' }}>Deposit</option>
+                        <option value="Withdrawal" {{ request('type') === 'Withdrawal' ? 'selected' : '' }}>Withdrawal</option>
                     </select>
                     <select name="status" class="select w-32" onchange="this.form.submit()">
                         <option value="all">All Status</option>
-                        <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="Completed" {{ request('status') === 'Completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="Pending" {{ request('status') === 'Pending' ? 'selected' : '' }}>Pending</option>
                     </select>
                 </div>
             </div>
@@ -141,33 +141,37 @@ Manage Share-capital
                             </div>
                         </td>
                         <td class="text-sm font-medium text-gray-900">
-                            @if($tx->shares > 0)
-                                +{{ $tx->shares }} shares
+                            @if($tx->type === 'Deposit')
+                                +{{ $tx->shares }}
                             @else
-                                {{ $tx->shares }} shares
+                                -{{ $tx->shares }}
                             @endif
                         </td>
                         <td class="text-sm font-semibold text-gray-900">₱{{ number_format($tx->total_amount, 2) }}</td>
                         <td>
-                            @if($tx->type === 'subscription')
-                                <span class="badge badge-success">Subscription</span>
+                            @if($tx->type === 'Deposit')
+                                <span class="badge badge-success">Deposit</span>
                             @else
                                 <span class="badge badge-danger">Withdrawal</span>
                             @endif
                         </td>
                         <td class="text-sm text-gray-600">{{ $tx->payment_method ?? 'N/A' }}</td>
                         <td>
-                            @if($tx->status === 'completed')
+                            @if($tx->status === 'Completed')
                                 <span class="badge badge-success">Completed</span>
-                            @elseif($tx->status === 'pending')
+                            @elseif($tx->status === 'Pending')
                                 <span class="badge badge-warning">Pending</span>
+                            @elseif($tx->status === 'Approved')
+                                <span class="badge badge-success">Approved</span>
+                            @elseif($tx->status === 'Rejected')
+                                <span class="badge badge-danger">Rejected</span>
                             @else
                                 <span class="badge badge-danger">Failed</span>
                             @endif
                         </td>
                         <td>
                             <div class="flex items-center gap-1">
-                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details">
+                                <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details" onclick="viewShareCapitalDetail('{{ $tx->id }}', '{{ $tx->type }}', '{{ $tx->status }}', '{{ $tx->shareCapitalAccount->user->first_name ?? '' }} {{ $tx->shareCapitalAccount->user->last_name ?? '' }}', '{{ $tx->shares }}', '{{ $tx->total_amount }}', '{{ $tx->payment_method ?? 'N/A' }}', '{{ $tx->reference_no ?? 'N/A' }}', '{{ $tx->transaction_date }}')">
                                     <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
                                 <form method="POST" action="{{ route('sharecapital.archive', $tx->id) }}">
@@ -206,7 +210,7 @@ Manage Share-capital
 
     <!-- Add Contribution Modal -->
     <div id="addContributionModal" class="modal-overlay hidden">
-        <div class="modal max-w-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal max-w-lg" style="border-radius: 16px;">
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
@@ -226,11 +230,12 @@ Manage Share-capital
             </div>
 
             <div style="padding: 1.25rem;">
-                <form class="space-y-4">
+                <form id="adminShareCapitalForm">
+                    @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
-                        <select class="select" style="width: 100%;">
-                            <option>Select member</option>
+                        <select name="member_id" id="shareMemberSelect" class="select" style="width: 100%;" onchange="updateMemberShares()" required>
+                            <option value="">Select member</option>
                             @foreach($allMembers as $member)
                             <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
                             @endforeach
@@ -239,8 +244,8 @@ Manage Share-capital
 
                     <!-- Balance Pill -->
                     <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1a4a3a;">
-                        <span style="font-size: 13px; color: #666;">Current Balance</span>
-                        <span style="font-size: 14px; font-weight: 700; color: #1a4a3a;">₱0.00 · 0 shares</span>
+                        <span style="font-size: 13px; color: #666;">Current Shares</span>
+                        <span id="currentSharesDisplay" style="font-size: 14px; font-weight: 700; color: #1a4a3a;">0 shares · ₱0.00</span>
                     </div>
 
                     <!-- Shares counter -->
@@ -248,7 +253,7 @@ Manage Share-capital
                         <label class="block text-sm font-medium text-gray-700 mb-1">Number of shares</label>
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                             <button type="button" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1); updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                            <input type="number" id="adminSharesInput" value="1" min="1" readonly style="width: 50px; text-align: center; font-size: 14px; font-weight: 600; color: #1a4a3a; border: 1px solid #ddd; border-radius: 8px; padding: 4px;">
+                            <input type="number" name="shares" id="adminSharesInput" value="1" min="1" readonly style="width: 50px; text-align: center; font-size: 14px; font-weight: 600; color: #1a4a3a; border: 1px solid #ddd; border-radius: 8px; padding: 4px;">
                             <button type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
                         </div>
                         <!-- Quick select -->
@@ -261,46 +266,40 @@ Manage Share-capital
                         <p style="font-size: 12px; color: #888; margin: 0;">Cost: <strong id="adminShareCost" style="color: #1a4a3a;">₱{{ number_format($perShareValue, 0) }}</strong> · ₱{{ number_format($perShareValue, 0) }}/share</p>
                     </div>
 
-                    <!-- Amount -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱{{ number_format($perShareValue, 0) }}/share)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                            <input type="number" class="input pl-8" placeholder="0.00" style="width: 100%;">
-                        </div>
-                    </div>
+                    <!-- Amount (calculated) -->
+                    <input type="hidden" name="amount" id="adminTotalAmount">
 
                     <!-- Type -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select class="select" style="width: 100%;">
+                        <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required>
                             <option value="">Select type...</option>
-                            <option>Subscription</option>
-                            <option>Withdrawal</option>
+                            <option value="Deposit">Deposit</option>
+                            <option value="Withdrawal">Withdrawal</option>
                         </select>
                     </div>
 
                     <!-- Payment Method -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                        <select class="select" style="width: 100%;">
+                        <select name="payment_method" class="select" style="width: 100%;" required>
                             <option value="">Select payment method...</option>
-                            <option>Cash</option>
-                            <option>Bank Transfer</option>
-                            <option>GCash</option>
-                            <option>Check</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="gcash">GCash</option>
+                            <option value="check">Check</option>
                         </select>
                     </div>
 
                     <!-- Notes -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #999;">(optional)</span></label>
-                        <textarea class="input" rows="2" placeholder="Add any notes..." style="width: 100%;"></textarea>
+                        <textarea name="note" class="input" rows="2" placeholder="Add any notes..." style="width: 100%;"></textarea>
                     </div>
                 </form>
 
                 <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
-                    <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
+                    <button onclick="submitAdminShareCapital()" 
                         style="width: 100%; padding: 0.7rem; background: #1a4a3a; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
                     </button>
@@ -310,102 +309,6 @@ Manage Share-capital
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-                        <div>
-                            <h2 class="text-lg font-semibold" style="color: #fff;">Manage Share-capital</h2>
-                            <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase or withdraw shares</p>
-                        </div>
-                    </div>
-                    <button onclick="closeModal('addContributionModal')" class="p-1 hover:bg-white/10 rounded-lg">
-                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
-                    </button>
-                </div>
-            </div>
-
-            <form class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
-                    <select class="select">
-                        <option>Select member</option>
-                        @foreach($allMembers as $member)
-                        <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
-                        @endforeach
-                </div>
-
-                <!-- Balance Pill -->
-                <div style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 13px; color: #888;">Current Balance</span>
-                    <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">₱0.00 · 0 shares</span>
-                </div>
-
-                <!-- Shares counter -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Number of shares</label>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <button type="button" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1); updateShareCost()" style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                        <input type="number" id="adminSharesInput" value="1" min="1" readonly style="width: 60px; text-align: center; font-size: 14.5px; font-weight: 600; color: #1a4a3a; border: 1.5px solid #ddd; border-radius: 10px; padding: 6px;">
-                        <button type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateShareCost()" style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
-                    </div>
-                    <!-- Quick select -->
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 1; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1 share</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 5; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5 shares</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 10; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10 shares</button>
-                        <button type="button" onclick="document.getElementById('adminSharesInput').value = 25; updateShareCost()" style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25 shares</button>
-                    </div>
-                    <p style="font-size: 12px; color: #888; margin-bottom: 0;">Cost: <strong id="adminShareCost" style="color: #1a4a3a;">₱{{ number_format($perShareValue, 0) }}</strong> · ₱{{ number_format($perShareValue, 0) }} per share</p>
-                </div>
-
-                <!-- Amount -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱{{ number_format($perShareValue, 0) }} per share)</label>
-                    <div class="relative">
-                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                        <input type="number" class="input pl-8" placeholder="0.00">
-                    </div>
-                </div>
-
-                <!-- Type -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                    <select class="select">
-                        <option>Select type...</option>
-                        <option>Subscription</option>
-                        <option>Withdrawal</option>
-                    </select>
-                </div>
-
-                <!-- Payment Method -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                    <select class="select">
-                        <option>Select payment method...</option>
-                        <option>Cash</option>
-                        <option>Bank Transfer</option>
-                        <option>GCash</option>
-                        <option>Check</option>
-                    </select>
-                </div>
-
-                <!-- Notes -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Note <span style="color: #bbb;">(optional)</span></label>
-                    <textarea class="input" rows="2" placeholder="Add any notes..."></textarea>
-                </div>
-            </form>
-
-            <div class="p-6 border-t border-gray-100 flex flex-col gap-2">
-                <button onclick="closeModal('addContributionModal'); showToast('Success', 'Transaction saved successfully')" 
-                    style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
-                </button>
-                <button onclick="closeModal('addContributionModal')" 
-                    style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
-                    Cancel
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- Last Contribution Detail Modal -->
@@ -504,6 +407,187 @@ Manage Share-capital
             const shares = parseInt(document.getElementById('adminSharesInput')?.value) || 1;
             const perShare = {{ $perShareValue }};
             document.getElementById('adminShareCost').textContent = '₱' + (shares * perShare).toLocaleString();
+            document.getElementById('adminTotalAmount').value = shares * perShare;
         }
+
+        // Update member shares display
+        window.updateMemberShares = function() {
+            const memberId = document.getElementById('shareMemberSelect').value;
+            const display = document.getElementById('currentSharesDisplay');
+            
+            if (!memberId) {
+                display.textContent = '0 shares · ₱0.00';
+                return;
+            }
+
+            fetch('/sharecapital/member/' + memberId + '/balance')
+                .then(response => response.json())
+                .then(data => {
+                    const shares = data.total_shares || 0;
+                    const amount = data.total_amount || 0;
+                    display.textContent = shares + ' shares · ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    display.textContent = '0 shares · ₱0.00';
+                });
+        };
+
+        // Submit admin share capital form
+        window.submitAdminShareCapital = function() {
+            const form = document.getElementById('adminShareCapitalForm');
+            const formData = new FormData(form);
+            
+            if (!formData.get('member_id')) {
+                showToast('Error', 'Please select a member');
+                return;
+            }
+            if (!formData.get('shares') || parseInt(formData.get('shares')) <= 0) {
+                showToast('Error', 'Please enter valid shares');
+                return;
+            }
+            if (!formData.get('type')) {
+                showToast('Error', 'Please select transaction type');
+                return;
+            }
+            if (!formData.get('payment_method')) {
+                showToast('Error', 'Please select payment method');
+                return;
+            }
+
+            fetch('/sharecapital/admin/store', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('addContributionModal');
+                    showToast('Success', data.message);
+                    form.reset();
+                    document.getElementById('currentSharesDisplay').textContent = '0 shares · ₱0.00';
+                    document.getElementById('adminSharesInput').value = 1;
+                    updateShareCost();
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast('Error', data.message || 'Transaction failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', 'An error occurred. Please try again.');
+            });
+        };
+
+        // Transaction Detail Modal Functions
+        let currentTransactionId = null;
+
+        window.viewShareCapitalDetail = function(id, type, status, memberName, shares, amount, paymentMethod, referenceNo, transactionDate) {
+            const existingModal = document.getElementById('scTransactionModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            const modal = document.createElement('div');
+            modal.id = 'scTransactionModal';
+            modal.style.cssText = 'display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:999999; align-items:center; justify-content:center;';
+            
+            currentTransactionId = id;
+            const isWithdrawal = type === 'Withdrawal';
+            const isPending = status === 'Pending';
+            
+            let badge = '';
+            if (status === 'Completed' || status === 'Approved') badge = '<span style="background:#dcfce7;color:#166534;padding:4px 8px;border-radius:4px;font-size:12px;">Completed</span>';
+            else if (status === 'Pending') badge = '<span style="background:#fef3c7;color:#92400e;padding:4px 8px;border-radius:4px;font-size:12px;">Pending</span>';
+            else if (status === 'Rejected') badge = '<span style="background:#fee2e2;color:#991b1b;padding:4px 8px;border-radius:4px;font-size:12px;">Rejected</span>';
+            else badge = '<span style="background:#f3f4f6;color:#374151;padding:4px 8px;border-radius:4px;font-size:12px;">' + status + '</span>';
+            
+            let actionsHtml = '';
+            if (isWithdrawal && isPending) {
+                actionsHtml = '<div style="display:flex;gap:12px;margin-top:24px;"><button onclick="processWithdrawalSC(\'accept\')" style="flex:1;padding:10px;background:#16a34a;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Accept</button><button onclick="processWithdrawalSC(\'reject\')" style="flex:1;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Reject</button></div>';
+            } else {
+                actionsHtml = '<div style="margin-top:24px;"><button onclick="document.getElementById(\'scTransactionModal\').remove();document.body.style.overflow=\'auto\';" style="width:100%;padding:10px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;cursor:pointer;font-weight:500;">Close</button></div>';
+            }
+            
+            modal.innerHTML = `
+                <div style="background:white; border-radius:12px; max-width:450px; width:90%; max-height:90vh; overflow:auto; box-shadow:0 25px 50px rgba(0,0,0,0.25);">
+                    <div style="padding:16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#1a4a3a,#2d6a4f); border-radius:12px 12px 0 0;">
+                        <h3 style="margin:0; font-size:18px; font-weight:600; color:white;">Transaction Details</h3>
+                        <button onclick="document.getElementById('scTransactionModal').remove();document.body.style.overflow='auto';" style="background:rgba(255,255,255,0.1); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; color:white; font-size:18px;">&times;</button>
+                    </div>
+                    <div style="padding:20px;">
+                        <div style="display:grid;gap:12px;">
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Member</span>
+                                <span style="color:#111827;font-size:14px;font-weight:500;">${memberName}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Type</span>
+                                <span style="color:${isWithdrawal ? '#dc2626' : '#16a34a'};font-size:14px;font-weight:500;">${type}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Shares</span>
+                                <span style="color:#111827;font-size:14px;font-weight:500;">${shares} shares</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Amount</span>
+                                <span style="color:#111827;font-size:14px;font-weight:700;">₱${parseFloat(amount).toLocaleString('en-PH', {minimumFractionDigits:2})}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Payment</span>
+                                <span style="color:#111827;font-size:14px;">${paymentMethod}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Reference</span>
+                                <span style="color:#111827;font-size:14px;font-family:monospace;">${referenceNo}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="color:#6b7280;font-size:14px;">Date</span>
+                                <span style="color:#111827;font-size:14px;">${transactionDate}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid #e5e7eb;">
+                                <span style="color:#6b7280;font-size:14px;">Status</span>
+                                ${badge}
+                            </div>
+                        </div>
+                        ${actionsHtml}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.processWithdrawalSC = function(action) {
+            if (!currentTransactionId) return;
+
+            fetch('/sharecapital/withdrawal/' + currentTransactionId + '/status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success', data.message);
+                    document.getElementById('scTransactionModal').remove();
+                    document.body.style.overflow = 'auto';
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast('Error', data.message || 'Failed to process withdrawal');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', 'An error occurred. Please try again.');
+            });
+        };
     </script>
 @endsection
