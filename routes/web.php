@@ -6,6 +6,7 @@ use App\Http\Controllers\ShareCapital;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersHandle;
 use App\Http\Controllers\SavingsController;
+use App\Http\Controllers\OtpController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,8 @@ Route::get("/navbar", [UserController::class, "Navbar"]);
 
 // Static page GET
 Route::get("/static-page", [UserController::class, "StaticPage"])->name("StaticPage");
+
+Route::post('/check-email', [UsersHandle::class, 'checkEmail'])->name('check.email');
 
 // Member Portal page GET
 Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("MemberPortal")->middleware("auth");
@@ -131,6 +134,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/repayment/gcash/success', [PaymentController::class, 'gcashSuccess'])->name('repayment.gcash.success');
     Route::get('/repayment/gcash/failed', [PaymentController::class, 'gcashFailed'])->name('repayment.gcash.failed');
 });
+
+// ✅ Final — just these two lines, no wrapping group needed
+Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
+Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
+
+// ✅ With web middleware — session persists correctly
+// Route::middleware('web')->group(function () {
+//     Route::post('/send-otp', [OtpController::class, 'send'])->name('send.otp');
+//     Route::post('/verify-otp', [OtpController::class, 'verify'])->name('verify.otp');
+// });
 
 // Admin routes
 Route::get("/dashboard-admin", [UserController::class, "dashboard_admin"])->name("dashboard");

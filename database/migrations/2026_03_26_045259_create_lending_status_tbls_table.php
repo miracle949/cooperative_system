@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer("payments_made")->default("0");
             $table->integer("total_payments");
             $table->decimal("interest_rate", 5, 2);
-            $table->date("next_due_date")->nullable();
+            $table->date("due_date")->nullable();
             $table->enum("status", ["Active", "Completed", "Overdue","Defaulted"])->default("Active");
             $table->timestamps();
         });

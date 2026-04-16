@@ -97,22 +97,30 @@
                     @csrf
                     <div class="form-sub-parent">
                         @if ($errors->any())
-                            <div style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:10px; padding:0.8rem 1rem; margin-bottom:1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
+                            <div
+                                style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:10px; padding:0.8rem 1rem; margin-bottom:1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
                                 <i class="fa-solid fa-circle-xmark"></i>
                                 {{ $errors->first('login') }}
                             </div>
                         @endif
-                        
+
                         <div class="mt-3 form-input">
                             <label>Email or Username</label>
-                            <input type="text" name="login" value="{{ old('login') }}" placeholder="Enter your email" class="form-control mt-2"
-                                required>
+                            <input type="text" name="login" value="{{ old('login') }}" placeholder="Enter your email"
+                                class="form-control mt-2" required>
                         </div>
 
                         <div class="mt-3 form-input">
                             <label>Password</label>
-                            <input type="password" name="password" placeholder="Enter your password"
-                                class="form-control mt-2" required>
+                            <div style="position: relative;">
+                                <input type="password" name="password" id="login-password"
+                                    placeholder="Enter your password" class="form-control mt-2"
+                                    style="padding-right: 40px;" required>
+                                <span onclick="toggleLoginPassword()"
+                                    style="position: absolute; right: 12px; top: 56%; transform: translateY(-50%); cursor: pointer; color: #888;">
+                                    <i class="fa fa-eye" id="eye-login"></i>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="mt-4 tw:flex tw:justify-end form-forgot">
@@ -134,6 +142,20 @@
                 </form>
             </div>
         </div>
+
+        <script>
+            function toggleLoginPassword() {
+                const input = document.getElementById('login-password');
+                const icon = document.getElementById('eye-login');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            }
+        </script>
 
 
         {{-- <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">

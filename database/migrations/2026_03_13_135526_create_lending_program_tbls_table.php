@@ -36,16 +36,12 @@ return new class extends Migration {
             $table->string("business_permit")->nullable();
             $table->string("financial_statement")->nullable();
 
-            // Car Lending
-            $table->string("vehicle_quotation")->nullable();
-            $table->string("drivers_license")->nullable();
-
             // Education Lending
             $table->string("school_id")->nullable();
             $table->string("cor")->nullable();
             $table->string("cog")->nullable();
 
-            $table->enum("status", ["Pending", "Approved", "Declined"])->default("Pending");
+            $table->enum("status", ["Pending", "Approved", "Declined","Completed"])->default("Pending");
             $table->timestamps();
         });
     }

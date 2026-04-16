@@ -10,12 +10,13 @@ use App\Models\dividend_rates_tbl;
 use App\Models\lending_program_tbl;
 use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
-use App\Models\Spouse_tbl;
+use App\Models\Family_tbl;
 use App\Models\Users_tbl;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 
 class UsersHandle extends Controller
@@ -96,7 +97,7 @@ class UsersHandle extends Controller
                 'email',
             ]));
 
-            Spouse_tbl::updateOrCreate(
+            Family_tbl::updateOrCreate(
                 ['user_id' => $id],
                 [
                     'spouse_name' => $request->spouse_name,
@@ -189,7 +190,7 @@ class UsersHandle extends Controller
 
             $user = Users_tbl::findOrFail($id);
             $vehicles = Membervehi_tbl::where('user_id', $id)->get()->groupBy('vehicle_type');
-            $spouse = Spouse_tbl::where('user_id', $id)->first();
+            $spouse = Family_tbl::where('user_id', $id)->first();
             $other = Otherinfo_tbl::where('user_id', $id)->first();
             $education = educational_tbl::where('user_id', $id)->get();
             $governmentIds = Membergovern_ids_tbl::where('user_id', $id)->first();
@@ -323,7 +324,7 @@ class UsersHandle extends Controller
     {
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
-        
+
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', auth()->id())
             ->first();
@@ -459,7 +460,17 @@ class UsersHandle extends Controller
                 ->where('user_id', auth()->id())
                 ->first();
 
-            if (!$otherInfo || $otherInfo->approval_status === 'Declined') {
+            if (!$otherInfo || $otherInfo->approval_status === 'Pending') {
+
+                auth()->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->back()
+                    ->withErrors(['login' => 'Your account is still pending approval'])
+                    ->withInput($request->only('login'));
+
+            } elseif (!$otherInfo || $otherInfo->approval_status === 'Declined') {
                 auth()->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -517,18 +528,25 @@ class UsersHandle extends Controller
         // }
     }
 
+    public function checkEmail(Request $request)
+    {
+        $exists = \App\Models\Users_tbl::where('email', $request->email)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
     public function registration(Request $request)
     {
         try {
+
             $request->validate([
                 "first_name" => "required",
-                "middle_name" => "required",
+                "middle_name" => "nullable|string|max:255",
                 "last_name" => "required",
                 "profile_picture" => "nullable|image|max:2048",
                 "date_of_birth" => "required|date",
                 "place_of_birth" => "required",
-                "email" => ["required", "email", Rule::unique("users_tbls", "email")],
-                "password" => "required|confirmed|min:8",
+                "email" => ["required", "email", "regex:/@gmail\.com$/i", Rule::unique("users_tbls", "email")],
+                "password" => "required|confirmed",
                 "membership_category" => "required",
                 "civil_status" => "required",
                 "number_son" => "nullable|integer",
@@ -584,7 +602,7 @@ class UsersHandle extends Controller
             ]);
 
             // Spouse
-            Spouse_tbl::create([
+            Family_tbl::create([
                 "user_id" => $users->id,
                 "spouse_name" => $request->spouse_name,
                 "spouse_date_birth" => $request->spouse_date_birth ?: null,
@@ -608,15 +626,20 @@ class UsersHandle extends Controller
 
             Membergovern_ids_tbl::create($governmentIds);
 
+            // In your RegisterController or wherever you save the member
+            $emailVerified = Session::get('email_otp_verified_email') === $request->email ? 1 : 0;
+
             // Other info
             Otherinfo_tbl::create([
                 "user_id" => $users->id,
                 "membership_category" => $request->membership_category,
+                'email_verified' => $emailVerified,
                 "date_of_birth" => $request->date_of_birth,
                 "place_of_birth" => $request->place_of_birth,
                 "sex" => $request->sex,
                 "civil_status" => $request->civil_status,
-                "skills" => $request->skills,
+                "citizenship" => $request->citizenship, // ← add this
+                "skills" => $request->skills_expertise,  // ← note: form uses skills_expertise
                 "signature" => $request->signature,
                 "profile_picture" => $profilePicturePath,
                 "approval_status" => "Pending",
@@ -658,8 +681,12 @@ class UsersHandle extends Controller
 
             return redirect()->route("RegisterPage")->with("success", "Create account successfully!");
 
+
         } catch (\Exception $e) {
             dd($e->getMessage(), $e->getLine(), $e->getFile());
         }
+
     }
+
+
 }

@@ -42,10 +42,10 @@
                             </div>
                             <div class="sidebar-sub-header">
                                 <p>{{ $loan->purpose_loan }}</p>
-                                <p>{{ \Carbon\Carbon::parse($loan->created_at)->format('m/d/Y') }}</p>
+                                <p>{{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}</p>
                             </div>
                             <div class="side-body">
-                                <h5>₱{{ number_format($loan->lending_amount, 0) }}</h5>
+                                <h5>₱{{ number_format($loan->lending_amount, 2) }}</h5>
                                 @php
                                     $status = \App\Models\lending_status_tbl::where('lending_id', $loan->id)->first();
                                     $pct = $status && $loan->total_payment > 0
@@ -101,11 +101,15 @@
                                         </div>
                                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                             <span style="font-size: 13px; color: #888;">Remaining Balance</span>
-                                            <span style="font-size: 13px; font-weight: 600; color: #c8860a;">₱{{ number_format($lendingStatus->remaining_balance, 2) }}</span>
+                                            <span style="font-size: 13px; font-weight: 700; color: #1a4a3a;">
+                                                ₱{{ number_format($lendingStatus->remaining_balance, 2) }}
+                                            </span>
                                         </div>
                                         <div style="display: flex; justify-content: space-between;">
-                                            <span style="font-size: 13px; color: #888;">Payments Made</span>
-                                            <span style="font-size: 13px; font-weight: 600; color: #333;">{{ $lendingStatus->payments_made }} of {{ $lendingStatus->total_payments }}</span>
+                                            <span style="font-size: 13px; color: #888;">Payment Date & Time</span>
+                                            <span style="font-size: 13px; font-weight: 600; color: #333;">
+                                                {{ now()->timezone('Asia/Manila')->format('M d, Y h:i A') }}
+                                            </span>
                                         </div>
                                     </div>
                                     @endif
@@ -147,31 +151,54 @@
                             <div class="main-amount">
                                 <p>Lending Amount</p>
                                 <h3>₱ {{ number_format($selectedLoan->lending_amount, 2) }}</h3>
-                                <p>{{ $lendingStatus->status }}</p>
+                                @php
+                                    $daysLeft = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($lendingStatus->due_date)->startOfDay(), false);
+                                @endphp
+                                @if($daysLeft < 0)
+
+                                    <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+
+                                @elseif($daysLeft === 0)
+
+                                    <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+
+                                @elseif($daysLeft <= 7)
+
+                                    <p style="color: #e6a817; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+
+                                @else
+
+                                    <p style="color: #888; font-weight: 500;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+
+                                @endif
+                                
                             </div>
                             <div class="main-text">
                                 <p>{{ $selectedLoan->purpose_loan }}</p>
                                 <h3>{{ $selectedLoan->lending_type }}</h3>
-                                <p>Applied: {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('m/d/Y') }}</p>
+                                <p>Applied: {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('M d, Y') }}</p>
                             </div>
                         </div>
 
+                        {{-- AFTER --}}
                         <div class="card-box-parent">
                             <div class="card-box">
                                 <p>Monthly Due</p>
-                                <h4>₱{{ number_format($selectedLoan->monthly_payment, 0) }}</h4>
-                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('m/d/Y') }}</span>
+                                <h4>₱{{ number_format($selectedLoan->monthly_payment, 2) }}</h4>
+                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('M d, Y') }}</span>
                             </div>
                             <div class="card-box">
                                 <p>Remaining Balance</p>
-                                <h4>₱{{ number_format($lendingStatus->remaining_balance, 0) }}</h4>
-                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('m/d/Y') }}</span>
+                                <h4>₱{{ number_format($lendingStatus->remaining_balance, 2) }}</h4>
+                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('M d, Y') }}</span>
                             </div>
                             <div class="card-box">
                                 <p>Interest Rate</p>
                                 <h4>{{ $lendingStatus->interest_rate }}%</h4>
-                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('m/d/Y') }}</span>
+                                <span>Applied {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('M d, Y') }}</span>
                             </div>
+
+                    
                         </div>
                     </main>
 
@@ -192,16 +219,25 @@
                             </div>
 
                             @if(
-                                ($lendingStatus->status === 'Active' || $lendingStatus->status === 'Overdue') &&
-                                $lendingStatus->remaining_balance > 0 &&
-                                $lendingStatus->total_payments > 0 &&
-                                $lendingStatus->payments_made < $lendingStatus->total_payments
-                            )
-                                <div class="mt-3 d-flex gap-2">
-                                    <button class="btn-repay" onclick="openRepayModal()">
-                                        Make a Payment
-                                    </button>
-                                </div>
+                                    (
+                                        in_array($lendingStatus->status, ['Active', 'Overdue', 'Approved']) ||
+                                        empty($lendingStatus->status)
+                                    ) &&
+                                    $lendingStatus->remaining_balance > 0 &&
+                                    $lendingStatus->total_payments > 0 &&
+                                    $lendingStatus->payments_made < $lendingStatus->total_payments
+                                )
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn-repay" onclick="openRepayModal('monthly')">
+                                            Make a Payment
+                                        </button>
+                                        <button class="btn-repay" 
+                                            style="background: #c8860a; border-color: #c8860a;"
+                                            onclick="openRepayModal('full')">
+                                            <i class="fa-solid fa-circle-check" style="font-size: 12px;"></i>
+                                            Repay All (₱{{ number_format($lendingStatus->remaining_balance, 2) }})
+                                        </button>
+                                    </div>
                             @elseif(
                                 $lendingStatus->total_payments > 0 &&
                                 ($lendingStatus->status === 'Completed' ||
@@ -232,7 +268,7 @@
                                                     <th>Amount</th>
                                                     <th>Method</th>
                                                     <th>Reference No.</th>
-                                                    <th>Recorded By</th>
+                                                    {{-- <th>Recorded By</th> --}}
                                                     <th>Status</th>
                                                 </tr>
                                             </thead>
@@ -243,7 +279,7 @@
                                                         <td>₱ {{ number_format($payment->amount_paid, 2) }}</td>
                                                         <td>{{ $payment->payment_method }}</td>
                                                         <td>{{ $payment->reference_no ?? '—' }}</td>
-                                                        <td>{{ $payment->recordedBy->name ?? 'Self' }}</td>
+                                                        {{-- <td>{{ $payment->recordedBy->name ?? 'Self' }}</td> --}}
                                                         <td>
                                                             <div class="d-flex align-items-center gap-1 card-icon"
                                                                 style="background-color: var(--green); border-radius: 28px; padding: 0.3rem 0.6rem; width: fit-content;">
@@ -314,20 +350,10 @@
                                     </label>
                                     <div style="position: relative;">
                                         <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a4a3a; font-weight: 700; font-size: 15px;">₱</span>
-                                        <input type="number" name="amount_paid" class="form-control"
-                                            value="{{ $selectedLoan->monthly_payment }}" required
-                                            style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;" readonly>
+                                        <input type="number" name="amount_paid" id="repay-amount-input" class="form-control"
+                                        value="{{ $selectedLoan->monthly_payment }}" required
+                                        style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;" readonly>
                                     </div>
-                                </div>
-
-                                {{-- Payment Date --}}
-                                <div style="margin-bottom: 1.1rem;">
-                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
-                                        Payment Date
-                                    </label>
-                                    <input type="date" name="payment_date" class="form-control"
-                                        value="{{ now()->format('Y-m-d') }}" required
-                                        style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
                                 </div>
 
                                 {{-- Payment Method — now includes GCash --}}
@@ -411,7 +437,11 @@
             <form id="gcash-form" action="{{ route('repayment.gcash') }}" method="POST" style="display:none;">
                 @csrf
                 <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                <input type="hidden" name="payment_type" id="gcash-payment-type" value="monthly"> {{-- ADD THIS --}}
             </form>
+
+            {{-- Full balance data for JS --}}
+            <span id="full-balance-value" data-amount="{{ $lendingStatus->remaining_balance }}" style="display:none;"></span>
         @endif
 
     </div>
@@ -450,11 +480,25 @@
         document.body.style.removeProperty('padding-right');
     }
 
-    function openRepayModal() {
+    function openRepayModal(mode = 'monthly') {
         cleanupBootstrapModal();
 
-        // Reset method to Cash and hide GCash panel on every open
         const methodSelect = document.getElementById('repay-method');
+        const amountInput  = document.getElementById('repay-amount-input');
+        const fullBalance  = parseFloat(document.getElementById('full-balance-value').dataset.amount);
+        const monthlyAmt   = amountInput.defaultValue; // original monthly value
+
+        document.getElementById('gcash-payment-type').value = mode;
+
+        if (mode === 'full') {
+            amountInput.value = fullBalance;
+            // Update the modal header label to make it clear
+            document.querySelector('#repayModal .modal-title').textContent = 'Repay Full Balance';
+        } else {
+            amountInput.value = monthlyAmt;
+            document.querySelector('#repayModal .modal-title').textContent = 'Make a Payment';
+        }
+
         if (methodSelect) {
             methodSelect.value = 'Cash';
             document.getElementById('gcash-section').style.display   = 'none';
@@ -464,7 +508,6 @@
         }
 
         var repayModalEl = document.getElementById('repayModal');
-
         var backdrop = document.createElement('div');
         backdrop.className = 'modal-backdrop-custom';
         backdrop.id = 'repay-backdrop';
@@ -475,13 +518,8 @@
         repayModalEl.style.display = 'block';
         repayModalEl.removeAttribute('aria-hidden');
 
-        setTimeout(() => {
-            repayModalEl.classList.remove('modal-animate-in');
-        }, 400);
-
-        backdrop.addEventListener('click', function () {
-            closeRepayModal();
-        });
+        setTimeout(() => repayModalEl.classList.remove('modal-animate-in'), 400);
+        backdrop.addEventListener('click', () => closeRepayModal());
     }
 
     function closeRepayModal() {

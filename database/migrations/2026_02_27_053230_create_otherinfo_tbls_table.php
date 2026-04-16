@@ -16,6 +16,7 @@ return new class extends Migration {
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
             $table->string("membership_category");
+            $table->boolean("email_verified")->default(false);
             $table->string("place_of_birth")->nullable();
             $table->string("date_of_birth")->nullable();
             $table->string("contact_no")->nullable();

@@ -110,7 +110,7 @@ sex.addEventListener("input", () => {
 });
 
 
-citizenship.addEventListener("input", () => {
+citizenship.addEventListener("change", () => {
     document.getElementById("citizenship_display").textContent = citizenship.value;
 });
 
@@ -153,36 +153,47 @@ other_spec.addEventListener("input", () => {
     document.getElementById("other_spec_display").textContent = other_spec.value;
 });
 
-// vehicle
+// ── Vehicle display in review ──────────────────────────────────────────────
+function updateVehicleReview() {
+    const container = document.getElementById('vehicles_review_display');
+    if (!container) return;
 
-// uv.addEventListener("input", () => {
-//     document.getElementById("uv_display").textContent = uv.value;
-// });
+    const VEHICLE_LABELS = {
+        total_uv: "UV's",
+        total_taxi: 'TAXI',
+        total_bus: 'BUS',
+        total_mini_bus: 'MINI BUS',
+        total_jeep: 'JEEP',
+        total_multi_cab: 'MULTI-CAB',
+        total_tricycle: 'TRICYCLE',
+    };
 
-// taxi.addEventListener("input", () => {
-//     document.getElementById("taxi_display").textContent = taxi.value;
-// });
+    let html = '';
+    let hasAny = false;
 
-// bus.addEventListener("input", () => {
-//     document.getElementById("bus_display").textContent = bus.value;
-// });
+    Object.entries(VEHICLE_LABELS).forEach(([qtyName, label]) => {
+        const qtyInput = document.querySelector(`input[name="${qtyName}"]`);
+        const qty = parseInt(qtyInput?.value) || 0;
+        if (qty <= 0) return;
 
-// tricycle.addEventListener("input", () => {
-//     document.getElementById("tricycle_display").textContent = tricycle.value;
-// });
+        hasAny = true;
+        const plates = (typeof state !== 'undefined' && state[qtyName]?.plates) ? state[qtyName].plates : [];
+        const plateList = plates.filter(p => p).map(p => `<span class="review-plate-badge">${p}</span>`).join(' ');
 
-// mini_bus.addEventListener("input", () => {
-//     document.getElementById("mini_bus_display").textContent = mini_bus.value;
-// });
+        html += `
+            <div class="review-vehicle-row mt-2">
+                <span class="review-vehicle-label">${label}:</span>
+                <span class="review-vehicle-qty">${qty} unit${qty > 1 ? 's' : ''}</span>
+                ${plateList ? `<div class="review-plate-list mt-1">${plateList}</div>` : ''}
+            </div>`;
+    });
 
-// jeep.addEventListener("input", () => {
-//     document.getElementById("jeep_display").textContent = jeep.value;
-// });
+    container.innerHTML = hasAny ? html : '<span style="color:#aaa; font-size:13px;">No vehicles entered.</span>';
+}
 
-// multi_cab.addEventListener("input", () => {
-//     document.getElementById("multi_cab_display").textContent = multi_cab.value;
-// });
-
-// other_info_specify.addEventListener("input", () => {
-//     document.getElementById("vehi_other_spec").textContent = other_info_specify.value;
-// });
+// Update vehicle review whenever qty inputs change
+document.addEventListener('input', function (e) {
+    if (e.target.classList.contains('qty-input') || e.target.classList.contains('plate-input')) {
+        updateVehicleReview();
+    }
+});

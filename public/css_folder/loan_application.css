@@ -280,6 +280,66 @@
     margin: 0;
 }
 
+.container-fluid main .interest-rate .interest-header{
+    background-color: #1E4035;
+    padding: 30px 48px 30px 30px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.container-fluid main .interest-rate .interest-header h3{
+    font-size: 17px;
+    color: #ffffff;
+    margin: 0;
+    
+}
+
+.container-fluid main .interest-rate .interest-header p{
+    color: #FFFFFF8C;
+    margin: 8px 0 0;
+    font-size: 13.5px;
+    /* font-weight: 600; */
+}
+
+.container-fluid main .interest-rate .interest-body{
+    padding: 25px 30px 25px 30px;
+    background-color: #ffffff;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.container-fluid main .interest-rate .interest-body .interest{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 1.5rem 1rem;
+    border-radius: 10px;
+}
+
+.container-fluid main .interest-rate .interest-body p{
+    margin: 0;
+}
+
+.container-fluid main .interest-rate .interest-body .interest .interest-text p{
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1E4035;
+}
+
+.container-fluid main .interest-rate .interest-body .interest .interest-text span{
+    font-size: 13.5px;
+    color: #808080;
+    /* width: 200px; */
+}
+
+.container-fluid main .interest-rate .interest-body .interest .interest-percent p{
+    font-size: 14.5px;
+    color: #1E4035;
+}
 /* .container-fluid main .card-calculate .calculate-body .estimate .payment h4{
     
 } */
@@ -344,7 +404,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
     border-radius: 20px;
-    padding: 30px 48px 30px 30px;
+    /* padding: 30px 48px 30px 30px; */
 }
 
 @keyframes slideIn {
@@ -423,7 +483,12 @@
     font-weight: 600;
 }
 
-.container-fluid form .form-parent button:hover {
+.container-fluid form .form-parent button:active{
+    background-color: #1E4035;
+    color: #ffffff;
+}
+
+/* .container-fluid form .form-parent button:hover {
     background-color: var(--green2);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
@@ -432,7 +497,7 @@
 .container-fluid form .form-parent button:active {
     background-color: #1E4035;
     color: #ffffff;
-}
+} */
 
 /* modal loan success */
 /* ── SUCCESS MODAL ── */

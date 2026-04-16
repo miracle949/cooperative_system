@@ -33,10 +33,6 @@ class lending_program_tbl extends Model
         'business_permit',
         'financial_statement',
 
-        // Car
-        'vehicle_quotation',
-        'drivers_license',
-
         // Education
         'school_id',
         'cor',

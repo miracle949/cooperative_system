@@ -70,7 +70,7 @@
                     style="border-radius: 10px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8E5;">
 
                     <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                        style="border-radius: 10px; background-color: var(--green2);">
+                        style="border-radius: 10px; background-color: var(--green2); background-color: var(--green)">
                         <i class="fa fa-bullseye tw:text-white" style="font-size: 20px"></i>
                     </div>
 
@@ -87,7 +87,7 @@
                     style="border-radius: 10px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8E5;">
 
                     <div class="p-3 tw:w-[55px] tw:h-[55px] tw:flex tw:justify-center tw:items-center"
-                        style="border-radius: 10px; background-color: var(--green2);">
+                        style="border-radius: 10px; background-color: var(--green2); background-color: var(--green)">
                         <i class="fa fa-eye tw:text-white" style="font-size: 20px"></i>
                     </div>
 

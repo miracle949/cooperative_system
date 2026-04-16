@@ -31,7 +31,59 @@
 
         <main class="z-1">
 
-            <div class="main-text">
+            <div id="carouselExampleAutoplaying" class="carousel slide carousel-fade" data-bs-ride="carousel"
+                data-bs-interval="3000">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="../images/1.jpg" class="d-block" alt="..."
+                            style="width: 100%; height: 100%; max-height: 520px;">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>Trusted Cooperative Partner</h5>
+                            <p>Empowering members with financial solutions.</p>
+                            <a href="#">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../images/2.jpg" class="d-block" alt="..."
+                            style="width: 100%; height: 100%; max-height: 520px;">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>Services at Your Fingertips</h5>
+                            <p>Access your cooperative services anytime.</p>
+                            <a href="#">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../images/3.jpg" class="d-block" alt="..."
+                            style="width: 100%; height: 100%; max-height: 520px;">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>Your Loan, Approved!</h5>
+                            <p>We make loan applications simple.</p>
+                            <a href="#">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../images/4.jpg" class="d-block" alt="..."
+                            style="width: 100%; height: 100%; max-height: 520px;">
+                        <div class="carousel-caption d-none d-md-block">
+                            <h5>Growing Together as One</h5>
+                            <p>We are committed to uplifting every member through unity.</p>
+                            <a href="#">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            {{-- <div class="main-text">
                 <span>Established 2010 · 1,200 - Members</span>
 
                 <h2>Built on <b>Trust,</b> Growing <b>Together</b></h2>
@@ -40,7 +92,7 @@
                     livelihood programs.</p>
 
                 <div class="main-buttons">
-                    <a href="{{ route("RegisterPage") }}">Become a Member <i class="fa fa-arrow-right"></i></a>
+                    <a href="{{ route(" RegisterPage") }}">Become a Member <i class="fa fa-arrow-right"></i></a>
 
                     <a href="#">Learn More</a>
                 </div>
@@ -75,7 +127,7 @@
                 <div class="image-wrapper wrapper3">
                     <img class="image3" src="images/coop3.jpg" alt="">
                 </div>
-            </div>
+            </div> --}}
         </main>
 
         <section class="d-flex justify-center align-items-center flex-column pe-5 ps-5 pb-5 pt-3" id="section1">
@@ -140,7 +192,7 @@
         </section>
 
         <section class="d-flex justify-center align-items-center flex-column pe-5 ps-5 pt-3 pb-5" id="section2">
-            <h2 class="text-center mt-5 pt-5">Loan Products</h2>
+            <h2 class="text-center mt-5">Loan Products</h2>
 
             <p class="text-center mt-2 mw-100 tw:text-[16px] tw:text-[#808080]">Choose from our variety of loan products
                 designed to meet your financial needs.
@@ -158,7 +210,7 @@
 
                         <hr style="margin: 10px 0px">
 
-                        <span>Starting at 8%</span>
+                        <span>Starting at 2%</span>
                     </div>
                 </div>
 
@@ -172,7 +224,7 @@
 
                         <hr style="margin: 10px 0px">
 
-                        <span>Starting at 10%</span>
+                        <span>Starting at 2%</span>
                     </div>
                 </div>
 
@@ -186,21 +238,21 @@
 
                         <hr style="margin: 10px 0px">
 
-                        <span>Starting at 6%</span>
+                        <span>Starting at 2%</span>
                     </div>
                 </div>
 
                 <div class="card mw-100" style="border-radius: 10px;">
                     <div class="card-body tw:flex tw:justify-start tw:flex-col">
                         <div class="card-header border-0 p-0">
-                            <h3>Housing Loan</h3>
+                            <h3>Education Loan</h3>
 
                             <p>Make your dream home a reality.</p>
                         </div>
 
                         <hr style="margin: 10px 0px">
 
-                        <span>Starting at 9%</span>
+                        <span>Starting at 2%</span>
                     </div>
                 </div>
             </div>
@@ -303,8 +355,8 @@
                             <p>Serving Community</p>
                         </div>
                     </div>
-
-                    <p>Our cooperative has been a pillar of financial stability for thousands of families, providing
+                    <p>Our cooperative has been a pillar of financial stability for thousands of families,
+                        providing
                         accessible financial services and fostering a culture of savings and mutual aid.</p>
                 </div>
                 <div class="card-box-image">
@@ -333,12 +385,29 @@
         </footer> --}}
     </div>
 
+    {{-- <script>
+        const nav = document.querySelector(".navbar");
+
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            if (lastScrollY < window.scrollY) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+
+            lastScrollY = window.scrollY;
+        });
+
+    </script> --}}
+
     {{-- AOS animation link js --}}
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    {{-- <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script>
         AOS.init();
-    </script>
+    </script> --}}
 
     {{--
     <script src="style.js"></script> --}}

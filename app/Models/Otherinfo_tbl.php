@@ -11,6 +11,7 @@ class Otherinfo_tbl extends Model
     protected $fillable = [
         "user_id",
         "membership_category",
+        "email_verified",
         "place_of_birth",
         "date_of_birth",
         "contact_no",

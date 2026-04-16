@@ -20,8 +20,12 @@ return new class extends Migration
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
             $table->integer("payment_number");
+            $table->date("amount_due")->nullable()->change();
             $table->decimal("amount_paid", 10, 2);
+            $table->date("due_date")->nullable()->change();
             $table->date("payment_date");
+            $table->decimal("late_fee", 10, 2)->nullable()->change();
+            $table->date("penalty_applied_at")->nullable()->change();
             $table->string("payment_method");
             $table->string("reference_no")->nullable();
             $table->text("notes")->nullable();

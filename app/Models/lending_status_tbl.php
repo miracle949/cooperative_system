@@ -16,7 +16,7 @@ class lending_status_tbl extends Model
         "payments_made",
         "total_payments",
         "interest_rate",
-        "next_due_date",
+        "due_date",
         "status",
     ];
 }

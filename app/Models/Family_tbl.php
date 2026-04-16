@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Spouse_tbl extends Model
+class family_tbl extends Model
 {
-    protected $table = "spouse_tbls";
+    protected $table = "family_tbls";
     
     protected $fillable = [
         "user_id",

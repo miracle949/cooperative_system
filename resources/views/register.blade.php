@@ -260,6 +260,20 @@
 
 
     <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon  = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+    </script>
+
+    <script>
 
         const select_type = document.getElementById("select_type");
 
@@ -270,13 +284,19 @@
             if (this.value === "Driver") {
 
                 driver_operator.style.display = "none";
+                
             } else if (this.value === "Allied Workers") {
 
                 driver_operator.style.display = "none";
 
-            } else if (this.value !== "Driver") {
+            } else if (this.value === "Investor Associate") {
+
+                driver_operator.style.display = "none";
+
+            }else if(this.value !== "Driver"){
 
                 driver_operator.style.display = "block";
+
             }
 
         });
@@ -414,7 +434,7 @@
 
                     <div class="modal-footer border-0 justify-content-center pb-4">
                         <button type="button" class="btn px-5 py-2 fw-semibold text-white" data-bs-dismiss="modal"
-                            style="background: #1E4035; border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(40,167,69,0.4);">
+                            style="background: #1E4035; border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px;">
                             OK, Got it!
                         </button>
                     </div>
@@ -422,6 +442,7 @@
                 </div>
             </div>
         </div>
+        
 
 
         <script>

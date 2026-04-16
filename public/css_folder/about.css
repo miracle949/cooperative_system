@@ -17,6 +17,7 @@
 .container-fluid main {
     padding: 48px 48px 52px 48px;
     background-color: #ffffff;
+    margin-top: 70px;
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 

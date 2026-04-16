@@ -123,7 +123,7 @@
                             <p>Track all your lending applications</p>
                         </div>
                         <div>
-                            <a href="#">View all <i class="fa fa-arrow-right"></i></a>
+                            <a href="{{ route("LoanStatus") }}">View all <i class="fa fa-arrow-right"></i></a>
                         </div>
                     </div>
 
@@ -154,11 +154,19 @@
                                     $loanAmount = $loan->lending_amount ?? 0;
                                     $remainingBalance = $lendingStatus->remaining_balance ?? $loanAmount;
                                     $monthlyPayment = $loan->monthly_payment ?? 0;
-                                    $paid = $loanAmount > 0
-                                        ? round((($loanAmount - $remainingBalance) / $loanAmount) * 100)
+                                    $paid = ($loanAmount > 0 && $lendingStatus)
+                                        ? max(0, round(($lendingStatus->total_paid / $loan->total_payment) * 100))
                                         : 0;
 
                                     $statusGroup = in_array($loan->status, ['Rejected', 'Declined']) ? 'Rejected' : $loan->status;
+
+                                    // Pre-calculate $daysLeft so it's available everywhere in this loop iteration
+                                    $daysLeft = ($lendingStatus && $lendingStatus->next_due_date)
+                                        ? (int) now()->startOfDay()->diffInDays(
+                                            \Carbon\Carbon::parse($lendingStatus->next_due_date)->startOfDay(),
+                                            false
+                                        )
+                                        : null;
                                 @endphp
                                 <div class="loan-box" data-status="{{ $statusGroup }}">
                                     <div class="box-head">
@@ -166,9 +174,37 @@
                                             <h5>{{ $loan->lending_type }}</h5>
                                             <p>Applied on {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</p>
                                         </div>
-                                        <div class="box-icon">
-                                            <div class="dot"></div>
-                                            <span>{{ $loan->status }}</span>
+                                        @php
+                                            $statusColor = match ($loan->status) {
+                                                'Approved' => '#1a4a3a',
+                                                'Pending' => '#e6a817',
+                                                'Rejected', 'Declined' => '#e03131',
+                                                default => '#888',
+                                            };
+                                            $statusBg = match ($loan->status) {
+                                                'Approved' => '#e8f5e9',
+                                                'Pending' => '#fff8e1',
+                                                'Rejected', 'Declined' => '#fef2f2',
+                                                default => '#f5f5f5',
+                                            };
+                                        @endphp
+                                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                                            <div class="box-icon"
+                                                style="background: {{ $statusBg }}; border: 1.5px solid {{ $statusColor }}; border-radius: 20px; padding: 4px 12px; display: flex; align-items: center; gap: 6px;">
+                                                <div class="dot"
+                                                    style="width: 7px; height: 7px; border-radius: 50%; background: {{ $statusColor }}; flex-shrink: 0;">
+                                                </div>
+                                                <span
+                                                    style="color: {{ $statusColor }}; font-size: 12px; font-weight: 700;">{{ $loan->status }}</span>
+                                            </div>
+                                            @if($loan->status === 'Approved' && $lendingStatus && $lendingStatus->next_due_date)
+                                                <p style="margin: 0; font-size: 12px; color: #888;">
+                                                    Next Due: <strong
+                                                        style="color: {{ $daysLeft === null ? '#1a4a3a' : ($daysLeft < 0 ? '#e03131' : ($daysLeft <= 7 ? '#e6a817' : '#1a4a3a')) }};">
+                                                        {{ \Carbon\Carbon::parse($lendingStatus->next_due_date)->format('M d, Y') }}
+                                                    </strong>
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -198,31 +234,51 @@
                                                 <span>{{ $paid }}% Paid</span>
                                             </div>
                                             <div class="progress-body">
-                                                <div class="progress" style="width: {{ $paid }}%"></div>
+                                                <div class="progress" style="width: {{ max(0, $paid) }}%"></div>
                                             </div>
+                                            {{-- Payment count below the bar --}}
+                                            @if($loan->status === 'Approved' && $lendingStatus)
+                                                <div
+                                                    style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 11.5px; color: #999;">
+                                                    <span>{{ $lendingStatus->payments_made }} of
+                                                        {{ $lendingStatus->total_payments }} payments made</span>
+                                                    <span>₱{{ number_format($lendingStatus->total_paid, 2) }} paid</span>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 
                                     <div class="box-footer">
+                                        {{-- AFTER --}}
                                         <div class="box-approved">
                                             @if ($loan->status === 'Approved')
-                                                <i class="fa fa-check"></i>
-                                                <p>Approved on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}</p>
+                                                <i class="fa fa-check" style="color: #1a4a3a;"></i>
+                                                <p style="color: #1a4a3a; font-weight: 600; margin: 0;">
+                                                    Approved on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}
+                                                </p>
                                             @elseif ($loan->status === 'Pending')
-                                                <i class="fa fa-hourglass"></i>
-                                                <p>Awaiting admin review</p>
-                                            @else
-                                                <i class="fa fa-xmark"></i>
-                                                <p>Rejected on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}</p>
+                                                <i class="fa fa-hourglass" style="color: #e6a817;"></i>
+                                                <p style="color: #e6a817; font-weight: 600; margin: 0;">Awaiting admin review</p>
+                                            @elseif ($loan->status === 'Rejected')
+                                                <i class="fa fa-xmark" style="color: #e03131;"></i>
+                                                <p style="color: #e03131; font-weight: 600; margin: 0;">
+                                                    Rejected on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}
+                                                </p>
                                             @endif
                                         </div>
 
                                         <div class="box-link">
                                             @if ($loan->status === 'Rejected' || $loan->status === 'Declined')
                                                 <a href="#">View Reason</a>
-                                                <a href="#">Re-apply <i class="fa fa-arrow-right"></i></a>
+                                                <a href="{{ route("LoanApplication") }}">Re-apply <i class="fa fa-arrow-right"></i></a>
+
+                                            @elseif($loan->status === 'Pending')
+                                                
+
                                             @else
+
                                                 <a href="#">View Loan <i class="fa fa-arrow-right"></i></a>
+
                                             @endif
                                         </div>
                                     </div>
@@ -282,17 +338,23 @@
                                 <div class="membership_status">
                                     @if ($member->membership_status === "Unofficial")
 
-                                        <div class="dot" style="width: 8px; height: 8px; background-color: var(--gold); border-radius: 50%"></div>
+                                        <div class="dot"
+                                            style="width: 8px; height: 8px; background-color: var(--gold); border-radius: 50%">
+                                        </div>
                                         <span style="color: var(--gold)">{{ $member->membership_status ?? 'N/A' }}</span>
 
                                     @elseif($member->membership_status === "Not Active")
 
-                                        <div class="dot" style="width: 8px; height: 8px; background-color: #DC2626; border-radius: 50%"></div>
+                                        <div class="dot"
+                                            style="width: 8px; height: 8px; background-color: #DC2626; border-radius: 50%">
+                                        </div>
                                         <span style="color: #DC2626">{{ $member->membership_status ?? 'N/A' }}</span>
 
                                     @else
 
-                                        <div class="dot" style="width: 8px; height: 8px; background-color: var(--green); border-radius: 50%"></div>
+                                        <div class="dot"
+                                            style="width: 8px; height: 8px; background-color: var(--green); border-radius: 50%">
+                                        </div>
                                         <span style="color: (--green)">{{ $member->membership_status ?? 'N/A' }}</span>
 
                                     @endif

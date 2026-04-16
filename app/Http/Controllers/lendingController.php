@@ -11,7 +11,7 @@ use Auth;
 
 class lendingController extends Controller
 {
-    // ─── Shared helper — always call this before returning the loan application view ───
+    // ─── Shared helper ────────────────────────────────────────────────────────────
     private function getLoanPageData(): array
     {
         $memberId = auth()->id();
@@ -22,10 +22,14 @@ class lendingController extends Controller
         $canApplyLoan = $currentShares >= 10;
 
         $maxLoan = 25000;
+
+        // Only Pending and Approved count toward the limit.
+        // Declined and Completed do NOT reduce the loanable amount.
         $totalActiveLoan = DB::table('lending_program_tbls')
             ->where('user_id', $memberId)
-            ->whereIn('status', ['Pending', 'Approved'])
+            ->whereIn('status', ['Pending', 'Approved'])  // ← Completed loans are excluded
             ->sum('lending_amount');
+
         $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
         $hasFullyLoaned = $totalActiveLoan >= $maxLoan;
 
@@ -73,11 +77,12 @@ class lendingController extends Controller
                 );
         }
 
-        // Loan amount checks
+        // Only Pending and Approved count — Declined and Completed are free
         $totalActiveLoan = DB::table('lending_program_tbls')
             ->where('user_id', $memberId)
             ->whereIn('status', ['Pending', 'Approved'])
             ->sum('lending_amount');
+
         $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
 
         if ($totalActiveLoan >= $maxLoan) {
@@ -105,6 +110,25 @@ class lendingController extends Controller
                 ->withInput();
         }
 
+        // ── Loan term validation per lending type ────────────────────────────────
+        // Personal, Emergency, Education → 6 months only
+        // Business → 6 months or 12 months
+        $lendingType = $request->lending_type;
+        $allowedTerms = match ($lendingType) {
+            'Business Lending' => ['6 months', '12 months'],
+            default => ['6 months'],   // Personal, Emergency, Education
+        };
+
+        if (!in_array($request->lending_type_term, $allowedTerms)) {
+            return redirect()->back()
+                ->with(
+                    'loan_blocked',
+                    'Invalid loan term selected for ' . $lendingType . '. ' .
+                    'Allowed: ' . implode(', ', $allowedTerms) . '.'
+                )
+                ->withInput();
+        }
+
         try {
             $request->validate([
                 'lending_type' => 'nullable|string',
@@ -115,6 +139,7 @@ class lendingController extends Controller
                 'total_payment' => 'nullable|numeric',
                 'total_interest' => 'nullable|numeric',
                 'purpose_loan' => 'nullable|string',
+                'purpose_loan_others' => 'nullable|string|required_if:purpose_loan,Others',
                 'personal_valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'personal_proof_of_income' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'emergency_valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -124,13 +149,9 @@ class lendingController extends Controller
                 'business_proof_of_income' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'business_permit' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'financial_statement' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                'car_valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                'car_proof_of_income' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                'vehicle_quotation' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                'drivers_license' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+                'education_valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'school_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
                 'cor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-                'cog' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             ]);
 
             $storeFile = function ($field, $folder) use ($request) {
@@ -140,13 +161,12 @@ class lendingController extends Controller
                 return null;
             };
 
-            $lendingType = $request->lending_type;
-
+            // Map valid_id and proof_of_income fields per lending type
             $validIdField = match ($lendingType) {
                 'Personal Lending' => 'personal_valid_id',
                 'Emergency Lending' => 'emergency_valid_id',
                 'Business Lending' => 'business_valid_id',
-                'Car Lending' => 'car_valid_id',
+                'Education Lending' => 'education_valid_id',
                 default => null,
             };
 
@@ -154,12 +174,10 @@ class lendingController extends Controller
                 'Personal Lending' => 'personal_proof_of_income',
                 'Emergency Lending' => 'emergency_proof_of_income',
                 'Business Lending' => 'business_proof_of_income',
-                'Car Lending' => 'car_proof_of_income',
                 default => null,
             };
 
             $referenceNo = 'LN-' . date('YmdHis') . rand(10, 99);
-            $dateFiled = now()->format('M d, Y');
 
             lending_program_tbl::create([
                 'user_id' => $memberId,
@@ -171,24 +189,24 @@ class lendingController extends Controller
                 'monthly_payment' => $request->monthly_payment,
                 'total_payment' => $request->total_payment,
                 'total_interest' => $request->total_interest,
-                'purpose_loan' => $request->purpose_loan,
+                'purpose_loan' => $request->purpose_loan === 'Others'
+                    ? $request->purpose_loan_others
+                    : $request->purpose_loan,
                 'status' => 'Pending',
                 'valid_id' => $validIdField ? $storeFile($validIdField, 'valid_id') : null,
                 'proof_of_income' => $proofOfIncomeField ? $storeFile($proofOfIncomeField, 'proof_of_income') : null,
                 'proof_of_emergency' => $storeFile('proof_of_emergency', 'proof_of_emergency'),
                 'business_permit' => $storeFile('business_permit', 'business_permit'),
                 'financial_statement' => $storeFile('financial_statement', 'financial_statement'),
-                'vehicle_quotation' => $storeFile('vehicle_quotation', 'vehicle_quotation'),
-                'drivers_license' => $storeFile('drivers_license', 'drivers_license'),
                 'school_id' => $storeFile('school_id', 'school_id'),
                 'cor' => $storeFile('cor', 'cor'),
-                'cog' => $storeFile('cog', 'cog'),
             ]);
 
             return redirect()->route('LoanApplication')
-                ->with('ApplySuccess', 'Lending Apply Successfully!')
+                ->with('ApplySuccess', true)
                 ->with('ReferenceNo', $referenceNo)
-                ->with('DateFiled', $dateFiled);
+                ->with('DateFiled', now()->timezone('Asia/Manila')->format('M d, Y · h:i A'))
+                ->with('MemberName', trim(Auth::user()->first_name . ' ' . Auth::user()->last_name) ?: Auth::user()->username);
 
         } catch (\Exception $e) {
             dd($e->getMessage(), $e->getLine(), $e->getFile());
@@ -201,7 +219,6 @@ class lendingController extends Controller
         $request->validate([
             'lending_id' => 'required|exists:lending_program_tbls,id',
             'amount_paid' => 'required|numeric|min:1',
-            'payment_date' => 'required|date',
             'payment_method' => 'required|string',
         ]);
 
@@ -210,7 +227,7 @@ class lendingController extends Controller
             'user_id' => auth()->id(),
             'payment_number' => $request->payment_number,
             'amount_paid' => $request->amount_paid,
-            'payment_date' => $request->payment_date,
+            'payment_date' => now()->format('Y-m-d'),
             'payment_method' => $request->payment_method,
             'reference_no' => $request->reference_no ?: 'RCP-' . now()->format('YmdHis'),
             'notes' => $request->notes,
@@ -218,13 +235,20 @@ class lendingController extends Controller
         ]);
 
         $status = lending_status_tbl::where('lending_id', $request->lending_id)->first();
+
         if ($status) {
             $status->total_paid += $request->amount_paid;
             $status->remaining_balance = max(0, $status->remaining_balance - $request->amount_paid);
             $status->payments_made += 1;
+
             if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
                 $status->status = 'Completed';
+                $status->payments_made = $status->total_payments; // ← ADD THIS LINE
+
+                lending_program_tbl::where('id', $request->lending_id)
+                    ->update(['status' => 'Completed']);
             }
+
             $status->save();
         }
 
@@ -239,8 +263,11 @@ class lendingController extends Controller
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
 
+        // Show Approved AND Completed loans in the sidebar so members
+        // can still view their repayment history after fully paying.
         $loans = lending_program_tbl::where('user_id', $memberId)
-            ->where('status', 'Approved')
+            ->whereIn('status', ['Approved', 'Completed'])
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $selectedId = $request->get('loan_id');
