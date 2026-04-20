@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId("user_id")
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
-            $table->string("membership_category");
+            $table->string("membership_category")->nullable();
             $table->boolean("email_verified")->default(false);
             $table->string("place_of_birth")->nullable();
             $table->string("date_of_birth")->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->string("blood_type")->nullable();
             $table->string("skills")->nullable();
             $table->longText("profile_picture")->nullable();
-            $table->longText("signature");
+            $table->longText("signature")->nullable();
             $table->enum("approval_status", ["Pending", "Approved", "Declined"])
                 ->default("Pending");
             $table->enum("membership_status", ["Unofficial", "Active", "Not Active"])

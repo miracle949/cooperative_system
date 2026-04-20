@@ -115,6 +115,7 @@ Manage Share-capital
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Member Name</th>
                         <th>Shares</th>
                         <th>Amount</th>
@@ -127,7 +128,8 @@ Manage Share-capital
                 <tbody>
                     @forelse($transactions as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-900">{{ $tx->created_at->addHours(8)->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-600">{{ $tx->created_at->addHours(8)->format('g:i A') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
@@ -198,14 +200,42 @@ Manage Share-capital
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-100 flex items-center justify-between">
+        @if($transactions->hasPages())
+        <div class="flex items-center justify-between mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <p class="text-sm text-gray-500">
-                Showing {{ $transactions->firstItem() ?? 0 }}-{{ $transactions->lastItem() ?? 0 }} of {{ $transactions->total() }} transactions
+                Showing {{ $transactions->firstItem() ?? 1 }} to {{ $transactions->lastItem() ?? $transactions->count() }} of {{ $transactions->total() }} transactions
             </p>
-            <div>
-                {{ $transactions->appends(request()->query())->links() }}
+            <div class="flex items-center gap-1">
+                @if($transactions->onFirstPage())
+                    <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                @else
+                    <a href="{{ $transactions->previousPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </a>
+                @endif
+
+                @foreach($transactions->getUrlRange(max(1, $transactions->currentPage() - 2), min($transactions->lastPage(), $transactions->currentPage() + 2)) as $page => $url)
+                    @if($page == $transactions->currentPage())
+                        <span class="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if($transactions->hasMorePages())
+                    <a href="{{ $transactions->nextPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                @else
+                    <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                @endif
             </div>
         </div>
+        @endif
     </div>
 
     <!-- Add Contribution Modal -->

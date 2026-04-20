@@ -96,8 +96,10 @@
     padding: 48px 48px 30px 48px;
     animation: slideIn 0.4s ease both;
     width: 100%;
+    height: 100%;
     max-width: 700px;
-    min-height: auto;
+    /* max-width: 700px;
+    min-height: auto; */
 }
 
 .container-fluid main .card-box .alert-reminder button .fa-solid {
@@ -217,7 +219,8 @@
     /* width: 100%; */
     /* width: 100%;
     max-width: 400px; */
-    width: 400px;
+    width: 100%;
+    max-width: 500px;
 }
 
 .container-fluid main .card-calculate .calculate-header {
@@ -404,6 +407,12 @@
     border-radius: 20px;
     /* padding: 30px 48px 30px 30px; */
 }
+
+/* .edit button{
+    padding: 10px 30px;
+    background-color: #1E4035;
+    color: #ffffff;
+} */
 
 @keyframes slideIn {
     from {

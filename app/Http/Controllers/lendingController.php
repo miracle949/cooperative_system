@@ -36,14 +36,71 @@ class lendingController extends Controller
 
         $maxLoan = 25000;
 
-        // Only Pending and Approved count toward the limit.
-        // Declined and Completed do NOT reduce the loanable amount.
-        $totalActiveLoan = DB::table('lending_program_tbls')
+        // Get all active loans (Pending, Approved, Completed) and calculate remaining balance
+        // Using lending_status_tbl to get actual remaining balance instead of original loan amount
+        $loans = DB::table('lending_program_tbls')
             ->where('user_id', $memberId)
-            ->whereIn('status', ['Pending', 'Approved'])  // ← Completed loans are excluded
-            ->sum('lending_amount');
+            ->whereIn('status', ['Pending', 'Approved', 'Completed'])
+            ->get();
 
-        $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
+        // Count only the principal (lending_amount) - the actual loan amount borrowed, excluding interest
+        $totalActiveLoan = 0;
+        $totalPaidOnActiveLoans = 0;
+
+        foreach ($loans as $loan) {
+            // Skip Completed loans - they're fully paid
+            if ($loan->status === 'Completed') {
+                continue;
+            }
+
+            // Use lending_amount (principal only) - not total_payment which includes interest
+            $principal = (float) $loan->lending_amount;
+            
+            $status = DB::table('lending_status_tbls')
+                ->where('lending_id', $loan->id)
+                ->first();
+
+            if ($status && $principal > 0) {
+                $totalPaid = isset($status->total_paid) ? (float) $status->total_paid : 0;
+                
+                // Get total payment (principal + interest)
+                $totalPayment = isset($loan->total_payment) ? (float) $loan->total_payment : $principal;
+                $remainingBalance = isset($status->remaining_balance) ? (float) $status->remaining_balance : $principal;
+                
+                // Calculate remaining principal proportionally
+                // remaining_balance/total_payment = remaining_principal/principal
+                if ($totalPayment > 0 && $remainingBalance > 0) {
+                    $principalRemaining = ($remainingBalance / $totalPayment) * $principal;
+                } else {
+                    $principalRemaining = $principal;
+                }
+                
+                // Cap at original principal
+                $principalRemaining = min($principal, max(0, $principalRemaining));
+
+                if ($principalRemaining > 0.01) {
+                    $totalActiveLoan += $principalRemaining;
+                }
+                $totalPaidOnActiveLoans += $totalPaid;
+            } else {
+                // No status yet - use full principal as active
+                if ($principal > 0) {
+                    $totalActiveLoan += $principal;
+                }
+            }
+        }
+
+$remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
+        // Force to integer for calculation then back
+        $remainingLoanableCents = (int) round($remainingLoanable * 100);
+        
+        // If within 1 cent of max, just set to exact max
+        if ($remainingLoanableCents >= 2499900 || $totalActiveLoan < 0.02) {
+            $remainingLoanable = 25000.00;
+        } else {
+            $remainingLoanable = $remainingLoanableCents / 100;
+        }
+        
         $hasFullyLoaned = $totalActiveLoan >= $maxLoan;
 
         return compact(
@@ -51,7 +108,8 @@ class lendingController extends Controller
             'canApplyLoan',
             'totalActiveLoan',
             'remainingLoanable',
-            'hasFullyLoaned'
+            'hasFullyLoaned',
+            'totalPaidOnActiveLoans'
         );
     }
 
@@ -118,13 +176,54 @@ class lendingController extends Controller
                 );
         }
 
-        // Only Pending and Approved count — Declined and Completed are free
-        $totalActiveLoan = DB::table('lending_program_tbls')
+        // Use remaining balance from lending_status_tbl instead of original loan amount
+        $loans = DB::table('lending_program_tbls')
             ->where('user_id', $memberId)
-            ->whereIn('status', ['Pending', 'Approved'])
-            ->sum('lending_amount');
+            ->whereIn('status', ['Pending', 'Approved', 'Completed'])
+            ->get();
+
+        // Count only principal (lending_amount), excluding interest
+        $totalActiveLoan = 0;
+        
+        foreach ($loans as $loan) {
+            if ($loan->status === 'Completed') {
+                continue;
+            }
+
+            $principal = (float) $loan->lending_amount;
+            $status = DB::table('lending_status_tbls')
+                ->where('lending_id', $loan->id)
+                ->first();
+
+            if ($status && $principal > 0) {
+                $totalPayment = isset($loan->total_payment) ? (float) $loan->total_payment : $principal;
+                $remainingBalance = isset($status->remaining_balance) ? (float) $status->remaining_balance : $principal;
+                
+                if ($totalPayment > 0 && $remainingBalance > 0) {
+                    $principalRemaining = ($remainingBalance / $totalPayment) * $principal;
+                } else {
+                    $principalRemaining = $principal;
+                }
+                $principalRemaining = min($principal, max(0, $principalRemaining));
+                
+                if ($principalRemaining > 0.01) {
+                    $totalActiveLoan += $principalRemaining;
+                }
+            } else {
+                if ($principal > 0) {
+                    $totalActiveLoan += $principal;
+                }
+            }
+        }
 
         $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
+        $remainingLoanableCents = (int) round($remainingLoanable * 100);
+        
+        if ($remainingLoanableCents >= 2499900 || $totalActiveLoan < 0.02) {
+            $remainingLoanable = 25000.00;
+        } else {
+            $remainingLoanable = $remainingLoanableCents / 100;
+        }
 
         if ($totalActiveLoan >= $maxLoan) {
             return redirect()->back()
@@ -145,7 +244,11 @@ class lendingController extends Controller
                 ->withInput();
         }
 
-        if ($request->lending_amount > $maxLoan) {
+        // Use cents comparison to avoid floating point issues
+        $requestedCents = (int) ($request->lending_amount * 100);
+        $maxLoanCents = (int) ($maxLoan * 100);
+        
+        if ($requestedCents > $maxLoanCents) {
             return redirect()->back()
                 ->with('loan_blocked', 'The maximum loan amount allowed is ₱25,000.')
                 ->withInput();
@@ -334,7 +437,7 @@ class lendingController extends Controller
                 'payments_made' => 0,
                 'total_payments' => $termMonths,
                 'interest_rate' => $interestRate,
-                'next_due_date' => now()->addMonth()->format('Y-m-d'),
+                'due_date' => now()->addMonths($termMonths)->format('Y-m-d'),
                 'status' => 'Active',
             ]);
         }

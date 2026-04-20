@@ -194,6 +194,11 @@
             color: #4b5563;
         }
 
+        .badge-info {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
         .table-container {
             overflow-x: auto;
         }
@@ -232,6 +237,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         .modal {
@@ -383,17 +392,16 @@
                         <i data-lucide="archive" class="w-5 h-5"></i>
                         <span>Archives</span>
                     </a>
-                    <a href="{{ route('settings') }}"
-                        class="sidebar-link justify-start {{ request()->routeIs('settings') ? 'active' : '' }}">
-                        <i data-lucide="settings" class="w-5 h-5"></i>
-                        <span>Settings</span>
+                    <a href="{{ route('financial.activity') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('financial.activity') ? 'active' : '' }}">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                        <span>Financial Activity</span>
                     </a>
                 </nav>
 
                 <!-- User Info -->
-                <div class="p-3 border-t border-gray-200">
-                    <a href="{{ route('settings') }}"
-                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors">
+                <div class="p-3 border-t border-gray-200 relative">
+                    <button onclick="toggleUserDropdown(event)" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors w-full text-left">
                         <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center shadow-sm">
                             <span class="text-primary-600 font-semibold text-sm">RS</span>
                         </div>
@@ -401,8 +409,21 @@
                             <p class="text-sm font-medium text-gray-900 truncate">Ronald Sales</p>
                             <p class="text-xs text-gray-500 truncate">Administrator</p>
                         </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
-                    </a>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div id="userDropdownMenu" class="hidden absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                        <a href="{{ route('settings') }}" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                            <i data-lucide="user" class="w-4 h-4 text-gray-500"></i>
+                            <span class="text-sm">View Profile</span>
+                        </a>
+                        <hr class="my-2 border-gray-100">
+                        <a href="{{ route('logout') }}" class="flex items-center gap-3 px-4 py-3 text-danger-600 hover:bg-red-50 transition-colors">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span class="text-sm font-medium">Logout</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -514,8 +535,19 @@
             dropdown.classList.toggle('hidden');
         }
 
+        // User dropdown toggle
+        function toggleUserDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdownMenu');
+            dropdown.classList.toggle('hidden');
+        }
+
         // Close dropdowns on outside click
         document.addEventListener('click', function (e) {
+            const userDropdown = document.getElementById('userDropdownMenu');
+            if (!e.target.closest('.p-3') && !userDropdown.classList.contains('hidden')) {
+                userDropdown.classList.add('hidden');
+            }
             if (!e.target.closest('.dropdown')) {
                 document.querySelectorAll('.dropdown-menu').forEach(menu => {
                     menu.classList.add('hidden');
@@ -526,11 +558,13 @@
         // Modal functions
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).style.display = 'none';
             document.body.style.overflow = 'auto';
         }
 

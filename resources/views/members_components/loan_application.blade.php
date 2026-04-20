@@ -118,13 +118,8 @@
                         <div class="row form-parent">
 
                             <div class="col-lg-6 col-md-12 mt-4">
-<<<<<<< HEAD
-                                <label>Loan Type *</label>
+<label>Loan Type *</label>
                                 <select name="lending_type" class="form-select mt-2" onchange="recalculate()"
-=======
-                                <label>Lending Type *</label>
-                                <select name="lending_type" class="form-select mt-2" onchange="updateTermOptions()"
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
                                     id="lending_type" required>
                                     <option value="">Select Loan type</option>
                                     <option value="Personal Lending">Personal Loan</option>
@@ -143,9 +138,9 @@
                                     </span>
                                 </label>
                                 <input type="number" name="lending_amount" id="lending_amount_input"
-                                    oninput="if(this.value.length>6)this.value=this.value.slice(0,6);recalculate();checkLoanLimit(this);"
+                                    oninput="let val=parseFloat(this.value);if(val>25000){this.value=25000}else if(val<1)this.value='';recalculate();checkLoanLimit(this);"
                                     placeholder="Enter amount (max ₱{{ number_format($remainingLoanable, 2) }})"
-                                    class="form-control mt-2" min="1" max="{{ $remainingLoanable }}" {{ $hasFullyLoaned ? 'disabled' : '' }}
+                                    class="form-control mt-2" min="1" max="25000" {{ $hasFullyLoaned ? 'disabled' : '' }}
                                     onkeydown="if(event.key==='e'||event.key==='E'||event.key==='+'||event.key==='-')event.preventDefault();"
                                     required>
                                 <div id="loan-limit-warning"
@@ -157,27 +152,12 @@
                             </div>
 
                             {{-- ── Loan Term — options are populated dynamically by JS ── --}}
-                            <div class="col-lg-6 col-md-12 mt-4">
-<<<<<<< HEAD
+<div class="col-lg-6 col-md-12 mt-4">
                                 <label>Loan Term *</label>
                                 <select name="lending_type_term" id="lending_type_term" class="form-select mt-2"
                                     onchange="recalculate()" required>
                                     <option value="">Select Loan term</option>
-=======
-                                <label>Lending Term *</label>
-                                <select name="lending_type_term_nonbusiness" id="lending_type_term_nonbusiness" class="form-select mt-2" 
-                                    onchange="recalculate()">
-                                    <option value="">Select lending term</option>
-                                    <option value="6 months">6 months</option>
                                 </select>
-                                <select name="lending_type_term_business" id="lending_type_term_business" class="form-select mt-2" 
-                                    style="display:none;" onchange="recalculate()">
-                                    <option value="">Select lending term</option>
-                                    <option value="6 months">6 months</option>
-                                    <option value="12 months">12 months</option>
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
-                                </select>
-                                <input type="hidden" name="lending_type_term" id="lending_type_term">
                             </div>
 
                             <div class="col-lg-6 col-md-12 mt-4">
@@ -542,7 +522,7 @@
                             <input type="hidden" name="total_interest" id="hidden-interest">
 
                             <div class="col-12 mt-5 mt-md-4">
-                                <button type="submit" class="tw:w-[100%] btn">Submit Application</button>
+                                <button type="button" class="tw:w-[100%] btn" onclick="showConfirmation()">Submit Application</button>
                             </div>
                         </div>
                     </form>
@@ -686,11 +666,19 @@
 
     <script>
         const MAX_REMAINING = {{ $remainingLoanable }};
+        const MAX_ALLOWED = 25000;
 
         function checkLoanLimit(input) {
             const warning = document.getElementById('loan-limit-warning');
             const submitBtn = document.querySelector('button[type="submit"]');
-            const val = parseFloat(input.value);
+            let val = parseFloat(input.value);
+            
+            // Cap at max allowed
+            if (val > MAX_ALLOWED) {
+                val = MAX_ALLOWED;
+                input.value = val;
+            }
+            
             if (val > MAX_REMAINING || val <= 0) {
                 warning.style.display = 'block';
                 input.style.borderColor = '#fca5a5';
@@ -715,69 +703,6 @@
                     submitBtn.style.cursor = 'not-allowed';
                 }
             @endif
-
-            document.getElementById('loan-form').addEventListener('submit', function (e) {
-                const selectedType = document.getElementById('lending_type').value;
-                if (!selectedType) return;
-
-                const requiredFieldsMap = {
-                    'Personal Lending': ['personal_valid_id', 'personal_proof_of_income'],
-                    'Emergency Lending': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
-                    'Business Lending': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
-                    'Education Lending': ['school_id', 'cor', 'education_valid_id'],
-                };
-
-                const requiredFields = requiredFieldsMap[selectedType] || [];
-                let missing = false;
-
-                // Clear all previous error states
-                document.querySelectorAll('.upload-card').forEach(function (card) {
-                    card.style.border = '';
-                    const existing = card.querySelector('.upload-error-msg');
-                    if (existing) existing.remove();
-                });
-
-                requiredFields.forEach(function (fieldName) {
-                    const input = document.querySelector('input[name="' + fieldName + '"]');
-                    if (input && !input.files.length) {
-                        const card = input.closest('.upload-card');
-                        card.style.border = '2px solid #dc2626';
-
-                        const errMsg = document.createElement('span');
-                        errMsg.className = 'upload-error-msg';
-                        errMsg.style.cssText = 'display:block;margin-top:6px;font-size:11.5px;color:#dc2626;font-weight:600;';
-                        errMsg.innerHTML = '<i class="fa fa-circle-exclamation" style="margin-right:4px;"></i>This document is required.';
-                        card.appendChild(errMsg);
-
-                        missing = true;
-                    }
-                });
-
-                if (missing) {
-                    e.preventDefault();
-                    const firstError = document.querySelector('.upload-card[style*="border"]');
-                    if (firstError) {
-                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }
-
-                // ── ADD THIS BLOCK RIGHT HERE ──────────────────────────────────────
-                const purposeSelect = document.getElementById('purpose_loan_select');
-                const purposeTextarea = document.getElementById('purpose_loan_textarea');
-
-                if (purposeSelect && purposeSelect.value === 'Others') {
-                    if (!purposeTextarea.value.trim()) {
-                        e.preventDefault();
-                        purposeTextarea.style.border = '2px solid #dc2626';
-                        purposeTextarea.style.transition = 'border 0.3s ease';
-                        purposeTextarea.placeholder = 'Please describe the purpose of your loan.';
-                        purposeTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else {
-                        purposeTextarea.style.border = '';
-                    }
-                }
-                // ──────────────────────────────────────────────────────────────────
-            });
         });
     </script>
 
@@ -802,18 +727,18 @@
 
         function updateLoanTerms(selectedType) {
             const termSelect = document.getElementById('lending_type_term');
-            // Clear existing options (except default placeholder)
             termSelect.innerHTML = '<option value="">Select Loan term</option>';
-
+            
             const options = termOptionsMap[selectedType] || [];
-            options.forEach(function (opt) {
+            options.forEach(function(opt) {
                 const el = document.createElement('option');
                 el.value = opt;
                 el.textContent = opt;
-                // Auto-select if only one option
                 if (options.length === 1) el.selected = true;
                 termSelect.appendChild(el);
             });
+            
+            recalculate();
         }
 
         function showDocs(selectedType) {
@@ -844,14 +769,10 @@
             if (!card || !nameEl) return;
             if (input.files && input.files[0]) {
                 card.classList.add('has-file');
-<<<<<<< HEAD
-                card.style.border = '';
+card.style.border = '';
                 const errMsg = card.querySelector('.upload-error-msg');
                 if (errMsg) errMsg.remove();
-                nameEl.textContent = input.files[0].name;
-=======
                 if (nameEl) nameEl.textContent = input.files[0].name;
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
             } else {
                 card.classList.remove('has-file');
                 if (nameEl) nameEl.textContent = '';
@@ -860,71 +781,13 @@
     </script>
 
     <script>
-<<<<<<< HEAD
-        const RATES = {
-            'Personal Lending': 0.002,
-            'Emergency Lending': 0.002,
-            'Business Lending': 0.002,
-            'Education Lending': 0.002,
-        };
-
-        function recalculate() {
-            const type = document.querySelector('[name="lending_type"]').value;
-            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value);
-            const termRaw = document.getElementById('lending_type_term').value;
-            const term = parseInt(termRaw);
-
-            showDocs(type);
-            document.getElementById('calc-type').textContent = type || '-';
-
-            if (!type || !amount || !term || amount <= 0) {
-=======
-        const RATES = @json($loanSettings);
-
-        function updateTermOptions() {
-            const type = document.querySelector('[name="lending_type"]').value;
-            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
-            const termBusiness = document.getElementById('lending_type_term_business');
-            const hiddenTerm = document.getElementById('lending_type_term');
-            
-            // Remove required from both first
-            termNonBusiness.required = false;
-            termBusiness.required = false;
-            
-            if (type === 'Business Lending') {
-                termNonBusiness.style.display = 'none';
-                termBusiness.style.display = 'block';
-                termBusiness.required = true;
-                if (termBusiness.options.length > 1) {
-                    termBusiness.selectedIndex = 1;
-                }
-                hiddenTerm.value = termBusiness.value;
-            } else if (type) {
-                termNonBusiness.style.display = 'block';
-                termBusiness.style.display = 'none';
-                termNonBusiness.required = true;
-                if (termNonBusiness.options.length > 1) {
-                    termNonBusiness.selectedIndex = 1;
-                }
-                hiddenTerm.value = termNonBusiness.value;
-            } else {
-                termNonBusiness.style.display = 'block';
-                termBusiness.style.display = 'none';
-            }
-            
-            recalculate();
-        }
+const RATES = @json($loanSettings);
 
         function recalculate() {
             const type = document.querySelector('[name="lending_type"]').value;
             const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
-            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
-            const termBusiness = document.getElementById('lending_type_term_business');
-            const hiddenTerm = document.getElementById('lending_type_term');
-            
-            // Get term from visible dropdown
-            const term = termBusiness.style.display === 'block' ? termBusiness.value : termNonBusiness.value;
-            hiddenTerm.value = term;
+            const termSelect = document.getElementById('lending_type_term');
+            const term = termSelect.value;
             
             const termMonths = term ? parseInt(term.split(' ')[0]) : 0;
 
@@ -933,7 +796,6 @@
             document.getElementById('calc-type').textContent = type || '-';
 
             if (!type || !amount || !termMonths || amount <= 0) {
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
                 document.getElementById('calc-monthly').textContent = '₱-';
                 document.getElementById('calc-term-sub').textContent = 'Fill in amount & term to compute.';
                 document.getElementById('calc-amount').textContent = amount > 0 ? '₱' + fmt(amount) : '-';
@@ -945,18 +807,13 @@
             }
 
             const r = RATES[type] ?? 0.015;
-<<<<<<< HEAD
-            const monthly = amount * r * Math.pow(1 + r, term) / (Math.pow(1 + r, term) - 1);
-            const total = monthly * term;
-=======
 
             const monthly = amount * r * Math.pow(1 + r, termMonths) / (Math.pow(1 + r, termMonths) - 1);
             const total = monthly * termMonths;
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
             const interest = total - amount;
 
             document.getElementById('calc-monthly').textContent = '₱' + fmt(monthly);
-            document.getElementById('calc-term-sub').textContent = 'Over ' + term;
+            document.getElementById('calc-term-sub').textContent = 'Over ' + termMonths + ' months';
             document.getElementById('calc-amount').textContent = '₱' + fmt(amount);
             document.getElementById('calc-rate').textContent = (r * 100).toFixed(1) + '% / mo';
             document.getElementById('calc-term').textContent = term;
@@ -971,7 +828,117 @@
         function fmt(n) {
             return n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
+
+        // Confirmation Modal
+        function showConfirmation() {
+            const form = document.getElementById('loan-form');
+            const selectedType = document.getElementById('lending_type').value;
+            const requiredFieldsMap = {
+                'Personal Lending': ['personal_valid_id', 'personal_proof_of_income'],
+                'Emergency Lending': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
+                'Business Lending': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
+                'Education Lending': ['school_id', 'cor', 'education_valid_id'],
+            };
+            const requiredFields = requiredFieldsMap[selectedType] || [];
+            let missing = false;
+            
+            document.querySelectorAll('.upload-card').forEach(function(card) {
+                card.style.border = '';
+                const existing = card.querySelector('.upload-error-msg');
+                if (existing) existing.remove();
+            });
+            
+            requiredFields.forEach(function(fieldName) {
+                const input = document.querySelector('input[name="' + fieldName + '"]');
+                if (!input || !input.files || !input.files[0]) {
+                    const card = input ? input.closest('.upload-card') : null;
+                    if (card) {
+                        card.style.border = '2px solid #dc2626';
+                        const err = document.createElement('p');
+                        err.className = 'upload-error-msg';
+                        err.style.color = '#dc2626';
+                        err.style.fontSize = '12px';
+                        err.style.marginTop = '4px';
+                        err.textContent = 'Required';
+                        card.appendChild(err);
+                    }
+                    missing = true;
+                }
+            });
+            
+            if (missing) {
+                document.getElementById('loan-form').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            // Gather details for confirmation
+            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
+            const term = document.getElementById('lending_type_term').value || '';
+            const monthly = document.getElementById('hidden-monthly').value || '0';
+            const total = document.getElementById('hidden-total').value || '0';
+            const interest = document.getElementById('hidden-interest').value || '0';
+            
+            document.getElementById('confirm-loan-type').textContent = selectedType;
+            document.getElementById('confirm-loan-amount').textContent = '₱' + fmt(amount);
+            document.getElementById('confirm-loan-term').textContent = term;
+            document.getElementById('confirm-monthly-payment').textContent = '₱' + fmt(parseFloat(monthly));
+            document.getElementById('confirm-total-payment').textContent = '₱' + fmt(parseFloat(total));
+            document.getElementById('confirm-total-interest').textContent = '₱' + fmt(parseFloat(interest));
+            
+            document.getElementById('confirmation-modal').style.display = 'flex';
+        }
+        
+        function closeConfirmation() {
+            document.getElementById('confirmation-modal').style.display = 'none';
+        }
+        
+        function confirmSubmit() {
+            document.getElementById('loan-form').submit();
+        }
     </script>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:white;padding:24px;border-radius:12px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;">
+            <h3 style="margin:0 0 16px 0;font-size:20px;font-weight:600;">Confirm Loan Application</h3>
+            <p style="color:#666;margin-bottom:20px;">Please review your loan details before submitting.</p>
+            
+            <div style="background:#f9fafb;padding:16px;border-radius:8px;margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Loan Type:</span>
+                    <span id="confirm-loan-type" style="font-weight:500;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Loan Amount:</span>
+                    <span id="confirm-loan-amount" style="font-weight:500;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Term:</span>
+                    <span id="confirm-loan-term" style="font-weight:500;"></span>
+                </div>
+                <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Monthly Payment:</span>
+                    <span id="confirm-monthly-payment" style="font-weight:500;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Total Payment:</span>
+                    <span id="confirm-total-payment" style="font-weight:500;"></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                    <span style="color:#666;">Total Interest:</span>
+                    <span id="confirm-total-interest" style="font-weight:500;"></span>
+                </div>
+            </div>
+            
+            <p style="font-size:14px;color:#666;margin-bottom:20px;">By clicking <strong>Confirm</strong>, you agree to proceed with this loan application.</p>
+            
+            <div style="display:flex;gap:12px;">
+                <button type="button" onclick="closeConfirmation()" style="flex:1;padding:12px;border:1px solid #d1d5db;border-radius:8px;background:white;cursor:pointer;">Cancel</button>
+                <button type="button" onclick="confirmSubmit()" style="flex:1;padding:12px;border:none;border-radius:8px;background:#2563eb;color:white;font-weight:500;cursor:pointer;">Confirm</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 
