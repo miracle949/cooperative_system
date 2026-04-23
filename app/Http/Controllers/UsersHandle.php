@@ -9,6 +9,10 @@ use App\Models\savings_account_tbl;
 use App\Models\dividend_rates_tbl;
 use App\Models\lending_program_tbl;
 use App\Models\Loan_settings_tbl;
+use App\Models\share_capital_account_tbl;
+use App\Models\share_capital_transaction_tbl;
+use App\Models\savings_transaction_tbl;
+use App\Models\lending_repayments_tbl;
 use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
 use App\Models\Family_tbl;
@@ -478,29 +482,257 @@ class UsersHandle extends Controller
 
     public function ProfileMember()
     {
-        $username = Auth::check() ? Auth::user()->username : null;
-        $email = Auth::check() ? Auth::user()->email : null;
+        $userId = Auth::id();
+
+        $user = Users_tbl::find($userId);
+        $otherinfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        $membergovernIds = Membergovern_ids_tbl::where('user_id', $userId)->first();
+        $family = Family_tbl::where('user_id', $userId)->first();
+        $vehicles = Membervehi_tbl::where('user_id', $userId)->get();
+        $educational = educational_tbl::where('user_id', $userId)->first();
+        $savingsAccount = savings_account_tbl::where('user_id', $userId)->first();
+        $shareCapitalAccount = share_capital_account_tbl::where('user_id', $userId)->first();
+        $dividendRate = dividend_rates_tbl::orderBy('effective_year', 'desc')->first();
+
+        $savingsAccountId = $savingsAccount->id ?? null;
+        $shareCapitalAccountId = $shareCapitalAccount->id ?? null;
+
+        $savingsTransactions = collect();
+        if ($savingsAccountId) {
+            $savingsTransactions = savings_transaction_tbl::where('savings_account_id', $savingsAccountId)
+                ->orderBy('transaction_date', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'date' => $item->transaction_date,
+                        'type' => ucfirst($item->type),
+                        'description' => 'Regular Savings - ' . ucfirst($item->type),
+                        'amount' => $item->type === 'deposit' ? $item->amount : -$item->amount,
+                        'status' => $item->status ?? 'Completed',
+                    ];
+                });
+        }
+
+        $shareCapitalTransactions = collect();
+        if ($shareCapitalAccountId) {
+            $shareCapitalTransactions = share_capital_transaction_tbl::where('share_capital_account_id', $shareCapitalAccountId)
+                ->orderBy('transaction_date', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'date' => $item->transaction_date,
+                        'type' => ucfirst($item->type),
+                        'description' => 'Share Capital - ' . ucfirst($item->type),
+                        'amount' => in_array($item->type, ['Subscription', 'Deposit']) ? $item->total_amount : -$item->total_amount,
+                        'status' => $item->status ?? 'Completed',
+                    ];
+                });
+        }
+
+        $loanRepayments = lending_repayments_tbl::where('user_id', $userId)
+            ->orderBy('payment_date', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'date' => $item->payment_date,
+                    'type' => 'Loan payment',
+                    'description' => 'Loan Repayment',
+                    'amount' => -$item->amount_paid,
+                    'status' => 'Completed',
+                ];
+            });
+
+        $transactions = $savingsTransactions
+            ->concat($shareCapitalTransactions)
+            ->concat($loanRepayments)
+            ->sortByDesc('date')
+            ->take(20)
+            ->values();
+
+        $memberSince = $user->created_at->format('F Y');
+        
+        $missingCount = 0;
+        if($otherinfo && empty($otherinfo->contact_no)) $missingCount++;
+        if($otherinfo && empty($otherinfo->present_address)) $missingCount++;
+        if($otherinfo && empty($otherinfo->permanent_address)) $missingCount++;
+        if($otherinfo && empty($otherinfo->date_of_birth)) $missingCount++;
+        if($otherinfo && empty($otherinfo->place_of_birth)) $missingCount++;
+        if($otherinfo && empty($otherinfo->sex)) $missingCount++;
+        if($otherinfo && empty($otherinfo->civil_status)) $missingCount++;
+        if($otherinfo && empty($otherinfo->citizenship)) $missingCount++;
+        if($otherinfo && empty($otherinfo->blood_type)) $missingCount++;
+        if($otherinfo && empty($otherinfo->height)) $missingCount++;
+        if($otherinfo && empty($otherinfo->weight)) $missingCount++;
+        if($membergovernIds && empty($membergovernIds->sss_id)) $missingCount++;
+        if($membergovernIds && empty($membergovernIds->philhealth_id)) $missingCount++;
+        if($membergovernIds && empty($membergovernIds->pagibig_id)) $missingCount++;
+        if($membergovernIds && empty($membergovernIds->tin_id)) $missingCount++;
 
         return view(
             "members_components.profile",
             [
-                "username" => $username,
-                "email" => $email
+                "user" => $user,
+                "otherinfo" => $otherinfo,
+                "membergovernIds" => $membergovernIds,
+                "family" => $family,
+                "vehicles" => $vehicles,
+                "educational" => $educational,
+                "savingsAccount" => $savingsAccount,
+                "shareCapitalAccount" => $shareCapitalAccount,
+                "dividendRate" => $dividendRate,
+                "transactions" => $transactions,
+                "memberSince" => $memberSince,
+                "username" => $user->username ?? null,
+                "email" => $user->email ?? null,
+                "missingCount" => $missingCount,
             ]
         );
     }
 
+    public function EditProfileMember()
+    {
+        $userId = Auth::id();
+
+        $user = Users_tbl::find($userId);
+        $otherinfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        $membergovernIds = Membergovern_ids_tbl::where('user_id', $userId)->first();
+        $family = Family_tbl::where('user_id', $userId)->first();
+        $vehicles = Membervehi_tbl::where('user_id', $userId)->get();
+        $educational = educational_tbl::where('user_id', $userId)->first();
+
+        return view(
+            "members_components.edit_profile",
+            [
+                "user" => $user,
+                "otherinfo" => $otherinfo,
+                "membergovernIds" => $membergovernIds,
+                "family" => $family,
+                "vehicles" => $vehicles,
+                "educational" => $educational,
+            ]
+        );
+    }
+
+    public function UpdateProfileMember(Request $request)
+    {
+        $userId = Auth::id();
+
+        $user = Users_tbl::find($userId);
+        $existingInfo = Otherinfo_tbl::where('user_id', $userId)->first();
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+        ]);
+
+        $user->first_name = $request->first_name;
+        $user->middle_name = $request->middle_name;
+        $user->last_name = $request->last_name;
+        $user->save();
+
+        $updateData = [
+            'contact_no' => $request->contact_no,
+            'present_address' => $request->present_address,
+            'permanent_address' => $request->permanent_address,
+            'date_of_birth' => $request->date_of_birth,
+            'sex' => $request->sex,
+            'civil_status' => $request->civil_status,
+            'citizenship' => $request->citizenship,
+            'height' => $request->height,
+            'weight' => $request->weight,
+            'blood_type' => $request->blood_type,
+        ];
+
+        foreach ($updateData as $key => $value) {
+            if (empty($value) && !empty($existingInfo->$key)) {
+                $updateData[$key] = $existingInfo->$key;
+            }
+        }
+
+        Otherinfo_tbl::updateOrCreate(
+            ['user_id' => $userId],
+            $updateData
+        );
+
+        $govIdsData = [];
+        $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
+        
+        foreach ($idFields as $field) {
+            if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                $filename = $field . '_' . $userId . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images'), $filename);
+                $govIdsData[$field] = $filename;
+            } elseif (!empty($membergovernIds->$field)) {
+                $govIdsData[$field] = $membergovernIds->$field;
+            }
+        }
+        
+        if (!empty($govIdsData)) {
+            Membergovern_ids_tbl::updateOrCreate(
+                ['user_id' => $userId],
+                $govIdsData
+            );
+        }
+
+        $familyData = [
+            'spouse_name' => $request->spouse_name,
+            'spouse_date_birth' => $request->spouse_date_birth,
+            'number_son' => $request->number_son,
+            'number_daughter' => $request->number_daughter,
+        ];
+        if (!empty(array_filter($familyData))) {
+            foreach ($familyData as $key => $value) {
+                if (empty($value) && !empty($family->$key)) {
+                    $familyData[$key] = $family->$key;
+                }
+            }
+            Family_tbl::updateOrCreate(
+                ['user_id' => $userId],
+                $familyData
+            );
+        }
+
+        return redirect()->route('ProfileMember')->with('success', 'Profile updated successfully!');
+    }
+
     public function Navbar2()
     {
+        $userId = Auth::id();
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
+        
+        $otherinfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        $membergovernIds = Membergovern_ids_tbl::where('user_id', $userId)->first();
+        $family = Family_tbl::where('user_id', $userId)->first();
+        
+        $missingCount = 0;
+        if(empty($otherinfo->contact_no)) $missingCount++;
+        if(empty($otherinfo->present_address)) $missingCount++;
+        if(empty($otherinfo->permanent_address)) $missingCount++;
+        if(empty($otherinfo->date_of_birth)) $missingCount++;
+        if(empty($otherinfo->place_of_birth)) $missingCount++;
+        if(empty($otherinfo->sex)) $missingCount++;
+        if(empty($otherinfo->civil_status)) $missingCount++;
+        if(empty($otherinfo->citizenship)) $missingCount++;
+        if(empty($otherinfo->blood_type)) $missingCount++;
+        if(empty($otherinfo->height)) $missingCount++;
+        if(empty($otherinfo->weight)) $missingCount++;
+        if(empty($membergovernIds->sss_id)) $missingCount++;
+        if(empty($membergovernIds->philhealth_id)) $missingCount++;
+        if(empty($membergovernIds->pagibig_id)) $missingCount++;
+        if(empty($membergovernIds->tin_id)) $missingCount++;
 
 
         return view(
             "components.navbar2",
             [
                 "username" => $username,
-                "email" => $email
+                "email" => $email,
+                "missingCount" => $missingCount
             ]
         );
     }

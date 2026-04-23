@@ -223,6 +223,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Reference No.</th>
                         <th>Member Name</th>
                         <th>Category</th>
@@ -233,7 +234,8 @@
                 <tbody>
                     @forelse($transactions as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($tx->created_at)->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($tx->created_at)->addHours(8)->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($tx->created_at)->addHours(8)->format('g:i A') }}</td>
                         <td class="text-sm text-gray-600">{{ $tx->reference_no ?? 'N/A' }}</td>
                         <td class="text-sm text-gray-900">{{ $tx->member_name ?? 'Unknown' }}</td>
                         <td>

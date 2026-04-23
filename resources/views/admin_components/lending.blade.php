@@ -92,7 +92,7 @@
                             <td class="text-sm font-semibold text-gray-900">₱{{ number_format($loan->lending_amount, 0) }}</td>
                             <td class="text-sm text-gray-600">{{ Str::limit($loan->purpose_loan, 30) }}</td>
                             <td class="text-sm text-gray-600">{{ $loan->lending_type_term }}</td>
-                            <td class="text-sm text-gray-600">{{ $loan->created_at->format('M d, Y') }}</td>
+                            <td class="text-sm text-gray-600">{{ $loan->created_at->addHours(8)->format('M d, Y') }}<br><span class="text-xs text-gray-400">{{ $loan->created_at->addHours(8)->format('g:i A') }}</span></td>
                             <td>
                                 @if($loan->status === 'Pending')
                                     <span class="badge badge-warning">Pending</span>
@@ -108,7 +108,7 @@
                                         onclick="event.stopPropagation(); openLoanModal({{ $loop->index }})">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </button>
-                                    @if($loan->status === 'Approved' || $loan->status === 'Declined')
+                                    @if($loan->status === 'Declined')
                                     <form method="POST" action="{{ route('loan.archive', $loan->id) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-outline text-sm px-2 py-1" title="Archive">
@@ -273,6 +273,20 @@
 
                     <!-- Loan Details -->
                     <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 border border-gray-200 rounded-xl">
+                            <p class="text-sm text-gray-500 mb-1">Total Repayment</p>
+                            <p class="text-2xl font-bold text-primary-600" id="modalTotalRepayment">₱0</p>
+                            <p class="text-xs text-gray-400">Loan + Interest</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 rounded-xl">
+                            <p class="text-sm text-gray-500 mb-1">Payment Progress</p>
+                            <div id="modalPaymentProgress" class="flex flex-wrap gap-1 mt-1">
+                                <!-- Payment circles will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-4">
                         <div class="p-4 border border-gray-200 rounded-xl">
                             <p class="text-sm text-gray-500 mb-1">Loan Amount</p>
                             <p class="text-2xl font-bold text-gray-900" id="modalLoanAmount">₱0</p>
@@ -507,23 +521,19 @@
     </div>
 
     <!-- Hidden data for JavaScript -->
-    <script type="application/json" id="loansData">
-        @json($loans->toArray()['data'])
+    <script>
+        var loansData = {!! json_encode($loans->items()) !!};
+        // Strip sensitive user data
+        loansData.forEach(function(loan) {
+            if (loan.user) {
+                loan.user = {id: loan.user.id, first_name: loan.user.first_name, last_name: loan.user.last_name, contact_no: loan.user.contact_no, email: loan.user.email};
+            }
+        });
     </script>
 
     <script>
-    (function() {
-    let loansData = [];
-    
-    try {
-        const loansDataEl = document.getElementById('loansData');
-        if (loansDataEl) {
-            loansData = JSON.parse(loansDataEl.textContent || '[]');
-            console.log('Loans data loaded:', loansData.length, 'loans');
-        }
-    } catch (e) {
-        console.error('Error parsing loans data:', e);
-    }
+    // loansData is already defined globally from the JSON above
+    console.log('Script loaded, loansData:', loansData);
 
     window.filterByStatus = function(status) {
         window.location.href = '{{ route("lendings") }}?status=' + status;
@@ -539,11 +549,29 @@
     };
 
     window.openLoanModal = function(index) {
+        console.log('openLoanModal called with index:', index);
+        console.log('loansData:', loansData);
+        
         const loan = loansData[index];
         if (!loan) {
             console.error('Loan not found at index:', index);
+            alert('Loan not found at index: ' + index);
             return;
         }
+        console.log('Found loan:', loan);
+
+        // Ensure modal is visible
+        const modal = document.getElementById('loanDetailModal');
+        console.log('Modal element:', modal);
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            console.log('Modal should now be visible');
+        } else {
+            console.error('Modal element not found!');
+            alert('Modal element not found!');
+        }
+        document.body.style.overflow = 'hidden';
 
         // Populate modal fields
         document.getElementById('modalReferenceNo').textContent = loan.reference_no || 'N/A';
@@ -566,6 +594,49 @@
             'Education Loan': {{ $loanSettings['Education Loan'] ?? 2 }} + '%'
         };
         document.getElementById('modalInterestRate').textContent = interestRates[loan.lending_type] || 'N/A';
+
+        // Calculate Total Repayment
+        const interestAmount = parseFloat(loan.total_interest || 0);
+        const lendingAmount = parseFloat(loan.lending_amount || 0);
+        const totalRepayment = lendingAmount + interestAmount;
+        const totalDisplay = isNaN(totalRepayment) ? 0 : totalRepayment;
+        document.getElementById('modalTotalRepayment').textContent = '₱' + totalDisplay.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        // Payment Progress - get term and display months
+        const termMatch = (loan.lending_type_term || '6 months').match(/(\d+)/);
+        const termMonths = termMatch ? parseInt(termMatch[1]) : 6;
+        const maxDisplayMonths = Math.min(termMonths, 6);
+
+        // Init progress as loading, then fetch from API
+        document.getElementById('modalPaymentProgress').innerHTML = '<span class="text-xs text-gray-400">Loading...</span>';
+        
+        fetch('/loan/' + loan.id + '/payments-count')
+            .then(res => res.json())
+            .then(data => {
+                console.log('Payments for loan', loan.id, ':', data);
+                const paymentsMade = data.payments_made || 0;
+                
+                let progressHTML = '';
+                if (paymentsMade >= termMonths) {
+                    progressHTML = '<span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Fully Paid</span>';
+                } else {
+                    for (let i = 1; i <= maxDisplayMonths; i++) {
+                        if (i <= paymentsMade) {
+                            progressHTML += '<span class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">' + i + '</span>';
+                        } else {
+                            progressHTML += '<span class="w-6 h-6 rounded-full border-2 border-gray-300 text-gray-400 text-xs flex items-center justify-center">' + i + '</span>';
+                        }
+                    }
+                    if (termMonths > 6) {
+                        progressHTML += '<span class="text-xs text-gray-500 ml-1">+' + (termMonths - 6) + ' more</span>';
+                    }
+                }
+                document.getElementById('modalPaymentProgress').innerHTML = progressHTML;
+            })
+            .catch(err => {
+                console.error('Error fetching payments:', err);
+                document.getElementById('modalPaymentProgress').innerHTML = '<span class="text-xs text-red-500">Error loading</span>';
+            });
 
         // Documents
         const docsContainer = document.getElementById('modalDocuments');
@@ -611,8 +682,8 @@
         }
 
         // Show modal
-        const modal = document.getElementById('loanDetailModal');
-        modal.classList.remove('hidden');
+        const loanDetailModal = document.getElementById('loanDetailModal');
+        loanDetailModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         
         // Re-init lucide icons
@@ -763,17 +834,17 @@
         const termNonBusiness = document.getElementById('termNonBusiness');
         const termBusiness = document.getElementById('termBusiness');
         const hiddenTerm = document.getElementById('hiddenTerm');
-        const term = termBusiness.style.display === 'block' ? termBusiness.value : termNonBusiness.value;
+        const term = (termBusiness.style.display !== 'none' && termBusiness.style.display !== '') ? termBusiness.value : termNonBusiness.value;
         // Sync hidden input only if term has value
         if (term) {
             hiddenTerm.value = term;
         }
 
         const interestRates = {
-            'Personal Loan': {{ $loanSettings['Personal Loan'] ?? 2 }},
-            'Emergency Loan': {{ $loanSettings['Emergency Loan'] ?? 2 }},
-            'Business Loan': {{ $loanSettings['Business Loan'] ?? 2 }},
-            'Education Loan': {{ $loanSettings['Education Loan'] ?? 2 }}
+            'Personal Loan': {{ $loanSettings['Personal Loan'] ?? 2.00 }},
+            'Emergency Loan': {{ $loanSettings['Emergency Loan'] ?? 2.00 }},
+            'Business Loan': {{ $loanSettings['Business Loan'] ?? 2.00 }},
+            'Education Loan': {{ $loanSettings['Education Loan'] ?? 2.00 }}
         };
 
         const termMonths = {
@@ -820,8 +891,8 @@
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
-                    const modal = mutation.target;
-                    if (!modal.classList.contains('hidden')) {
+                    const targetModal = mutation.target;
+                    if (!targetModal.classList.contains('hidden')) {
                         // Modal opened - only reset term dropdowns, not entire form
                         console.log('Modal opened - initializing...');
                         if (typeof lucide !== 'undefined') {
@@ -884,6 +955,5 @@
             }, 200);
         });
     }
-    })();
     </script>
 @endsection

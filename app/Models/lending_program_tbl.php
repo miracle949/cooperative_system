@@ -47,4 +47,9 @@ class lending_program_tbl extends Model
     {
         return $this->belongsTo(Users_tbl::class, 'user_id');
     }
+
+    public function repayments()
+    {
+        return $this->hasMany(lending_repayments_tbl::class, 'lending_id');
+    }
 }

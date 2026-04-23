@@ -5,7 +5,8 @@
 }
 
 .container-fluid {
-    background-color: #ECF6FF;
+    /* background-color: #ECF6FF; */
+    background-color: #EAEDEB;
 }
 
 .container-fluid main {
@@ -27,6 +28,7 @@
 
 .container-fluid main .card-box-parent .card-box .nav {
     gap: 8rem;
+    max-width: 1274.4px;
 }
 
 .container-fluid main .card-box-parent .card-box .nav .nav-link {

@@ -32,7 +32,86 @@
             $highestMonth = $m;
         }
     }
+    
+    // Calculate monthly withdrawal data directly in Blade (same approach as deposits)
+    $monthlyWithdrawalData = [];
+    $maxWithdrawalAmount = 0;
+    $usedMonthKeys = [];
+    
+    \Log::info("=== BLADE WITHDRAWAL CALC START ===");
+    for ($i = 5; $i >= 0; $i--) {
+        $monthDate = now()->subMonths($i);
+        $monthKey = $monthDate->format('Y-m');
+        $monthName = $monthDate->format('F');
+        $monthYear = $monthDate->format('Y');
+        $alreadyAdded = in_array($monthKey, $usedMonthKeys);
+        
+        \Log::info("Loop i=$i: monthKey=$monthKey, monthName=$monthName, alreadyAdded=" . ($alreadyAdded ? 'true' : 'false'));
+        \Log::info("  Current array has " . count($monthlyWithdrawalData) . " items");
+        
+        // Only add if we haven't already added this month
+        if (!$alreadyAdded) {
+            $usedMonthKeys[] = $monthKey;
+            
+            $amount = (float) \App\Models\savings_transaction_tbl::where('type', 'withdrawal')
+                ->whereYear('created_at', $monthDate->format('Y'))
+                ->whereMonth('created_at', $monthDate->format('m'))
+                ->sum('amount');
+            
+            \Log::info("  -> About to add item: name=$monthName, year=$monthYear, amount=$amount");
+            
+            $monthlyWithdrawalData[] = [
+                'name' => $monthName,
+                'year' => $monthYear,
+                'amount' => $amount
+            ];
+            
+            \Log::info("  -> Added! Array now has " . count($monthlyWithdrawalData) . " items");
+            \Log::info("  -> Last item in array: {$monthlyWithdrawalData[count($monthlyWithdrawalData)-1]['name']} {$monthlyWithdrawalData[count($monthlyWithdrawalData)-1]['year']}");
+        } else {
+            \Log::info("  -> SKIPPING: $monthName $monthYear (already added)");
+        }
+        
+        if (isset($amount) && $amount > $maxWithdrawalAmount) {
+            $maxWithdrawalAmount = $amount;
+        }
+    }
+    
+    \Log::info("Final Blade array has " . count($monthlyWithdrawalData) . " items");
+    foreach ($monthlyWithdrawalData as $idx => $item) {
+        \Log::info("  Item $idx: {$item['name']} {$item['year']}");
+    }
+    \Log::info("=== BLADE WITHDRAWAL CALC END ===");
+    
+    foreach ($monthlyWithdrawalData as &$data) {
+        $data['bar_height'] = $maxWithdrawalAmount > 0 ? ($data['amount'] / $maxWithdrawalAmount) * 150 : 0;
+    }
+    unset($data); // Unset the reference
+    
+    // Calculate highest withdrawal month
+    $highestWithdrawalMonth = ['name' => 'N/A', 'amount' => 0];
+    foreach ($monthlyWithdrawalData as $data) {
+        if ($data['amount'] > $highestWithdrawalMonth['amount']) {
+            $highestWithdrawalMonth = $data;
+        }
+    }
+    
+    \Log::info("Array count before json_encode: " . count($monthlyWithdrawalData));
+    foreach ($monthlyWithdrawalData as $idx => $item) {
+        \Log::info("  Before JSON - Item $idx: {$item['name']} {$item['year']}");
+    }
+    
+    // Store the correct JSON before exiting @php block
+    $withdrawalDataJson = json_encode($monthlyWithdrawalData);
+    $highestMonthJson = json_encode($highestWithdrawalMonth);
+    
+    \Log::info("JSON string count: " . strlen($withdrawalDataJson));
+    \Log::info("Stored JSON: " . $withdrawalDataJson);
+    
 @endphp
+
+<!-- Hidden data for JavaScript -->
+<div id="bladeWithdrawalData" style="display:none;" data-withdrawal-json="{{ $withdrawalDataJson }}" data-highest-month-json="{{ $highestMonthJson }}"></div>
 
 @section('content')
     <div class="mb-6">
@@ -65,36 +144,36 @@
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <a href="{{ route('savings') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Current Balance</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($currentBalance, 2) }}</p>
-                    <p class="text-xs text-success-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        Total balance
-                    </p>
-                </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
-                    <i data-lucide="wallet" class="w-6 h-6 text-success-500"></i>
-                </div>
-            </div>
-        </a>
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group" onclick="openBalanceBreakdownModal()">
+             <div class="flex items-center justify-between">
+                 <div>
+                     <p class="text-sm text-gray-500 mb-1">Current Balance</p>
+                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($currentBalance, 2) }}</p>
+                     <p class="text-xs text-success-500 mt-1 flex items-center">
+                         <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
+                         Click for details
+                     </p>
+                 </div>
+                 <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
+                     <i data-lucide="wallet" class="w-6 h-6 text-success-500"></i>
+                 </div>
+             </div>
+         </div>
 
-        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group" onclick="openMonthlyBreakdownModal()">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group" onclick="openWithdrawalBreakdownModal()">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Monthly Average</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($monthlyAvg, 2) }}</p>
+                    <p class="text-sm text-gray-500 mb-1">Total Withdrawals</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($monthlyWithdrawals, 2) }}</p>
                     <p class="text-xs text-gray-500 mt-1 flex items-center">
-                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
-                        Click for breakdown
+                        <i data-lucide="trending-down" class="w-3 h-3 mr-1"></i>
+                        {{ $monthlyWithdrawalsCount }} transaction{{ $monthlyWithdrawalsCount !== 1 ? 's' : '' }} this month
                     </p>
                 </div>
                 <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                    <i data-lucide="bar-chart-2" class="w-6 h-6 text-primary-600"></i>
+                    <i data-lucide="trending-down" class="w-6 h-6 text-primary-600"></i>
                 </div>
             </div>
         </div>
@@ -102,7 +181,7 @@
         <div class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group" onclick="openLastContributionModal()">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Last Contribution</p>
+                    <p class="text-sm text-gray-500 mb-1">Deposits Today</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($lastContribution->amount ?? 0, 2) }}</p>
                     <p class="text-xs text-gray-500 mt-1 flex items-center">
                         <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
@@ -149,6 +228,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Member Name</th>
                         <th>Amount</th>
                         <th>Type</th>
@@ -161,6 +241,7 @@
                     @forelse($transactions as $tx)
                     <tr>
                         <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-600">{{ $tx->created_at->addHours(8)->format('g:i A') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
@@ -220,14 +301,42 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-100 flex items-center justify-between">
+        @if($transactions->hasPages())
+        <div class="flex items-center justify-between mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <p class="text-sm text-gray-500">
-                Showing {{ $transactions->firstItem() ?? 0 }}-{{ $transactions->lastItem() ?? 0 }} of {{ $transactions->total() }} transactions
+                Showing {{ $transactions->firstItem() ?? 1 }} to {{ $transactions->lastItem() ?? $transactions->count() }} of {{ $transactions->total() }} transactions
             </p>
-            <div>
-                {{ $transactions->appends(request()->query())->links() }}
+            <div class="flex items-center gap-1">
+                @if($transactions->onFirstPage())
+                    <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                @else
+                    <a href="{{ $transactions->previousPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </a>
+                @endif
+
+                @foreach($transactions->getUrlRange(max(1, $transactions->currentPage() - 2), min($transactions->lastPage(), $transactions->currentPage() + 2)) as $page => $url)
+                    @if($page == $transactions->currentPage())
+                        <span class="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium">{{ $page }}</span>
+                    @else
+                        <a href="{{ $url }}" class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">{{ $page }}</a>
+                    @endif
+                @endforeach
+
+                @if($transactions->hasMorePages())
+                    <a href="{{ $transactions->nextPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                @else
+                    <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                @endif
             </div>
         </div>
+        @endif
     </div>
 
     <!-- Manage Savings Modal -->
@@ -338,7 +447,7 @@
                             <i data-lucide="bar-chart-2" class="w-5 h-5 text-primary-600"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">Monthly Breakdown</h2>
+                            <h2 class="text-xl font-bold text-gray-900">Monthly Deposits</h2>
                             <p class="text-xs text-gray-500">Savings by month (Last 6 months)</p>
                         </div>
                     </div>
@@ -424,7 +533,7 @@
                             <i data-lucide="calendar" class="w-5 h-5 text-warning-600"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">Last Contribution</h2>
+                            <h2 class="text-xl font-bold text-gray-900">Deposits Today</h2>
                             <p class="text-xs text-gray-500">Most recent transaction details</p>
                         </div>
                     </div>
@@ -488,29 +597,90 @@
     </div>
 
     <script>
+        function openBalanceBreakdownModal() {
+            try {
+                const existing = document.getElementById('balanceBreakdownDynamic');
+                if (existing) existing.remove();
+                
+                const currentBalance = {{ $currentBalance }};
+                const totalDeposits = {{ $totalDeposits }};
+                const totalWithdrawals = {{ $totalWithdrawals }};
+                
+                const modal = document.createElement('div');
+                modal.id = 'balanceBreakdownDynamic';
+                modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;';
+                modal.innerHTML = `
+                    <div style="background:white;border-radius:12px;max-width:32rem;width:90%;max-height:90vh;overflow:auto;">
+                        <div style="padding:1.5rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                            <div style="display:flex;align-items:center;gap:0.75rem;">
+                                <div style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M12 1v6m0 6v6"/><path d="m4.22 4.22 4.24 4.24m2.12 9.64 4.24 4.24"/><path d="M1 12h6m6 0h6"/><path d="m4.22 19.78 4.24-4.24m2.12-9.64 4.24-4.24"/></svg>
+                                </div>
+                                <div>
+                                    <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Balance Details</h2>
+                                    <p style="font-size:0.75rem;color:#6b7280;">Account balance breakdown</p>
+                                </div>
+                            </div>
+                            <button onclick="this.closest('#balanceBreakdownDynamic').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#666;">&times;</button>
+                        </div>
+                        <div style="padding:1.5rem;max-height:60vh;overflow-y:auto;">
+                            <!-- Summary -->
+                            <div style="background:#ecfdf5;border-radius:0.5rem;padding:1rem;border:1px solid #d1fae5;text-align:center;margin-bottom:1.5rem;">
+                                <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.5rem;">Current Balance</p>
+                                <p style="font-size:1.875rem;font-weight:700;color:#059669;">₱${currentBalance.toLocaleString('en-PH', {minimumFractionDigits:2})}</p>
+                            </div>
+                            
+                            <!-- Details -->
+                            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:#f0fdf4;border-radius:0.5rem;border-left:3px solid #059669;">
+                                    <div>
+                                        <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.25rem;">Total Deposits</p>
+                                        <p style="font-size:0.875rem;font-weight:600;color:#111;">₱${totalDeposits.toLocaleString('en-PH', {minimumFractionDigits:2})}</p>
+                                    </div>
+                                    <i data-lucide="arrow-up" style="color:#059669;width:20px;height:20px;"></i>
+                                </div>
+                                
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:#fef2f2;border-radius:0.5rem;border-left:3px solid #dc2626;">
+                                    <div>
+                                        <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.25rem;">Total Withdrawals</p>
+                                        <p style="font-size:0.875rem;font-weight:600;color:#111;">₱${totalWithdrawals.toLocaleString('en-PH', {minimumFractionDigits:2})}</p>
+                                    </div>
+                                    <i data-lucide="arrow-down" style="color:#dc2626;width:20px;height:20px;"></i>
+                                </div>
+                                
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:#f9fafb;border-radius:0.5rem;border:1px solid #e5e7eb;margin-top:0.5rem;">
+                                    <p style="font-size:0.75rem;color:#6b7280;">Balance Calculation</p>
+                                    <p style="font-size:0.875rem;font-weight:600;color:#111;">Deposits - Withdrawals</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } catch (error) {
+                console.error('Error opening balance breakdown modal:', error);
+            }
+        }
+
         function openMonthlyBreakdownModal() {
-            const existing = document.getElementById('monthlyBreakdownDynamic');
-            if (existing) existing.remove();
-            
-            // Clean monthlyData to remove debug fields
-            const rawData = @json($monthlyData);
-            console.log('rawData:', rawData);
-            const monthlyData = rawData.map(m => ({
-                name: m.name || '',
-                year: m.year || new Date().getFullYear().toString(),
-                amount: parseFloat(m.amount) || 0,
-                bar_height: parseFloat(m.bar_height) || 0
-            }));
-            const monthlyAvg = {{ $monthlyAvg ?? 0 }};
-            const highestMonthRaw = @json($highestMonth);
-            const highestMonth = {
-                name: highestMonthRaw.name || '',
-                amount: parseFloat(highestMonthRaw.amount) || 0
-            };
-            
-            console.log('monthlyData:', monthlyData);
-            console.log('monthlyAvg:', monthlyAvg);
-            console.log('highestMonth:', highestMonth);
+            try {
+                const existing = document.getElementById('monthlyBreakdownDynamic');
+                if (existing) existing.remove();
+                
+                // Clean monthlyData to remove debug fields
+                const rawData = @json($monthlyData);
+                const monthlyData = rawData.map(m => ({
+                    name: m.name || '',
+                    year: m.year || new Date().getFullYear().toString(),
+                    amount: parseFloat(m.amount) || 0,
+                    bar_height: parseFloat(m.bar_height) || 0
+                }));
+                const monthlyAvg = {{ $monthlyAvg ?? 0 }};
+                const highestMonthRaw = @json($highestMonth);
+                const highestMonth = {
+                    name: highestMonthRaw.name || '',
+                    amount: parseFloat(highestMonthRaw.amount) || 0
+                };
             
             let chartHtml = '';
             const maxAmount = Math.max(...monthlyData.map(m => m.amount), 1);
@@ -536,7 +706,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                             </div>
                             <div>
-                                <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Monthly Breakdown</h2>
+                                <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Monthly Deposits</h2>
                                 <p style="font-size:0.75rem;color:#6b7280;">Savings by month (Last 6 months)</p>
                             </div>
                         </div>
@@ -569,15 +739,18 @@
                                     </div>
                                     <span style="font-size:0.875rem;font-weight:600;${month.amount > 0 ? 'color:#111;' : 'color:#9ca3af;'}">₱${month.amount.toLocaleString('en-PH', {minimumFractionDigits:2})}</span>
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
+                             `).join('')}
+                         </div>
+                     </div>
+                 </div>
+             `;
+                document.body.appendChild(modal);
+            } catch (error) {
+                console.error('Error opening monthly breakdown modal:', error);
+            }
+         }
 
-        function openLastContributionModal() {
+         function openLastContributionModal() {
             const existing = document.getElementById('lastContributionDynamic');
             if (existing) existing.remove();
             
@@ -598,7 +771,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                             </div>
                             <div>
-                                <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Last Contribution</h2>
+                                <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Deposits Today</h2>
                                 <p style="font-size:0.75rem;color:#6b7280;">Most recent transaction details</p>
                             </div>
                         </div>
@@ -647,6 +820,118 @@
 
         function closeMonthlyBreakdownModal() {
             document.getElementById('monthlyBreakdownDynamic')?.remove();
+            document.body.style.overflow = '';
+        }
+
+         function openWithdrawalBreakdownModal() {
+              try {
+                  const existing = document.getElementById('withdrawalBreakdownDynamic');
+                  if (existing) existing.remove();
+                  
+                  // Read data from hidden element
+                  const dataElement = document.getElementById('bladeWithdrawalData');
+                  const jsonStr = dataElement.getAttribute('data-withdrawal-json');
+                  const rawData = JSON.parse(jsonStr);
+                  const highestMonthStr = dataElement.getAttribute('data-highest-month-json');
+                  const highestMonthRaw = JSON.parse(highestMonthStr);
+                  
+                  console.log('Raw withdrawal data received:', rawData);
+                  console.log('Total items:', rawData.length);
+                  console.log('=== INDIVIDUAL ITEMS ===');
+                  rawData.forEach((item, index) => {
+                      console.log(`Item ${index}: ${item.name} ${item.year}: ₱${item.amount}`);
+                  });
+                  console.log('=== END OF ITEMS ===')
+                  
+                  const monthlyData = rawData.map(m => ({
+                      name: m.name || '',
+                      year: m.year || new Date().getFullYear().toString(),
+                      amount: parseFloat(m.amount) || 0,
+                      bar_height: parseFloat(m.bar_height) || 0
+                  }));
+                  console.log('After map - monthlyData length:', monthlyData.length);
+                  console.log('=== AFTER MAP ITEMS ===');
+                  monthlyData.forEach((item, index) => {
+                      console.log(`Item ${index}: ${item.name} ${item.year}: ₱${item.amount}`);
+                  });
+                  console.log('=== END AFTER MAP ===');
+                  const monthlyAvg = {{ $monthlyWithdrawalAvg ?? 0 }};
+                  const highestMonth = {
+                      name: highestMonthRaw.name || '',
+                      amount: parseFloat(highestMonthRaw.amount) || 0
+                  };
+            
+            let chartHtml = '';
+            const maxAmount = Math.max(...monthlyData.map(m => m.amount), 1);
+            monthlyData.forEach(month => {
+                const height = (month.amount / maxAmount) * 150;
+                const hasAmount = month.amount > 0;
+                chartHtml += `
+                    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+                        <div style="width:100%;${hasAmount ? 'background:#fee2e2;cursor:pointer;' : 'background:#f3f4f6;border:2px dashed #d1d5db;'}border-radius:0.5rem;height:${Math.max(height, 5)}px;" title="₱${month.amount.toLocaleString()}"></div>
+                        <span style="font-size:0.75rem;color:#6b7280;">${month.name.substring(0,3)}</span>
+                    </div>
+                `;
+            });
+
+            const modal = document.createElement('div');
+            modal.id = 'withdrawalBreakdownDynamic';
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;';
+            modal.innerHTML = `
+                <div style="background:white;border-radius:12px;max-width:42rem;width:90%;max-height:90vh;overflow:auto;">
+                    <div style="padding:1.5rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <div style="width:2.5rem;height:2.5rem;border-radius:9999px;background:#fee2e2;display:flex;align-items:center;justify-content:center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 17-5-5-4 4-3-3"/></svg>
+                            </div>
+                            <div>
+                                <h2 style="font-size:1.25rem;font-weight:700;color:#111;">Monthly Withdrawals</h2>
+                                <p style="font-size:0.75rem;color:#6b7280;">Withdrawals by month (Last 6 months)</p>
+                            </div>
+                        </div>
+                        <button onclick="this.closest('#withdrawalBreakdownDynamic').remove()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#666;">&times;</button>
+                    </div>
+                    <div style="padding:1.5rem;max-height:60vh;overflow-y:auto;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+                            <div style="background:#fef2f2;border-radius:0.5rem;padding:1rem;border:1px solid #fee2e2;text-align:center;">
+                                <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.25rem;">Average Monthly</p>
+                                <p style="font-size:1.25rem;font-weight:700;color:#111;">₱${monthlyAvg.toLocaleString('en-PH', {minimumFractionDigits:2})}</p>
+                            </div>
+                            <div style="background:#fee2e2;border-radius:0.5rem;padding:1rem;border:1px solid #fecaca;text-align:center;">
+                                <p style="font-size:0.75rem;color:#6b7280;margin-bottom:0.25rem;">Highest Month</p>
+                                <p style="font-size:1.25rem;font-weight:700;color:#111;">₱${(highestMonth.amount || 0).toLocaleString('en-PH', {minimumFractionDigits:2})}</p>
+                                <p style="font-size:0.75rem;color:#6b7280;">${highestMonth.name || 'N/A'}</p>
+                            </div>
+                        </div>
+                         <h4 style="font-weight:600;color:#111;margin-bottom:1rem;">Monthly Withdrawals</h4>
+                         <div style="height:12rem;display:flex;align-items:flex-end;justify-content:space-between;gap:0.5rem;padding:0 1rem;margin-bottom:1rem;">
+                             ${chartHtml}
+                         </div>
+                          <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                              ${monthlyData.map(month => `
+                                  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;background:#f9fafb;border-radius:0.5rem;margin-bottom:0.5rem;">
+                                      <div style="display:flex;align-items:center;gap:0.75rem;">
+                                          <div style="width:2rem;height:2rem;background:#fee2e2;border-radius:0.5rem;display:flex;align-items:center;justify-content:center;">
+                                              <span style="font-size:0.75rem;font-weight:600;color:#dc2626;">${month.name.substring(0,3)}</span>
+                                          </div>
+                                          <span style="font-size:0.875rem;font-weight:500;color:#111;">${month.name} ${month.year || new Date().getFullYear()}</span>
+                                      </div>
+                                      <span style="font-size:0.875rem;font-weight:600;${month.amount > 0 ? 'color:#111;' : 'color:#9ca3af;'}">₱${month.amount.toLocaleString('en-PH', {minimumFractionDigits:2})}</span>
+                                   </div>
+                               `).join('')}
+                           </div>
+                      </div>
+                  </div>
+              `;
+                 console.log('Modal HTML created with', monthlyData.length, 'items');
+                 document.body.appendChild(modal);
+            } catch (error) {
+                console.error('Error opening withdrawal breakdown modal:', error);
+            }
+         }
+
+         function closeWithdrawalBreakdownModal() {
+            document.getElementById('withdrawalBreakdownDynamic')?.remove();
             document.body.style.overflow = '';
         }
 

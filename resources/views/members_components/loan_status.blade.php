@@ -151,25 +151,27 @@
                             <div class="main-amount">
                                 <p>Lending Amount</p>
                                 <h3>₱ {{ number_format($selectedLoan->lending_amount, 2) }}</h3>
-                                @php
-                                    $daysLeft = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($lendingStatus->due_date)->startOfDay(), false);
-                                @endphp
-                                @if($daysLeft < 0)
+                                @if($lendingStatus->status !== 'Completed' && $lendingStatus->remaining_balance > 0)
+                                    @php
+                                        $daysLeft = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($lendingStatus->due_date)->startOfDay(), false);
+                                    @endphp
+                                    @if($daysLeft < 0)
 
-                                    <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+                                        <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
 
-                                @elseif($daysLeft === 0)
+                                    @elseif($daysLeft === 0)
 
-                                    <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+                                        <p style="color: #e03131; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
 
-                                @elseif($daysLeft <= 7)
+                                    @elseif($daysLeft <= 7)
 
-                                    <p style="color: #e6a817; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+                                        <p style="color: #e6a817; font-weight: 600;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
 
-                                @else
+                                    @else
 
-                                    <p style="color: #888; font-weight: 500;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
+                                        <p style="color: #888; font-weight: 500;"> Due date: {{ \Carbon\Carbon::parse($lendingStatus->due_date)->format('M d, Y') }}</p>
 
+                                    @endif
                                 @endif
                                 
                             </div>

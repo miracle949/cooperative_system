@@ -90,8 +90,12 @@
 
                 <h2 class="fw-semibold mt-4 text-center">Login your account</h2>
 
-                <p class="mt-3 text-center">Welcome back! Please log in to securely manage your account.
+                <div class="d-flex justify-content-center align-items-center">
+                    
+                    <p class="mt-3 text-center">Welcome back! Please log in to securely manage your account.
                 </p>
+
+                </div>
 
                 <form action="{{ route("UserLogin") }}" method="post">
                     @csrf

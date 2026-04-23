@@ -73,6 +73,12 @@ Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus
 // Profile Member page GET
 Route::get("/profile-member", [UsersHandle::class, "ProfileMember"])->name("ProfileMember");
 
+// Edit Profile Member page GET
+Route::get("/edit-profile-member", [UsersHandle::class, "EditProfileMember"])->name("EditProfileMember");
+
+// Edit Profile Member page POST
+Route::post("/edit-profile-member", [UsersHandle::class, "UpdateProfileMember"])->name("UpdateProfileMember");
+
 // Driver Portal page GET
 Route::get("/driver-portal", [UserController::class, "DriverPortal"])->name("DriverPortal");
 
@@ -163,6 +169,12 @@ Route::get("/dashboard-savings", [UserController::class, "dashboard_savings"])->
 Route::post("/savings/archive/{id}", [UserController::class, "archiveSavings"])->name("savings.archive");
 Route::post("/savings/unarchive/{id}", [UserController::class, "unarchiveSavings"])->name("savings.unarchive");
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
+
+// API to get payment count for a loan
+Route::get('/loan/{id}/payments-count', function($id) {
+    $count = \DB::table('lending_repayments_tbls')->where('lending_id', $id)->count();
+    return response()->json(['payments_made' => $count]);
+});
 Route::post("/loan/approve/{id}", [UserController::class, "approveLoan"])->name("loan.approve");
 Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name("loan.decline");
 Route::post("/loan/create-admin", [UserController::class, "createLoanAdmin"])->name("loan.create-admin");
@@ -179,3 +191,4 @@ Route::get("/dashboard-reports", [UserController::class, "dashboard_reports"])->
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings");
 Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update");
 Route::get("/dashboard-archives", [UserController::class, "dashboard_archives"])->name("archives");
+Route::get("/dashboard-financial-activity", [UserController::class, "dashboard_financial_activity"])->name("financial.activity");

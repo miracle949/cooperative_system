@@ -426,8 +426,11 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
+=======
+>>>>>>> c3985bd594f7a9b999e62ef3b8154798808e6e04
 
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
 
@@ -487,8 +490,12 @@ class ShareCapital extends Controller
         session([
             'sc_pending_shares' => $shares,
             'sc_pending_note' => $request->input('note'),
+<<<<<<< HEAD
             'sc_pending_type' => $type,
             'sc_pending_type' => $request->input('type', 'Deposit'),
+=======
+            'sc_pending_type' => $type ?? $request->input('type', 'Deposit'),
+>>>>>>> c3985bd594f7a9b999e62ef3b8154798808e6e04
         ]);
 
         $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
@@ -596,8 +603,11 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
+=======
+>>>>>>> c3985bd594f7a9b999e62ef3b8154798808e6e04
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
 
             return redirect()->route($redirectRoute)
@@ -612,9 +622,13 @@ class ShareCapital extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
+<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+=======
+$redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+>>>>>>> c3985bd594f7a9b999e62ef3b8154798808e6e04
             return redirect()->route($redirectRoute)
                 ->with('error', 'GCash payment was received but failed to save. Please contact support.');
         }

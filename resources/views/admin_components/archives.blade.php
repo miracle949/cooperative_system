@@ -96,6 +96,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Time</th>
                         <th>Member Name</th>
                         <th>Type</th>
                         <th>Amount</th>
@@ -107,7 +108,8 @@
                 <tbody>
                     @forelse($savingsArchives as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-900">{{ $tx->created_at->addHours(8)->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-600">{{ $tx->created_at->addHours(8)->format('g:i A') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
@@ -185,7 +187,8 @@
                 <tbody>
                     @forelse($shareCapitalArchives as $tx)
                     <tr>
-                        <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-900">{{ $tx->created_at->addHours(8)->format('M d, Y') }}</td>
+                        <td class="text-sm text-gray-600">{{ $tx->created_at->addHours(8)->format('g:i A') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
