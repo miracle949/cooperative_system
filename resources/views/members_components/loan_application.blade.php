@@ -113,19 +113,15 @@
                     </div>
 
                     <form id="loan-form" action="{{ route("lendingProgram") }}" method="post"
-                        class="{{ !$canApplyLoan ? 'form-disabled' : '' }}" enctype="multipart/form-data" {{ !$canApplyLoan ? 'onsubmit=return false' : '' }}>
+                        class="{{ !$canApplyLoan ? 'form-disabled' : '' }}" enctype="multipart/form-data"
+                        {{ !$canApplyLoan ? 'onsubmit=return false' : '' }}>
                         @csrf
                         <div class="row form-parent">
 
                             <div class="col-lg-6 col-md-12 mt-4">
-<<<<<<< HEAD
                                 <label>Loan Type *</label>
-                                <select name="lending_type" class="form-select mt-2" onchange="recalculate()"
-=======
-                                <label>Lending Type *</label>
-                                <select name="lending_type" class="form-select mt-2" onchange="updateTermOptions()"
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
-                                    id="lending_type" required>
+                                <select name="lending_type" class="form-select mt-2"
+                                    id="lending_type" onchange="updateTermOptions()" required>
                                     <option value="">Select Loan type</option>
                                     <option value="Personal Lending">Personal Loan</option>
                                     <option value="Emergency Lending">Emergency Loan</option>
@@ -145,7 +141,8 @@
                                 <input type="number" name="lending_amount" id="lending_amount_input"
                                     oninput="if(this.value.length>6)this.value=this.value.slice(0,6);recalculate();checkLoanLimit(this);"
                                     placeholder="Enter amount (max ₱{{ number_format($remainingLoanable, 2) }})"
-                                    class="form-control mt-2" min="1" max="{{ $remainingLoanable }}" {{ $hasFullyLoaned ? 'disabled' : '' }}
+                                    class="form-control mt-2" min="1" max="{{ $remainingLoanable }}"
+                                    {{ $hasFullyLoaned ? 'disabled' : '' }}
                                     onkeydown="if(event.key==='e'||event.key==='E'||event.key==='+'||event.key==='-')event.preventDefault();"
                                     required>
                                 <div id="loan-limit-warning"
@@ -156,27 +153,26 @@
                                 </div>
                             </div>
 
-                            {{-- ── Loan Term — options are populated dynamically by JS ── --}}
+                            {{-- ── Loan Term — options shown/hidden based on loan type ── --}}
                             <div class="col-lg-6 col-md-12 mt-4">
-<<<<<<< HEAD
                                 <label>Loan Term *</label>
-                                <select name="lending_type_term" id="lending_type_term" class="form-select mt-2"
-                                    onchange="recalculate()" required>
-                                    <option value="">Select Loan term</option>
-=======
-                                <label>Lending Term *</label>
-                                <select name="lending_type_term_nonbusiness" id="lending_type_term_nonbusiness" class="form-select mt-2" 
-                                    onchange="recalculate()">
+
+                                {{-- Non-business: 6 months only --}}
+                                <select name="lending_type_term_nonbusiness" id="lending_type_term_nonbusiness"
+                                    class="form-select mt-2" onchange="recalculate()">
                                     <option value="">Select lending term</option>
                                     <option value="6 months">6 months</option>
                                 </select>
-                                <select name="lending_type_term_business" id="lending_type_term_business" class="form-select mt-2" 
-                                    style="display:none;" onchange="recalculate()">
+
+                                {{-- Business: 6 or 12 months --}}
+                                <select name="lending_type_term_business" id="lending_type_term_business"
+                                    class="form-select mt-2" style="display:none;" onchange="recalculate()">
                                     <option value="">Select lending term</option>
                                     <option value="6 months">6 months</option>
                                     <option value="12 months">12 months</option>
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
                                 </select>
+
+                                {{-- Hidden field carries the actual submitted term value --}}
                                 <input type="hidden" name="lending_type_term" id="lending_type_term">
                             </div>
 
@@ -206,7 +202,6 @@
                                     <option value="Others">Others</option>
                                 </select>
 
-                                {{-- This textarea only shows when "Others" is selected --}}
                                 <div id="others-textarea-wrapper" style="display: none; margin-top: 10px;">
                                     <textarea name="purpose_loan_others" id="purpose_loan_textarea"
                                         class="form-control p-3 tw:w-[100%]"
@@ -229,14 +224,8 @@
                                     <div class="upload-grid">
                                         <div class="upload-card" id="card-vid-personal">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Valid ID</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -247,21 +236,14 @@
                                         </div>
                                         <div class="upload-card" id="card-poi-personal">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Proof of Income</span>
                                             <span class="upload-sub">Payslip / COE · PDF or image</span>
                                             <span class="upload-badge badge-required">Required</span>
                                             <span class="upload-filename" id="name-poi-personal"></span>
-                                            <input type="file" name="personal_proof_of_income"
-                                                accept=".jpg,.jpeg,.png,.pdf"
+                                            <input type="file" name="personal_proof_of_income" accept=".jpg,.jpeg,.png,.pdf"
                                                 onchange="onFileSelected(this,'card-poi-personal','name-poi-personal')">
                                         </div>
                                     </div>
@@ -272,14 +254,8 @@
                                     <div class="upload-grid">
                                         <div class="upload-card" id="card-vid-emergency">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Valid ID</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -290,33 +266,20 @@
                                         </div>
                                         <div class="upload-card" id="card-poi-emergency">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Proof of Income</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
                                             <span class="upload-badge badge-required">Required</span>
                                             <span class="upload-filename" id="name-poi-emergency"></span>
-                                            <input type="file" name="emergency_proof_of_income"
-                                                accept=".jpg,.jpeg,.png,.pdf"
+                                            <input type="file" name="emergency_proof_of_income" accept=".jpg,.jpeg,.png,.pdf"
                                                 onchange="onFileSelected(this,'card-poi-emergency','name-poi-emergency')">
                                         </div>
                                         <div class="upload-card" id="card-poe-emergency">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Proof of Emergency</span>
                                             <span class="upload-sub">Medical Cert, Hospital Bill, Police Report</span>
@@ -333,14 +296,8 @@
                                     <div class="upload-grid">
                                         <div class="upload-card" id="card-vid-business">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Valid ID</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -351,33 +308,20 @@
                                         </div>
                                         <div class="upload-card" id="card-poi-business">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Proof of Income</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
                                             <span class="upload-badge badge-required">Required</span>
                                             <span class="upload-filename" id="name-poi-business"></span>
-                                            <input type="file" name="business_proof_of_income"
-                                                accept=".jpg,.jpeg,.png,.pdf"
+                                            <input type="file" name="business_proof_of_income" accept=".jpg,.jpeg,.png,.pdf"
                                                 onchange="onFileSelected(this,'card-poi-business','name-poi-business')">
                                         </div>
                                         <div class="upload-card" id="card-bp-business">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Business Permit / DTI Registration</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -388,14 +332,8 @@
                                         </div>
                                         <div class="upload-card" id="card-fs-business">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Business Financial Statement</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -407,19 +345,13 @@
                                     </div>
                                 </div>
 
-                                <!-- Education Lending — COG replaced with Valid ID -->
+                                <!-- Education Lending -->
                                 <div id="docs-education" style="display:none;">
                                     <div class="upload-grid">
                                         <div class="upload-card" id="card-sid-education">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">School ID</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -430,14 +362,8 @@
                                         </div>
                                         <div class="upload-card" id="card-cor-education">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">COR (Certificate of Registration)</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -446,17 +372,10 @@
                                             <input type="file" name="cor" accept=".jpg,.jpeg,.png,.pdf"
                                                 onchange="onFileSelected(this,'card-cor-education','name-cor-education')">
                                         </div>
-                                        {{-- COG replaced with Valid ID --}}
                                         <div class="upload-card" id="card-vid-education">
                                             <div class="upload-icon">
-                                                <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                    <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                </svg>
-                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                    stroke-width="2">
-                                                    <polyline points="20 6 9 17 4 12" />
-                                                </svg>
+                                                <svg class="upload-arrow" viewBox="0 0 24 24"><path d="M12 16v-8M8 12l4-4 4 4" /><rect x="3" y="3" width="18" height="18" rx="3" /></svg>
+                                                <svg class="upload-check" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12" /></svg>
                                             </div>
                                             <span class="upload-label">Valid ID</span>
                                             <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
@@ -468,17 +387,14 @@
                                     </div>
                                 </div>
 
-                                {{-- ── Loanable Amount Status Banner — shown AFTER all doc cards ── --}}
+                                {{-- ── Loanable Amount Status Banner ── --}}
                                 @if($hasFullyLoaned)
-                                    <div
-                                        style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
-                                        <div
-                                            style="width:36px;height:36px;flex-shrink:0;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                    <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
+                                        <div style="width:36px;height:36px;flex-shrink:0;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;">
                                             <i class="fa fa-ban" style="color:#dc2626;font-size:15px;"></i>
                                         </div>
                                         <div>
-                                            <p style="margin:0 0 3px;font-size:13.5px;font-weight:700;color:#1a1a1a;">Loan
-                                                Limit Reached</p>
+                                            <p style="margin:0 0 3px;font-size:13.5px;font-weight:700;color:#1a1a1a;">Loan Limit Reached</p>
                                             <p style="margin:0;font-size:12.5px;color:#dc2626;line-height:1.5;">
                                                 You have an active loan totalling
                                                 <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>
@@ -488,44 +404,33 @@
                                         </div>
                                     </div>
                                 @elseif($totalActiveLoan > 0)
-                                    <div
-                                        style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
-                                        <div
-                                            style="width:36px;height:36px;flex-shrink:0;background:#fff3cd;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                                    <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
+                                        <div style="width:36px;height:36px;flex-shrink:0;background:#fff3cd;border-radius:50%;display:flex;align-items:center;justify-content:center;">
                                             <i class="fa fa-circle-info" style="color:#e6a817;font-size:15px;"></i>
                                         </div>
                                         <div style="width:100%;">
-                                            <p style="margin:0 0 6px;font-size:13.5px;font-weight:700;color:#1a1a1a;">
-                                                Remaining Loanable Amount</p>
+                                            <p style="margin:0 0 6px;font-size:13.5px;font-weight:700;color:#1a1a1a;">Remaining Loanable Amount</p>
                                             <p style="margin:0 0 10px;font-size:12.5px;color:#856404;line-height:1.5;">
                                                 You currently have an active loan of
-                                                <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>. You may still
-                                                borrow up to:
+                                                <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>. You may still borrow up to:
                                             </p>
-                                            <div
-                                                style="background:#f5f5f5;border-radius:20px;height:10px;overflow:hidden;margin-bottom:6px;">
-                                                <div
-                                                    style="height:10px;border-radius:20px;background:linear-gradient(90deg,#e6a817,#f59e0b);width:{{ min(100, ($totalActiveLoan / 25000) * 100) }}%;transition:width 0.4s;">
-                                                </div>
+                                            <div style="background:#f5f5f5;border-radius:20px;height:10px;overflow:hidden;margin-bottom:6px;">
+                                                <div style="height:10px;border-radius:20px;background:linear-gradient(90deg,#e6a817,#f59e0b);width:{{ min(100, ($totalActiveLoan / 25000) * 100) }}%;transition:width 0.4s;"></div>
                                             </div>
-                                            <div
-                                                style="display:flex;justify-content:space-between;font-size:11.5px;color:#999;margin-bottom:8px;">
+                                            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#999;margin-bottom:8px;">
                                                 <span>Used: ₱{{ number_format($totalActiveLoan, 2) }}</span>
                                                 <span>Limit: ₱25,000.00</span>
                                             </div>
-                                            <div
-                                                style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1a4a3a;">
+                                            <div style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1a4a3a;">
                                                 <i class="fa fa-coins"></i>
                                                 Available to borrow: ₱{{ number_format($remainingLoanable, 2) }}
                                             </div>
                                         </div>
                                     </div>
                                 @else
-                                    <div
-                                        style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.75rem 1rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#166534;">
+                                    <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.75rem 1rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#166534;">
                                         <i class="fa fa-circle-info" style="margin-top:2px;flex-shrink:0;"></i>
-                                        <span>You may borrow up to <strong>₱25,000.00</strong>. Applications exceeding this
-                                            limit will not be processed.</span>
+                                        <span>You may borrow up to <strong>₱25,000.00</strong>. Applications exceeding this limit will not be processed.</span>
                                     </div>
                                 @endif
 
@@ -564,57 +469,32 @@
                             </div>
                             <div class="parent-amount">
                                 <div class="card-amount">
-                                    <div class="text-amount">
-                                        <p>Loan Type</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-type">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Loan Type</p></div>
+                                    <div class="amount"><p id="calc-type">-</p></div>
                                 </div>
                                 <div class="card-amount">
-                                    <div class="text-amount">
-                                        <p>Loan Amount</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-amount">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Loan Amount</p></div>
+                                    <div class="amount"><p id="calc-amount">-</p></div>
                                 </div>
                                 <div class="card-amount">
-                                    <div class="text-amount">
-                                        <p>Interest Rate (monthly)</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-rate">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Interest Rate (monthly)</p></div>
+                                    <div class="amount"><p id="calc-rate">-</p></div>
                                 </div>
                                 <div class="card-amount">
-                                    <div class="text-amount">
-                                        <p>Loan Term</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-term">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Loan Term</p></div>
+                                    <div class="amount"><p id="calc-term">-</p></div>
                                 </div>
                                 <hr>
                                 <div class="card-amount total-amount">
-                                    <div class="text-amount">
-                                        <p>Total Payment</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-total">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Total Payment</p></div>
+                                    <div class="amount"><p id="calc-total">-</p></div>
                                 </div>
                                 <div class="card-amount">
-                                    <div class="text-amount">
-                                        <p>Total Interest</p>
-                                    </div>
-                                    <div class="amount">
-                                        <p id="calc-interest">-</p>
-                                    </div>
+                                    <div class="text-amount"><p>Total Interest</p></div>
+                                    <div class="amount"><p id="calc-interest">-</p></div>
                                 </div>
                                 <div class="reminders">
-                                    <p>💡 Rates are indicative. Final terms subject to credit evaluation and cooperative
-                                        approval.</p>
+                                    <p>💡 Rates are indicative. Final terms subject to credit evaluation and cooperative approval.</p>
                                 </div>
                             </div>
                         </div>
@@ -631,17 +511,12 @@
                     </div>
                     <div class="sm-body">
                         <h2>Application Submitted!</h2>
-                        <p>Your lending application has been received and is now under review. We'll notify you within 3–5
-                            business days.</p>
+                        <p>Your lending application has been received and is now under review. We'll notify you within 3–5 business days.</p>
                         <div class="sm-details">
-                            <div class="sm-row"><span class="sm-label">Name</span><span
-                                    class="sm-val">{{ session("MemberName") }}</span></div>
-                            <div class="sm-row"><span class="sm-label">Status</span><span class="sm-badge">Pending
-                                    Review</span></div>
-                            <div class="sm-row"><span class="sm-label">Reference</span><span
-                                    class="sm-val">#{{ session("ReferenceNo") }}</span></div>
-                            <div class="sm-row"><span class="sm-label">Date Filed</span><span
-                                    class="sm-val">{{ session("DateFiled") }}</span></div>
+                            <div class="sm-row"><span class="sm-label">Name</span><span class="sm-val">{{ session("MemberName") }}</span></div>
+                            <div class="sm-row"><span class="sm-label">Status</span><span class="sm-badge">Pending Review</span></div>
+                            <div class="sm-row"><span class="sm-label">Reference</span><span class="sm-val">#{{ session("ReferenceNo") }}</span></div>
+                            <div class="sm-row"><span class="sm-label">Date Filed</span><span class="sm-val">{{ session("DateFiled") }}</span></div>
                         </div>
                         <button class="sm-btn" onclick="closeSuccessModal()">Got it, Continue</button>
                     </div>
@@ -651,39 +526,35 @@
 
     </div>
 
+    {{-- ── Purpose of Loan toggle ── --}}
     <script>
         function handlePurposeChange(select) {
             const wrapper = document.getElementById('others-textarea-wrapper');
             const textarea = document.getElementById('purpose_loan_textarea');
 
             if (select.value === 'Others') {
-                // Show textarea with smooth animation
                 wrapper.style.display = 'block';
                 wrapper.style.opacity = '0';
                 wrapper.style.transform = 'translateY(-10px)';
                 wrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-
                 setTimeout(() => {
                     wrapper.style.opacity = '1';
                     wrapper.style.transform = 'translateY(0)';
                 }, 10);
-
                 textarea.required = true;
             } else {
-                // Hide textarea
                 wrapper.style.opacity = '0';
                 wrapper.style.transform = 'translateY(-10px)';
-
                 setTimeout(() => {
                     wrapper.style.display = 'none';
                     textarea.value = '';
                 }, 300);
-
                 textarea.required = false;
             }
         }
     </script>
 
+    {{-- ── Loan limit warning ── --}}
     <script>
         const MAX_REMAINING = {{ $remainingLoanable }};
 
@@ -721,16 +592,15 @@
                 if (!selectedType) return;
 
                 const requiredFieldsMap = {
-                    'Personal Lending': ['personal_valid_id', 'personal_proof_of_income'],
+                    'Personal Lending':  ['personal_valid_id', 'personal_proof_of_income'],
                     'Emergency Lending': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
-                    'Business Lending': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
+                    'Business Lending':  ['business_valid_id', 'business_proof_of_income', 'business_permit'],
                     'Education Lending': ['school_id', 'cor', 'education_valid_id'],
                 };
 
                 const requiredFields = requiredFieldsMap[selectedType] || [];
                 let missing = false;
 
-                // Clear all previous error states
                 document.querySelectorAll('.upload-card').forEach(function (card) {
                     card.style.border = '';
                     const existing = card.querySelector('.upload-error-msg');
@@ -742,13 +612,11 @@
                     if (input && !input.files.length) {
                         const card = input.closest('.upload-card');
                         card.style.border = '2px solid #dc2626';
-
                         const errMsg = document.createElement('span');
                         errMsg.className = 'upload-error-msg';
                         errMsg.style.cssText = 'display:block;margin-top:6px;font-size:11.5px;color:#dc2626;font-weight:600;';
                         errMsg.innerHTML = '<i class="fa fa-circle-exclamation" style="margin-right:4px;"></i>This document is required.';
                         card.appendChild(errMsg);
-
                         missing = true;
                     }
                 });
@@ -756,15 +624,11 @@
                 if (missing) {
                     e.preventDefault();
                     const firstError = document.querySelector('.upload-card[style*="border"]');
-                    if (firstError) {
-                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
+                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
 
-                // ── ADD THIS BLOCK RIGHT HERE ──────────────────────────────────────
                 const purposeSelect = document.getElementById('purpose_loan_select');
                 const purposeTextarea = document.getElementById('purpose_loan_textarea');
-
                 if (purposeSelect && purposeSelect.value === 'Others') {
                     if (!purposeTextarea.value.trim()) {
                         e.preventDefault();
@@ -776,50 +640,22 @@
                         purposeTextarea.style.border = '';
                     }
                 }
-                // ──────────────────────────────────────────────────────────────────
             });
         });
     </script>
 
+    {{-- ── Docs show/hide per loan type ── --}}
     <script>
-        const lendingTypeSelect = document.getElementById('lending_type');
         const docsMap = {
-            'Personal Lending': 'docs-personal',
+            'Personal Lending':  'docs-personal',
             'Emergency Lending': 'docs-emergency',
-            'Business Lending': 'docs-business',
+            'Business Lending':  'docs-business',
             'Education Lending': 'docs-education',
         };
 
-        // ── Loan term options per lending type ──────────────────────────────────
-        // Personal, Emergency, Education → 6 months only
-        // Business → 6 months or 12 months
-        const termOptionsMap = {
-            'Personal Lending': ['6 months'],
-            'Emergency Lending': ['6 months'],
-            'Education Lending': ['6 months'],
-            'Business Lending': ['6 months', '12 months'],
-        };
-
-        function updateLoanTerms(selectedType) {
-            const termSelect = document.getElementById('lending_type_term');
-            // Clear existing options (except default placeholder)
-            termSelect.innerHTML = '<option value="">Select Loan term</option>';
-
-            const options = termOptionsMap[selectedType] || [];
-            options.forEach(function (opt) {
-                const el = document.createElement('option');
-                el.value = opt;
-                el.textContent = opt;
-                // Auto-select if only one option
-                if (options.length === 1) el.selected = true;
-                termSelect.appendChild(el);
-            });
-        }
-
         function showDocs(selectedType) {
             const wrapper = document.getElementById('docs-wrapper');
-            const allDocIds = ['docs-personal', 'docs-emergency', 'docs-business', 'docs-education'];
-            allDocIds.forEach(function (id) {
+            ['docs-personal', 'docs-emergency', 'docs-business', 'docs-education'].forEach(function (id) {
                 document.getElementById(id).style.display = 'none';
             });
             if (docsMap[selectedType]) {
@@ -829,14 +665,9 @@
                 wrapper.style.display = 'none';
             }
         }
-
-        lendingTypeSelect.addEventListener('change', function () {
-            showDocs(this.value);
-            updateLoanTerms(this.value);
-            recalculate();
-        });
     </script>
 
+    {{-- ── File upload card feedback ── --}}
     <script>
         function onFileSelected(input, cardId, nameId) {
             const card = document.getElementById(cardId);
@@ -844,127 +675,93 @@
             if (!card || !nameEl) return;
             if (input.files && input.files[0]) {
                 card.classList.add('has-file');
-<<<<<<< HEAD
                 card.style.border = '';
                 const errMsg = card.querySelector('.upload-error-msg');
                 if (errMsg) errMsg.remove();
                 nameEl.textContent = input.files[0].name;
-=======
-                if (nameEl) nameEl.textContent = input.files[0].name;
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
             } else {
                 card.classList.remove('has-file');
-                if (nameEl) nameEl.textContent = '';
+                nameEl.textContent = '';
             }
         }
     </script>
 
+    {{-- ── Loan calculator ── --}}
     <script>
-<<<<<<< HEAD
-        const RATES = {
-            'Personal Lending': 0.002,
-            'Emergency Lending': 0.002,
-            'Business Lending': 0.002,
-            'Education Lending': 0.002,
-        };
-
-        function recalculate() {
-            const type = document.querySelector('[name="lending_type"]').value;
-            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value);
-            const termRaw = document.getElementById('lending_type_term').value;
-            const term = parseInt(termRaw);
-
-            showDocs(type);
-            document.getElementById('calc-type').textContent = type || '-';
-
-            if (!type || !amount || !term || amount <= 0) {
-=======
         const RATES = @json($loanSettings);
 
+        // ── Show/hide term dropdowns based on loan type ──────────────────────
         function updateTermOptions() {
-            const type = document.querySelector('[name="lending_type"]').value;
-            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
-            const termBusiness = document.getElementById('lending_type_term_business');
-            const hiddenTerm = document.getElementById('lending_type_term');
-            
-            // Remove required from both first
-            termNonBusiness.required = false;
-            termBusiness.required = false;
-            
+            const type     = document.querySelector('[name="lending_type"]').value;
+            const termNB   = document.getElementById('lending_type_term_nonbusiness');
+            const termB    = document.getElementById('lending_type_term_business');
+            const hidden   = document.getElementById('lending_type_term');
+
+            termNB.required = false;
+            termB.required  = false;
+
             if (type === 'Business Lending') {
-                termNonBusiness.style.display = 'none';
-                termBusiness.style.display = 'block';
-                termBusiness.required = true;
-                if (termBusiness.options.length > 1) {
-                    termBusiness.selectedIndex = 1;
-                }
-                hiddenTerm.value = termBusiness.value;
+                termNB.style.display = 'none';
+                termB.style.display  = 'block';
+                termB.required       = true;
+                if (termB.options.length > 1) termB.selectedIndex = 1;
+                hidden.value = termB.value;
             } else if (type) {
-                termNonBusiness.style.display = 'block';
-                termBusiness.style.display = 'none';
-                termNonBusiness.required = true;
-                if (termNonBusiness.options.length > 1) {
-                    termNonBusiness.selectedIndex = 1;
-                }
-                hiddenTerm.value = termNonBusiness.value;
+                termNB.style.display = 'block';
+                termB.style.display  = 'none';
+                termNB.required      = true;
+                if (termNB.options.length > 1) termNB.selectedIndex = 1;
+                hidden.value = termNB.value;
             } else {
-                termNonBusiness.style.display = 'block';
-                termBusiness.style.display = 'none';
+                termNB.style.display = 'block';
+                termB.style.display  = 'none';
+                hidden.value = '';
             }
-            
+
+            showDocs(type);
             recalculate();
         }
 
+        // ── Recalculate loan invoice ─────────────────────────────────────────
         function recalculate() {
-            const type = document.querySelector('[name="lending_type"]').value;
+            const type   = document.querySelector('[name="lending_type"]').value;
             const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
-            const termNonBusiness = document.getElementById('lending_type_term_nonbusiness');
-            const termBusiness = document.getElementById('lending_type_term_business');
-            const hiddenTerm = document.getElementById('lending_type_term');
-            
-            // Get term from visible dropdown
-            const term = termBusiness.style.display === 'block' ? termBusiness.value : termNonBusiness.value;
-            hiddenTerm.value = term;
-            
-            const termMonths = term ? parseInt(term.split(' ')[0]) : 0;
+            const termB  = document.getElementById('lending_type_term_business');
+            const termNB = document.getElementById('lending_type_term_nonbusiness');
+            const hidden = document.getElementById('lending_type_term');
 
-            showDocs(type);
+            const termStr    = (termB.style.display === 'block') ? termB.value : termNB.value;
+            const termMonths = termStr ? parseInt(termStr.split(' ')[0]) : 0;
+            hidden.value     = termStr;
 
             document.getElementById('calc-type').textContent = type || '-';
 
             if (!type || !amount || !termMonths || amount <= 0) {
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
-                document.getElementById('calc-monthly').textContent = '₱-';
-                document.getElementById('calc-term-sub').textContent = 'Fill in amount & term to compute.';
-                document.getElementById('calc-amount').textContent = amount > 0 ? '₱' + fmt(amount) : '-';
-                document.getElementById('calc-rate').textContent = type && RATES[type] ? (RATES[type] * 100).toFixed(1) + '% / mo' : '-';
-                document.getElementById('calc-term').textContent = term || '-';
-                document.getElementById('calc-total').textContent = '-';
-                document.getElementById('calc-interest').textContent = '-';
+                document.getElementById('calc-monthly').textContent   = '₱-';
+                document.getElementById('calc-term-sub').textContent  = 'Fill in amount & term to compute.';
+                document.getElementById('calc-amount').textContent    = amount > 0 ? '₱' + fmt(amount) : '-';
+                document.getElementById('calc-rate').textContent      = (type && RATES[type]) ? (RATES[type] * 100).toFixed(1) + '% / mo' : '-';
+                document.getElementById('calc-term').textContent      = termStr || '-';
+                document.getElementById('calc-total').textContent     = '-';
+                document.getElementById('calc-interest').textContent  = '-';
                 return;
             }
 
-            const r = RATES[type] ?? 0.015;
-<<<<<<< HEAD
-            const monthly = amount * r * Math.pow(1 + r, term) / (Math.pow(1 + r, term) - 1);
-            const total = monthly * term;
-=======
-
+            const r       = RATES[type] ?? 0.02;
             const monthly = amount * r * Math.pow(1 + r, termMonths) / (Math.pow(1 + r, termMonths) - 1);
-            const total = monthly * termMonths;
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
+            const total   = monthly * termMonths;
             const interest = total - amount;
 
-            document.getElementById('calc-monthly').textContent = '₱' + fmt(monthly);
-            document.getElementById('calc-term-sub').textContent = 'Over ' + term;
-            document.getElementById('calc-amount').textContent = '₱' + fmt(amount);
-            document.getElementById('calc-rate').textContent = (r * 100).toFixed(1) + '% / mo';
-            document.getElementById('calc-term').textContent = term;
-            document.getElementById('calc-total').textContent = '₱' + fmt(total);
+            document.getElementById('calc-monthly').textContent  = '₱' + fmt(monthly);
+            document.getElementById('calc-term-sub').textContent = 'Over ' + termStr;
+            document.getElementById('calc-amount').textContent   = '₱' + fmt(amount);
+            document.getElementById('calc-rate').textContent     = (r * 100).toFixed(1) + '% / mo';
+            document.getElementById('calc-term').textContent     = termStr;
+            document.getElementById('calc-total').textContent    = '₱' + fmt(total);
             document.getElementById('calc-interest').textContent = '₱' + fmt(interest);
 
-            document.getElementById('hidden-monthly').value = monthly.toFixed(2);
-            document.getElementById('hidden-total').value = total.toFixed(2);
+            document.getElementById('hidden-monthly').value  = monthly.toFixed(2);
+            document.getElementById('hidden-total').value    = total.toFixed(2);
             document.getElementById('hidden-interest').value = interest.toFixed(2);
         }
 

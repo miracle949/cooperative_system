@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class OtpController extends Controller
 {
     public function send(Request $request)
     {
+        $request->validate(['email' => 'required|email']);
+
         $email = $request->email;
         $otp = rand(100000, 999999);
 
@@ -16,9 +19,21 @@ class OtpController extends Controller
         Session::put('email_otp_email', $email);
         Session::put('email_otp_expires', now()->addMinutes(5));
 
-        Mail::raw("Your verification code is: $otp\n\nThis code expires in 5 minutes.", function ($msg) use ($email) {
-            $msg->to($email)->subject('Email Verification Code');
-        });
+        try {
+            Mail::raw(
+                "Your verification code is: $otp\n\nThis code expires in 5 minutes.",
+                function ($msg) use ($email) {
+                    $msg->to($email)->subject('Email Verification Code');
+                }
+            );
+        } catch (\Exception $e) {
+            Log::error('OTP mail failed: ' . $e->getMessage());
+            return response()->json([
+                'sent' => false,
+                'message' => 'Failed to send email. Please check your mail configuration.',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
 
         return response()->json(['sent' => true]);
     }
@@ -32,16 +47,19 @@ class OtpController extends Controller
         if (!$otp || !$expires) {
             return response()->json(['valid' => false, 'message' => 'OTP expired. Please request a new one.']);
         }
+
         if (now()->gt($expires)) {
             Session::forget(['email_otp', 'email_otp_email', 'email_otp_expires']);
             return response()->json(['valid' => false, 'message' => 'OTP has expired. Please request a new one.']);
         }
+
         if ((string) $request->otp !== (string) $otp || $request->email !== $email) {
             return response()->json(['valid' => false, 'message' => 'Incorrect code. Please try again.']);
         }
 
         Session::forget(['email_otp', 'email_otp_email', 'email_otp_expires']);
-        Session::put('email_otp_verified_email', $request->email); // ← only change
+        Session::put('email_otp_verified_email', $request->email);
+
         return response()->json(['valid' => true]);
     }
 }

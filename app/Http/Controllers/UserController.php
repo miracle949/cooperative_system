@@ -598,10 +598,8 @@ class UserController extends Controller
         }
 
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
-<<<<<<< HEAD
 
         return view("admin_components.lending", compact('loans', 'statusFilter'));
-=======
         
         $allMembers = Users_tbl::where('role', 'member')
             ->orderBy('first_name')
@@ -683,7 +681,6 @@ class UserController extends Controller
         ]);
         
         return redirect()->back()->with('success', 'Loan penalty settings updated successfully.');
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
     }
 
     public function approveLoan(Request $request, $id)

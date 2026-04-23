@@ -163,7 +163,6 @@
 
                                     $statusGroup = in_array($loan->status, ['Rejected', 'Declined']) ? 'Rejected' : $loan->status;
 
-<<<<<<< HEAD
                                     // Pre-calculate $daysLeft so it's available everywhere in this loop iteration
                                     $daysLeft = ($lendingStatus && $lendingStatus->next_due_date)
                                         ? (int) now()->startOfDay()->diffInDays(
@@ -171,9 +170,7 @@
                                             false
                                         )
                                         : null;
-=======
                                     $penaltyInfo = collect($penalizedLoans ?? [])->firstWhere('id', $loan->id);
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
                                 @endphp
                                 <div class="loan-box" data-status="{{ $statusGroup }}">
                                     <div class="box-head">
@@ -181,7 +178,6 @@
                                             <h5>{{ $loan->lending_type }}</h5>
                                             <p>Applied on {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</p>
                                         </div>
-<<<<<<< HEAD
                                         @php
                                             $statusColor = match ($loan->status) {
                                                 'Approved' => '#1a4a3a',
@@ -212,15 +208,6 @@
                                                         {{ \Carbon\Carbon::parse($lendingStatus->next_due_date)->format('M d, Y') }}
                                                     </strong>
                                                 </p>
-=======
-                                        <div class="box-icon">
-                                            @if($penaltyInfo)
-                                                <div class="dot" style="background: #dc2626;"></div>
-                                                <span style="color: #dc2626;">Overdue</span>
-                                            @else
-                                                <div class="dot"></div>
-                                                <span>{{ $loan->status }}</span>
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
                                             @endif
                                         </div>
                                     </div>

@@ -426,13 +426,10 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
-<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
-=======
 
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
 
             return redirect()->route($redirectRoute)
                 ->with('success', 'Share capital request submitted successfully!')
@@ -490,11 +487,8 @@ class ShareCapital extends Controller
         session([
             'sc_pending_shares' => $shares,
             'sc_pending_note' => $request->input('note'),
-<<<<<<< HEAD
             'sc_pending_type' => $type,
-=======
             'sc_pending_type' => $request->input('type', 'Deposit'),
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
         ]);
 
         $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
@@ -602,12 +596,9 @@ class ShareCapital extends Controller
             DB::commit();
 
             $memberName = $this->resolveMemberName();
-<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
-=======
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
 
             return redirect()->route($redirectRoute)
                 ->with('success', 'GCash payment successful!')
@@ -621,12 +612,9 @@ class ShareCapital extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-<<<<<<< HEAD
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
-=======
             $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
->>>>>>> 3499a1da6c3776fe28707933c0574a83bb3bc2c9
             return redirect()->route($redirectRoute)
                 ->with('error', 'GCash payment was received but failed to save. Please contact support.');
         }
@@ -653,7 +641,7 @@ class ShareCapital extends Controller
         $user = \App\Models\Users_tbl::findOrFail($id);
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('user_id', $memberId)
+            ->where('user_id', $user)
             ->first();
 
         if ($account) {
