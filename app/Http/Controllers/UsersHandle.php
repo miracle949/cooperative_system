@@ -616,88 +616,88 @@ class UsersHandle extends Controller
         );
     }
 
-    public function UpdateProfileMember(Request $request)
-    {
-        $userId = Auth::id();
+    // public function UpdateProfileMember(Request $request)
+    // {
+    //     $userId = Auth::id();
 
-        $user = Users_tbl::find($userId);
-        $existingInfo = Otherinfo_tbl::where('user_id', $userId)->first();
+    //     $user = Users_tbl::find($userId);
+    //     $existingInfo = Otherinfo_tbl::where('user_id', $userId)->first();
 
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-        ]);
+    //     $request->validate([
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //     ]);
 
-        $user->first_name = $request->first_name;
-        $user->middle_name = $request->middle_name;
-        $user->last_name = $request->last_name;
-        $user->save();
+    //     $user->first_name = $request->first_name;
+    //     $user->middle_name = $request->middle_name;
+    //     $user->last_name = $request->last_name;
+    //     $user->save();
 
-        $updateData = [
-            'contact_no' => $request->contact_no,
-            'present_address' => $request->present_address,
-            'permanent_address' => $request->permanent_address,
-            'date_of_birth' => $request->date_of_birth,
-            'sex' => $request->sex,
-            'civil_status' => $request->civil_status,
-            'citizenship' => $request->citizenship,
-            'height' => $request->height,
-            'weight' => $request->weight,
-            'blood_type' => $request->blood_type,
-        ];
+    //     $updateData = [
+    //         'contact_no' => $request->contact_no,
+    //         'present_address' => $request->present_address,
+    //         'permanent_address' => $request->permanent_address,
+    //         'date_of_birth' => $request->date_of_birth,
+    //         'sex' => $request->sex,
+    //         'civil_status' => $request->civil_status,
+    //         'citizenship' => $request->citizenship,
+    //         'height' => $request->height,
+    //         'weight' => $request->weight,
+    //         'blood_type' => $request->blood_type,
+    //     ];
 
-        foreach ($updateData as $key => $value) {
-            if (empty($value) && !empty($existingInfo->$key)) {
-                $updateData[$key] = $existingInfo->$key;
-            }
-        }
+    //     foreach ($updateData as $key => $value) {
+    //         if (empty($value) && !empty($existingInfo->$key)) {
+    //             $updateData[$key] = $existingInfo->$key;
+    //         }
+    //     }
 
-        Otherinfo_tbl::updateOrCreate(
-            ['user_id' => $userId],
-            $updateData
-        );
+    //     Otherinfo_tbl::updateOrCreate(
+    //         ['user_id' => $userId],
+    //         $updateData
+    //     );
 
-        $govIdsData = [];
-        $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
+    //     $govIdsData = [];
+    //     $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
         
-        foreach ($idFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $filename = $field . '_' . $userId . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('images'), $filename);
-                $govIdsData[$field] = $filename;
-            } elseif (!empty($membergovernIds->$field)) {
-                $govIdsData[$field] = $membergovernIds->$field;
-            }
-        }
+    //     foreach ($idFields as $field) {
+    //         if ($request->hasFile($field)) {
+    //             $file = $request->file($field);
+    //             $filename = $field . '_' . $userId . '_' . time() . '.' . $file->getClientOriginalExtension();
+    //             $file->move(public_path('images'), $filename);
+    //             $govIdsData[$field] = $filename;
+    //         } elseif (!empty($membergovernIds->$field)) {
+    //             $govIdsData[$field] = $membergovernIds->$field;
+    //         }
+    //     }
         
-        if (!empty($govIdsData)) {
-            Membergovern_ids_tbl::updateOrCreate(
-                ['user_id' => $userId],
-                $govIdsData
-            );
-        }
+    //     if (!empty($govIdsData)) {
+    //         Membergovern_ids_tbl::updateOrCreate(
+    //             ['user_id' => $userId],
+    //             $govIdsData
+    //         );
+    //     }
 
-        $familyData = [
-            'spouse_name' => $request->spouse_name,
-            'spouse_date_birth' => $request->spouse_date_birth,
-            'number_son' => $request->number_son,
-            'number_daughter' => $request->number_daughter,
-        ];
-        if (!empty(array_filter($familyData))) {
-            foreach ($familyData as $key => $value) {
-                if (empty($value) && !empty($family->$key)) {
-                    $familyData[$key] = $family->$key;
-                }
-            }
-            Family_tbl::updateOrCreate(
-                ['user_id' => $userId],
-                $familyData
-            );
-        }
+    //     $familyData = [
+    //         'spouse_name' => $request->spouse_name,
+    //         'spouse_date_birth' => $request->spouse_date_birth,
+    //         'number_son' => $request->number_son,
+    //         'number_daughter' => $request->number_daughter,
+    //     ];
+    //     if (!empty(array_filter($familyData))) {
+    //         foreach ($familyData as $key => $value) {
+    //             if (empty($value) && !empty($family->$key)) {
+    //                 $familyData[$key] = $family->$key;
+    //             }
+    //         }
+    //         Family_tbl::updateOrCreate(
+    //             ['user_id' => $userId],
+    //             $familyData
+    //         );
+    //     }
 
-        return redirect()->route('ProfileMember')->with('success', 'Profile updated successfully!');
-    }
+    //     return redirect()->route('ProfileMember')->with('success', 'Profile updated successfully!');
+    // }
 
     public function Navbar2()
     {

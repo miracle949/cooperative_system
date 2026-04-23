@@ -53,7 +53,7 @@ div.container-fluid {
     overflow: hidden;
 }
 
-.container-fluid .form-image{
+.container-fluid .form-image {
     width: 100%;
     height: 100%;
     max-width: 50%;
@@ -70,20 +70,20 @@ div.container-fluid {
     /* gap: 1.5rem; */
 }
 
-.container-fluid .form-image .line{
+.container-fluid .form-image .line {
     width: 10%;
     height: 3px;
     background-color: var(--gold);
     margin-top: 2.5rem;
 }
 
-.container-fluid .form-image span, 
+.container-fluid .form-image span,
 .container-fluid .form-image h3,
-.container-fluid .form-image p{
+.container-fluid .form-image p {
     color: #ffffff;
 }
 
-.container-fluid .form-image p{
+.container-fluid .form-image p {
     margin: 0;
     font-size: 14.5px;
     width: 400px;
@@ -109,33 +109,33 @@ div.container-fluid {
     font-family: "Playfair Display";
 }
 
-.container-fluid .form-image h3 b{
+.container-fluid .form-image h3 b {
     color: var(--gold);
     font-weight: 600;
     font-style: italic;
     font-family: "Playfair Display";
 }
 
-.container-fluid .form-image .total-members{
+.container-fluid .form-image .total-members {
     display: flex;
     align-items: center;
     gap: 2.5rem;
     margin-top: 3rem;
 }
 
-.container-fluid .form-image .total-members .members h4{
+.container-fluid .form-image .total-members .members h4 {
     color: #ffffff;
     font-weight: 600;
     margin: 0;
     font-size: 21px;
 }
 
-.container-fluid .form-image .total-members .members span{
+.container-fluid .form-image .total-members .members span {
     color: rgba(255, 255, 255, 0.55);
     font-size: 13.5px;
 }
 
-.container-fluid .form-box-parent{
+.container-fluid .form-box-parent {
     /* width: 50%; */
     padding: 2.5rem;
     width: 100vh;
@@ -162,7 +162,7 @@ div.container-fluid {
 .container-fluid .form-parent p {
     width: 100%;
     max-width: 400px;
-    font-size: 16px;
+    font-size: 14.5px;
 }
 
 @keyframes slideIn {
@@ -185,9 +185,10 @@ div.container-fluid {
 }
 
 .container-fluid h2 {
-    font-size: 25px;
+    font-size: 21px;
     color: var(--green);
     font-weight: 600;
+    margin: 24px 0 0;
 }
 
 .container-fluid p {
@@ -199,11 +200,11 @@ div.container-fluid {
 }
 
 .container-fluid label {
-    font-size: 15.5px;
+    font-size: 14.5px;
 }
 
 .container-fluid input {
-    font-size: 15.5px;
+    font-size: 14.5px;
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
     border: 1px solid #ccc;
     background-color: #ffffff;
@@ -231,12 +232,12 @@ input.form-control {
 }
 
 .container-fluid a {
-    font-size: 15.5px;
+    font-size: 14.5px;
 }
 
 .container-fluid button {
     border-radius: 7px;
-    font-size: 15.5px;
+    font-size: 14.5px;
     position: relative;
     background-color: var(--green);
 }
@@ -275,6 +276,35 @@ input.form-control {
         transform: rotate(360deg);
     }
 }
+
+@media only screen and (min-width: 1310px) {
+    .container-fluid h2 {
+        font-size: 25px;
+    }
+
+    .container-fluid .form-parent p {
+        font-size: 16px;
+    }
+
+    .container-fluid label {
+        font-size: 15.5px;
+    }
+
+    .container-fluid input {
+        font-size: 15.5px;
+    }
+
+    .container-fluid button {
+        font-size: 15.5px;
+    }
+}
+
+
+/* @media only screen and (max-width: 1275px) {
+    .container-fluid h2 {
+        font-size: 21px;
+    }
+} */
 
 @media only screen and (max-width: 1200px) {
     .login-image {
