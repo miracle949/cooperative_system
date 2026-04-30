@@ -279,11 +279,15 @@
     padding: 1rem 1.6rem 1.5rem;
     display: flex;
     gap: 0.65rem;
-    justify-content: stretch;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    /* justify-content: stretch; */
 }
 
 .sm-btn-cancel {
-    flex: 1;
+    /* flex: 1; */
+    width: 100%;
     padding: 11px 16px;
     border-radius: 9px;
     border: 1.5px solid var(--border);
@@ -301,8 +305,25 @@
     border-color: var(--muted);
 }
 
+#deposit-confirm-btn-wrap{
+    width: 100%;
+}
+
+#deposit-confirm-btn-wrap button{
+    width: 100%;
+}
+
+#withdraw-confirm-btn-wrap{
+    width: 100%;
+}
+
+#withdraw-confirm-btn-wrap button{
+    width: 100%;
+}
+
 .sm-btn-confirm {
-    flex: 2;
+    /* flex: 2; */
+    /* width: 100%; */
     padding: 11px 16px;
     border-radius: 9px;
     border: none;

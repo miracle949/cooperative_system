@@ -359,16 +359,9 @@
                                     <label style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Type</label>
                                     <select name="type" id="modal-type" required
                                         style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
-                                        @if(($currentBalance ?? 0) <= 0 && ($currentShares ?? 0) <= 0)
-                                            {{-- New member — no share capital yet --}}
-                                            <option value="">Select type..</option>
-                                            <option value="Subscription">Subscription</option>
-                                        @else
-                                            {{-- Existing member — Deposit or Withdrawal --}}
-                                            <option value="">Select type..</option>
-                                            <option value="Deposit">Deposit</option>
-                                            <option value="Withdrawal">Withdrawal</option>
-                                        @endif
+                                        <option value="">Select type..</option>
+                                        <option value="Deposit">Deposit</option>
+                                        <option value="Withdrawal">Withdrawal</option>
                                     </select>
                                 </div>
 

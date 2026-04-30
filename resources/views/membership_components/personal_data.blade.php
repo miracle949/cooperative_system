@@ -124,9 +124,27 @@
 </style>
 
 <div class="form-step">
-    <div class="form-step-header">
-        <h3>Personal Data</h3>
-        <p>Please fill out all required fields marked with *</p>
+
+    {{-- <div class="logo-text">
+
+    </div> --}}
+    <div class="form-step-sub-parents">
+        <div class="form-step-header">
+            <div class="text">
+                <h3>Personal Data</h3>
+                <p>Please fill out all required fields marked with *</p>
+            </div>
+        </div>
+
+        <div class="logo-image">
+            <div class="tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
+                style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
+                <img src="" alt="" class="" id="inputImage">
+                <p class="fw-semibold" id="text">Photo</p>
+                <p class="tw:text-[#808080]" id="text2">Click here!</p>
+                <input type="file" name="profile_picture" id="inputBox" class="form-control">
+            </div>
+        </div>
     </div>
 
     <div class="form-step-parents">
@@ -142,14 +160,14 @@
             .replace(/\b\w/g, c => c.toUpperCase())" required>
                 </div>
 
-                <div class="col-lg-3 col-md-4 mt-4">
-                    <label>Middlename</label>
+                <div class="col-lg-4 col-md-4 mt-4">
+                    <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span> </label>
                     <input type="text" name="middle_name" id="middle_name" class="form-control" oninput="this.value = this.value
             .replace(/[^A-Za-z ]/g, '')
             .replace(/\b\w/g, c => c.toUpperCase())">
-                    <div class="reminder">
+                    {{-- <div class="reminder">
                         <span>(Optional)</span>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="col-lg-4 col-md-4 mt-4">
@@ -169,7 +187,7 @@
                     <small id="dob_error" class="text-danger"></small>
                 </div>
 
-                <div class="col-lg-3 mt-4">
+                <div class="col-lg-4 mt-4">
                     <label>Civil Status *</label>
                     <select name="civil_status" id="civil_status" class="form-select" required>
                         <option value="">Select Status</option>
@@ -232,16 +250,6 @@
                     <div class="match-hint" id="match-hint"></div>
                 </div>
 
-            </div>
-        </div>
-
-        <div class="logo-image">
-            <div class="tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
-                style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
-                <img src="" alt="" class="" id="inputImage">
-                <p class="fw-semibold" id="text">Photo</p>
-                <p class="tw:text-[#808080]" id="text2">Click here!</p>
-                <input type="file" name="profile_picture" id="inputBox" class="form-control">
             </div>
         </div>
     </div>

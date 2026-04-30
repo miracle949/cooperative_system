@@ -18,10 +18,25 @@
 
         stepper.forEach((step, index) => {
             step.classList.remove("active", "completed");
+            const circle = step.querySelector(".circle");  // ADD THIS
+
             if (index === currentStep_form) {
                 step.classList.add("active");
+                // Restore number for active step
+                circle.innerHTML = '0' + (index + 1);
+
             } else if (index < currentStep_form) {
                 step.classList.add("completed");
+                // Show checkmark for completed steps
+                circle.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>`;
+
+            } else {
+                // Restore number for future steps
+                circle.innerHTML = '0' + (index + 1);
             }
         });
 

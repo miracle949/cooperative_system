@@ -122,7 +122,7 @@
                         background: #fff8e1;
                         border: 1.5px solid #ffe082;
                         border-radius: 12px;
-                        padding: 0.75rem 1.25rem 1rem;
+                        padding: 1rem 1.25rem 1rem;
                         margin-bottom: 1rem;
                         display: flex;
                         align-items: center;
@@ -452,12 +452,12 @@
 
                         {{-- ★ UPDATED: footer — Confirm button wrapped so JS can hide it --}}
                         <div class="modal-footer sm-modal-footer">
-                            <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
                             <div id="deposit-confirm-btn-wrap">
                                 <button type="submit" class="sm-btn-confirm sm-deposit-confirm">
                                     <i class="fa-solid fa-circle-arrow-down"></i> Confirm Deposit
                                 </button>
                             </div>
+                            <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
                         </div>
                     </form>
 
@@ -570,12 +570,12 @@
 
                         {{-- ★ UPDATED: footer — Confirm button wrapped so JS can hide it --}}
                         <div class="modal-footer sm-modal-footer">
-                            <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
                             <div id="withdraw-confirm-btn-wrap">
                                 <button type="submit" class="sm-btn-confirm sm-withdraw-confirm">
                                     <i class="fa-solid fa-circle-arrow-up"></i> Confirm Withdraw
                                 </button>
                             </div>
+                            <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
                         </div>
                     </form>
 

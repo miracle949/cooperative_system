@@ -290,12 +290,8 @@ class ShareCapital extends Controller
 
         // ─────────────────────────────────────────────────────────────
 
-        return view(
-            'members_components.share_capital',
-            [
-                "username" => $username,
-                "email" => $email
-            ],
+        return view('members_components.share_capital', array_merge(
+            ['username' => $username, 'email' => $email],
             compact(
                 'currentBalance',
                 'currentShares',
@@ -317,7 +313,7 @@ class ShareCapital extends Controller
                 'futureDate2',
                 'futurePeriod2',
             )
-        );
+        ));
     }
 
     /**
@@ -327,7 +323,7 @@ class ShareCapital extends Controller
     {
         $validated = $request->validate([
             'shares' => ['required', 'integer', 'min:1'],
-            'type' => ['required', 'in:Subscription,Deposit,Withdrawal'],
+            'type' => ['required', 'in:Deposit,Withdrawal'],
             'payment_method' => ['required', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:500'],
         ]);
@@ -380,7 +376,7 @@ class ShareCapital extends Controller
                         ]);
 
                     // Also set membership_status to Active in users table
-                    if ($type === 'Subscription') {
+                    if ($type === 'Deposit') {
                         DB::table('otherinfo_tbls')
                             ->where('user_id', $memberId)
                             ->update(['membership_status' => 'Active']);
@@ -429,8 +425,6 @@ class ShareCapital extends Controller
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
 
-            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
-
             return redirect()->route($redirectRoute)
                 ->with('success', 'Share capital request submitted successfully!')
                 ->with('sc_receipt_shares', $shares)
@@ -460,7 +454,7 @@ class ShareCapital extends Controller
 
         $shares = (int) $request->input('shares', 1);
         $totalAmount = $shares * 1000;
-        $type = $request->input('type', 'Subscription');
+        $type = $request->input('type', 'Deposit');
 
         // ── FIX 5: Block GCash withdrawal when balance is 0 or insufficient ──
         if ($type === 'Withdrawal') {
@@ -551,7 +545,7 @@ class ShareCapital extends Controller
                         ]);
 
                     // Set membership_status to Active on deposit
-                    if ($type === 'Subscription') {
+                    if ($type === 'Deposit') {
                         DB::table('otherinfo_tbls')
                             ->where('user_id', $memberId)
                             ->update(['membership_status' => 'Active']);
@@ -599,7 +593,6 @@ class ShareCapital extends Controller
             $memberName = $this->resolveMemberName();
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
-            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
 
             return redirect()->route($redirectRoute)
                 ->with('success', 'GCash payment successful!')
@@ -615,8 +608,6 @@ class ShareCapital extends Controller
             DB::rollBack();
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
-            $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
-$redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
             return redirect()->route($redirectRoute)
                 ->with('error', 'GCash payment was received but failed to save. Please contact support.');
         }
@@ -630,7 +621,7 @@ $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMe
         $type = session('sc_pending_type', 'Deposit');
         session()->forget(['sc_pending_shares', 'sc_pending_note', 'sc_pending_type']);
 
-        $redirectRoute = ($type === 'Deposit') ? 'share_capital.index' : 'ShareCapitalMember';
+        $redirectRoute = 'ShareCapitalMember';
         return redirect()->route($redirectRoute)
             ->with('error', 'GCash payment failed. Please try again.');
     }
