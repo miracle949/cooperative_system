@@ -10,9 +10,17 @@
 </style>
 <div class="form-step">
     <div class="form-step-header">
-        <h3>Other Information</h3>
-        <p>Employment, beneficiary, and membership details.</p>
+        <!-- <h3>Other Information</h3> -->
+        <div class="form-step-nav">
+            <div class="header-track">
+                <span>Step 1 of 4</span>
+            </div>
+            <h2>Other <b>Information</b></h2>
+            <p>Employment, beneficiary, and membership details.</p>
+        </div>
     </div>
+
+    <div class="line-agreement"></div>
 
     <div class="form-step-body">
         <div class="row">
@@ -34,9 +42,9 @@
                     <div class="col-lg-4 mt-4">
                         <label>Other-Specify</label>
                         <input type="text" name="other_spec" id="other_spec" class="form-control">
-                        <div class="reminder">
+                        <!-- <div class="reminder">
                             <span>If not applicable, you may enter "None"</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -46,9 +54,9 @@
             <div class="col-lg-4 mt-4">
                 <label>Spouse Name</label>
                 <input type="text" name="spouse_name" id="spouse_name" class="form-control">
-                <div class="reminder">
+                <!-- <div class="reminder">
                     <span>If not applicable, you may enter "None"</span>
-                </div>
+                </div> -->
             </div>
 
             <div class="col-lg-4 mt-4">

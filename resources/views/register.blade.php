@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Registration</title>
+    <title>Apply for Membership</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
 
     {{-- css link --}}
@@ -22,25 +22,9 @@
 
     <div class="container-fluid">
 
-        <nav>
-            <div class="nav-logo">
-                {{-- <img src="../images/logo2.png" alt=""> --}}
-                <div class="nav-text">
-                    {{-- <h2 class="fw-bold">Membership Application Form</h2> --}}
-                    <h2>KPMPCATS</h2>
-
-                    <a href="{{ route("index") }}">
-                        <i class="fa fa-chevron-left"></i>
-                        <p>Back to Home</p>
-                    </a>
-                    {{-- <p>Ready to become part of something special? We can't wait to welcome you.</p> --}}
-                </div>
-            </div>
-        </nav>
-
         <div class="sidebar">
             <div class="sidebar-nav">
-                <div class="nav-tag">Member Registration</div>
+                <div class="nav-tag">Member Application</div>
 
                 <h2>Join the <b>Cooperative</b></h2>
 
@@ -100,125 +84,165 @@
 
         <div class="rightbar">
 
+            <nav>
+                <div class="nav-logo">
+                    {{-- <img src="../images/logo2.png" alt=""> --}}
+                    <div class="nav-text">
+                        {{-- <h2 class="fw-bold">Membership Application Form</h2> --}}
+                        <h2>KPMPCATS</h2>
+
+                        <a href="{{ route("index") }}">
+                            <i class="fa fa-chevron-left"></i>
+                            <p>Back to Home</p>
+                        </a>
+                        {{-- <p>Ready to become part of something special? We can't wait to welcome you.</p> --}}
+                    </div>
+                </div>
+            </nav>
+
             {{-- <h2>Terms & <b>Agreement</b></h2>
 
             <p>Please read the following terms carefully before proceeding.</p> --}}
 
-            <form action="{{ route("registration") }}" id="form" method="post" class="needs-validation" novalidate
-                enctype="multipart/form-data">
-                @csrf
+            <div class="main">
+                <form action="{{ route("registration") }}" id="form" method="post" class="needs-validation" novalidate
+                    enctype="multipart/form-data">
+                    @csrf
 
-                {{-- <div class="tw:flex tw:justify-center tw:items-center line">
-                    <hr class="tw:w-[20%] border-2">
-                </div> --}}
+                    {{-- <div class="tw:flex tw:justify-center tw:items-center line">
+                        <hr class="tw:w-[20%] border-2">
+                    </div> --}}
 
-                <div class="choose-type">
-                    <div class="choose">
-                        <div class="back">
-                            <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
+                    <div class="choose-type">
+                        <div class="choose">
+                            <div class="back">
+                                <a href="{{ route('LoginPage') }}"><i class="fa fa-arrow-left"></i></a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-box">
+                    <div class="form-box">
 
-                    <!-- Form -->
-                    <div class="card-box">
+                        <!-- Form -->
+                        <div class="card-box">
 
-                        <!-- Step 1 -->
-                        <div class="form-step active">
-                            <h2>Terms & <b>Agreement</b></h2>
+                            <!-- Step 1 -->
+                            <div class="form-step active">
 
-                            <p>Please read the following terms carefully before proceeding.</p>
-                            
-                            <div class="form-step-header">
-                                <h3>Cooperative Membership Terms</h3>
-                                <p>KPMPCATS — Authorized Share Capital Agreement</p>
-                            </div>
-                            <div class="form-step-body">
-                                <div class="row">
-                                    <div class="col-lg-12">
+                                <div class="form-step-nav">
+                                    <div class="header-track">
+                                        <span>Step 1 of 4</span>
+                                    </div>
 
-                                        <label class="lh-lg mt-3">The Undersigned hereby subscribed and agreed to take
-                                            100
-                                            share of the KPMPCATS authorized Share Capital with a par value of One
-                                            Hundred
-                                            Pesos
-                                            (Php100.00) per share amounting to Ten Thousand (P10,000.00) Pesos payable
-                                            that
-                                            was
-                                            scheduled within two (2) years, and agrees to pay atleast 25% as initial
-                                            payment
-                                            of
-                                            subscription within a Membership Fee of Two Thousand (P2,000.00)
-                                            Pesos.</label>
+                                    <h2>Terms & <b>Agreement</b></h2>
 
-                                        <label class="lh-lg mt-4">The undersigned agrees further to pay Fifty Thousand
-                                            (P50,000.00) Pesos (For Tourist Unit) as entrance fee for my vehicle and
-                                            Mobilization Fee of Three Thousand (P3,000.00) of the Transport / Vehicle
-                                            Operation
-                                            of KPMPCATS.</label>
+                                    <p>Please read the following terms carefully before proceeding.</p>
+                                </div>
 
-                                        <label class="lh-lg mt-4">The undersigned further pledge to undertake Regular
-                                            Savings
-                                            and / or Contributions to the Caplital Build-Up of the Cooperative or to its
-                                            Programs and Services.</label>
+                                <div class="line-agreement"></div>
 
-                                        <label class="mt-4">Declaration and Agreement</label>
+                                <div class="form-step-header">
+                                    <h3>Cooperative Membership Terms</h3>
+                                    <p>KPMPCATS — Authorized Share Capital Agreement</p>
+                                </div>
+                                <div class="form-step-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
 
-                                        <div class="form-check mt-3">
-                                            <input class="form-check-input" type="checkbox" name="agree1"
-                                                id="checkboxDefault1" required>
-                                            <label class="form-check-label" for="checkboxDefault1">
-                                                I hereby certify that the foregoing statements are true and correct to
-                                                the
-                                                best
-                                                of my knowledge. I understand that any false information may result in
-                                                the
-                                                cancellation of my membership.
-                                            </label>
-                                        </div>
+                                            <label class="lh-lg mt-3">The Undersigned hereby subscribed and agreed to
+                                                take
+                                                100
+                                                share of the KPMPCATS authorized Share Capital with a par value of One
+                                                Hundred
+                                                Pesos
+                                                (Php100.00) per share amounting to Ten Thousand (P10,000.00) Pesos
+                                                payable
+                                                that
+                                                was
+                                                scheduled within two (2) years, and agrees to pay atleast 25% as initial
+                                                payment
+                                                of
+                                                subscription within a Membership Fee of Two Thousand (P2,000.00)
+                                                Pesos.</label>
 
-                                        <div class="form-check mt-3">
-                                            <input class="form-check-input" type="checkbox" name="agree2"
-                                                id="checkboxDefault2" required>
-                                            <label class="form-check-label" for="checkboxDefault2">
-                                                I agree to abide by the Constitution and By-Laws of the Cooperative and
-                                                to
-                                                accept the rights, responsibilities, and obligations of membership. I
-                                                understand
-                                                that my application is subject to approval by the Board of Directors.
-                                            </label>
+                                            <label class="lh-lg mt-4">The undersigned agrees further to pay Fifty
+                                                Thousand
+                                                (P50,000.00) Pesos (For Tourist Unit) as entrance fee for my vehicle and
+                                                Mobilization Fee of Three Thousand (P3,000.00) of the Transport /
+                                                Vehicle
+                                                Operation
+                                                of KPMPCATS.</label>
+
+                                            <label class="lh-lg mt-4">The undersigned further pledge to undertake
+                                                Regular
+                                                Savings
+                                                and / or Contributions to the Caplital Build-Up of the Cooperative or to
+                                                its
+                                                Programs and Services.</label>
+
+                                            <label class="mt-4">Declaration and Agreement</label>
+
+                                            <div class="form-check mt-3">
+                                                <input class="form-check-input" type="checkbox" name="agree1"
+                                                    id="checkboxDefault1" required>
+                                                <label class="form-check-label" for="checkboxDefault1">
+                                                    I hereby certify that the foregoing statements are true and correct
+                                                    to
+                                                    the
+                                                    best
+                                                    of my knowledge. I understand that any false information may result
+                                                    in
+                                                    the
+                                                    cancellation of my membership.
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check mt-3">
+                                                <input class="form-check-input" type="checkbox" name="agree2"
+                                                    id="checkboxDefault2" required>
+                                                <label class="form-check-label" for="checkboxDefault2">
+                                                    I agree to abide by the Constitution and By-Laws of the Cooperative
+                                                    and
+                                                    to
+                                                    accept the rights, responsibilities, and obligations of membership.
+                                                    I
+                                                    understand
+                                                    that my application is subject to approval by the Board of
+                                                    Directors.
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Step 2 -->
+                            @include('membership_components.personal_data')
+
+                            <!-- Step 3 -->
+                            @include('membership_components.other_information')
+
+                            {{-- Step 4 --}}
+                            @include('membership_components.review_submit')
+
+                            <div class="line-agreement"></div>
+
+                            <!-- Buttons -->
+                            <div class="actions">
+                                <button type="button" class="btn-prev" onclick="prevStep()" style="display:none;">
+                                    <i class="fa fa-chevron-left"></i>
+                                    <span>Previous</span>
+                                </button>
+                                <button type="button" class="btn-next" onclick="nextStep()">
+                                    <span>Next Step</span>
+                                    <i class="fa fa-chevron-right"></i>
+                                </button>
+                                <button type="submit" class="btn-submit" style="display:none;">Submit</button>
+                            </div>
+
                         </div>
-
-                        <!-- Step 2 -->
-                        @include('membership_components.personal_data')
-
-                        <!-- Step 3 -->
-                        @include('membership_components.other_information')
-
-                        {{-- Step 4 --}}
-                        @include('membership_components.review_submit')
-
-                        <!-- Buttons -->
-                        <div class="actions">
-                            <button type="button" class="btn-prev" onclick="prevStep()">
-                                <i class="fa fa-chevron-left"></i>
-                                <span>Previous</span>
-                            </button>
-                            <button type="button" class="btn-next" onclick="nextStep()">
-                                <span>Next Step</span>
-                                <i class="fa fa-chevron-right"></i>
-                            </button>
-                            <button type="submit" class="btn-submit" style="display:none;">Submit</button>
-                        </div>
-
-                    </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 

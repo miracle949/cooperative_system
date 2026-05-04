@@ -10,36 +10,52 @@
     const OTP_VERIFY_URL = window.location.origin + '/otp/verify';
     let emailOtpVerified = false;
     let otpAlreadySentEmail = null;
+    const actionsDiv = document.querySelector(".actions");
 
     function updateSteps() {
         steps_form.forEach((step, index) => {
             step.classList.toggle("active", index === currentStep_form);
         });
 
+        // ── Update "Step X of 4" badge in every form-step ──
+        const totalSteps = steps_form.length;
+        steps_form.forEach((step, index) => {
+            const badge = step.querySelector('.header-track span, .header-badge span');
+            if (badge) {
+                badge.textContent = `Step ${index + 1} of ${totalSteps}`;
+            }
+        });
+
         stepper.forEach((step, index) => {
             step.classList.remove("active", "completed");
-            const circle = step.querySelector(".circle");  // ADD THIS
+            const circle = step.querySelector(".circle");
 
             if (index === currentStep_form) {
                 step.classList.add("active");
-                // Restore number for active step
                 circle.innerHTML = '0' + (index + 1);
-
             } else if (index < currentStep_form) {
                 step.classList.add("completed");
-                // Show checkmark for completed steps
                 circle.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-            </svg>`;
-
+                    stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>`;
             } else {
-                // Restore number for future steps
                 circle.innerHTML = '0' + (index + 1);
             }
         });
 
+        // ── Previous button: hidden on step 1, visible on steps 2+ ──
+        const prevBtn = document.querySelector(".btn-prev");
+        if (prevBtn) {
+            prevBtn.style.display = currentStep_form === 0 ? "none" : "flex";
+        }
+
+        if (actionsDiv) {
+            actionsDiv.style.justifyContent = currentStep_form === 0 ? "flex-end" : "space-between";
+        }
+
+        // ── Next / Submit toggle ──
         if (currentStep_form === steps_form.length - 1) {
             nextBtn.style.display = "none";
             submitBtn.style.display = "inline-block";

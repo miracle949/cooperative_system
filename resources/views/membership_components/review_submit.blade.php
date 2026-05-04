@@ -56,9 +56,15 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="form-step-header">
-                <h3 class="fw-semibold">Review & Submit</h3>
-                <p>Please review your information before submitting. You can go back to previous steps to make changes.
-                </p>
+                <div class="form-step-nav">
+                    <div class="header-track">
+                        <span>Step 1 of 4</span>
+                    </div>
+                    <h2 class="fw-semibold">Review & <b>Submit</b></h2>
+                    <p>Please review your information before submitting. You can go back to previous steps to make
+                        changes.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -179,7 +185,7 @@
                 <div class="card card-body-box">
                     <h5 class="fw-semibold">Vehicle Information</h5>
                     <div id="vehicles_review_display" class="mt-3">
-                        <span style="color:#aaa; font-size:13px;">No vehicles entered.</span>
+                        <span style="color:#aaa; font-size:15.5px;">No vehicles entered.</span>
                     </div>
                 </div>
             </div>
@@ -243,8 +249,8 @@
 
         <div class="row">
             <div class="col-lg-12 mt-4">
-                <div class="card alert alert-warning py-3 px-4">
-                    <p class="m-0" style="font-size: 14.5px"><b>Note:</b> By submitting this application, you authorize
+                <div class="card py-3 px-4" style="background-color: var(--gold-light); border: 1px solid rgba(201, 169, 110, .3);">
+                    <p class="m-0" style="font-size: 14.5px; color: var(--gold);"><b>Note:</b> By submitting this application, you authorize
                         the cooperative to verify the information provided and to conduct necessary background checks as
                         required by law.</p>
                 </div>

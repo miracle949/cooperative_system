@@ -105,11 +105,16 @@
 
                 <div class="nav-form">
 
+                    <div class="card-corner"></div>
+                    <div class="card-corner-bl"></div>
+
                     <div class="nav-tag">Member Access</div>
 
-                    <h2 class="fw-semibold text-left">Sign in to your <b>account</b></h2>
+                    <h2 class="text-left">Sign in to your <b>account</b></h2>
 
                     <p class="text-left">Enter your credentials to access the member portal.</p>
+
+                    <div class="form-nav-divider"></div>
 
                 </div>
 
@@ -118,7 +123,7 @@
                     <div class="form-sub-parent">
                         @if ($errors->any())
                             <div
-                                style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:10px; padding:0.8rem 1rem; margin-bottom:1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
+                                style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:4px; padding:0.8rem 1rem; margin: 1rem 0 1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
                                 <i class="fa-solid fa-circle-xmark"></i>
                                 {{ $errors->first('login') }}
                             </div>
@@ -128,11 +133,12 @@
                             <label>Email Address</label>
                             <div style="position: relative;">
                                 <div class="envelope"
-                                    style="position: absolute; left: 13px; top: 36%; color: var(--muted);">
+                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--gold);">
                                     <i class="fa fa-envelope"></i>
                                 </div>
                                 <input type="text" name="login" value="{{ old('login') }}"
                                     placeholder="Enter your email" class="mt-2" required>
+                                <div class="focus-bar"></div>
                             </div>
                         </div>
 
@@ -140,12 +146,13 @@
                             <label>Password</label>
                             <div style="position: relative;">
                                 <div class="lock"
-                                    style="position: absolute; left: 13px; top: 36%; color: var(--muted);">
+                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--gold);">
                                     <i class="fa fa-lock"></i>
                                 </div>
                                 <input type="password" name="password" id="login-password"
                                     placeholder="Enter your password" class="mt-2" style="padding-right: 40px;"
                                     required>
+                                <div class="focus-bar"></div>
                                 <span onclick="toggleLoginPassword()"
                                     style="position: absolute; right: 12px; top: 60%; transform: translateY(-50%); cursor: pointer; color: #888;">
                                     <i class="fa fa-eye" id="eye-login"></i>
@@ -169,8 +176,8 @@
                             or
                         </div>
 
-                        <div class="text-center form-change" style="margin-top: 1.5rem">
-                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Register <i
+                        <div class="text-center form-change">
+                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply for Membership <i
                                         class="fa fa-arrow-right"></i></a></label>
                         </div>
                     </div>

@@ -98,8 +98,12 @@
 
                 </div><!-- /track -->
 
-                <button class="carousel-prev" id="prevBtn">&#8592;</button>
-                <button class="carousel-next" id="nextBtn">&#8594;</button>
+                <button class="carousel-prev" id="prevBtn">
+                    <span>&#8592;</span>
+                </button>
+                <button class="carousel-next" id="nextBtn">
+                    <span>&#8594;</span>
+                </button>
 
                 <div class="carousel-dots" id="carouselDots">
                     <button class="dot active"></button>
@@ -181,7 +185,7 @@
             </div>
         </div>
 
-        <section class="d-flex justify-content-between gap-3 pe-5 ps-5 pt-3" id="section1">
+        <section class="" id="section1">
 
             <div class="card-side">
                 <span>What We Offer</span>
@@ -576,10 +580,13 @@
         </section>
 
         <section id="section6">
-            <span>What We Offer</span>
+            <div class="header">
+                <span>What We Offer</span>
 
-            <h2>Everything a Cooperative</h2>
-            <h3>Needs to Thrive</h3>
+                <h2>Everything a Cooperative <b>Needs to Thrive</b></h2>
+            </div>
+
+            <!-- <h3>Needs to Thrive</h3> -->
 
             <div class="card-parent-box">
                 <div class="card-box reveal reveal-delay-1">
@@ -722,10 +729,10 @@
         </section>
 
         <section id="section4">
-            <span>Member Stories</span>
-            <h2 class="text-left">What Our Members Say</h2>
 
             <div class="header">
+                <span>Member Stories</span>
+                <h2 class="text-left">What Our <b>Members Say</b></h2>
                 <p class="text-left">Real experiences from the people who trust us with their financial future.</p>
             </div>
 
