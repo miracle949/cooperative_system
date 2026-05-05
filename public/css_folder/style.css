@@ -643,7 +643,32 @@ line-height: 25px;
     /* display: flex;
     align-items: center;
     justify-content: space-between; */
+    /* position: relative;
+    overflow: hidden; */
 }
+
+
+/* .container-fluid main::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(201, 168, 76, 0.07);
+}
+
+.container-fluid main::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: 20%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+} */
 
 div.carousel-item.active {
     width: 100%;
@@ -832,8 +857,8 @@ div.carousel-item.active {
 /* ─── MARQUEE ─── */
 .marquee-bar {
     /* background: var(--ink); */
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     border-bottom: 1px solid var(--border);
     padding: 1.5rem 0;
     overflow: hidden;
@@ -876,9 +901,9 @@ div.carousel-item.active {
 #section1 {
     /* background-color: #F7F9F8; */
     /* background-color: #EAEDEB; */
-    background-color: var(--cream);
+    /* background-color: var(--cream); */
     /* background-color: #f9f9f9; */
-    /* background-color: #ffffff; */
+    background-color: #ffffff;
     /* background-color: var(--cream); */
     /* background-color: #ffffff; */
     /* padding-bottom: 7rem; */
@@ -1164,6 +1189,18 @@ div.carousel-item.active {
     box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
 }
 
+#products_services .card .apply a:hover {
+    background-color: var(--gold);
+    border: 1px solid rgba(201, 169, 110, .2);
+    color: var(--green-dark);
+}
+
+#products_services .card .apply a:hover p{
+    color: var(--green-dark);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
 #products_services .card:hover .apply a .fa {
     transform: translateX(3px);
     transition: all 0.5s ease-out;
@@ -1304,24 +1341,60 @@ div.carousel-item.active {
     margin-top: 1rem;
 }
 
-#products_services .card .apply a {
+#products_services .card:nth-child(1) .apply a {
     width: 100%;
     text-decoration: none;
-    background: rgba(201, 169, 110, .1);
+    /* background: rgba(201, 169, 110, .1); */
+    background-color: var(--gold);
     border: 1px solid rgba(201, 169, 110, .2);
     padding: 12px 18px;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--gold);
+    color: var(--green-dark);
 }
 
-#products_services .card .apply a p {
-    color: var(--gold);
+#products_services .card:nth-child(1) .apply a p {
+    color: var(--green-dark);
     text-transform: uppercase;
     font-weight: 600;
 }
+
+/* #products_services .card:hover a{
+    background-color: var(--gold);
+    border: 1px solid rgba(201, 169, 110, .2);
+    color: var(--green-dark);
+} */
+
+#products_services .card .apply a {
+    width: 100%;
+    text-decoration: none;
+    /* background: rgba(201, 169, 110, .1);
+    border: 1px solid rgba(201, 169, 110, .2); */
+    padding: 12px 18px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* color: var(--gold); */
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    color: var(--white);
+    transition: all 0.2s;
+}
+
+#products_services .card .apply a p {
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* #products_services .card .apply a p {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 600;
+} */
 
 /* 
 #section2 .card .starting p {
@@ -1381,8 +1454,8 @@ hr {
     padding: 6rem 4.5rem;
     /* background-color: var(--ink); */
     /* background-color: #f9f9f9; */
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
 }
 
 #section6 .header {
@@ -1648,8 +1721,8 @@ hr {
 }
 
 #section4 {
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     /* background-color: #f9f9f9; */
     /* background-color: #ffffff; */
     padding: 7rem 3rem;

@@ -7,9 +7,9 @@
 .container-fluid {
     /* background-color: #ECF6FF; */
     /* background-color: #F7F9F8; */
-    /* background-color: #ffffff; */
+    background-color: #ffffff;
     /* background-color: #F7F9F8; */
-    background-color: #EAEDEB;
+    /* background-color: #EAEDEB; */
     width: 100%;
     height: 100%;
     margin: 0;
@@ -26,7 +26,63 @@
 .container-fluid main {
     padding: 48px;
     min-height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* flex-direction: column; */
 }
+
+/* .container-fluid main .main-header{
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+} */
+
+.container-fluid main .main-header .main-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+}
+
+.container-fluid main .main-header .main-badge a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 13px;
+}
+
+.container-fluid main .main-header .main-badge span {
+    font-size: 13px;
+    color: #808080;
+}
+
+.container-fluid main .main-header h2,
+.container-fluid main .main-header p {
+    margin: 0;
+}
+
+.container-fluid main .main-header h2 {
+    font-family: "Playfair Display";
+    margin-top: 0.4rem;
+    font-size: 30px;
+    font-weight: 600;
+}
+/* 
+.container-fluid main .main-header h2 b{
+    font-family: "Playfair Display";
+    color: var(--teal);
+    font-style: italic;
+} */
+
+.container-fluid main .main-header p {
+    font-size: 13.5px;
+    color: #808080;
+    margin-top: 0.4rem;
+}
+
+/* .container-fluid main .main-header .main-badge span:nth-child(3){
+    color: #808080;
+} */
 
 /* .container-fluid main .main-intro {
     display: flex;
@@ -57,19 +113,21 @@
 
 .container-fluid main .card-parent-box {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     /* justify-content: space-between; */
     /* align-items: center; */
     /* justify-content: space-between; */
     gap: 2rem;
     width: 100%;
-    /* margin-top: 2rem; */
+    margin-top: 2rem;
 }
 
 .container-fluid main h3 {
-    font-size: 16px;
-    color: #1E4035;
+    font-size: 21px;
+    /* color: #1E4035; */
+    color: #212529;
     font-weight: 600;
+    margin: 0;
 }
 
 .container-fluid main .card-box p {
@@ -89,11 +147,13 @@
 
 .container-fluid main .card-box {
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5; */
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 224, 214, 0.6);
     border-radius: 20px;
     background-color: white;
-    padding: 48px 48px 30px 48px;
+    /* padding: 48px 48px 30px 48px; */
     animation: slideIn 0.4s ease both;
     width: 100%;
     height: 100%;
@@ -102,8 +162,96 @@
     min-height: auto; */
 }
 
+.container-fluid main .card-box .card-sub-header {
+    padding: 30px 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.container-fluid main .card-box .card-sub-header h3 {
+    font-family: "Playfair Display";
+}
+
+.container-fluid main .card-box .card-sub-body {
+    padding: 0px 30px 30px 30px;
+    /* display: flex;
+    align-items: center;
+    gap: 1.5rem; */
+}
+
+.container-fluid main .card-box .card-step {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px 25px 30px;
+    border-bottom: 1px solid var(--border);
+}
+
+.container-fluid main .card-box .card-step .step {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.container-fluid main .card-box .card-step .step .step-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    background-color: #efefef;
+    /* color: rgba(255, 255, 255, 0.4); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-fluid main .card-box .card-step .step:nth-child(1) .step-icon {
+    background: #C9A84C;
+    border-color: #C9A84C;
+    box-shadow: 0 0 0 4px rgba(201, 169, 110, .2);
+}
+
+.container-fluid main .card-box .card-step .step:nth-child(1) .step-icon span {
+    color: #1E4035;
+}
+
+.container-fluid main .card-box .card-step .step .step-icon span {
+    color: #9ca3af;
+    font-size: 14.5px;
+}
+
+.container-fluid main .card-box .card-step .step p {
+    margin: 0;
+}
+
+.container-fluid main .card-box .card-step .step span {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.container-fluid main .card-box .card-step .step p {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted3);
+}
+
+.container-fluid main .card-box .alert-reminder{
+    width: 32px;
+    height: 32px;
+    background-color: var(--green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
 .container-fluid main .card-box .alert-reminder button .fa-solid {
-    font-size: 24px;
+    font-size: 14px;
+    color: #ffffff;
+    /* color: var(--green); */
 }
 
 .container-fluid .modal-content {
@@ -208,13 +356,19 @@
     flex-direction: column;
     gap: 2rem;
     animation: slideIn 0.4s ease both;
+    /* position: sticky;
+    top: 82px;
+    overflow: hidden; */
+    /* height: 100%; */
     /* max-width: 370px; */
 }
 
 .container-fluid main .card-calculate {
     background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5; */
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 224, 214, 0.6);
     border-radius: 20px;
     /* width: 100%; */
     /* width: 100%;
@@ -222,6 +376,11 @@
     width: 100%;
     /* max-width: 500px; */
     max-width: 400px;
+    position: sticky;
+    top: 82px;
+    overflow: hidden;
+    /* height: 100%; */
+    /* height: 100%; */
 }
 
 .container-fluid main .card-calculate .calculate-header {
@@ -282,28 +441,28 @@
     margin: 0;
 }
 
-.container-fluid main .interest-rate .interest-header{
+.container-fluid main .interest-rate .interest-header {
     background-color: #1E4035;
     padding: 30px 48px 30px 30px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
 
-.container-fluid main .interest-rate .interest-header h3{
+.container-fluid main .interest-rate .interest-header h3 {
     font-size: 17px;
     color: #ffffff;
     margin: 0;
-    
+
 }
 
-.container-fluid main .interest-rate .interest-header p{
+.container-fluid main .interest-rate .interest-header p {
     color: #FFFFFF8C;
     margin: 8px 0 0;
     font-size: 13.5px;
     /* font-weight: 600; */
 }
 
-.container-fluid main .interest-rate .interest-body{
+.container-fluid main .interest-rate .interest-body {
     padding: 25px 30px 25px 30px;
     background-color: #ffffff;
     border-bottom-left-radius: 20px;
@@ -313,35 +472,36 @@
     gap: 1rem;
 }
 
-.container-fluid main .interest-rate .interest-body .interest{
+.container-fluid main .interest-rate .interest-body .interest {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid rgba(0,0,0,0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     padding: 1.5rem 1rem;
     border-radius: 10px;
 }
 
-.container-fluid main .interest-rate .interest-body p{
+.container-fluid main .interest-rate .interest-body p {
     margin: 0;
 }
 
-.container-fluid main .interest-rate .interest-body .interest .interest-text p{
+.container-fluid main .interest-rate .interest-body .interest .interest-text p {
     font-size: 14.5px;
     font-weight: 700;
     color: #1E4035;
 }
 
-.container-fluid main .interest-rate .interest-body .interest .interest-text span{
+.container-fluid main .interest-rate .interest-body .interest .interest-text span {
     font-size: 13.5px;
     color: #808080;
     /* width: 200px; */
 }
 
-.container-fluid main .interest-rate .interest-body .interest .interest-percent p{
+.container-fluid main .interest-rate .interest-body .interest .interest-percent p {
     font-size: 14.5px;
     color: #1E4035;
 }
+
 /* .container-fluid main .card-calculate .calculate-body .estimate .payment h4{
     
 } */
@@ -429,26 +589,28 @@
 
 .container-fluid main .card-box .card-icon {
     /* background-color: #DBEAFE; */
-    background-color: rgba(30, 64, 53, 0.07);
+    /* background-color: rgba(30, 64, 53, 0.07); */
+    background-color: var(--gold-dim);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .container-fluid main .card-box .fa-solid {
-    font-size: 25px;
+    font-size: 20px;
     /* color: #155DFC; */
-    color: #1E4035;
+    /* color: #1E4035; */
+    color: var(--gold);
 }
 
 .container-fluid main .card-box select {
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
 }
 
 .container-fluid main .card-box input.form-control {
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     font-size: 14.5px;
 }
 
@@ -456,7 +618,7 @@
     width: 100%;
     height: 202px;
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     font-size: 14.5px;
 }
 
@@ -491,7 +653,7 @@
     font-weight: 600;
 }
 
-.container-fluid form .form-parent button:active{
+.container-fluid form .form-parent button:active {
     background-color: #1E4035;
     color: #ffffff;
 }
@@ -773,7 +935,7 @@
 
 /* ── Share Capital Alert ── */
 
-.sc-parent{
+.sc-parent {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -792,14 +954,16 @@
     /* border: 1.5px solid #fca5a5; */
     border: 1.5px solid #ffe082;
     border-radius: 14px;
-    margin-bottom: 1.5rem;
+    /* margin-bottom: 1.5rem; */
+    margin: 1.5rem 0 0;
 }
 
 .sc-requirement-alert .alert-icon-wrap {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     /* background: #fee2e2; */
     /* background: #fff8e1; */
+    background: rgba(245, 158, 11, 0.15);
     border-radius: 50%;
     display: flex;
     align-items: center;

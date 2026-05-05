@@ -46,8 +46,8 @@ div.container-fluid {
     /* background-color: #F9FAFB; */
     /* background-color: #F7F9F8; */
     /* background-color: #EAEDEB; */
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     /* background-color: #FFFAF0; */
     /* background-color: #F8F8F4; */
     position: relative;
@@ -434,7 +434,7 @@ div.container-fluid {
     background-color: #ffffff;
     padding: 13px 16px 13px 50px;
     /* border: 1.5px solid rgba(201, 168, 76, 0.25); */
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--border);
     /* border: 1px solid var(--line); */
     width: 100%;
     /* outline: 1px solid var(--green); */

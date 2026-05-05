@@ -227,12 +227,15 @@ div.container-fluid {
     /* background: rgba(255, 255, 255, 0.97); */
     /* background-color: var(--cream); */
     /* background-color: #ffffff; */
-    background: rgba(247, 245, 240, .9);
+    /* background: rgba(247, 245, 240, .9); */
+    background-color: #ffffff;
     /* background-color: #ffffff; */
-    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     /* border-bottom: 1px solid #E2E8E5; */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
 }
 
 .container-fluid nav .nav-logo {
@@ -392,8 +395,8 @@ div.container-fluid {
 
 .container-fluid .rightbar .main{
     padding: 2rem 3rem 2rem 3rem;
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
 }
 
 .container-fluid .rightbar h2 {
@@ -793,12 +796,12 @@ label {
 .container-fluid select {
     /* width: 100%; */
     border-radius: 6px;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     font-size: 15.5px;
 }
 
 .container-fluid select {
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     border-radius: 7px;
     color: #6F7174;
     font-size: 15.5px;
