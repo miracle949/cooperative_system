@@ -5,12 +5,1326 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Loan Application — KPMPCATS</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
     <link rel="stylesheet" href="css_folder/loan_application.css">
     <link rel="stylesheet" href="css_folder/loading.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="../font-awesome-icon/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #0d0f14;
+            --surface: #f4f1ec;
+            --gold: #b8943f;
+            --gold-l: #d4b06a;
+            --gold-pale: rgba(184, 148, 63, .08);
+            --forest: #1b3d2f;
+            --forest-m: #245240;
+            --forest-l: #2e6b53;
+            --forest-pale: rgba(27, 61, 47, .07);
+            --muted: #7a7f8e;
+            --light: #b8bcc8;
+            --border: #e6e2da;
+            --danger: #c94c4c;
+            --success: #1e7a4e;
+            --warn-bg: #fdf9f0;
+            --warn-b: #e8d5a3;
+            --radius: 18px;
+            --radius-sm: 12px;
+        }
+
+        .loan-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1050;
+            background: rgba(13, 15, 20, .6);
+            backdrop-filter: blur(7px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s ease;
+        }
+
+        .loan-modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loan-modal {
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 820px;
+            max-height: 94vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, .28), 0 8px 24px rgba(0, 0, 0, .12);
+            transform: translateY(28px) scale(.97);
+            transition: transform .38s cubic-bezier(.22, 1, .36, 1);
+            position: relative;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .loan-modal-overlay.open .loan-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--forest) 0%, var(--gold) 50%, var(--forest) 100%);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .modal-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .modal-invoice-sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: linear-gradient(160deg, var(--forest-m) 0%, var(--forest) 60%, #1a3d2c 100%);
+            padding: 26px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-invoice-sidebar::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(184, 148, 63, .12);
+        }
+
+        .modal-invoice-sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(184, 148, 63, .07);
+        }
+
+        .mis-eyebrow {
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(184, 148, 63, .8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1px;
+        }
+
+        .mis-sub {
+            font-size: 10.5px;
+            color: rgba(255, 255, 255, .45);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-amount-box {
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-amount-lbl {
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 6px;
+        }
+
+        .mis-amount-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold-l);
+            line-height: 1;
+        }
+
+        .mis-amount-val.dim {
+            color: rgba(255, 255, 255, .3);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+        }
+
+        .mis-amount-hint {
+            font-size: 9.5px;
+            color: rgba(255, 255, 255, .35);
+            margin-top: 5px;
+        }
+
+        .mis-rows {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            font-size: 12.5px;
+        }
+
+        .mis-row:last-child {
+            border-bottom: none;
+        }
+
+        .mis-lbl {
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .mis-val {
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .mis-val.dim {
+            color: rgba(255, 255, 255, .3);
+            font-weight: 400;
+        }
+
+        .mis-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, .1);
+            margin: 4px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mis-total-lbl {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .mis-total-val {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-l);
+        }
+
+        .mis-total-val.dim {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, .3);
+        }
+
+        .modal-main-area {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .modal-steps-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background: #fafafa;
+            flex-shrink: 0;
+        }
+
+        .m-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .m-step-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: .3s;
+        }
+
+        .m-step.active .m-step-circle {
+            background: var(--gold);
+            color: var(--forest);
+            box-shadow: 0 0 0 3px rgba(184, 148, 63, .2);
+        }
+
+        .m-step.done .m-step-circle {
+            background: var(--forest);
+            color: #fff;
+        }
+
+        .m-step.pending .m-step-circle {
+            background: #ebebeb;
+            color: var(--light);
+        }
+
+        .m-step-info .m-step-num {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--light);
+        }
+
+        .m-step.active .m-step-info .m-step-num {
+            color: var(--gold);
+        }
+
+        .m-step.done .m-step-info .m-step-num {
+            color: var(--forest);
+        }
+
+        .m-step-info .m-step-name {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+
+        .m-step.active .m-step-info .m-step-name {
+            color: var(--ink);
+        }
+
+        .m-connector {
+            flex: 0 0 28px;
+            height: 2px;
+            background: var(--border);
+            margin: 0 4px;
+            border-radius: 2px;
+            transition: .4s;
+        }
+
+        .m-connector.done {
+            background: var(--forest);
+        }
+
+        .modal-panel {
+            display: none;
+            padding: 24px 28px;
+            animation: panelIn .3s ease both;
+        }
+
+        .modal-panel.active {
+            display: block;
+        }
+
+        .modal-panel.back {
+            animation: panelBack .3s ease both;
+        }
+
+        @keyframes panelIn {
+            from {
+                opacity: 0;
+                transform: translateX(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes panelBack {
+            from {
+                opacity: 0;
+                transform: translateX(-16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        .panel-sec-hd {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .panel-sec-hd::before {
+            content: '';
+            width: 2.5px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--gold);
+            display: block;
+        }
+
+        .p-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .p-form-row.single {
+            grid-template-columns: 1fr;
+        }
+
+        .p-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .p-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .req {
+            color: var(--danger);
+        }
+
+        .max-pill {
+            font-size: 9.5px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 8px;
+            background: var(--gold-pale);
+            color: var(--gold);
+        }
+
+        .p-inp-wrap {
+            position: relative;
+        }
+
+        .p-inp-ico {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .p-inp-ico svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .p-input,
+        .p-select,
+        .p-textarea {
+            width: 100%;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            color: var(--ink);
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px 10px 34px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+            appearance: none;
+        }
+
+        .p-input.np,
+        .p-select.np {
+            padding-left: 12px;
+        }
+
+        .p-input::placeholder,
+        .p-textarea::placeholder {
+            color: #c4c0b8;
+        }
+
+        .p-input:focus,
+        .p-select:focus,
+        .p-textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 148, 63, .12);
+        }
+
+        /* ── Field error state ── */
+        .p-input.field-error,
+        .p-select.field-error,
+        .p-textarea.field-error {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .1) !important;
+        }
+
+        /* ── Inline field error message ── */
+        .p-field-error {
+            display: none;
+            font-size: 11px;
+            color: #dc2626;
+            font-weight: 600;
+            margin-top: 3px;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .p-field-error.show {
+            display: flex;
+        }
+
+        .p-sel-wrap {
+            position: relative;
+        }
+
+        .p-sel-wrap::after {
+            content: '';
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid var(--muted);
+        }
+
+        .p-textarea {
+            padding-left: 12px;
+            resize: vertical;
+            min-height: 78px;
+            line-height: 1.6;
+        }
+
+        .p-hint {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .p-warn {
+            display: none;
+            margin-top: 6px;
+            background: #fef2f2;
+            border: 1.5px solid #fca5a5;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .sc-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #fdf9f0;
+            border: 1.5px solid var(--warn-b);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .sc-alert-ico {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(232, 213, 163, .25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sc-alert-ico svg {
+            width: 16px;
+            height: 16px;
+            color: #b8862a;
+        }
+
+        .sc-alert-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #7a5010;
+            margin-bottom: 3px;
+        }
+
+        .sc-alert-text {
+            font-size: 12px;
+            color: #8a6020;
+            line-height: 1.6;
+        }
+
+        .docs-section {
+            display: none;
+            margin-top: 8px;
+        }
+
+        .docs-heading {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--gold);
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .docs-heading::before {
+            content: '';
+            width: 2.5px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--gold);
+            display: block;
+        }
+
+        .upload-grid-modal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .upload-card-modal {
+            position: relative;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            cursor: pointer;
+            transition: .2s;
+            overflow: hidden;
+        }
+
+        .upload-card-modal:hover {
+            border-color: var(--forest);
+            background: var(--forest-pale);
+        }
+
+        .upload-card-modal.has-file {
+            border-color: var(--success);
+            background: rgba(30, 122, 78, .04);
+        }
+
+        .upload-card-modal input[type=file] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .uc-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(27, 61, 47, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .uc-icon svg {
+            width: 14px;
+            height: 14px;
+            color: var(--forest);
+        }
+
+        .uc-label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .uc-sub {
+            font-size: 10.5px;
+            color: var(--muted);
+        }
+
+        .uc-badge {
+            display: inline-block;
+            margin-top: 3px;
+            font-size: 9.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        .uc-badge.required {
+            background: rgba(201, 68, 68, .1);
+            color: var(--danger);
+        }
+
+        .uc-badge.optional {
+            background: var(--gold-pale);
+            color: var(--gold);
+        }
+
+        .uc-filename {
+            font-size: 10.5px;
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .uc-error {
+            font-size: 11px;
+            color: var(--danger);
+            font-weight: 600;
+            margin-top: 2px;
+            display: none;
+        }
+
+        .loan-status-banner {
+            border-radius: 10px;
+            padding: .85rem 1rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12.5px;
+        }
+
+        .lsb-danger {
+            background: #fef2f2;
+            border: 1.5px solid #fca5a5;
+            color: #dc2626;
+        }
+
+        .lsb-warn {
+            background: #fff8e1;
+            border: 1.5px solid #ffe082;
+            color: #856404;
+        }
+
+        .lsb-ok {
+            background: #f0fdf4;
+            border: 1.5px solid #86efac;
+            color: #166534;
+        }
+
+        .lsb-ico {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .lsb-ico.danger-ico {
+            background: #fee2e2;
+        }
+
+        .lsb-ico.warn-ico {
+            background: #fff3cd;
+        }
+
+        .lsb-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .breakdown-grid-modal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .b-box-m {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 13px;
+            transition: .2s;
+        }
+
+        .b-box-m.hl {
+            background: var(--forest-pale);
+            border-color: rgba(27, 61, 47, .15);
+        }
+
+        .b-ico-m {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .b-ico-m svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .bi-g {
+            background: rgba(27, 61, 47, .1);
+        }
+
+        .bi-g svg {
+            color: var(--forest);
+        }
+
+        .bi-o {
+            background: rgba(184, 148, 63, .12);
+        }
+
+        .bi-o svg {
+            color: var(--gold);
+        }
+
+        .bi-r {
+            background: rgba(201, 68, 68, .1);
+        }
+
+        .bi-r svg {
+            color: var(--danger);
+        }
+
+        .bi-b {
+            background: rgba(59, 130, 246, .1);
+        }
+
+        .bi-b svg {
+            color: #3b82f6;
+        }
+
+        .bi-p {
+            background: rgba(139, 92, 246, .1);
+        }
+
+        .bi-p svg {
+            color: #8b5cf6;
+        }
+
+        .bi-t {
+            background: rgba(20, 184, 166, .1);
+        }
+
+        .bi-t svg {
+            color: #14b8a6;
+        }
+
+        .b-lbl-m {
+            font-size: 9.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            margin-bottom: 2px;
+        }
+
+        .b-val-m {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .b-box-m.hl .b-val-m {
+            color: var(--forest);
+        }
+
+        .b-hint-m {
+            font-size: 10.5px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .amort-hd-m {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .amort-hd-m::before {
+            content: '';
+            width: 2.5px;
+            height: 10px;
+            border-radius: 2px;
+            background: var(--gold);
+            display: block;
+        }
+
+        .amort-wrap-m {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .amort-scroll-m {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .amort-tbl {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .amort-tbl th {
+            background: #f5f5f2;
+            padding: 7px 10px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: var(--muted);
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .amort-tbl td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .amort-tbl tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amort-tbl tr:hover td {
+            background: #fafaf8;
+        }
+
+        .mo-n {
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .int-n {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .bal-n {
+            color: var(--muted);
+        }
+
+        .confirm-hero-m {
+            text-align: center;
+            padding: 8px 0 18px;
+        }
+
+        .confirm-ring-m {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--forest-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .confirm-ring-m svg {
+            width: 22px;
+            height: 22px;
+            color: var(--forest);
+        }
+
+        .confirm-title-m {
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .confirm-sub-m {
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .sum-card-m {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 14px 0;
+        }
+
+        .sum-head-m {
+            background: var(--forest);
+            padding: 10px 14px;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .sum-row-m {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12.5px;
+        }
+
+        .sum-row-m:last-child {
+            border-bottom: none;
+        }
+
+        .sum-row-m.total {
+            background: #f0f4f2;
+        }
+
+        .sum-lbl-m {
+            color: var(--muted);
+        }
+
+        .sum-lbl-m.bold {
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .sum-val-m {
+            font-weight: 700;
+        }
+
+        .sum-val-m.green {
+            color: var(--forest);
+        }
+
+        .sum-val-m.gold {
+            color: var(--gold);
+        }
+
+        .sum-val-m.bigf {
+            font-size: 14.5px;
+        }
+
+        .cb-row-m {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: border-color .2s;
+        }
+
+        .cb-row-m.cb-error {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .cb-row-m input[type=checkbox] {
+            width: 15px;
+            height: 15px;
+            margin-top: 2px;
+            accent-color: var(--forest);
+            flex-shrink: 0;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .cb-row-m label {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.65;
+            cursor: pointer;
+        }
+
+        .cb-row-m label strong {
+            color: var(--ink);
+        }
+
+        /* ── Checkbox required message ── */
+        .cb-required-msg {
+            display: none;
+            font-size: 11px;
+            color: #dc2626;
+            font-weight: 600;
+            margin-top: 4px;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cb-required-msg.show {
+            display: flex;
+        }
+
+        .modal-footer-bar {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .mf-note {
+            font-size: 11px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mf-note svg {
+            width: 12px;
+            height: 12px;
+            color: var(--forest);
+        }
+
+        .mf-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .m-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .m-btn svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .m-btn-outline {
+            background: transparent;
+            color: var(--forest);
+            border: 1.5px solid var(--forest);
+        }
+
+        .m-btn-outline:hover {
+            background: var(--forest-pale);
+        }
+
+        .m-btn-primary {
+            background: linear-gradient(135deg, var(--forest), var(--forest-l));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
+        }
+
+        .m-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(27, 61, 47, .3);
+        }
+
+        .m-btn-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold-l));
+            color: var(--forest);
+            box-shadow: 0 4px 14px rgba(184, 148, 63, .3);
+        }
+
+        .m-btn-gold:hover {
+            transform: translateY(-1px);
+        }
+
+        .m-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .success-screen-m {
+            display: none;
+            padding: 44px 32px;
+            text-align: center;
+            animation: fadeUp .5s ease both;
+        }
+
+        .success-screen-m.show {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .success-ring-m {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(30, 122, 78, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .success-ring-m svg {
+            width: 30px;
+            height: 30px;
+            color: var(--success);
+        }
+
+        .success-title-m {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .success-sub-m {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 360px;
+            margin: 0 auto 20px;
+        }
+
+        .ref-pill-m {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--forest-pale);
+            border: 1px solid rgba(27, 61, 47, .15);
+            border-radius: 8px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--forest);
+            margin-bottom: 22px;
+        }
+
+        .ref-pill-m svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .modal-invoice-sidebar {
+                display: none;
+            }
+
+            .loan-modal {
+                max-width: 560px;
+            }
+
+            .breakdown-grid-modal {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .upload-grid-modal {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .p-form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-disabled-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, .7);
+            border-radius: 24px;
+            z-index: 5;
+            cursor: not-allowed;
+        }
+    </style>
+
     <script>
         function closeSuccessModal() {
             document.getElementById('success-modal').style.display = 'none';
@@ -20,8 +1334,8 @@
 
 <body>
     <div class="container-fluid m-0 p-0">
-        @include("components.navbar2")
         @include("components.offcanvas")
+        @include("components.sidebar")
 
         <!-- Interest Rates Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,618 +1388,840 @@
             </div>
         </div>
 
-        <main>
-            <div class="main-parent">
-                <div class="main-header">
-                    <div class="main-badge">
-                        <a href="#">Home</a>
-                        <span>></span>
-                        <span>Loan Application</span>
-                    </div>
+        <div class="rightbar">
+            @include("components.navbar2")
+            <div class="main-sub-parent">
+                <main>
+                    <div class="main-parent">
+                        <div class="main-header">
+                            <div class="main-badge">
+                                <a href="#">Home</a>
+                                <span>></span>
+                                <span>Loan Application</span>
+                            </div>
+                            <h2>Loan Application</h2>
+                            <p>Manage your loan applications and track their status.</p>
+                        </div>
 
-                    <h2>Loan Application</h2>
+                        @if(!$canApplyLoan)
+                            <div
+                                style="display:flex;align-items:flex-start;gap:12px;background:#fdf9f0;border:1.5px solid #e8d5a3;border-radius:10px;padding:14px 18px; margin-top: 18px; margin-bottom:18px;">
+                                <div
+                                    style="width:36px;height:36px;border-radius:50%;background:rgba(232,213,163,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="fa fa-circle-info" style="color:#b8862a;font-size:15px;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:13.5px;font-weight:700;color:#7a5010;margin-bottom:3px;">Share
+                                        Capital Requirement</div>
+                                    <p style="font-size:12.5px;color:#8a6020;line-height:1.6;margin:0;">
+                                        You need at least <strong>10 shares</strong> of Share Capital to apply for a loan.
+                                        You currently have <strong>{{ $currentShares }} share(s)</strong> —
+                                        you need <strong>{{ 10 - $currentShares }} more</strong> to become eligible.
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
 
-                    <p>Complete the form below to submit your lending request.</p>
-                </div>
+                        <div class="table-header">
+                            <div class="main-text">
+                                <h3>My Loan Applications <span>- history & status</span></h3>
+                            </div>
+                            <div class="main-button">
+                                <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
+                                style="opacity:.5;cursor:not-allowed;" @endif>
+                                    <i class="fa fa-plus"></i>
+                                    <span>Apply for a Loan</span>
+                                </button>
+                            </div>
+                        </div>
 
-                @if(!$canApplyLoan)
-                    <div class="sc-parent">
-                        <div class="sc-requirement-alert">
-                            <div class="alert-icon-wrap"><i class="fa fa-ban"></i></div>
-                            <div class="alert-body">
-                                <h5>Share Capital Requirement</h5>
-                                <p>
-                                    You need at least <strong>10 shares</strong> of Share Capital before you can apply for a
-                                    loan.
-                                    You currently have <strong>{{ $currentShares }} share(s)</strong> —
-                                    you need <strong>{{ 10 - $currentShares }} more</strong> to be eligible.
-                                </p>
+                        <div class="table-parent">
+                            <div class="table-filter">
+                                <div class="filter search-parent">
+                                    <i class="fa fa-search"></i>
+                                    <input type="search" name="search" placeholder="Search by reference, type, purpose">
+                                </div>
+                                <div class="filter status">
+                                    <select name="status" class="form-select">
+                                        <option value="">All Statuses</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                <div class="filter type">
+                                    <select name="type" class="form-select">
+                                        <option value="">All Types</option>
+                                        <option value="personal">Personal Loan</option>
+                                        <option value="business">Business Loan</option>
+                                        <option value="emergency">Emergency Loan</option>
+                                        <option value="education">Educational Loan</option>
+                                    </select>
+                                </div>
+                                <div class="filter date">
+                                    <input type="date" class="form-control">
+                                </div>
+                            </div>
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Date Applied</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Term</th>
+                                        <th>Purpose</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>KPM-2026-48291</td>
+                                        <td>2023-10-15</td>
+                                        <td>Personal Loan</td>
+                                        <td>Home Improvement</td>
+                                        <td>12 mos</td>
+                                        <td>$10,000</td>
+                                        <td>Pending</td>
+                                        <td><button><i class="fa fa-eye"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="parent-pagination">
+                                <p>Showing <span>1</span> of <span>1</span> applications</p>
                             </div>
                         </div>
                     </div>
-                @endif
+                </main>
+            </div>
+        </div>
 
-                <div class="card-parent-box">
-                    <div class="card-box">
-                        <div class="card-sub-header">
-                            <div class="tw:w-[46px] tw:h-[46px] card-icon" style="border-radius: 10px">
-                                <i class="fa-solid fa-file"></i>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center w-100">
-                                <div class="card-header">
-                                    <h3>Loan Applications</h3>
-                                    <p style="margin: 0px;" class="tw:text-[#808080]">Fill out the form below to apply
-                                        for a
-                                        loan</p>
+        <!-- LOAN APPLICATION MODAL -->
+        <div class="loan-modal-overlay" id="loanModalOverlay" onclick="maybeCloseLoanModal(event)">
+            <div class="loan-modal" id="loanModal">
+                <div class="modal-accent-bar"></div>
+
+                <div class="modal-layout">
+                    <!-- Live Invoice Sidebar -->
+                    <div class="modal-invoice-sidebar">
+                        <div style="position:relative;z-index:1">
+                            <div class="mis-eyebrow">Live Preview</div>
+                            <div class="mis-title">Loan Invoice</div>
+                            <div class="mis-sub">Updates as you fill</div>
+                        </div>
+                        <div class="mis-amount-box">
+                            <div class="mis-amount-lbl">Monthly Payment</div>
+                            <div class="mis-amount-val dim" id="mis-mo">—</div>
+                            <div class="mis-amount-hint" id="mis-hint">Enter details to compute</div>
+                        </div>
+                        <div class="mis-rows">
+                            <div class="mis-row"><span class="mis-lbl">Type</span><span class="mis-val dim"
+                                    id="mis-type">—</span></div>
+                            <div class="mis-row"><span class="mis-lbl">Amount</span><span class="mis-val dim"
+                                    id="mis-amount">—</span></div>
+                            <div class="mis-row"><span class="mis-lbl">Rate</span><span class="mis-val dim"
+                                    id="mis-rate">—</span></div>
+                            <div class="mis-row"><span class="mis-lbl">Term</span><span class="mis-val dim"
+                                    id="mis-term">—</span></div>
+                            <div class="mis-row"><span class="mis-lbl">Interest</span><span class="mis-val dim"
+                                    id="mis-int">—</span></div>
+                        </div>
+                        <div class="mis-divider"></div>
+                        <div class="mis-total-row">
+                            <span class="mis-total-lbl">Total Payable</span>
+                            <span class="mis-total-val dim" id="mis-total">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Modal Content -->
+                    <div class="modal-main-area">
+
+                        <!-- Step Indicator -->
+                        <div class="modal-steps-bar" id="modalStepsBar">
+                            <div class="m-step active" id="mst1">
+                                <div class="m-step-circle" id="msc1">1</div>
+                                <div class="m-step-info">
+                                    <div class="m-step-num">Step 1</div>
+                                    <div class="m-step-name">Loan Details</div>
                                 </div>
-                                <div class="alert-reminder">
-                                    <button style="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                        <i class="fa-solid fa-question"></i>
-                                    </button>
+                            </div>
+                            <div class="m-step pending" id="mst2">
+                                <div class="m-step-circle" id="msc2">2</div>
+                                <div class="m-step-info">
+                                    <div class="m-step-num">Step 2</div>
+                                    <div class="m-step-name">Breakdown</div>
+                                </div>
+                            </div>
+                            <div class="m-step pending" id="mst3">
+                                <div class="m-step-circle" id="msc3">3</div>
+                                <div class="m-step-info">
+                                    <div class="m-step-num">Step 3</div>
+                                    <div class="m-step-name">Review & Submit</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-step">
-                            <div class="step">
-                                <div class="step-icon">
-                                    <span>1</span>
-                                </div>
-                                <div class="step-text">
-                                    <span>Step 1</span>
-                                    <p>Loan details</p>
-                                </div>
-                            </div>
+                        <!-- PANEL 1 — Loan Details -->
+                        <div class="modal-panel active" id="mp1">
 
-                            <div class="step">
-                                <div class="step-icon">
-                                    <span>2</span>
-                                </div>
-                                <div class="step-text">
-                                    <span>Step 2</span>
-                                    <p>Charges & Breakdown</p>
-                                </div>
-                            </div>
-
-                            <div class="step">
-                                <div class="step-icon">
-                                    <span>3</span>
-                                </div>
-                                <div class="step-text">
-                                    <span>Step 3</span>
-                                    <p>Review & Submit</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-sub-body">
-                            <form id="loan-form" action="{{ route("lendingProgram") }}" method="post"
-                                class="{{ !$canApplyLoan ? 'form-disabled' : '' }}" enctype="multipart/form-data" {{ !$canApplyLoan ? 'onsubmit=return false' : '' }}>
-                                @csrf
-                                <div class="row form-parent">
-
-                                    {{-- ── Loan Type ── --}}
-                                    <div class="col-lg-6 col-md-12 mt-4">
-                                        <label>Loan Type *</label>
-                                        <select name="lending_type" class="form-select mt-2" id="lending_type"
-                                            onchange="updateTermOptions()" required>
-                                            <option value="">Select Loan type</option>
-                                            <option value="Personal Loan">Personal Loan</option>
-                                            <option value="Emergency Loan">Emergency Loan</option>
-                                            <option value="Business Loan">Business Loan</option>
-                                            <option value="Education Loan">Education Loan</option>
-                                        </select>
+                            @if(!$canApplyLoan)
+                                <div class="sc-alert">
+                                    <div class="sc-alert-ico">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="12" />
+                                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                                        </svg>
                                     </div>
+                                    <div>
+                                        <div class="sc-alert-title">Share Capital Requirement</div>
+                                        <p class="sc-alert-text">You need at least <strong>10 shares</strong> of Share
+                                            Capital to apply. You currently have <strong>{{ $currentShares }}
+                                                share(s)</strong> — you need <strong>{{ 10 - $currentShares }}
+                                                more</strong>.</p>
+                                    </div>
+                                </div>
+                            @endif
 
-                                    {{-- ── Loan Amount ── --}}
-                                    <div class="col-lg-6 col-md-12 mt-md-4 mt-sm-4 loan-input">
-                                        <label style="display:flex; align-items:center; gap:8px;">
-                                            Loan Amount (₱) *
-                                            <span
-                                                style="background: var(--gold-dim);border:1px solid #ffe082;color: var(--gold);font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;">
-                                                Max: ₱{{ number_format($remainingLoanable, 2) }}
-                                            </span>
+                            <form id="loan-form" action="{{ route('lendingProgram') }}" method="post"
+                                enctype="multipart/form-data" {{ !$canApplyLoan ? 'onsubmit=return false' : '' }}>
+                                @csrf
+
+                                <div class="panel-sec-hd">Loan Information</div>
+
+                                <div class="p-form-row">
+                                    <div class="p-field">
+                                        <label>Loan Type <span class="req">*</span></label>
+                                        <div class="p-sel-wrap">
+                                            <select class="p-select np" name="lending_type" id="lending_type"
+                                                onchange="mUpdateTermOptions(); mCompute(); mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }} required>
+                                                <option value="">Select type</option>
+                                                <option value="Personal Loan"
+                                                    data-rate="{{ $loanSettings['Personal Loan'] ?? 0.02 }}">Personal
+                                                    Loan</option>
+                                                <option value="Business Loan"
+                                                    data-rate="{{ $loanSettings['Business Loan'] ?? 0.02 }}">Business
+                                                    Loan</option>
+                                                <option value="Emergency Loan"
+                                                    data-rate="{{ $loanSettings['Emergency Loan'] ?? 0.02 }}">Emergency
+                                                    Loan</option>
+                                                <option value="Education Loan"
+                                                    data-rate="{{ $loanSettings['Education Loan'] ?? 0.02 }}">Education
+                                                    Loan</option>
+                                            </select>
+                                        </div>
+                                        <div class="p-field-error" id="err-lending_type">
+                                            <i class="fa fa-circle-exclamation"></i> Loan Type is required.
+                                        </div>
+                                    </div>
+                                    <div class="p-field">
+                                        <label>
+                                            Loan Amount (₱) <span class="req">*</span>
+                                            <span class="max-pill">Max
+                                                ₱{{ number_format($remainingLoanable, 0) }}</span>
                                         </label>
-                                        <input type="number" name="lending_amount" id="lending_amount_input"
-                                            oninput="let val=parseFloat(this.value);if(val>25000){this.value=25000}else if(val<1)this.value='';recalculate();checkLoanLimit(this);"
-                                            placeholder="Enter amount (max ₱{{ number_format($remainingLoanable, 2) }})"
-                                            class="form-control mt-2" min="1" max="{{ $remainingLoanable }}" {{ $hasFullyLoaned ? 'disabled' : '' }}
-                                            onkeydown="if(event.key==='e'||event.key==='E'||event.key==='+'||event.key==='-')event.preventDefault();"
-                                            required>
-                                        <div id="loan-limit-warning"
-                                            style="display:none;margin-top:6px;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:6px 10px;font-size:12px;color:#dc2626;font-weight:500;">
+                                        <div class="p-inp-wrap">
+                                            <span class="p-inp-ico" style="font-size:13px;font-weight:700;">₱</span>
+                                            <input type="number" class="p-input" name="lending_amount" id="mLoanAmount"
+                                                placeholder="e.g. 15000" min="1" max="{{ $remainingLoanable }}"
+                                                oninput="let v=parseFloat(this.value);if(v>25000)this.value=25000;mCheckLimit(this);mCompute();mClearError(this);"
+                                                onkeydown="if(['e','E','+','-'].includes(event.key))event.preventDefault();"
+                                                {{ !$canApplyLoan || $hasFullyLoaned ? 'disabled' : '' }} required>
+                                        </div>
+                                        <div class="p-warn" id="loan-limit-warning">
                                             <i class="fa fa-circle-exclamation" style="margin-right:5px;"></i>
                                             You can only borrow up to
                                             <strong>₱{{ number_format($remainingLoanable, 2) }}</strong> more.
                                         </div>
+                                        <div class="p-field-error" id="err-mLoanAmount">
+                                            <i class="fa fa-circle-exclamation"></i> Loan Amount is required.
+                                        </div>
                                     </div>
+                                </div>
 
-                                    {{-- ── Loan Term ── --}}
-                                    <div class="col-lg-6 col-md-12 mt-4">
-                                        <label>Loan Term *</label>
-
-                                        {{-- Non-business: 6 months only --}}
-                                        <select name="lending_type_term_nonbusiness" id="lending_type_term_nonbusiness"
-                                            class="form-select mt-2" onchange="recalculate()">
-                                            <option value="">Select lending term</option>
-                                            <option value="6 months">6 months</option>
-                                        </select>
-
-                                        {{-- Business: 6 or 12 months --}}
-                                        <select name="lending_type_term_business" id="lending_type_term_business"
-                                            class="form-select mt-2" style="display:none;" onchange="recalculate()">
-                                            <option value="">Select lending term</option>
-                                            <option value="6 months">6 months</option>
-                                            <option value="12 months">12 months</option>
-                                        </select>
-
-                                        {{-- Hidden field carries the actual submitted term value --}}
+                                <div class="p-form-row">
+                                    <div class="p-field">
+                                        <label>Loan Term <span class="req">*</span></label>
+                                        <div class="p-sel-wrap">
+                                            <select class="p-select np" name="lending_type_term_nonbusiness"
+                                                id="lending_type_term_nonbusiness"
+                                                onchange="mSyncTerm();mCompute();mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }}>
+                                                <option value="">Select term</option>
+                                                <option value="6 months">6 months</option>
+                                            </select>
+                                        </div>
+                                        <div class="p-sel-wrap" style="display:none" id="term-business-wrap">
+                                            <select class="p-select np" name="lending_type_term_business"
+                                                id="lending_type_term_business"
+                                                onchange="mSyncTerm();mCompute();mClearError(this);"
+                                                style="display:none" {{ !$canApplyLoan ? 'disabled' : '' }}>
+                                                <option value="">Select term</option>
+                                                <option value="6 months">6 months</option>
+                                                <option value="12 months">12 months</option>
+                                            </select>
+                                        </div>
                                         <input type="hidden" name="lending_type_term" id="lending_type_term">
-                                    </div>
-
-                                    {{-- ── Monthly Income ── --}}
-                                    <div class="col-lg-6 col-md-12 mt-4">
-                                        <label>Enter Monthly Income (₱) *</label>
-                                        <input type="number" name="monthly_income" placeholder="Enter monthly income"
-                                            class="form-control mt-2"
-                                            oninput="if(this.value.length > 6) this.value = this.value.slice(0,6);"
-                                            onkeydown="if(event.key==='e'||event.key==='E'||event.key==='+'||event.key==='-')event.preventDefault();"
-                                            required>
-                                    </div>
-
-                                    {{-- ── Purpose of Loan ── --}}
-                                    <div class="col-12 mt-4">
-                                        <label>Purpose of Loan *</label>
-                                        <select name="purpose_loan" id="purpose_loan_select" class="form-select mt-2"
-                                            onchange="handlePurposeChange(this)">
-                                            <option value="" disabled selected>Select purpose</option>
-                                            <option value="Medical Expenses">Medical Expenses</option>
-                                            <option value="Education">Education</option>
-                                            <option value="Business Capital">Business Capital</option>
-                                            <option value="Emergency Needs">Emergency Needs</option>
-                                            <option value="Home Improvement">Home Improvement</option>
-                                            <option value="Debt Consolidation">Debt Consolidation</option>
-                                            <option value="Transportation">Transportation</option>
-                                            <option value="Daily Expenses">Daily Expenses</option>
-                                            <option value="Travel">Travel</option>
-                                            <option value="Others">Others</option>
-                                        </select>
-
-                                        <div id="others-textarea-wrapper" style="display: block; margin-top: 10px;">
-                                            <textarea name="purpose_loan_others" id="purpose_loan_textarea"
-                                                class="form-control p-3 tw:w-[100%]"
-                                                placeholder="Describe the purpose of your loan..."
-                                                style="font-size:14.5px;" required></textarea>
+                                        <div class="p-field-error" id="err-lending_type_term">
+                                            <i class="fa fa-circle-exclamation"></i> Loan Term is required.
                                         </div>
                                     </div>
-
-                                    {{-- ── Supporting Documents ── --}}
-                                    <div id="docs-wrapper" style="display:none;">
-                                        <div class="row" style="padding:0 0px;">
-                                            <div class="col-lg-12" style="padding:0 12px;">
-                                                <div class="line"></div>
-                                            </div>
+                                    <div class="p-field">
+                                        <label>Monthly Income (₱) <span class="req">*</span></label>
+                                        <div class="p-inp-wrap">
+                                            <span class="p-inp-ico"><svg viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                                                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                                                </svg></span>
+                                            <input type="number" class="p-input" name="monthly_income"
+                                                id="mMonthlyIncome" placeholder="Monthly income"
+                                                oninput="if(this.value.length>6)this.value=this.value.slice(0,6);mClearError(this);"
+                                                onkeydown="if(['e','E','+','-'].includes(event.key))event.preventDefault();"
+                                                {{ !$canApplyLoan ? 'disabled' : '' }} required>
                                         </div>
-
-                                        <h4 class="docs-heading">Supporting Documents</h4>
-
-                                        <!-- Personal Lending -->
-                                        <div id="docs-personal" style="display:none;">
-                                            <div class="upload-grid">
-                                                <div class="upload-card" id="card-vid-personal">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Valid ID</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-vid-personal"></span>
-                                                    <input type="file" name="personal_valid_id"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-vid-personal','name-vid-personal')">
-                                                </div>
-                                                <div class="upload-card" id="card-poi-personal">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Proof of Income</span>
-                                                    <span class="upload-sub">Payslip / COE · PDF or image</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-poi-personal"></span>
-                                                    <input type="file" name="personal_proof_of_income"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-poi-personal','name-poi-personal')">
-                                                </div>
-                                            </div>
+                                        <div class="p-field-error" id="err-mMonthlyIncome">
+                                            <i class="fa fa-circle-exclamation"></i> Monthly Income is required.
                                         </div>
-
-                                        <!-- Emergency Lending -->
-                                        <div id="docs-emergency" style="display:none;">
-                                            <div class="upload-grid">
-                                                <div class="upload-card" id="card-vid-emergency">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Valid ID</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-vid-emergency"></span>
-                                                    <input type="file" name="emergency_valid_id"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-vid-emergency','name-vid-emergency')">
-                                                </div>
-                                                <div class="upload-card" id="card-poi-emergency">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Proof of Income</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-poi-emergency"></span>
-                                                    <input type="file" name="emergency_proof_of_income"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-poi-emergency','name-poi-emergency')">
-                                                </div>
-                                                <div class="upload-card" id="card-poe-emergency">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Proof of Emergency</span>
-                                                    <span class="upload-sub">Medical Cert, Hospital Bill, Police
-                                                        Report</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-poe-emergency"></span>
-                                                    <input type="file" name="proof_of_emergency"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-poe-emergency','name-poe-emergency')">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Business Lending -->
-                                        <div id="docs-business" style="display:none;">
-                                            <div class="upload-grid">
-                                                <div class="upload-card" id="card-vid-business">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Valid ID</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-vid-business"></span>
-                                                    <input type="file" name="business_valid_id"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-vid-business','name-vid-business')">
-                                                </div>
-                                                <div class="upload-card" id="card-poi-business">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Proof of Income</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-poi-business"></span>
-                                                    <input type="file" name="business_proof_of_income"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-poi-business','name-poi-business')">
-                                                </div>
-                                                <div class="upload-card" id="card-bp-business">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Business Permit / DTI Registration</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-bp-business"></span>
-                                                    <input type="file" name="business_permit"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-bp-business','name-bp-business')">
-                                                </div>
-                                                <div class="upload-card" id="card-fs-business">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Business Financial Statement</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-optional">Optional</span>
-                                                    <span class="upload-filename" id="name-fs-business"></span>
-                                                    <input type="file" name="financial_statement"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-fs-business','name-fs-business')">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Education Lending -->
-                                        <div id="docs-education" style="display:none;">
-                                            <div class="upload-grid">
-                                                <div class="upload-card" id="card-sid-education">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">School ID</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-sid-education"></span>
-                                                    <input type="file" name="school_id" accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-sid-education','name-sid-education')">
-                                                </div>
-                                                <div class="upload-card" id="card-cor-education">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">COR (Certificate of Registration)</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-cor-education"></span>
-                                                    <input type="file" name="cor" accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-cor-education','name-cor-education')">
-                                                </div>
-                                                <div class="upload-card" id="card-vid-education">
-                                                    <div class="upload-icon">
-                                                        <svg class="upload-arrow" viewBox="0 0 24 24">
-                                                            <path d="M12 16v-8M8 12l4-4 4 4" />
-                                                            <rect x="3" y="3" width="18" height="18" rx="3" />
-                                                        </svg>
-                                                        <svg class="upload-check" viewBox="0 0 24 24" fill="none"
-                                                            stroke-width="2">
-                                                            <polyline points="20 6 9 17 4 12" />
-                                                        </svg>
-                                                    </div>
-                                                    <span class="upload-label">Valid ID</span>
-                                                    <span class="upload-sub">PDF, JPG or PNG · max 5MB</span>
-                                                    <span class="upload-badge badge-required">Required</span>
-                                                    <span class="upload-filename" id="name-vid-education"></span>
-                                                    <input type="file" name="education_valid_id"
-                                                        accept=".jpg,.jpeg,.png,.pdf"
-                                                        onchange="onFileSelected(this,'card-vid-education','name-vid-education')">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- ── Loanable Amount Status Banner ── --}}
-                                        @if($hasFullyLoaned)
-                                            <div
-                                                style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
-                                                <div
-                                                    style="width:36px;height:36px;flex-shrink:0;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                                                    <i class="fa fa-ban" style="color:#dc2626;font-size:15px;"></i>
-                                                </div>
-                                                <div>
-                                                    <p
-                                                        style="margin:0 0 3px;font-size:13.5px;font-weight:700;color:#1a1a1a;">
-                                                        Loan
-                                                        Limit Reached</p>
-                                                    <p style="margin:0;font-size:12.5px;color:#dc2626;line-height:1.5;">
-                                                        You have an active loan totalling
-                                                        <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>
-                                                        — the maximum allowed is <strong>₱25,000.00</strong>.
-                                                        You must repay your existing loan before applying again.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        @elseif($totalActiveLoan > 0)
-                                            <div
-                                                style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:12px;padding:1rem 1.25rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:12px;">
-                                                <div
-                                                    style="width:36px;height:36px;flex-shrink:0;background:#fff3cd;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                                                    <i class="fa fa-circle-info" style="color:#e6a817;font-size:15px;"></i>
-                                                </div>
-                                                <div style="width:100%;">
-                                                    <p
-                                                        style="margin:0 0 6px;font-size:13.5px;font-weight:700;color:#1a1a1a;">
-                                                        Remaining Loanable Amount</p>
-                                                    <p
-                                                        style="margin:0 0 10px;font-size:12.5px;color:#856404;line-height:1.5;">
-                                                        You currently have an active loan of
-                                                        <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>. You may
-                                                        still
-                                                        borrow up to:
-                                                    </p>
-                                                    <div
-                                                        style="background:#f5f5f5;border-radius:20px;height:10px;overflow:hidden;margin-bottom:6px;">
-                                                        <div
-                                                            style="height:10px;border-radius:20px;background:linear-gradient(90deg,#e6a817,#f59e0b);width:{{ min(100, ($totalActiveLoan / 25000) * 100) }}%;transition:width 0.4s;">
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        style="display:flex;justify-content:space-between;font-size:11.5px;color:#999;margin-bottom:8px;">
-                                                        <span>Used: ₱{{ number_format($totalActiveLoan, 2) }}</span>
-                                                        <span>Limit: ₱25,000.00</span>
-                                                    </div>
-                                                    <div
-                                                        style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1a4a3a;">
-                                                        <i class="fa fa-coins"></i>
-                                                        Available to borrow: ₱{{ number_format($remainingLoanable, 2) }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div
-                                                style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:0.75rem 1rem;margin-top:1.25rem;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#166534;">
-                                                <i class="fa fa-circle-info" style="margin-top:2px;flex-shrink:0;"></i>
-                                                <span>You may borrow up to <strong>₱25,000.00</strong>. Applications
-                                                    exceeding
-                                                    this
-                                                    limit will not be processed.</span>
-                                            </div>
-                                        @endif
-
-                                    </div>
-
-                                    <div class="row" style="padding:0 0 0 12px;">
-                                        <div class="col-lg-12" style="padding:0 0 0 12px;">
-                                            <div class="line"></div>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" name="monthly_payment" id="hidden-monthly">
-                                    <input type="hidden" name="total_payment" id="hidden-total">
-                                    <input type="hidden" name="total_interest" id="hidden-interest">
-
-                                    <div class="col-12 mt-5 mt-md-4">
-                                        <button type="button" class="tw:w-[100%] btn"
-                                            onclick="showConfirmation()">Submit
-                                            Application</button>
                                     </div>
                                 </div>
+
+                                <div class="panel-sec-hd">Purpose & Details</div>
+
+                                <div class="p-form-row single">
+                                    <div class="p-field">
+                                        <label>Purpose of Loan <span class="req">*</span></label>
+                                        <div class="p-sel-wrap">
+                                            <select class="p-select np" name="purpose_loan" id="purpose_loan_select"
+                                                onchange="mHandlePurpose(this);mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }} required>
+                                                <option value="" disabled selected>Select purpose</option>
+                                                <option value="Medical Expenses">Medical Expenses</option>
+                                                <option value="Education">Education</option>
+                                                <option value="Business Capital">Business Capital</option>
+                                                <option value="Emergency Needs">Emergency Needs</option>
+                                                <option value="Home Improvement">Home Improvement</option>
+                                                <option value="Debt Consolidation">Debt Consolidation</option>
+                                                <option value="Transportation">Transportation</option>
+                                                <option value="Daily Expenses">Daily Expenses</option>
+                                                <option value="Travel">Travel</option>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                        <div class="p-field-error" id="err-purpose_loan_select">
+                                            <i class="fa fa-circle-exclamation"></i> Purpose of Loan is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="others-textarea-wrapper" style="display:none;margin-bottom:14px;">
+                                    <div class="p-field">
+                                        <label>Describe the Purpose <span class="req">*</span></label>
+                                        <textarea class="p-textarea" name="purpose_loan_others"
+                                            id="purpose_loan_textarea"
+                                            placeholder="Describe the purpose of your loan..."
+                                            oninput="mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }}></textarea>
+                                        <span class="p-hint">Additional details help with faster approval.</span>
+                                        <div class="p-field-error" id="err-purpose_loan_textarea">
+                                            <i class="fa fa-circle-exclamation"></i> Please describe the purpose.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Supporting Documents -->
+                                <div id="docs-wrapper-modal" style="display:none;">
+                                    <div class="docs-heading">Supporting Documents</div>
+
+                                    <!-- Personal -->
+                                    <div id="docs-personal-modal" class="docs-section">
+                                        <div class="upload-grid-modal">
+                                            <div class="upload-card-modal" id="mcard-vid-personal">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Valid ID</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-vid-personal"></div>
+                                                <input type="file" name="personal_valid_id"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-vid-personal','mname-vid-personal')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-poi-personal">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Proof of Income</div>
+                                                <div class="uc-sub">Payslip / COE · PDF or image</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-poi-personal"></div>
+                                                <input type="file" name="personal_proof_of_income"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-poi-personal','mname-poi-personal')">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Emergency -->
+                                    <div id="docs-emergency-modal" class="docs-section">
+                                        <div class="upload-grid-modal">
+                                            <div class="upload-card-modal" id="mcard-vid-emergency">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Valid ID</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-vid-emergency"></div>
+                                                <input type="file" name="emergency_valid_id"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-vid-emergency','mname-vid-emergency')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-poi-emergency">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Proof of Income</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-poi-emergency"></div>
+                                                <input type="file" name="emergency_proof_of_income"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-poi-emergency','mname-poi-emergency')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-poe-emergency">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Proof of Emergency</div>
+                                                <div class="uc-sub">Medical Cert, Hospital Bill, Police Report</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-poe-emergency"></div>
+                                                <input type="file" name="proof_of_emergency"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-poe-emergency','mname-poe-emergency')">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Business -->
+                                    <div id="docs-business-modal" class="docs-section">
+                                        <div class="upload-grid-modal">
+                                            <div class="upload-card-modal" id="mcard-vid-business">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Valid ID</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-vid-business"></div>
+                                                <input type="file" name="business_valid_id"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-vid-business','mname-vid-business')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-poi-business">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Proof of Income</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-poi-business"></div>
+                                                <input type="file" name="business_proof_of_income"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-poi-business','mname-poi-business')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-bp-business">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Business Permit / DTI</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-bp-business"></div>
+                                                <input type="file" name="business_permit" accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-bp-business','mname-bp-business')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-fs-business">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Financial Statement</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge optional">Optional</span>
+                                                <div class="uc-filename" id="mname-fs-business"></div>
+                                                <input type="file" name="financial_statement"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-fs-business','mname-fs-business')">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Education -->
+                                    <div id="docs-education-modal" class="docs-section">
+                                        <div class="upload-grid-modal">
+                                            <div class="upload-card-modal" id="mcard-sid-education">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">School ID</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-sid-education"></div>
+                                                <input type="file" name="school_id" accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-sid-education','mname-sid-education')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-cor-education">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">COR (Certificate of Registration)</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-cor-education"></div>
+                                                <input type="file" name="cor" accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-cor-education','mname-cor-education')">
+                                            </div>
+                                            <div class="upload-card-modal" id="mcard-vid-education">
+                                                <div class="uc-icon"><svg viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" y1="3" x2="12" y2="15" />
+                                                    </svg></div>
+                                                <div class="uc-label">Valid ID</div>
+                                                <div class="uc-sub">PDF, JPG or PNG · max 5MB</div>
+                                                <span class="uc-badge required">Required</span>
+                                                <div class="uc-filename" id="mname-vid-education"></div>
+                                                <input type="file" name="education_valid_id"
+                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    onchange="mOnFileSelected(this,'mcard-vid-education','mname-vid-education')">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if($hasFullyLoaned)
+                                        <div class="loan-status-banner lsb-danger" style="margin-top:14px;">
+                                            <div class="lsb-ico danger-ico"><i class="fa fa-ban"
+                                                    style="color:#dc2626;font-size:15px;"></i></div>
+                                            <div>
+                                                <div class="lsb-title">Loan Limit Reached</div>
+                                                <p style="margin:0;font-size:12.5px;line-height:1.5;">You have an active
+                                                    loan of <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong> — the
+                                                    max is <strong>₱25,000.00</strong>. Please repay before applying again.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @elseif($totalActiveLoan > 0)
+                                        <div class="loan-status-banner lsb-warn" style="margin-top:14px;">
+                                            <div class="lsb-ico warn-ico"><i class="fa fa-circle-info"
+                                                    style="color:#e6a817;font-size:15px;"></i></div>
+                                            <div style="width:100%;">
+                                                <div class="lsb-title">Remaining Loanable Amount</div>
+                                                <p style="margin:0 0 8px;font-size:12.5px;line-height:1.5;">You have an
+                                                    active loan of
+                                                    <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>. You may
+                                                    still borrow up to:</p>
+                                                <div
+                                                    style="background:#f5f5f5;border-radius:20px;height:8px;overflow:hidden;margin-bottom:6px;">
+                                                    <div
+                                                        style="height:8px;border-radius:20px;background:linear-gradient(90deg,#e6a817,#f59e0b);width:{{ min(100, ($totalActiveLoan / 25000) * 100) }}%;">
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:8px;">
+                                                    <span>Used: ₱{{ number_format($totalActiveLoan, 2) }}</span>
+                                                    <span>Limit: ₱25,000.00</span>
+                                                </div>
+                                                <div
+                                                    style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:7px 12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#1a4a3a;">
+                                                    <i class="fa fa-coins"></i>
+                                                    Available: ₱{{ number_format($remainingLoanable, 2) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="loan-status-banner lsb-ok" style="margin-top:14px;">
+                                            <i class="fa fa-circle-info" style="margin-top:2px;flex-shrink:0;"></i>
+                                            <span>You may borrow up to <strong>₱25,000.00</strong>. Applications exceeding
+                                                this limit will not be processed.</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <input type="hidden" name="monthly_payment" id="hidden-monthly">
+                                <input type="hidden" name="total_payment" id="hidden-total">
+                                <input type="hidden" name="total_interest" id="hidden-interest">
+
                             </form>
-                        </div>
-                    </div>
 
-                    <div class="card-calculate-parent">
-                        <div class="card-calculate">
-                            <div class="calculate-header">
-                                <h3>Loan Invoice</h3>
-                                <p>Auto Computes as you fill the form</p>
-                            </div>
-                            <div class="calculate-body">
-                                <div class="estimate">
-                                    <p>Estimated Monthly Payment</p>
-                                    <div class="payment">
-                                        <h4 id="calc-monthly">₱-</h4>
-                                    </div>
-                                    <p id="calc-term-sub">Fill in amount & term to compute.</p>
+                            <div class="modal-footer-bar">
+                                <div class="mf-note">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    Your data is encrypted
                                 </div>
-                                <div class="parent-amount">
-                                    <div class="card-amount">
-                                        <div class="text-amount">
-                                            <p>Loan Type</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-type">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-amount">
-                                        <div class="text-amount">
-                                            <p>Loan Amount</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-amount">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-amount">
-                                        <div class="text-amount">
-                                            <p>Interest Rate (monthly)</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-rate">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-amount">
-                                        <div class="text-amount">
-                                            <p>Loan Term</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-term">-</p>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="card-amount total-amount">
-                                        <div class="text-amount">
-                                            <p>Total Payment</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-total">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-amount">
-                                        <div class="text-amount">
-                                            <p>Total Interest</p>
-                                        </div>
-                                        <div class="amount">
-                                            <p id="calc-interest">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="reminders">
-                                        <p>💡 Rates are indicative. Final terms subject to credit evaluation and
-                                            cooperative
-                                            approval.</p>
-                                    </div>
+                                <div class="mf-btns">
+                                    <button class="m-btn m-btn-outline" onclick="closeLoanModal()">Cancel</button>
+                                    <button class="m-btn m-btn-primary" onclick="mGoStep2()" {{ !$canApplyLoan ? 'disabled' : '' }}>
+                                        View Breakdown
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="9 18 15 12 9 6" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+                        <!-- /Panel 1 -->
+
+                        <!-- PANEL 2 — Charges & Breakdown -->
+                        <div class="modal-panel" id="mp2">
+                            <div class="panel-sec-hd">Charges & Breakdown</div>
+                            <div class="breakdown-grid-modal">
+                                <div class="b-box-m hl">
+                                    <div class="b-ico-m bi-g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <line x1="12" y1="1" x2="12" y2="23" />
+                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Principal</div>
+                                    <div class="b-val-m" id="cb-pri">₱ —</div>
+                                    <div class="b-hint-m">Amount you receive</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Interest Rate</div>
+                                    <div class="b-val-m" id="cb-rate">— %</div>
+                                    <div class="b-hint-m">Monthly flat rate</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Total Interest</div>
+                                    <div class="b-val-m" id="cb-int">₱ —</div>
+                                    <div class="b-hint-m">Cost of borrowing</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                                            <line x1="16" y1="2" x2="16" y2="6" />
+                                            <line x1="8" y1="2" x2="8" y2="6" />
+                                            <line x1="3" y1="10" x2="21" y2="10" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Term</div>
+                                    <div class="b-val-m" id="cb-term">— mo</div>
+                                    <div class="b-hint-m">Repayment period</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="12" />
+                                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Service Fee</div>
+                                    <div class="b-val-m" id="cb-proc">₱ —</div>
+                                    <div class="b-hint-m">1% one-time fee</div>
+                                </div>
+                                <div class="b-box-m hl">
+                                    <div class="b-ico-m bi-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                            <polyline points="22 4 12 14.01 9 11.01" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Total Payable</div>
+                                    <div class="b-val-m" id="cb-total">₱ —</div>
+                                    <div class="b-hint-m">Principal + Interest + Fee</div>
+                                </div>
+                            </div>
+
+                            <div class="amort-hd-m">Monthly Amortization Schedule</div>
+                            <div class="amort-wrap-m">
+                                <div class="amort-scroll-m">
+                                    <table class="amort-tbl">
+                                        <thead>
+                                            <tr>
+                                                <th>Month</th>
+                                                <th>Payment</th>
+                                                <th>Principal</th>
+                                                <th>Interest</th>
+                                                <th>Remaining</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="amortBody">
+                                            <tr>
+                                                <td colspan="5"
+                                                    style="text-align:center;color:var(--muted);padding:16px">No data
+                                                    yet.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer-bar">
+                                <div class="mf-note">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="12" />
+                                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                                    </svg>
+                                    Rates are indicative
+                                </div>
+                                <div class="mf-btns">
+                                    <button class="m-btn m-btn-outline" onclick="mGoStep(1,true)">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="15 18 9 12 15 6" />
+                                        </svg>
+                                        Back
+                                    </button>
+                                    <button class="m-btn m-btn-primary" onclick="mGoStep3()">
+                                        Proceed to Review
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="9 18 15 12 9 6" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Panel 2 -->
+
+                        <!-- PANEL 3 — Review & Submit -->
+                        <div class="modal-panel" id="mp3">
+                            <div class="confirm-hero-m">
+                                <div class="confirm-ring-m">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path
+                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                                <div class="confirm-title-m">Review Your Application</div>
+                                <div class="confirm-sub-m">Verify all details carefully before submitting.</div>
+                            </div>
+
+                            <div class="sum-card-m">
+                                <div class="sum-head-m">Application Summary</div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Loan Type</span><span
+                                        class="sum-val-m green" id="cf-type">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Amount Requested</span><span
+                                        class="sum-val-m" id="cf-amount">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Loan Term</span><span class="sum-val-m"
+                                        id="cf-term">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Monthly Income</span><span
+                                        class="sum-val-m" id="cf-income">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Purpose</span><span class="sum-val-m"
+                                        id="cf-purpose">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Interest Rate</span><span
+                                        class="sum-val-m" id="cf-rate">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Monthly Payment</span><span
+                                        class="sum-val-m gold" id="cf-monthly">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Total Interest</span><span
+                                        class="sum-val-m" id="cf-int">—</span></div>
+                                <div class="sum-row-m total"><span class="sum-lbl-m bold">Total Payable</span><span
+                                        class="sum-val-m green bigf" id="cf-total">—</span></div>
+                            </div>
+
+                            <div class="cb-row-m" id="agreeRow" onclick="document.getElementById('mAgree').click();">
+                                <input type="checkbox" id="mAgree"
+                                    onclick="event.stopPropagation();mClearAgreeError();">
+                                <label for="mAgree" onclick="event.stopPropagation();">I confirm all information is
+                                    accurate and I agree to the <strong>Terms and Conditions</strong> of KPMPCATS
+                                    Cooperative.</label>
+                            </div>
+                            <div class="cb-required-msg" id="err-mAgree">
+                                <i class="fa fa-circle-exclamation"></i> You must agree to the Terms and Conditions.
+                            </div>
+
+                            <div class="modal-footer-bar">
+                                <div class="mf-note">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    Data is encrypted
+                                </div>
+                                <div class="mf-btns">
+                                    <button class="m-btn m-btn-outline" onclick="mGoStep(2,true)">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="15 18 9 12 15 6" />
+                                        </svg>
+                                        Back
+                                    </button>
+                                    <button class="m-btn m-btn-gold" onclick="mSubmit()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="22 2 11 13" />
+                                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                        </svg>
+                                        Submit Application
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Panel 3 -->
+
+                        <!-- SUCCESS SCREEN -->
+                        <div class="success-screen-m" id="mSuccess">
+                            <div class="success-ring-m"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg></div>
+                            <div class="success-title-m">Application Submitted!</div>
+                            <p class="success-sub-m">Your application is now under review. You will be notified through
+                                your member portal once a decision is made.</p>
+                            <div class="ref-pill-m">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Ref: <span id="mRefDisplay"></span>
+                            </div>
+                            <br>
+                            <button class="m-btn m-btn-primary" style="margin:0 auto;"
+                                onclick="closeLoanModal();location.reload()">Back to Dashboard</button>
+                        </div>
+
+                    </div><!-- /modal-main-area -->
+                </div><!-- /modal-layout -->
+            </div><!-- /loan-modal -->
+        </div><!-- /loan-modal-overlay -->
 
         @if(session("ApplySuccess"))
             <div class="modal-overlay-success" id="success-modal">
@@ -713,168 +2249,460 @@
             </div>
         @endif
 
-    </div>
+    </div><!-- /container-fluid -->
 
-    {{-- ── Purpose of Loan toggle ── --}}
     <script>
-        function handlePurposeChange(select) {
-            const wrapper = document.getElementById('others-textarea-wrapper');
-            const textarea = document.getElementById('purpose_loan_textarea');
-
-            if (select.value === 'Others') {
-                wrapper.style.display = 'block';
-                wrapper.style.opacity = '0';
-                wrapper.style.transform = 'translateY(-10px)';
-                wrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                setTimeout(() => {
-                    wrapper.style.opacity = '1';
-                    wrapper.style.transform = 'translateY(0)';
-                }, 10);
-                textarea.required = true;
-            } else {
-                wrapper.style.display = 'none';
-                textarea.required = false;
-                textarea.value = '';
-            }
+        // ══════════════════════════════════════════════════════════
+        //  MODAL OPEN / CLOSE
+        // ══════════════════════════════════════════════════════════
+        function openLoanModal() {
+            document.getElementById('loanModalOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            mReset();
         }
-    </script>
+        function closeLoanModal() {
+            document.getElementById('loanModalOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function maybeCloseLoanModal(e) {
+            if (e.target === document.getElementById('loanModalOverlay')) closeLoanModal();
+        }
 
-    {{-- ── Loan limit warning ── --}}
-    <script>
+        // ══════════════════════════════════════════════════════════
+        //  HELPERS
+        // ══════════════════════════════════════════════════════════
         const MAX_REMAINING = {{ $remainingLoanable }};
-        const MAX_ALLOWED = 25000;
+        const fmt = n => '₱' + n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        function checkLoanLimit(input) {
-            const warning = document.getElementById('loan-limit-warning');
-            const submitBtn = document.querySelector('button[onclick="showConfirmation()"]');
-            let val = parseFloat(input.value);
+        // Read rate from selected <option data-rate> — avoids LOAN_RATES key mismatch bug
+        function getSelectedRate() {
+            const typeEl = document.getElementById('lending_type');
+            const selectedOpt = typeEl.options[typeEl.selectedIndex];
+            if (!selectedOpt) return null;
+            const r = parseFloat(selectedOpt.getAttribute('data-rate'));
+            return (!isNaN(r) && r > 0) ? r : null;
+        }
 
-            if (val > MAX_ALLOWED) {
-                val = MAX_ALLOWED;
-                input.value = val;
-            }
+        // ── Inline validation helpers ──────────────────────────────
+        // Show error on a field (input/select/textarea)
+        function mShowError(fieldEl, errId) {
+            fieldEl.classList.add('field-error');
+            const e = document.getElementById(errId);
+            if (e) e.classList.add('show');
+        }
 
-            if (val > MAX_REMAINING || val <= 0) {
-                warning.style.display = 'block';
-                input.style.borderColor = '#fca5a5';
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.5';
-                    submitBtn.style.cursor = 'not-allowed';
-                }
+        // Clear error from a field when user starts fixing it
+        function mClearError(fieldEl) {
+            fieldEl.classList.remove('field-error');
+            const errId = 'err-' + fieldEl.id;
+            const e = document.getElementById(errId);
+            if (e) e.classList.remove('show');
+        }
+
+        // Scroll to and focus the first invalid field
+        function mFocusFirst(el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try { el.focus(); } catch (e) { }
+        }
+
+        // Agree checkbox error helpers
+        function mClearAgreeError() {
+            document.getElementById('agreeRow').classList.remove('cb-error');
+            document.getElementById('err-mAgree').classList.remove('show');
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  RESET
+        // ══════════════════════════════════════════════════════════
+        function mReset() {
+            document.getElementById('lending_type').value = '';
+            document.getElementById('mLoanAmount').value = '';
+            document.getElementById('mMonthlyIncome').value = '';
+            document.getElementById('purpose_loan_select').value = '';
+            document.getElementById('purpose_loan_textarea').value = '';
+            document.getElementById('lending_type_term_nonbusiness').value = '';
+            document.getElementById('lending_type_term_business').value = '';
+            document.getElementById('lending_type_term').value = '';
+            document.getElementById('mAgree').checked = false;
+            document.getElementById('mSuccess').classList.remove('show');
+            document.getElementById('modalStepsBar').style.display = 'flex';
+
+            // Clear all inline errors
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+            document.querySelectorAll('.p-field-error.show, .cb-required-msg.show').forEach(el => el.classList.remove('show'));
+            document.getElementById('agreeRow').classList.remove('cb-error');
+
+            [1, 2, 3].forEach(i => {
+                const p = document.getElementById('mp' + i);
+                p.classList.remove('active', 'back');
+            });
+            document.getElementById('mp1').classList.add('active');
+            mUpdateSteps(1);
+            mCompute();
+            ['personal', 'emergency', 'business', 'education'].forEach(t => {
+                document.getElementById('docs-' + t + '-modal').style.display = 'none';
+            });
+            document.getElementById('docs-wrapper-modal').style.display = 'none';
+            document.getElementById('others-textarea-wrapper').style.display = 'none';
+            document.getElementById('lending_type_term_nonbusiness').style.display = 'block';
+            document.getElementById('lending_type_term_business').style.display = 'none';
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  STEP MANAGEMENT
+        // ══════════════════════════════════════════════════════════
+        function mUpdateSteps(n) {
+            [1, 2, 3].forEach(i => {
+                const el = document.getElementById('mst' + i);
+                const c = document.getElementById('msc' + i);
+                el.className = 'm-step';
+                if (i < n) { el.classList.add('done'); c.innerHTML = '✓'; }
+                else if (i === n) { el.classList.add('active'); c.textContent = i; }
+                else { el.classList.add('pending'); c.textContent = i; }
+                const con = document.getElementById('mcon' + i);
+                if (con) i < n ? con.classList.add('done') : con.classList.remove('done');
+            });
+        }
+        function mGoStep(n, back = false) {
+            [1, 2, 3].forEach(i => document.getElementById('mp' + i).classList.remove('active', 'back'));
+            const p = document.getElementById('mp' + n);
+            p.classList.add('active');
+            if (back) p.classList.add('back');
+            mUpdateSteps(n);
+            document.querySelector('.modal-main-area').scrollTop = 0;
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  TERM SELECTOR
+        // ══════════════════════════════════════════════════════════
+        function mUpdateTermOptions() {
+            const type = document.getElementById('lending_type').value;
+            const nbEl = document.getElementById('lending_type_term_nonbusiness');
+            const bEl = document.getElementById('lending_type_term_business');
+
+            if (type === 'Business Loan') {
+                nbEl.style.display = 'none';
+                bEl.style.display = 'block';
+                if (bEl.options.length > 1) bEl.selectedIndex = 1;
+            } else if (type) {
+                nbEl.style.display = 'block';
+                bEl.style.display = 'none';
+                if (nbEl.options.length > 1) nbEl.selectedIndex = 1;
             } else {
-                warning.style.display = 'none';
-                input.style.borderColor = '';
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = '';
-                    submitBtn.style.cursor = '';
-                }
+                nbEl.style.display = 'block';
+                bEl.style.display = 'none';
+            }
+            mSyncTerm();
+            const docsMap = {
+                'Personal Loan': 'docs-personal-modal',
+                'Emergency Loan': 'docs-emergency-modal',
+                'Business Loan': 'docs-business-modal',
+                'Education Loan': 'docs-education-modal',
+            };
+            ['personal', 'emergency', 'business', 'education'].forEach(t => {
+                document.getElementById('docs-' + t + '-modal').style.display = 'none';
+            });
+            if (type && docsMap[type]) {
+                document.getElementById('docs-wrapper-modal').style.display = 'block';
+                document.getElementById(docsMap[type]).style.display = 'block';
+            } else {
+                document.getElementById('docs-wrapper-modal').style.display = 'none';
+            }
+        }
+        function mSyncTerm() {
+            const bEl = document.getElementById('lending_type_term_business');
+            const nbEl = document.getElementById('lending_type_term_nonbusiness');
+            const hidden = document.getElementById('lending_type_term');
+            hidden.value = (bEl.style.display === 'block') ? bEl.value : nbEl.value;
+            // Clear term error when term syncs
+            const termErr = document.getElementById('err-lending_type_term');
+            if (hidden.value) {
+                if (termErr) termErr.classList.remove('show');
+                nbEl.classList.remove('field-error');
+                bEl.classList.remove('field-error');
+            }
+            mCompute();
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  PURPOSE TOGGLE
+        // ══════════════════════════════════════════════════════════
+        function mHandlePurpose(sel) {
+            const wrap = document.getElementById('others-textarea-wrapper');
+            wrap.style.display = sel.value === 'Others' ? 'block' : 'none';
+            document.getElementById('purpose_loan_textarea').required = sel.value === 'Others';
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  LOAN LIMIT CHECK
+        // ══════════════════════════════════════════════════════════
+        function mCheckLimit(input) {
+            const warn = document.getElementById('loan-limit-warning');
+            const val = parseFloat(input.value);
+            const show = isNaN(val) || val <= 0 || val > MAX_REMAINING;
+            warn.style.display = show ? 'block' : 'none';
+            input.style.borderColor = show ? '#fca5a5' : '';
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  LIVE INVOICE COMPUTE
+        // ══════════════════════════════════════════════════════════
+        function mCompute() {
+            const typeEl = document.getElementById('lending_type');
+            const type = typeEl.value;
+            const r = getSelectedRate();
+            const a = parseFloat(document.getElementById('mLoanAmount').value) || 0;
+            const termStr = document.getElementById('lending_type_term').value || '';
+            const t = termStr ? parseInt(termStr) : 0;
+
+            const setV = (id, value, active) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.textContent = value;
+                active ? el.classList.remove('dim') : el.classList.add('dim');
+            };
+
+            setV('mis-type', type ? type : '—', !!type);
+            setV('mis-amount', a > 0 ? fmt(a) : '—', a > 0);
+            setV('mis-rate', r ? (r * 100).toFixed(1) + '% / mo' : '—', !!r);
+            setV('mis-term', t > 0 ? t + ' months' : '—', t > 0);
+
+            if (r && a > 0 && t > 0) {
+                const interest = a * r * t;
+                const proc = a * 0.01;
+                const total = a + interest + proc;
+                const mo = (a + interest) / t;
+
+                setV('mis-mo', fmt(mo), true);
+                setV('mis-int', fmt(interest), true);
+                setV('mis-total', fmt(total), true);
+
+                document.getElementById('mis-hint').textContent = 'Flat interest method';
+                document.getElementById('hidden-monthly').value = mo.toFixed(2);
+                document.getElementById('hidden-total').value = total.toFixed(2);
+                document.getElementById('hidden-interest').value = interest.toFixed(2);
+            } else {
+                setV('mis-mo', '—', false);
+                setV('mis-int', '—', false);
+                setV('mis-total', '—', false);
+                document.getElementById('mis-hint').textContent = 'Enter details to compute';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            @if($hasFullyLoaned)
-                const submitBtn = document.querySelector('button[onclick="showConfirmation()"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.5';
-                    submitBtn.style.cursor = 'not-allowed';
-                }
-            @endif
+        // ══════════════════════════════════════════════════════════
+        //  STEP 2 — VALIDATE & BUILD BREAKDOWN
+        //  All alert() calls replaced with inline field errors
+        // ══════════════════════════════════════════════════════════
+        function mGoStep2() {
+            const typeEl = document.getElementById('lending_type');
+            const amountEl = document.getElementById('mLoanAmount');
+            const termStr = document.getElementById('lending_type_term').value;
+            const incEl = document.getElementById('mMonthlyIncome');
+            const purEl = document.getElementById('purpose_loan_select');
+            const purOthEl = document.getElementById('purpose_loan_textarea');
 
-            document.getElementById('loan-form').addEventListener('submit', function (e) {
-                const selectedType = document.getElementById('lending_type').value;
-                if (!selectedType) return;
+            const type = typeEl.value;
+            const a = parseFloat(amountEl.value);
+            const inc = incEl.value;
+            const pur = purEl.value;
 
-                const requiredFieldsMap = {
-                    'Personal Lending': ['personal_valid_id', 'personal_proof_of_income'],
-                    'Emergency Lending': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
-                    'Business Lending': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
-                    'Education Lending': ['school_id', 'cor', 'education_valid_id'],
-                };
+            let hasError = false;
+            let firstErrorEl = null;
 
-                const requiredFields = requiredFieldsMap[selectedType] || [];
-                let missing = false;
+            // Clear all previous errors first
+            [typeEl, amountEl, incEl, purEl, purOthEl].forEach(el => {
+                el.classList.remove('field-error');
+            });
+            document.getElementById('lending_type_term_nonbusiness').classList.remove('field-error');
+            document.getElementById('lending_type_term_business').classList.remove('field-error');
+            ['err-lending_type', 'err-mLoanAmount', 'err-lending_type_term', 'err-mMonthlyIncome', 'err-purpose_loan_select', 'err-purpose_loan_textarea'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('show');
+            });
 
-                document.querySelectorAll('.upload-card').forEach(function (card) {
-                    card.style.border = '';
-                    const existing = card.querySelector('.upload-error-msg');
-                    if (existing) existing.remove();
-                });
+            // Validate: Loan Type
+            if (!type) {
+                mShowError(typeEl, 'err-lending_type');
+                if (!firstErrorEl) firstErrorEl = typeEl;
+                hasError = true;
+            }
 
-                requiredFields.forEach(function (fieldName) {
-                    const input = document.querySelector('input[name="' + fieldName + '"]');
-                    if (input && !input.files.length) {
-                        const card = input.closest('.upload-card');
+            // Validate: Loan Amount
+            if (!amountEl.value || isNaN(a) || a <= 0) {
+                mShowError(amountEl, 'err-mLoanAmount');
+                if (!firstErrorEl) firstErrorEl = amountEl;
+                hasError = true;
+            } else if (a > MAX_REMAINING) {
+                mShowError(amountEl, 'err-mLoanAmount');
+                document.getElementById('err-mLoanAmount').querySelector
+                    ? (document.getElementById('err-mLoanAmount').innerHTML = '<i class="fa fa-circle-exclamation"></i> Amount exceeds your borrowing limit.')
+                    : null;
+                if (!firstErrorEl) firstErrorEl = amountEl;
+                hasError = true;
+            }
+
+            // Validate: Loan Term
+            if (!termStr) {
+                const visibleTerm = document.getElementById('lending_type_term_business').style.display === 'block'
+                    ? document.getElementById('lending_type_term_business')
+                    : document.getElementById('lending_type_term_nonbusiness');
+                mShowError(visibleTerm, 'err-lending_type_term');
+                if (!firstErrorEl) firstErrorEl = visibleTerm;
+                hasError = true;
+            }
+
+            // Validate: Monthly Income
+            if (!inc) {
+                mShowError(incEl, 'err-mMonthlyIncome');
+                if (!firstErrorEl) firstErrorEl = incEl;
+                hasError = true;
+            }
+
+            // Validate: Purpose
+            if (!pur) {
+                mShowError(purEl, 'err-purpose_loan_select');
+                if (!firstErrorEl) firstErrorEl = purEl;
+                hasError = true;
+            }
+
+            // Validate: Others textarea (if Others selected)
+            if (pur === 'Others' && !purOthEl.value.trim()) {
+                mShowError(purOthEl, 'err-purpose_loan_textarea');
+                if (!firstErrorEl) firstErrorEl = purOthEl;
+                hasError = true;
+            }
+
+            // Validate: Required documents
+            const reqMap = {
+                'Personal Loan': ['personal_valid_id', 'personal_proof_of_income'],
+                'Emergency Loan': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
+                'Business Loan': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
+                'Education Loan': ['school_id', 'cor', 'education_valid_id'],
+            };
+            const reqFields = reqMap[type] || [];
+
+            document.querySelectorAll('.upload-card-modal').forEach(c => {
+                c.style.border = '';
+                const e = c.querySelector('.uc-error');
+                if (e) { e.style.display = 'none'; e.textContent = ''; }
+            });
+
+            let firstMissingCard = null;
+            reqFields.forEach(name => {
+                const inp = document.querySelector(`input[name="${name}"]`);
+                if (inp && !inp.files.length) {
+                    const card = inp.closest('.upload-card-modal');
+                    if (card) {
                         card.style.border = '2px solid #dc2626';
-                        const errMsg = document.createElement('span');
-                        errMsg.className = 'upload-error-msg';
-                        errMsg.style.cssText = 'display:block;margin-top:6px;font-size:11.5px;color:#dc2626;font-weight:600;';
-                        errMsg.innerHTML = '<i class="fa fa-circle-exclamation" style="margin-right:4px;"></i>This document is required.';
-                        card.appendChild(errMsg);
-                        missing = true;
+                        let errEl = card.querySelector('.uc-error');
+                        if (!errEl) {
+                            errEl = document.createElement('div');
+                            errEl.className = 'uc-error';
+                            card.appendChild(errEl);
+                        }
+                        errEl.textContent = 'This document is required.';
+                        errEl.style.display = 'block';
+                        if (!firstMissingCard) firstMissingCard = card;
                     }
-                });
-
-                if (missing) {
-                    e.preventDefault();
-                    const firstError = document.querySelector('.upload-card[style*="border"]');
-                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-
-                const purposeSelect = document.getElementById('purpose_loan_select');
-                const purposeTextarea = document.getElementById('purpose_loan_textarea');
-                if (purposeSelect && purposeSelect.value === 'Others') {
-                    if (!purposeTextarea.value.trim()) {
-                        e.preventDefault();
-                        purposeTextarea.style.border = '2px solid #dc2626';
-                        purposeTextarea.style.transition = 'border 0.3s ease';
-                        purposeTextarea.placeholder = 'Please describe the purpose of your loan.';
-                        purposeTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else {
-                        purposeTextarea.style.border = '';
-                    }
+                    hasError = true;
                 }
             });
-        });
-    </script>
 
-    {{-- ── Docs show/hide per loan type ── --}}
-    <script>
-        const docsMap = {
-            'Personal Loan': 'docs-personal',
-            'Emergency Loan': 'docs-emergency',
-            'Business Loan': 'docs-business',
-            'Education Loan': 'docs-education',
-        };
-
-        function showDocs(selectedType) {
-            const wrapper = document.getElementById('docs-wrapper');
-            ['docs-personal', 'docs-emergency', 'docs-business', 'docs-education'].forEach(function (id) {
-                document.getElementById(id).style.display = 'none';
-            });
-            if (docsMap[selectedType]) {
-                wrapper.style.display = 'block';
-                document.getElementById(docsMap[selectedType]).style.display = 'block';
-            } else {
-                wrapper.style.display = 'none';
+            // Scroll to first error
+            if (hasError) {
+                const scrollTarget = firstErrorEl || firstMissingCard;
+                if (scrollTarget) mFocusFirst(scrollTarget);
+                return;
             }
-        }
-    </script>
 
-    {{-- ── File upload card feedback ── --}}
-    <script>
-        function onFileSelected(input, cardId, nameId) {
+            // All valid — build breakdown
+            const t = parseInt(termStr);
+            const r = getSelectedRate() ?? 0.02;
+            const interest = a * r * t;
+            const proc = a * 0.01;
+            const total = a + interest + proc;
+            const mo = (a + interest) / t;
+
+            document.getElementById('cb-pri').textContent = fmt(a);
+            document.getElementById('cb-rate').textContent = (r * 100).toFixed(1) + '% / mo';
+            document.getElementById('cb-int').textContent = fmt(interest);
+            document.getElementById('cb-term').textContent = t + ' months';
+            document.getElementById('cb-proc').textContent = fmt(proc);
+            document.getElementById('cb-total').textContent = fmt(total);
+
+            const tb = document.getElementById('amortBody');
+            tb.innerHTML = '';
+            const moPrin = a / t;
+            const moInt = a * r;
+            let bal = a;
+            for (let m = 1; m <= t; m++) {
+                bal -= moPrin;
+                tb.innerHTML += `<tr>
+                    <td><span class="mo-n">${m}</span></td>
+                    <td><strong>${fmt(mo)}</strong></td>
+                    <td>${fmt(moPrin)}</td>
+                    <td class="int-n">${fmt(moInt)}</td>
+                    <td class="bal-n">${fmt(Math.max(bal, 0))}</td>
+                </tr>`;
+            }
+
+            mGoStep(2);
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  STEP 3 — POPULATE REVIEW
+        // ══════════════════════════════════════════════════════════
+        function mGoStep3() {
+            const type = document.getElementById('lending_type').value;
+            const a = parseFloat(document.getElementById('mLoanAmount').value);
+            const termStr = document.getElementById('lending_type_term').value;
+            const inc = parseFloat(document.getElementById('mMonthlyIncome').value) || 0;
+            const pur = document.getElementById('purpose_loan_select').value;
+            const purOth = document.getElementById('purpose_loan_textarea').value.trim();
+            const t = parseInt(termStr);
+            const r = getSelectedRate() ?? 0.02;
+            const interest = a * r * t;
+            const total = a + interest + (a * 0.01);
+            const mo = (a + interest) / t;
+
+            document.getElementById('cf-type').textContent = type;
+            document.getElementById('cf-amount').textContent = fmt(a);
+            document.getElementById('cf-term').textContent = termStr;
+            document.getElementById('cf-income').textContent = inc > 0 ? fmt(inc) : '—';
+            document.getElementById('cf-purpose').textContent = pur === 'Others' ? (purOth || 'Others') : pur;
+            document.getElementById('cf-rate').textContent = (r * 100).toFixed(1) + '% / mo';
+            document.getElementById('cf-monthly').textContent = fmt(mo);
+            document.getElementById('cf-int').textContent = fmt(interest);
+            document.getElementById('cf-total').textContent = fmt(total);
+
+            mGoStep(3);
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  SUBMIT — inline error for unchecked checkbox
+        // ══════════════════════════════════════════════════════════
+        function mSubmit() {
+            if (!document.getElementById('mAgree').checked) {
+                document.getElementById('agreeRow').classList.add('cb-error');
+                document.getElementById('err-mAgree').classList.add('show');
+                document.getElementById('agreeRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            document.getElementById('loan-form').submit();
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  FILE UPLOAD FEEDBACK
+        // ══════════════════════════════════════════════════════════
+        function mOnFileSelected(input, cardId, nameId) {
             const card = document.getElementById(cardId);
             const nameEl = document.getElementById(nameId);
             if (!card || !nameEl) return;
-
             if (input.files && input.files[0]) {
                 card.classList.add('has-file');
                 card.style.border = '';
-                const errMsg = card.querySelector('.upload-error-msg');
-                if (errMsg) errMsg.remove();
+                const errEl = card.querySelector('.uc-error');
+                if (errEl) { errEl.style.display = 'none'; }
                 nameEl.textContent = input.files[0].name;
             } else {
                 card.classList.remove('has-file');
@@ -882,313 +2710,6 @@
             }
         }
     </script>
-
-    {{-- ── Loan calculator ── --}}
-    <script>
-        const RATES = @json($loanSettings);
-
-        // ── Show/hide term dropdowns based on loan type ──────────────────────
-        function updateTermOptions() {
-            const type = document.getElementById('lending_type').value;
-            const termNB = document.getElementById('lending_type_term_nonbusiness');
-            const termB = document.getElementById('lending_type_term_business');
-            const hidden = document.getElementById('lending_type_term');
-
-            termNB.required = false;
-            termB.required = false;
-
-            if (type === 'Business Loan') {
-                termNB.style.display = 'none';
-                termB.style.display = 'block';
-                termB.required = true;
-                if (termB.options.length > 1) termB.selectedIndex = 1;
-                hidden.value = termB.value;
-            } else if (type) {
-                termNB.style.display = 'block';
-                termB.style.display = 'none';
-                termNB.required = true;
-                if (termNB.options.length > 1) termNB.selectedIndex = 1;
-                hidden.value = termNB.value;
-            } else {
-                termNB.style.display = 'block';
-                termB.style.display = 'none';
-                hidden.value = '';
-            }
-
-            showDocs(type);
-            recalculate();
-        }
-
-        // ── Recalculate loan invoice ─────────────────────────────────────────
-        function recalculate() {
-            const type = document.getElementById('lending_type').value;
-            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
-            const termB = document.getElementById('lending_type_term_business');
-            const termNB = document.getElementById('lending_type_term_nonbusiness');
-            const hidden = document.getElementById('lending_type_term');
-
-            const termStr = (termB && termB.style.display === 'block') ? termB.value : termNB.value;
-            const termMonths = termStr ? parseInt(termStr.split(' ')[0]) : 0;
-            hidden.value = termStr;
-
-            document.getElementById('calc-type').textContent = type || '-';
-
-            if (!type || !amount || !termMonths || amount <= 0) {
-                document.getElementById('calc-monthly').textContent = '₱-';
-                document.getElementById('calc-term-sub').textContent = 'Fill in amount & term to compute.';
-                document.getElementById('calc-amount').textContent = amount > 0 ? '₱' + fmt(amount) : '-';
-                document.getElementById('calc-rate').textContent = (type && RATES[type]) ? (RATES[type] * 100).toFixed(1) + '% / mo' : '-';
-                document.getElementById('calc-term').textContent = termStr || '-';
-                document.getElementById('calc-total').textContent = '-';
-                document.getElementById('calc-interest').textContent = '-';
-                return;
-            }
-
-            const r = RATES[type] ?? 0.02;
-            const monthly = amount * r * Math.pow(1 + r, termMonths) / (Math.pow(1 + r, termMonths) - 1);
-            const total = monthly * termMonths;
-            const interest = total - amount;
-
-            document.getElementById('calc-monthly').textContent = '₱' + fmt(monthly);
-            document.getElementById('calc-term-sub').textContent = 'Over ' + termStr;
-            document.getElementById('calc-amount').textContent = '₱' + fmt(amount);
-            document.getElementById('calc-rate').textContent = (r * 100).toFixed(1) + '% / mo';
-            document.getElementById('calc-term').textContent = termStr;
-            document.getElementById('calc-total').textContent = '₱' + fmt(total);
-            document.getElementById('calc-interest').textContent = '₱' + fmt(interest);
-
-            document.getElementById('hidden-monthly').value = monthly.toFixed(2);
-            document.getElementById('hidden-total').value = total.toFixed(2);
-            document.getElementById('hidden-interest').value = interest.toFixed(2);
-        }
-
-        function fmt(n) {
-            return n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        // ── Confirmation Modal ───────────────────────────────────────────────
-        function showConfirmation() {
-            const selectedType = document.getElementById('lending_type').value;
-            const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
-            const term = document.getElementById('lending_type_term').value || '';
-            const purposeSelect = document.getElementById('purpose_loan_select');
-            const purposeOthers = document.getElementById('purpose_loan_textarea');
-
-            // ── Basic field validation ──
-            if (!selectedType) {
-                alert('Please select a Loan Type.');
-                return;
-            }
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid Loan Amount.');
-                return;
-            }
-            if (!term) {
-                alert('Please select a Loan Term.');
-                return;
-            }
-            if (!purposeSelect.value) {
-                alert('Please select a Purpose of Loan.');
-                return;
-            }
-            if (purposeSelect.value !== 'Others' && !purposeOthers.value.trim()) {
-                purposeOthers.style.border = '2px solid #dc2626';
-                purposeOthers.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-
-            // ── Document validation ──
-            const requiredFieldsMap = {
-                'Personal Loan': ['personal_valid_id', 'personal_proof_of_income'],
-                'Emergency Loan': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
-                'Business Loan': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
-                'Education Loan': ['school_id', 'cor', 'education_valid_id'],
-            };
-
-            const requiredFields = requiredFieldsMap[selectedType] || [];
-            let missing = false;
-
-            document.querySelectorAll('.upload-card').forEach(function (card) {
-                card.style.border = '';
-                const existing = card.querySelector('.upload-error-msg');
-                if (existing) existing.remove();
-            });
-
-            requiredFields.forEach(function (fieldName) {
-                const input = document.querySelector('input[name="' + fieldName + '"]');
-                if (!input || !input.files || !input.files[0]) {
-                    const card = input ? input.closest('.upload-card') : null;
-                    if (card) {
-                        card.style.border = '2px solid #dc2626';
-                        const err = document.createElement('p');
-                        err.className = 'upload-error-msg';
-                        err.style.color = '#dc2626';
-                        err.style.fontSize = '12px';
-                        err.style.marginTop = '4px';
-                        err.textContent = 'Required';
-                        card.appendChild(err);
-                    }
-                    missing = true;
-                }
-            });
-
-            // if (missing) {
-            //     const firstError = document.querySelector('.upload-card[style*="border"]');
-            //     if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            //     return;
-            // }
-
-            // ── All valid — populate and show modal ──
-            const monthly = document.getElementById('hidden-monthly').value || '0';
-            const total = document.getElementById('hidden-total').value || '0';
-            const interest = document.getElementById('hidden-interest').value || '0';
-
-            const purposeDisplay = purposeSelect.value === 'Others'
-                ? '-'
-                : (purposeOthers.value.trim() || '-');
-
-            document.getElementById('confirm-loan-type').textContent = selectedType;
-            document.getElementById('confirm-loan-amount').textContent = '₱' + fmt(amount);
-            document.getElementById('confirm-loan-term').textContent = term;
-            document.getElementById('confirm-purpose').textContent = purposeDisplay;
-            document.getElementById('confirm-monthly-payment').textContent = '₱' + fmt(parseFloat(monthly));
-            document.getElementById('confirm-total-payment').textContent = '₱' + fmt(parseFloat(total));
-            document.getElementById('confirm-total-interest').textContent = '₱' + fmt(parseFloat(interest));
-
-            document.getElementById('confirmation-modal').style.display = 'flex';
-        }
-        const selectedType = document.getElementById('lending_type').value;
-
-        const requiredFieldsMap = {
-            'Personal Loan': ['personal_valid_id', 'personal_proof_of_income'],
-            'Emergency Loan': ['emergency_valid_id', 'emergency_proof_of_income', 'proof_of_emergency'],
-            'Business Loan': ['business_valid_id', 'business_proof_of_income', 'business_permit'],
-            'Education Loan': ['school_id', 'cor', 'education_valid_id'],
-        };
-
-        const requiredFields = requiredFieldsMap[selectedType] || [];
-        let missing = false;
-
-        document.querySelectorAll('.upload-card').forEach(function (card) {
-            card.style.border = '';
-            const existing = card.querySelector('.upload-error-msg');
-            if (existing) existing.remove();
-        });
-
-        requiredFields.forEach(function (fieldName) {
-            const input = document.querySelector('input[name="' + fieldName + '"]');
-            if (!input || !input.files || !input.files[0]) {
-                const card = input ? input.closest('.upload-card') : null;
-                if (card) {
-                    card.style.border = '2px solid #dc2626';
-                    const err = document.createElement('p');
-                    err.className = 'upload-error-msg';
-                    err.style.color = '#dc2626';
-                    err.style.fontSize = '12px';
-                    err.style.marginTop = '4px';
-                    err.textContent = 'Required';
-                    card.appendChild(err);
-                }
-                missing = true;
-            }
-        });
-
-        // if (missing) {
-        //     document.getElementById('loan-form').scrollIntoView({ behavior: 'smooth' });
-        //     return;
-        // }
-
-        const amount = parseFloat(document.querySelector('[name="lending_amount"]').value) || 0;
-        const term = document.getElementById('lending_type_term').value || '';
-        const monthly = document.getElementById('hidden-monthly').value || '0';
-        const total = document.getElementById('hidden-total').value || '0';
-        const interest = document.getElementById('hidden-interest').value || '0';
-
-        const purposeSelect = document.getElementById('purpose_loan_select');
-        const purposeOthers = document.getElementById('purpose_loan_textarea');
-        const purposeDisplay = purposeSelect.value === 'Others'
-            ? (purposeOthers.value.trim() || 'Others')
-            : (purposeSelect.value || '-');
-
-        document.getElementById('confirm-loan-type').textContent = selectedType;
-        document.getElementById('confirm-loan-amount').textContent = '₱' + fmt(amount);
-        document.getElementById('confirm-loan-term').textContent = term;
-        document.getElementById('confirm-purpose').textContent = purposeDisplay;
-        document.getElementById('confirm-monthly-payment').textContent = '₱' + fmt(parseFloat(monthly));
-        document.getElementById('confirm-total-payment').textContent = '₱' + fmt(parseFloat(total));
-        document.getElementById('confirm-total-interest').textContent = '₱' + fmt(parseFloat(interest));
-
-        document.getElementById('confirmation-modal').style.display = 'flex';
-
-        function closeConfirmation() {
-            document.getElementById('confirmation-modal').style.display = 'none';
-        }
-
-        function confirmSubmit() {
-            document.getElementById('loan-form').submit();
-        }
-    </script>
-
-    <!-- Confirmation Modal -->
-    <div id="confirmation-modal"
-        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
-        <div style="background:white;border-radius:12px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto;">
-            <div class="header"
-                style="padding: 24px 24px 24px 24px; background-color: #1E4035; display: flex; flex-direction: column; gap: 0.3rem;">
-                <h3 style="font-size:17px;font-weight:600; margin: 0;color: #ffffff;">Confirm Loan Application</h3>
-                <p style="color:#FFFFFF8C; font-size: 13.5px; margin: 0;">Please review your loan details before
-                    submitting.</p>
-            </div>
-
-            <div class="body" style="padding: 24px 24px 24px 24px; overflow-y: auto; height: 50vh;">
-                <div
-                    style="background:#ffffff;padding:0px;border-radius:8px;margin-bottom:20px; display: flex; flex-direction: column; gap: 1rem;">
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Loan Type:</span>
-                        <span id="confirm-loan-type" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Loan Amount:</span>
-                        <span id="confirm-loan-amount" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Term:</span>
-                        <span id="confirm-loan-term" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Purpose:</span>
-                        <span id="confirm-purpose"
-                            style="font-weight:500;text-align:right;max-width:60%; font-size: 14.5px;"></span>
-                    </div>
-                    {{--
-                    <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
-                    <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;"> --}}
-                    <hr style="margin: 10px 0;">
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Monthly Payment:</span>
-                        <span id="confirm-monthly-payment" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Total Payment:</span>
-                        <span id="confirm-total-payment" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span style="color:#666; font-size: 14.5px;">Total Interest:</span>
-                        <span id="confirm-total-interest" style="font-weight:500; font-size: 14.5px;"></span>
-                    </div>
-                </div>
-
-                <p style="font-size:14.5px;color:#666; margin: 0;"> By clicking <strong>Confirm</strong>, you agree to
-                    proceed with this loan application.</p>
-            </div>
-            <div style="display:flex;gap:12px; padding: 24px 24px 24px 24px; border-top: 1px solid rgba(0,0,0,0.1);">
-                <button type="button" onclick="closeConfirmation()"
-                    style="flex:1;padding:8px;border:1px solid #d1d5db;border-radius:8px;background:white;cursor:pointer; font-size: 14.5px; font-weight: 600;">Cancel</button>
-                <button type="button" onclick="confirmSubmit()"
-                    style="flex:1;padding:8px;border:none;border-radius:8px;background:#1E4035;color:white;font-weight:600;cursor:pointer; font-size: 14.5px;">Confirm</button>
-            </div>
-        </div>
-    </div>
 
 </body>
 

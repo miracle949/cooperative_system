@@ -46,8 +46,9 @@ div.container-fluid {
     /* background-color: #F9FAFB; */
     /* background-color: #F7F9F8; */
     /* background-color: #EAEDEB; */
-    /* background-color: var(--cream); */
-    background-color: #ffffff;
+    background-color: var(--cream);
+    /* background-color: #ffffff; */
+    /* background-color: #1450470d; */
     /* background-color: #FFFAF0; */
     /* background-color: #F8F8F4; */
     position: relative;
@@ -229,6 +230,7 @@ div.container-fluid {
     font-family: "Playfair Display";
     font-size: 21px;
     letter-spacing: .16em;
+    font-weight: 600;
 }
 
 .container-fluid .form-image .form-nav a {

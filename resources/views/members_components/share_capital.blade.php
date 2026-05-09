@@ -31,7 +31,9 @@
             overflow-y: auto;
         }
 
-        #sc-receipt-overlay.active { display: flex; }
+        #sc-receipt-overlay.active {
+            display: flex;
+        }
 
         #sc-receipt-modal {
             background: #fff;
@@ -45,8 +47,15 @@
         }
 
         @keyframes scModalIn {
-            from { opacity: 0; transform: translateY(28px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .sc-receipt-header {
@@ -57,26 +66,49 @@
         }
 
         .sc-receipt-header .check-circle {
-            width: 60px; height: 60px;
+            width: 60px;
+            height: 60px;
             background: rgba(255, 255, 255, 0.15);
             border: 3px solid rgba(255, 255, 255, 0.6);
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 0.8rem;
         }
 
-        .sc-receipt-header .check-circle i { color: #fff; font-size: 26px; }
-        .sc-receipt-header h2 { color: #fff; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.25rem; }
-        .sc-receipt-header p  { color: rgba(255, 255, 255, 0.75); font-size: 0.82rem; margin: 0; }
+        .sc-receipt-header .check-circle i {
+            color: #fff;
+            font-size: 26px;
+        }
+
+        .sc-receipt-header h2 {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem;
+        }
+
+        .sc-receipt-header p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.82rem;
+            margin: 0;
+        }
 
         .sc-receipt-tear {
             background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%);
-            height: 20px; position: relative; margin-bottom: -1px;
+            height: 20px;
+            position: relative;
+            margin-bottom: -1px;
         }
 
         .sc-receipt-tear::after {
             content: '';
-            position: absolute; bottom: 0; left: 0; right: 0; height: 20px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
             background: #fff;
             clip-path: polygon(0% 100%, 2.5% 0%, 5% 100%, 7.5% 0%, 10% 100%,
                     12.5% 0%, 15% 100%, 17.5% 0%, 20% 100%,
@@ -90,68 +122,127 @@
                     92.5% 0%, 95% 100%, 97.5% 0%, 100% 100%);
         }
 
-        .sc-receipt-body { padding: 1.5rem; }
-
-        .sc-receipt-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0.6rem 0; border-bottom: 1px dashed #e8e8e8; font-size: 0.85rem;
+        .sc-receipt-body {
+            padding: 1.5rem;
         }
 
-        .sc-receipt-row:last-child { border-bottom: none; }
-        .sc-receipt-row .label { color: #888; font-weight: 500; }
-        .sc-receipt-row .value { color: #1a1a1a; font-weight: 700; text-align: right; }
-        .sc-receipt-row .value.highlight { color: #1a4a3a; font-size: 14.5px; }
+        .sc-receipt-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px dashed #e8e8e8;
+            font-size: 0.85rem;
+        }
+
+        .sc-receipt-row:last-child {
+            border-bottom: none;
+        }
+
+        .sc-receipt-row .label {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .sc-receipt-row .value {
+            color: #1a1a1a;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .sc-receipt-row .value.highlight {
+            color: #1a4a3a;
+            font-size: 14.5px;
+        }
 
         .sc-ref-badge {
-            background: #f4f4f4; border-radius: 6px;
-            padding: 0.2rem 0.6rem; letter-spacing: 0.5px; color: #333;
+            background: #f4f4f4;
+            border-radius: 6px;
+            padding: 0.2rem 0.6rem;
+            letter-spacing: 0.5px;
+            color: #333;
         }
 
         /* Pending badge (amber) */
         .sc-status-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: #fff8e1; border: 1.5px solid #ffe082; color: #b8860b;
-            border-radius: 20px; padding: 0.2rem 0.75rem;
-            font-size: 0.75rem; font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff8e1;
+            border: 1.5px solid #ffe082;
+            color: #b8860b;
+            border-radius: 20px;
+            padding: 0.2rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
         }
 
         /* Completed badge (green) */
         .sc-status-badge.completed {
-            background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32;
+            background: #e8f5e9;
+            border-color: #a5d6a7;
+            color: #2e7d32;
         }
 
         .sc-status-badge .dot {
-            width: 7px; height: 7px; background: #e6a817;
-            border-radius: 50%; flex-shrink: 0;
+            width: 7px;
+            height: 7px;
+            background: #e6a817;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
 
-        .sc-status-badge.completed .dot { background: #2e7d32; }
+        .sc-status-badge.completed .dot {
+            background: #2e7d32;
+        }
 
         .sc-receipt-footer {
             padding: 0 1.5rem 1.5rem;
-            display: flex; flex-direction: column; gap: 0.6rem;
-            border-radius: 0 0 20px 20px; background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            border-radius: 0 0 20px 20px;
+            background: #fff;
         }
 
         .sc-btn-download {
-            width: 100%; padding: 0.8rem;
+            width: 100%;
+            padding: 0.8rem;
             background: linear-gradient(135deg, #1a4a3a, #2d6a4f);
-            color: #fff; border: none; border-radius: 12px;
-            font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: opacity 0.2s;
         }
 
-        .sc-btn-download:hover { opacity: 0.88; }
+        .sc-btn-download:hover {
+            opacity: 0.88;
+        }
 
         .sc-btn-close-modal {
-            width: 100%; padding: 0.7rem; background: transparent;
-            color: #888; border: 1.5px solid #e8e8e8; border-radius: 12px;
-            font-size: 0.88rem; font-weight: 600; cursor: pointer;
+            width: 100%;
+            padding: 0.7rem;
+            background: transparent;
+            color: #888;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: background 0.2s, color 0.2s;
         }
 
-        .sc-btn-close-modal:hover { background: #f5f5f5; color: #333; }
+        .sc-btn-close-modal:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
 
         /* ── Inline modal error banner ── */
         .sc-inline-error {
@@ -168,8 +259,14 @@
             line-height: 1.5;
         }
 
-        .sc-inline-error.show { display: flex; }
-        .sc-inline-error i { margin-top: 1px; flex-shrink: 0; }
+        .sc-inline-error.show {
+            display: flex;
+        }
+
+        .sc-inline-error i {
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -263,16 +360,13 @@
             </div>
 
             {{-- Hidden data element for JS — includes data-status --}}
-            <div id="sc-receipt-data"
-                data-member="{{ session('sc_receipt_member', Auth::user()->name ?? 'Member') }}"
+            <div id="sc-receipt-data" data-member="{{ session('sc_receipt_member', Auth::user()->name ?? 'Member') }}"
                 data-type="{{ session('sc_receipt_type', 'Deposit') }}"
                 data-shares="{{ session('sc_receipt_shares', '—') }}"
                 data-amount="{{ number_format(session('sc_receipt_amount', 0), 0) }}"
-                data-method="{{ session('sc_receipt_method', '—') }}"
-                data-ref="{{ session('sc_receipt_ref', '—') }}"
+                data-method="{{ session('sc_receipt_method', '—') }}" data-ref="{{ session('sc_receipt_ref', '—') }}"
                 data-date="{{ now()->timezone('Asia/Manila')->format('M d, Y · h:i A') }}"
-                data-status="{{ session('sc_receipt_status', 'Pending') }}"
-                style="display:none;">
+                data-status="{{ session('sc_receipt_status', 'Pending') }}" style="display:none;">
             </div>
         @endif
 
@@ -289,17 +383,20 @@
 
                         <div class="modal-header" style="background: #1a4a3a; border: none; padding: 1.25rem 1.5rem;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <div
+                                    style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fa fa-coins" style="color: #fff; font-size: 15px;"></i>
                                 </div>
                                 <div>
                                     <h5 class="modal-title mb-0" id="shareCapitalLabel"
-                                        style="color: #fff; font-size: 15px; font-weight: 600;">Manage Share Capital</h5>
-                                    <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase additional shares</p>
+                                        style="color: #fff; font-size: 15px; font-weight: 600;">Manage Share Capital
+                                    </h5>
+                                    <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase
+                                        additional shares</p>
                                 </div>
                             </div>
-                            <button type="button" class="btn-close btn-close-white m-0"
-                                data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white m-0" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
 
                         <div class="modal-body"
@@ -309,7 +406,8 @@
                                 @csrf
 
                                 {{-- Current balance pill --}}
-                                <div style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div
+                                    style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                                     <span style="font-size: 13px; color: #888;">Current Balance</span>
                                     <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">
                                         ₱{{ number_format($currentBalance ?? 0, 0) }} · {{ $currentShares ?? 0 }} shares
@@ -317,13 +415,13 @@
                                 </div>
 
                                 {{-- ── Inline error banner (withdrawal validation) ──
-                                     Placed ABOVE the shares stepper so it's visible immediately --}}
+                                Placed ABOVE the shares stepper so it's visible immediately --}}
                                 <div class="sc-inline-error" id="modal-inline-error">
                                     <i class="fa fa-circle-exclamation"></i>
                                     <span id="modal-inline-error-text"></span>
                                 </div>
 
-                                <p style="margin: 0 0 8px; font-size: 13px; color: #666;">Number of shares to add</p>
+                                <p style="margin: 0 0 8px; font-size: 13px; color: #666;">Number of shares</p>
                                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                                     <button type="button" id="modal-dec"
                                         style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
@@ -335,28 +433,34 @@
 
                                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
                                     <button type="button" class="modal-qbtn active" data-v="1"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1 shares</button>
+                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1
+                                        shares</button>
                                     <button type="button" class="modal-qbtn" data-v="5"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5 shares</button>
+                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5
+                                        shares</button>
                                     <button type="button" class="modal-qbtn" data-v="10"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10 shares</button>
+                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10
+                                        shares</button>
                                     <button type="button" class="modal-qbtn" data-v="25"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25 shares</button>
+                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25
+                                        shares</button>
                                 </div>
 
                                 <p style="font-size: 12px; color: #888; margin-bottom: 1rem;">
-                                    Cost: <strong id="modal-cost" style="color: #1a4a3a;">₱1,000</strong> · ₱1,000 per Share
+                                    Cost: <strong id="modal-cost" style="color: #1a4a3a;">₱1,000</strong> · ₱1,000 per
+                                    Share
                                 </p>
 
                                 <hr style="border-color: #eee; margin: 0 0 1rem;">
 
                                 {{-- ══════════════════════════════════════════════
-                                     TYPE DROPDOWN
-                                     • No account (balance=0, shares=0) → Subscription only
-                                     • Has account                       → Deposit / Withdrawal
+                                TYPE DROPDOWN
+                                • No account (balance=0, shares=0) → Subscription only
+                                • Has account → Deposit / Withdrawal
                                 ══════════════════════════════════════════════ --}}
                                 <div style="margin-bottom: 0.9rem;">
-                                    <label style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Type</label>
+                                    <label
+                                        style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Type</label>
                                     <select name="type" id="modal-type" required
                                         style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
                                         <option value="">Select type..</option>
@@ -374,7 +478,9 @@
                                 </div>
 
                                 <div style="margin-bottom: 0.9rem;">
-                                    <label style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Payment Method</label>
+                                    <label
+                                        style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Payment
+                                        Method</label>
                                     <select class="select-form" name="payment_method" id="modal-pay" required
                                         style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
                                         <option value="" disabled selected>Select payment method...</option>
@@ -396,12 +502,16 @@
                                 <div id="modal-gcash-box"
                                     style="display: none; margin-top: 0.8rem; background: #f0f7ff; border: 1.5px solid #c2deff; border-radius: 12px; padding: 0.75rem 1rem; align-items: center; justify-content: space-between; gap: 10px;">
                                     <div style="display: flex; align-items: center; gap: 10px;">
-                                        <div style="width: 32px; height: 32px; background: #007DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                            <i class="fa-solid fa-mobile-screen-button" style="color: #fff; font-size: 14px;"></i>
+                                        <div
+                                            style="width: 32px; height: 32px; background: #007DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <i class="fa-solid fa-mobile-screen-button"
+                                                style="color: #fff; font-size: 14px;"></i>
                                         </div>
                                         <div>
-                                            <p style="margin: 0; font-size: 13px; font-weight: 700; color: #0056b3;">Pay via GCash</p>
-                                            <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure payment</p>
+                                            <p style="margin: 0; font-size: 13px; font-weight: 700; color: #0056b3;">Pay
+                                                via GCash</p>
+                                            <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure payment
+                                            </p>
                                         </div>
                                     </div>
                                     <button type="button" onclick="submitModalGcash()"
@@ -417,8 +527,8 @@
                                 style="display:none;">
                                 @csrf
                                 <input type="hidden" name="shares" id="modal-gcash-shares">
-                                <input type="hidden" name="note"   id="modal-gcash-note">
-                                <input type="hidden" name="type"   id="modal-gcash-type">
+                                <input type="hidden" name="note" id="modal-gcash-note">
+                                <input type="hidden" name="type" id="modal-gcash-type">
                             </form>
 
                         </div>
@@ -439,179 +549,196 @@
                 </div>
             </div>
 
-            {{-- ═══════════════════════════════════════
-            PAGE ACTION BUTTONS
-            ═══════════════════════════════════════ --}}
-            <div class="parent-main">
-                <div class="download">
-                    <button>
-                        <i class="fa fa-arrow-down"></i>
-                        <span>Download Statement</span>
-                    </button>
-                </div>
-                <div class="share">
-                    <button data-bs-toggle="modal" data-bs-target="#shareCapital">
-                        <i class="fa fa-coins"></i>
-                        <span>Manage Share Capital</span>
-                    </button>
-                </div>
-            </div>
-
-            {{-- ═══════════════════════════════════════
-            STAT CARDS
-            ═══════════════════════════════════════ --}}
-            <div class="sc-stat-grid">
-
-                <div class="sc-stat-card green" style="animation-delay:.05s">
-                    <div class="sc-stat-icon green">
-                        <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
+            <div class="main-parent">
+                {{-- ═══════════════════════════════════════
+                PAGE ACTION BUTTONS
+                ═══════════════════════════════════════ --}}
+                <div class="parent-main">
+                    <div class="download">
+                        <button>
+                            <i class="fa fa-arrow-down"></i>
+                            <span>Download Statement</span>
+                        </button>
                     </div>
-                    <div class="sc-stat-label">Current Balance</div>
-                    <div class="sc-stat-value green">₱{{ number_format($currentBalance, 0) }}</div>
-                    <div class="sc-stat-sub">{{ $currentShares }} shares</div>
-                </div>
-
-                <div class="sc-stat-card gold {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                    style="animation-delay:.10s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                    {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scRateModal') title='View dividend rate details'" : '' }}>
-                    @if($currentBalance > 0)<div class="sc-info-badge">i</div>@endif
-                    <div class="sc-stat-icon gold">
-                        <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
-                    </div>
-                    <div class="sc-stat-label">Dividend Rate</div>
-                    <div class="sc-stat-value gold">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}</div>
-                    <div class="sc-stat-sub">{{ $currentBalance > 0 ? 'Annual return · click to learn' : 'No share capital yet' }}</div>
-                </div>
-
-                <div class="sc-stat-card purple {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                    style="animation-delay:.15s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                    {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scLastModal') title='View last dividend details'" : '' }}>
-                    @if($currentBalance > 0)<div class="sc-info-badge">i</div>@endif
-                    <div class="sc-stat-icon purple">
-                        <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
-                    </div>
-                    <div class="sc-stat-label">Last Dividend</div>
-                    <div class="sc-stat-value purple">
-                        @if($currentBalance <= 0) —
-                        @elseif($lastDividendAmount) ₱{{ number_format($lastDividendAmount, 0) }}
-                        @else —
-                        @endif
-                    </div>
-                    <div class="sc-stat-sub">
-                        @if($currentBalance <= 0) No share capital yet
-                        @elseif($lastDividendDate) {{ $lastDividendPeriod }} · click to learn
-                        @else No payouts yet · click to learn
-                        @endif
+                    <div class="share">
+                        <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                            <i class="fa fa-coins"></i>
+                            <span>Manage Share Capital</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="sc-stat-card blue {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                    style="animation-delay:.20s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                    {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scNextModal') title='View next dividend details'" : '' }}>
-                    @if($currentBalance > 0)<div class="sc-info-badge">i</div>@endif
-                    <div class="sc-stat-icon blue">
-                        <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
+                {{-- ═══════════════════════════════════════
+                STAT CARDS
+                ═══════════════════════════════════════ --}}
+                <div class="sc-stat-grid">
+
+                    <div class="sc-stat-card green" style="animation-delay:.05s">
+                        <div class="sc-stat-icon green">
+                            <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
+                        </div>
+                        <div class="sc-stat-label">Current Balance</div>
+                        <div class="sc-stat-value green">₱{{ number_format($currentBalance, 0) }}</div>
+                        <div class="sc-stat-sub">{{ $currentShares }} shares</div>
                     </div>
-                    <div class="sc-stat-label">Next Dividend</div>
-                    <div class="sc-stat-value blue">{{ $currentBalance > 0 ? $nextDividendDate->format('M d, Y') : '—' }}</div>
-                    <div class="sc-stat-sub">{{ $currentBalance > 0 ? $nextDividendPeriod . ' · click to learn' : 'No share capital yet' }}</div>
+
+                    <div class="sc-stat-card gold {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        style="animation-delay:.10s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scRateModal') title='View dividend rate details'" : '' }}>
+                        @if($currentBalance > 0)
+                        <div class="sc-info-badge">i</div>@endif
+                        <div class="sc-stat-icon gold">
+                            <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
+                        </div>
+                        <div class="sc-stat-label">Dividend Rate</div>
+                        <div class="sc-stat-value gold">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}</div>
+                        <div class="sc-stat-sub">
+                            {{ $currentBalance > 0 ? 'Annual return · click to learn' : 'No share capital yet' }}</div>
+                    </div>
+
+                    <div class="sc-stat-card purple {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        style="animation-delay:.15s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scLastModal') title='View last dividend details'" : '' }}>
+                        @if($currentBalance > 0)
+                        <div class="sc-info-badge">i</div>@endif
+                        <div class="sc-stat-icon purple">
+                            <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
+                        </div>
+                        <div class="sc-stat-label">Last Dividend</div>
+                        <div class="sc-stat-value purple">
+                            @if($currentBalance <= 0) —
+                            @elseif($lastDividendAmount) ₱{{ number_format($lastDividendAmount, 0) }}
+                            @else —
+                            @endif
+                        </div>
+                        <div class="sc-stat-sub">
+                            @if($currentBalance <= 0) No share capital yet
+                            @elseif($lastDividendDate) {{ $lastDividendPeriod }} · click to learn
+                            @else No payouts yet · click to learn
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="sc-stat-card blue {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        style="animation-delay:.20s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scNextModal') title='View next dividend details'" : '' }}>
+                        @if($currentBalance > 0)
+                        <div class="sc-info-badge">i</div>@endif
+                        <div class="sc-stat-icon blue">
+                            <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
+                        </div>
+                        <div class="sc-stat-label">Next Dividend</div>
+                        <div class="sc-stat-value blue">
+                            {{ $currentBalance > 0 ? $nextDividendDate->format('M d, Y') : '—' }}</div>
+                        <div class="sc-stat-sub">
+                            {{ $currentBalance > 0 ? $nextDividendPeriod . ' · click to learn' : 'No share capital yet' }}
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
-
-            {{-- ═══════════════════════════════════════
-            CONTRIBUTION HISTORY
-            ═══════════════════════════════════════ --}}
-            <div class="contribution-parent">
-                <h3>Contribution History</h3>
-                <div class="parent-table">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Reference No.</th>
-                                <th>Shares</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($contributions as $row)
+                {{-- ═══════════════════════════════════════
+                CONTRIBUTION HISTORY
+                ═══════════════════════════════════════ --}}
+                <div class="contribution-parent">
+                    <h3>Contribution History</h3>
+                    <div class="parent-table">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{ \Carbon\Carbon::parse($row->transaction_date)->format('M d, Y') }}</td>
-                                    <td>{{ $row->type }}</td>
-                                    <td>{{ $row->reference_no }}</td>
-                                    <td>{{ (int) $row->shares }}</td>
-                                    <td>₱{{ number_format($row->total_amount, 0) }}</td>
-                                    <td>
-                                        @if($row->status === 'Completed' || $row->status === null)
-                                            <i class="fa fa-check-circle" style="color: #1a4a3a;"></i>
-                                            <span>Completed</span>
-                                        @elseif($row->status === 'Pending' && strtolower($row->type) === 'withdrawal')
-                                            <i class="fa fa-clock" style="color: #e6a817;"></i>
-                                            <span>Pending</span>
-                                        @else
-                                            <i class="fa fa-times-circle" style="color: #e03131;"></i>
-                                            <span>{{ $row->status }}</span>
-                                        @endif
-                                    </td>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Reference No.</th>
+                                    <th>Shares</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
-                                        <i class="fa fa-inbox" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
-                                        No contributions yet.<br>
-                                        <span style="font-size: 11px;">Start by subscribing to share capital.</span>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse($contributions as $row)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($row->transaction_date)->format('M d, Y') }}</td>
+                                        <td>{{ $row->type }}</td>
+                                        <td>{{ $row->reference_no }}</td>
+                                        <td>{{ (int) $row->shares }}</td>
+                                        <td>₱{{ number_format($row->total_amount, 0) }}</td>
+                                        <td>
+                                            @if($row->status === 'Completed' || $row->status === null)
+                                                <i class="fa fa-check-circle" style="color: #1a4a3a;"></i>
+                                                <span>Completed</span>
+                                            @elseif($row->status === 'Pending' && strtolower($row->type) === 'withdrawal')
+                                                <i class="fa fa-clock" style="color: #e6a817;"></i>
+                                                <span>Pending</span>
+                                            @else
+                                                <i class="fa fa-times-circle" style="color: #e03131;"></i>
+                                                <span>{{ $row->status }}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6"
+                                            style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
+                                            <i class="fa fa-inbox"
+                                                style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                                            No contributions yet.<br>
+                                            <span style="font-size: 11px;">Start by subscribing to share capital.</span>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
 
-            {{-- ═══════════════════════════════════════
-            DIVIDEND HISTORY TABLE
-            ═══════════════════════════════════════ --}}
-            <div class="dividend-parent">
-                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
-                    <h3 style="margin:0;">Dividend History</h3>
-                    <span class="dividend-rate-chip">
-                        <i class="fa fa-percent" style="font-size:10px;"></i>
-                        Current Rate: {{ $dividendRate }}% p.a.
-                    </span>
-                </div>
-                <div class="parent-table">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Period</th>
-                                <th>Dividend Rate</th>
-                                <th>Share Capital</th>
-                                <th>Dividend Amount</th>
-                                <th>Date Paid</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($dividendHistory as $div)
+                {{-- ═══════════════════════════════════════
+                DIVIDEND HISTORY TABLE
+                ═══════════════════════════════════════ --}}
+                <div class="dividend-parent">
+                    <div
+                        style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
+                        <h3 style="margin:0;">Dividend History</h3>
+                        <span class="dividend-rate-chip">
+                            <i class="fa fa-percent" style="font-size:10px;"></i>
+                            Current Rate: {{ $dividendRate }}% p.a.
+                        </span>
+                    </div>
+                    <div class="parent-table">
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $div->period_label }}</td>
-                                    <td><span style="color:#C9A84C;font-weight:600;">{{ $div->dividend_rate }}%</span></td>
-                                    <td>₱{{ number_format($div->share_capital, 0) }}</td>
-                                    <td><span style="color:#1a4a3a;font-weight:600;">₱{{ number_format($div->dividend_amount, 0) }}</span></td>
-                                    <td>{{ \Carbon\Carbon::parse($div->date_paid)->format('M d, Y') }}</td>
+                                    <th>Period</th>
+                                    <th>Dividend Rate</th>
+                                    <th>Share Capital</th>
+                                    <th>Dividend Amount</th>
+                                    <th>Date Paid</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
-                                        <i class="fa fa-inbox" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
-                                        No dividend history yet.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse($dividendHistory as $div)
+                                    <tr>
+                                        <td>{{ $div->period_label }}</td>
+                                        <td><span style="color:#C9A84C;font-weight:600;">{{ $div->dividend_rate }}%</span>
+                                        </td>
+                                        <td>₱{{ number_format($div->share_capital, 0) }}</td>
+                                        <td><span
+                                                style="color:#1a4a3a;font-weight:600;">₱{{ number_format($div->dividend_amount, 0) }}</span>
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($div->date_paid)->format('M d, Y') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5"
+                                            style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
+                                            <i class="fa fa-inbox"
+                                                style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                                            No dividend history yet.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -622,11 +749,11 @@
         ═══════════════════════════════════════ --}}
         @if(session('error'))
             <div style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                        background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                        display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                            background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                            padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                            display: flex; align-items: center; gap: 12px; max-width: 360px;">
                 <div style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>
@@ -656,7 +783,8 @@
             </div>
             <div class="div-modal-body">
                 <div class="div-current-pill gold">
-                    <span class="div-pill-label">Current Rate ({{ $dividendRateYear }}–{{ $dividendRateYear + 1 }})</span>
+                    <span class="div-pill-label">Current Rate
+                        ({{ $dividendRateYear }}–{{ $dividendRateYear + 1 }})</span>
                     <span class="div-pill-value gold">{{ $dividendRate }}% / year</span>
                 </div>
                 <div class="div-section-label">Rate History by Year</div>
@@ -678,7 +806,8 @@
                 @endif
                 <div class="div-info-box">
                     The dividend rate is set by the cooperative's board each year based on
-                    <strong>net surplus</strong>. A higher rate means the co-op earned more profit to share with members.<br><br>
+                    <strong>net surplus</strong>. A higher rate means the co-op earned more profit to share with
+                    members.<br><br>
                     Your dividend formula: <strong>Share Capital × Rate ÷ 2</strong> (paid per semester).<br>
                     @if($currentBalance > 0)
                         Example: ₱{{ number_format($currentBalance, 0) }} × {{ $dividendRate }}% ÷ 2
@@ -834,18 +963,18 @@
             MANAGE SHARE CAPITAL MODAL LOGIC
         ══════════════════════════════════════ */
         (function () {
-            const PRICE           = 1000;
+            const PRICE = 1000;
             const CURRENT_BALANCE = {{ $currentBalance ?? 0 }};
 
-            const inp              = document.getElementById('modal-shares');
-            const costEl           = document.getElementById('modal-cost');
-            const pay              = document.getElementById('modal-pay');
-            const typeEl           = document.getElementById('modal-type');
-            const gcashBox         = document.getElementById('modal-gcash-box');
-            const submitBtn        = document.getElementById('modal-submit-btn');
+            const inp = document.getElementById('modal-shares');
+            const costEl = document.getElementById('modal-cost');
+            const pay = document.getElementById('modal-pay');
+            const typeEl = document.getElementById('modal-type');
+            const gcashBox = document.getElementById('modal-gcash-box');
+            const submitBtn = document.getElementById('modal-submit-btn');
             const withdrawalNotice = document.getElementById('modal-withdrawal-notice');
-            const inlineError      = document.getElementById('modal-inline-error');
-            const inlineErrorText  = document.getElementById('modal-inline-error-text');
+            const inlineError = document.getElementById('modal-inline-error');
+            const inlineErrorText = document.getElementById('modal-inline-error-text');
 
             if (!inp) return;
 
@@ -885,8 +1014,8 @@
                 costEl.textContent = '₱' + (v * PRICE).toLocaleString();
                 document.querySelectorAll('.modal-qbtn').forEach(b => {
                     const on = parseInt(b.dataset.v) === v;
-                    b.style.background  = on ? '#1a4a3a' : '#fff';
-                    b.style.color       = on ? '#fff' : '#555';
+                    b.style.background = on ? '#1a4a3a' : '#fff';
+                    b.style.color = on ? '#fff' : '#555';
                     b.style.borderColor = on ? '#1a4a3a' : '#ddd';
                 });
                 if (typeEl.value === 'Withdrawal') {
@@ -910,10 +1039,10 @@
             /* ── Payment method select ── */
             pay.onchange = function () {
                 if (this.value === 'gcash') {
-                    gcashBox.style.display  = 'flex';
+                    gcashBox.style.display = 'flex';
                     submitBtn.style.display = 'none';
                 } else {
-                    gcashBox.style.display  = 'none';
+                    gcashBox.style.display = 'none';
                     submitBtn.style.display = 'flex';
                 }
             };
@@ -921,10 +1050,10 @@
             /* ── Reset on modal open ── */
             document.getElementById('shareCapital').addEventListener('show.bs.modal', () => {
                 setShares(1);
-                pay.value    = '';
+                pay.value = '';
                 typeEl.value = '';
-                gcashBox.style.display         = 'none';
-                submitBtn.style.display        = 'flex';
+                gcashBox.style.display = 'none';
+                submitBtn.style.display = 'flex';
                 withdrawalNotice.style.display = 'none';
                 document.getElementById('modal-note').value = '';
                 clearInlineError();
@@ -943,11 +1072,11 @@
 
         /* ── Guard GCash submit ── */
         function submitModalGcash() {
-            const type            = document.getElementById('modal-type').value;
-            const shares          = parseInt(document.getElementById('modal-shares').value, 10);
-            const cost            = shares * 1000;
+            const type = document.getElementById('modal-type').value;
+            const shares = parseInt(document.getElementById('modal-shares').value, 10);
+            const cost = shares * 1000;
             const CURRENT_BALANCE = {{ $currentBalance ?? 0 }};
-            const inlineError     = document.getElementById('modal-inline-error');
+            const inlineError = document.getElementById('modal-inline-error');
             const inlineErrorText = document.getElementById('modal-inline-error-text');
 
             function showErr(msg) {
@@ -976,8 +1105,8 @@
             }
 
             document.getElementById('modal-gcash-shares').value = shares;
-            document.getElementById('modal-gcash-note').value   = document.getElementById('modal-note').value;
-            document.getElementById('modal-gcash-type').value   = type;
+            document.getElementById('modal-gcash-note').value = document.getElementById('modal-note').value;
+            document.getElementById('modal-gcash-type').value = type;
             document.getElementById('modal-gcash-form').submit();
         }
 
@@ -1061,8 +1190,8 @@
                         ${scReceiptRow('Reference No.', '<span style="font-size:0.76rem;">' + d.ref + '</span>')}
                         ${scReceiptRow('Date & Time', d.date)}
                         ${scReceiptRow('Status', isCompleted
-                            ? '<span style="color:#2e7d32;font-weight:700;font-size:0.72rem;">✓ Completed</span>'
-                            : '<span style="color:#b8860b;font-weight:700;font-size:0.72rem;">• Pending Approval</span>')}
+                ? '<span style="color:#2e7d32;font-weight:700;font-size:0.72rem;">✓ Completed</span>'
+                : '<span style="color:#b8860b;font-weight:700;font-size:0.72rem;">• Pending Approval</span>')}
                     </table>
                 </div>
                 <div style="padding:0.8rem 1.5rem 1.2rem;text-align:center;border-top:1px dashed #e8e8e8;">

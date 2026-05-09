@@ -396,8 +396,13 @@ class UsersHandle extends Controller
 
     public function LoanApplication()
     {
+        $user = Auth::user();
+
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
+        // $firstName = Auth::check() ? Auth::user()->first_name : null;
+
+        $firstName = $user->first_name ?? '';
 
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', auth()->id())
@@ -410,6 +415,7 @@ class UsersHandle extends Controller
             'members_components.loan_application',
             [
                 "username" => $username,
+                'firstName' => $firstName,
                 "email" => $email
             ],
             compact('currentShares', 'canApplyLoan')

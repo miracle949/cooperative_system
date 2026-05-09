@@ -5,6 +5,7 @@
 
 /* ── CSS Variables ── */
 :root {
+    --teal: #1a5c50;
     --forest: #1a4a3a;
     --forest-deep: #122e25;
     --forest-mid: #2d6a4f;
@@ -16,27 +17,53 @@
     --blue: #2563EB;
     --blue-light: rgba(37, 99, 235, 0.08);
     --text: #1a1a1a;
-    --muted: #6B7B74;
-    --border: #E2E8E5;
+    /* --muted: #6B7B74; */
+    --muted: #5a7570;
+    --muted2: #7a908b;
+    --muted3: #6b7280;
+    --ink: #1c2b28;
+    --ink2: #181e1c;
+    /* --border: #E2E8E5; */
     --off: #F7F9F8;
     --white: #ffffff;
+    --mist: #e8efe9;
     --shadow: rgba(26, 74, 58, 0.10);
+    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.07);
     --radius-lg: 16px;
     --radius-md: 12px;
     --radius-sm: 8px;
-
+    --green-dark: #0f2e24;
+    --cream: #f5f0e8;
+    --cream2: #f7f5f0;
     /* Legacy aliases (share_capital.css) */
     --green: #1a4a3a;
     --green-light: rgba(26, 74, 58, 0.07);
+    /* --ink: #0f1a14; */
+    --border: rgba(46, 92, 58, 0.18);
+    --border2: #e5e0d6;
+    --text-muted: #6b6b5e;
+    --line: rgba(26, 92, 80, .12);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+    --gold-dim: rgba(201, 168, 76, 0.12);
 }
 
 
 /* ═══════════════════════════════════════════════════
    LAYOUT — MAIN
    ═══════════════════════════════════════════════════ */
+
 main {
     padding: 3rem;
-    background-color: #EAEDEB;
+    /* background-color: #EAEDEB; */
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main .main-parent{
+    width: 100%;
+    max-width: 1200px;
 }
 
 .container-fluid main .main-intro p {
@@ -238,8 +265,10 @@ main .parent-share .card:nth-child(4) h4 {
 }
 
 .sc-stat-card {
-    background: var(--white);
-    border: 1px solid var(--border);
+    /* background: var(--white); */
+    background-color: #ffffff;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 224, 214, 0.6);
     border-radius: var(--radius-lg);
     padding: 1.3rem 1.4rem;
     position: relative;
@@ -803,10 +832,12 @@ main .parent-table tbody tr {
 
 main .contribution-parent {
     margin-top: 2rem;
-    padding: 3rem;
+    padding: 2.5rem 2rem;
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5; */
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 224, 214, 0.6);
     background-color: #ffffff;
 }
 
@@ -825,7 +856,8 @@ main .contribution-parent .table tbody tr td {
 
 main .dividend-parent {
     margin-top: 3rem;
-    padding: 3rem;
+    /* padding: 3rem; */
+    padding: 2.5rem 2rem;
     border-radius: 10px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
