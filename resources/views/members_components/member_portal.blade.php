@@ -97,8 +97,11 @@
 
         <div class="rightbar">
             @include("components.navbar2")
+
             <div class="main-parent">
                 <main>
+
+                    <!-- <h2>Dashboard Overview</h2> -->
 
                     @if ($username)
                         <div class="main-header">

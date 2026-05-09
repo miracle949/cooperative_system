@@ -47,6 +47,8 @@
 .container-fluid .rightbar {
     width: calc(100% - 260px);
     margin-left: 260px;
+    /* height: calc(100vh - 70px);
+    overflow-y: auto; */
     transition: width 0.3s ease, margin-left 0.3s ease;
 }
 
@@ -57,11 +59,19 @@
 
 .container-fluid .main-parent{
     padding: 2rem 2rem 2rem;
-    height: calc(100vh - 70px);
+    height: 100vh;
     overflow-y: auto;
+    /* height: calc(100vh - 70px);
+    overflow-y: auto; */
     /* background-color: var(--cream); */
     /* background-color: #F5F6FA; */
     /* margin-top: 70px; */
+    background-color: #F8FBFC;
+}
+
+.container-fluid .main-parent main h2{
+    font-size: 23px;
+    font-weight: 600;
 }
 
 .container-fluid .main-parent main h4{

@@ -174,6 +174,7 @@
     padding: 24px 0;
     height: calc(100vh - 78px);
     overflow-y: auto;
+    scrollbar-width: none;
 }
 
 .container-fluid .sidebar .sidebar-menu ul .menu {
@@ -195,12 +196,12 @@
 
 .container-fluid .sidebar .sidebar-menu ul .menu p {
     margin: 0;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
     font-size: 11.5px;
-    /* color: #808080; */
+    color: #808080;
     /* color: #B7B9BD; */
-    color: var(--muted2);
+    /* color: var(--muted2); */
     /* color: var(--green); */
     /* color: #75908B; */
     /* color: #7aab97; */
@@ -229,7 +230,7 @@
 
 .container-fluid .sidebar .sidebar-menu ul .logout li {
     margin: 0 22px 0;
-    background-color: #FDECEA;
+    /* background-color: #FDECEA; */
     border-radius: 10px;
 
 }
@@ -292,10 +293,10 @@
     /* color: #212529; */
     /* color: #c8e6dc; */
     /* color: #1A1A1A; */
-    /* color: #808080; */
-    color: var(--muted);
+    color: #6A7181;
+    /* color: var(--muted); */
     font-size: 14.5px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .container-fluid .sidebar .sidebar-menu ul li a .fa {
@@ -306,8 +307,8 @@
     /* color: #212529; */
     /* color: #c8e6dc; */
     /* color: #1A1A1A; */
-    /* color: #808080; */
-    color: var(--muted);
+    color: #6A7181;
+    /* color: var(--muted); */
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover {
@@ -317,7 +318,7 @@
     background-color: var(--forest-light);
     /* background-color: #1E836C; */
     /* background-color: var(--green); */
-    /* border-radius: 10px; */
+    border-radius: 10px;
 
 }
 
@@ -349,9 +350,9 @@
     /* border-radius: 10px; */
     /* color: #ffffff; */
     /* overflow: hidden; */
-    /* border-radius: 10px; */
+    border-radius: 10px;
 }
-
+/* 
 .container-fluid .sidebar .sidebar-menu ul li.active::before {
     content: '';
     position: absolute;
@@ -360,7 +361,7 @@
     width: 5px;
     height: 100%;
     background-color: var(--green);
-}
+} */
 
 .container-fluid .sidebar .sidebar-menu ul li.active a span {
     font-weight: 600;
