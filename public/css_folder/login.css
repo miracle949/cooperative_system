@@ -46,8 +46,8 @@ div.container-fluid {
     /* background-color: #F9FAFB; */
     /* background-color: #F7F9F8; */
     /* background-color: #EAEDEB; */
-    /* background-color: var(--cream); */
-    background-color: #F8FBFC;
+    background-color: var(--cream);
+    /* background-color: #F8FBFC; */
     /* background-color: #ffffff; */
     /* background-color: #1450470d; */
     /* background-color: #FFFAF0; */
@@ -109,15 +109,16 @@ div.container-fluid {
 }
 
 .container-fluid .form-image .form-body .form-portal {
-    font-size: 11px;
+    font-size: 11.5px;
     text-transform: uppercase;
     color: var(--gold);
     position: relative;
     display: flex;
     align-items: center;
-    font-weight: 600;
+    font-weight: 500;
     gap: 10px;
-    letter-spacing: .16em;
+    /* letter-spacing: .16em; */
+    letter-spacing: .2em;
     /* font-weight: 600; */
     /* margin-top: 1rem; */
 }
@@ -125,7 +126,7 @@ div.container-fluid {
 .container-fluid .form-image .form-body .form-portal::before {
     content: '';
     width: 30px;
-    height: 2px;
+    height: 1px;
     background-color: var(--gold);
 }
 
@@ -202,11 +203,12 @@ div.container-fluid {
 .left-diagonal {
     position: absolute;
     inset: 0;
-    background: linear-gradient(108deg,
+    background-color: var(--teal);
+    /* background: linear-gradient(108deg,
             rgba(15, 61, 52, .85) 0%,
             rgba(15, 61, 52, .72) 38%,
             rgba(15, 61, 52, .1) 65%,
-            rgba(15, 61, 52, .55) 100%);
+            rgba(15, 61, 52, .55) 100%); */
     /* background: linear-gradient(
             rgba(15, 61, 52, .85) 0%,
             rgba(15, 61, 52, .72) 38%,
@@ -236,7 +238,8 @@ div.container-fluid {
 
 .container-fluid .form-image .form-nav a {
     text-decoration: none;
-    color: #808080;
+    /* color: #808080; */
+    color: rgba(255, 255, 255, 0.55);
 }
 
 .container-fluid .form-image .form-nav a .fa {
@@ -244,7 +247,8 @@ div.container-fluid {
 }
 
 .container-fluid .form-image .form-nav a span {
-    color: #808080;
+    /* color: #808080; */
+    color: rgba(255, 255, 255, 0.55);
     font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
@@ -290,22 +294,22 @@ div.container-fluid {
 
 
 .container-fluid .form-parent .nav-form .nav-tag {
-    font-size: 11px;
+    font-size: 11.5px;
     text-transform: uppercase;
-    color: var(--gold);
-    font-weight: 600;
+    color: var(--blue);
+    font-weight: 500;
     /* margin-bottom: 12px; */
     display: flex;
     align-items: center;
-    gap: 10px;
-    letter-spacing: .16em;
+    gap: 12px;
+    letter-spacing: .2em;
 }
 
 .container-fluid .form-parent .nav-form .nav-tag::before {
     content: '';
     width: 30px;
-    height: 2px;
-    background-color: var(--gold);
+    height: 1px;
+    background: var(--blue);
 }
 
 .container-fluid .form-parent p {
@@ -322,8 +326,8 @@ div.container-fluid {
     right: -12px;
     width: 60px;
     height: 60px;
-    border-top: 2px solid var(--gold);
-    border-right: 2px solid var(--gold);
+    border-top: 2px solid var(--blue);
+    border-right: 2px solid var(--blue);
     opacity: 0.4;
     pointer-events: none;
 }
@@ -334,8 +338,8 @@ div.container-fluid {
     left: -12px;
     width: 60px;
     height: 60px;
-    border-bottom: 2px solid var(--gold);
-    border-left: 2px solid var(--gold);
+    border-bottom: 2px solid var(--blue);
+    border-left: 2px solid var(--blue);
     opacity: 0.4;
     pointer-events: none;
 }
@@ -343,7 +347,7 @@ div.container-fluid {
 .form-nav-divider {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--gold), rgba(201, 168, 76, 0.1), transparent);
+    background: linear-gradient(90deg, var(--blue), rgba(201, 168, 76, 0.1), transparent);
     margin-top: 1.5rem;
     /* margin-bottom: 2.2rem; */
 }
@@ -392,8 +396,9 @@ div.container-fluid {
 .container-fluid h2 {
     font-size: 40px;
     /* color: var(--green); */
-    color: #212529;
-    font-weight: 700;
+    /* color: #212529; */
+    color: var(--ink);
+    font-weight: 500;
     margin: 0px 0 0;
     font-family: "Playfair Display";
     width: 100%;
@@ -403,24 +408,25 @@ div.container-fluid {
 .container-fluid h2 b {
     font-family: "Playfair Display";
     font-style: italic;
-    color: var(--teal);
+    color: var(--blue);
+    font-weight: 500;
 }
 
 .container-fluid p {
     font-size: 14.5px;
     font-weight: 400;
     margin: 0;
-    /* color: var(--muted); */
+    color: var(--muted);
     /* color: #212529; */
-    color: #808080;
+    /* color: #808080; */
 }
 
 .container-fluid .form-input label {
-    font-size: 11px;
+    font-size: 11.5px;
     text-transform: uppercase;
     /* letter-spacing: 0.25em; */
-    letter-spacing: 0.25em;
-    color: var(--text-muted);
+    letter-spacing: .06em;
+    color: var(--muted);
     /* color: var(--ink2); */
     /* color: #FFFFFFAC; */
     /* color: var(--muted); */
@@ -435,14 +441,15 @@ div.container-fluid {
     /* border: 1px solid rgba(0, 0, 0, 0.3); */
     /* border: 1px solid #ccc; */
     background-color: #ffffff;
+    color: var(--ink);
     padding: 13px 16px 13px 50px;
     /* border: 1.5px solid rgba(201, 168, 76, 0.25); */
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--line);
     /* border: 1px solid var(--line); */
     width: 100%;
     /* outline: 1px solid var(--green); */
-    border-radius: 4px;
-    color: #181e1c;
+    border-radius: 8px;
+    /* color: #181e1c; */
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -453,13 +460,13 @@ div.container-fluid {
 } */
 
 .container-fluid .form-input input:focus {
-    border-color: var(--gold);
+    border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1), 0 2px 12px rgba(201, 168, 76, 0.06);
 }
 
 .container-fluid .form-input input:focus+.focus-bar {
     transform: scaleX(1);
-    border-color: var(--gold);
+    border-color: var(--blue);
 }
 
 /* Animated focus bar under input */
@@ -507,7 +514,8 @@ div.container-fluid {
     /* color: #181e1c; */
     /* color: #1a5c50; */
     /* color: #757575; */
-    color: #bbb;
+    color: var(--muted);
+    font-weight: 300;
     /* color: var(--green); */
     /* color: #fdfdfb; */
 }
@@ -517,24 +525,24 @@ div.container-fluid {
 }
 
 .container-fluid button {
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 13.5px;
     position: relative;
-    background-color: var(--green);
+    background-color: var(--blue);
     letter-spacing: 0.25em;
     padding: 13px;
     text-transform: uppercase;
-    box-shadow: 0 4px 20px rgba(26, 74, 58, 0.25);
+    /* box-shadow: 0 4px 20px rgba(26, 74, 58, 0.25); */
 }
 
-.container-fluid button::before {
+/* .container-fluid button::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, rgba(201, 168, 76, 0.15) 0%, transparent 60%);
     opacity: 0;
     transition: opacity 0.3s;
-}
+} */
 
 .loading {
     position: absolute;
@@ -556,9 +564,9 @@ div.container-fluid {
 }
 
 .form-forgot a {
-    color: var(--green);
+    color: var(--blue);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 14.5px;
 }
 
@@ -573,8 +581,8 @@ div.container-fluid {
 }
 
 .form-change a {
-    color: var(--green);
-    font-weight: 600;
+    color: var(--blue);
+    font-weight: 500;
     text-decoration: none;
 }
 

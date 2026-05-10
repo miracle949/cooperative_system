@@ -36,8 +36,10 @@
     <div class="nav-acc tw:flex tw:gap-x-[0.7rem]">
 
         <div class="nav-button">
+            <!-- <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
+                style="border-radius: 28px">Get Started <i class="fa fa-arrow-right"></i></a> -->
             <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
-                style="border-radius: 28px">Get Started <i class="fa fa-arrow-right"></i></a>
+                style="border-radius: 28px">Member Login</a>
         </div>
     </div>
 </nav>

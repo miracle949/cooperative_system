@@ -9,8 +9,8 @@
     <div class="sidebar-menu">
         <ul>
             <div class="navigation">
-                <div class="menu" style="padding: 4px 10px 8px;">
-                    <p>Navigation</p>
+                <div class="menu" style="padding: 4px 10px 4px;">
+                    <p>Main</p>
                 </div>
                 <li class="{{ request()->routeIs('MemberPortal') ? 'active' : '' }}">
                     <a href="{{ route('MemberPortal') }}">

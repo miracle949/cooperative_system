@@ -14,9 +14,11 @@
 
         <!-- <i class="fa fa-bars" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu1"
                 aria-controls="staticBackdrop"></i> -->
-        <button class="collapse-button" onclick="toggleSidebar()">
+        <!-- <button class="collapse-button" onclick="toggleSidebar()">
             <i class="fa fa-bars"></i>
-        </button>
+        </button> -->
+
+        <h5>Good day, {{ $username }} <span>Here's your overview</span></h5>
     </div>
 
     <!-- <div class="nav-list nav-list2">

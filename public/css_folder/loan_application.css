@@ -42,7 +42,7 @@
     /* margin-top: 70px; */
     /* background-color: #F9FAFB; */
     /* background-color: #ffffff; */
-    /* background-color: var(--cream); */
+    background-color: var(--cream);
     height: calc(100vh - 70px);
     overflow-y: auto;
 }
@@ -88,7 +88,8 @@
 .container-fluid main .main-parent .table-header .main-button button {
     padding: 10px 25px;
     /* background-color: var(--green); */
-    background: linear-gradient(135deg, var(--forest) 0%, var(--forest-l) 100%);
+    /* background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%); */
+    background-color: var(--teal);
     color: #ffffff;
     font-size: 13.5px;
     border-radius: 10px;

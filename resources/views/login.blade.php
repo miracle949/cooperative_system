@@ -133,7 +133,7 @@
                             <label>Email Address</label>
                             <div style="position: relative;">
                                 <div class="envelope"
-                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--gold);">
+                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--blue);">
                                     <i class="fa fa-envelope"></i>
                                 </div>
                                 <input type="text" name="login" value="{{ old('login') }}"
@@ -146,7 +146,7 @@
                             <label>Password</label>
                             <div style="position: relative;">
                                 <div class="lock"
-                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--gold);">
+                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--blue);">
                                     <i class="fa fa-lock"></i>
                                 </div>
                                 <input type="password" name="password" id="login-password"

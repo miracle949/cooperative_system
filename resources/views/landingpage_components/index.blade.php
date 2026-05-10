@@ -188,7 +188,9 @@
         <section class="" id="section1">
 
             <div class="card-side">
-                <span>What We Offer</span>
+                <div class="card-tag">
+                    What We Offer
+                </div>
 
                 <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2>
 
@@ -309,7 +311,8 @@
 
 
             <div class="header">
-                <span>Loan Products</span>
+                <!-- <span>Loan Products</span> -->
+                <div class="products-tag">Loan Products</div>
 
                 <h2 class="text-left reveal reveal-delay-1">Choose a Loan Built
                     for <b>Your Needs</b></h2>
@@ -581,7 +584,8 @@
 
         <section id="section6">
             <div class="header">
-                <span>What We Offer</span>
+                <!-- <span>What We Offer</span> -->
+                <div class="section6-tag">What We Offer</div>
 
                 <h2>Everything a Cooperative <b>Needs to Thrive</b></h2>
             </div>
@@ -663,9 +667,9 @@
             </div>
             <div class="section-text reveal reveal-delay-2">
                 <div class="header">
-                    <span>About us</span>
+                    <div class="header-tag">About us</div>
                 </div>
-                <h2 class="text-left">Rooted in Community. Driven by Trust.</h2>
+                <h2 class="text-left">Rooted in Community, <b>Driven by Trust.</b></h2>
 
                 <div class="">
                     <p class="text-left">For over two decades, KPMPCATS has been the financial backbone of its members —
@@ -731,7 +735,8 @@
         <section id="section4">
 
             <div class="header">
-                <span>Member Stories</span>
+                <!-- <span>Member Stories</span> -->
+                <div class="section4-tag">Member Stories</div>
                 <h2 class="text-left">What Our <b>Members Say</b></h2>
                 <p class="text-left">Real experiences from the people who trust us with their financial future.</p>
             </div>
