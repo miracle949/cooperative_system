@@ -66,7 +66,8 @@
     /* background-color: var(--cream); */
     /* background-color: #F5F6FA; */
     /* margin-top: 70px; */
-    background-color: #F8FBFC;
+    /* background-color: #F8FBFC; */
+    background-color: #F4F6FA;
 }
 
 .container-fluid .main-parent main h2{
@@ -297,7 +298,7 @@
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     /* border: 1px solid #E2E8E5; */
     /* border: 1px solid var(--line); */
-    box-shadow: var(--shadow-card);
+    /* box-shadow: var(--shadow-card); */
     border: 1px solid rgba(229, 224, 214, 0.6);
     background-color: #ffffff;
     border-radius: 20px;
@@ -579,7 +580,7 @@
     /* height: 100%; */
     background-color: #ffffff;
     /* border: 1px solid var(--border); */
-    box-shadow: var(--shadow-card);
+    /* box-shadow: var(--shadow-card); */
     border: 1px solid rgba(229, 224, 214, 0.6);
     border-radius: 20px;
     /* padding: 2rem; */
@@ -599,7 +600,7 @@
 .container-fluid .member-status .member-account {
     width: 100%;
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
-    box-shadow: var(--shadow-card);
+    /* box-shadow: var(--shadow-card); */
     border: 1px solid rgba(229, 224, 214, 0.6);
     /* border: 1px solid #E2E8E5; */
     /* border: 1px solid var(--border2); */
@@ -712,7 +713,7 @@
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5; */
     /* border: 1px solid var(--border); */
-    box-shadow: var(--shadow-card);
+    /* box-shadow: var(--shadow-card); */
     border: 1px solid rgba(229, 224, 214, 0.6);
     background-color: #ffffff;
     border-radius: 20px;
@@ -799,7 +800,7 @@
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5; */
     /* border: 1px solid var(--border); */
-    box-shadow: var(--shadow-card);
+    /* box-shadow: var(--shadow-card); */
     border: 1px solid rgba(229, 224, 214, 0.6);
     background-color: #ffffff;
     border-radius: 20px;

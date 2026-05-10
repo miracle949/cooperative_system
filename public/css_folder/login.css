@@ -46,7 +46,8 @@ div.container-fluid {
     /* background-color: #F9FAFB; */
     /* background-color: #F7F9F8; */
     /* background-color: #EAEDEB; */
-    background-color: var(--cream);
+    /* background-color: var(--cream); */
+    background-color: #F8FBFC;
     /* background-color: #ffffff; */
     /* background-color: #1450470d; */
     /* background-color: #FFFAF0; */
@@ -445,6 +446,7 @@ div.container-fluid {
     outline: none;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
+
 /* 
 .container-fluid .form-input input::placeholder {
     color: #bbb;

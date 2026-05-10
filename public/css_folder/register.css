@@ -227,7 +227,7 @@ div.container-fluid {
     /* background: rgba(255, 255, 255, 0.97); */
     /* background-color: var(--cream); */
     /* background-color: #ffffff; */
-    background: rgba(247, 245, 240, .9);
+    /* background: rgba(247, 245, 240, .9); */
     /* background-color: #ffffff; */
     /* background-color: #ffffff; */
     box-shadow: var(--shadow-sm);
@@ -395,7 +395,8 @@ div.container-fluid {
 
 .container-fluid .rightbar .main{
     padding: 2rem 3rem 2rem 3rem;
-    background-color: var(--cream);
+    /* background-color: var(--cream); */
+    background-color: #F8FBFC;
     /* background-color: #ffffff; */
 }
 
@@ -814,7 +815,7 @@ label {
 .actions {
     display: flex;
     justify-content: flex-end;
-    padding: 0px 0 40px 0;
+    padding: 0px 0 15px 0;
     /* padding: 30px;
     background-color: #ffffff; */
     width: 100%;

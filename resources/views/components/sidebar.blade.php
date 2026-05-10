@@ -2,7 +2,7 @@
     <div class="sidebar-logo">
         <img src="images/logo2.png" alt="">
         <div class="side-text">
-            <h3><b>KPMP</b>CATS</h3>
+            <h3>KPMPCATS</h3>
             <p>Member Management</p>
         </div>
     </div>

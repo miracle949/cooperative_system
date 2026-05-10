@@ -77,6 +77,10 @@
     font-size: 12px;
 }
 
+::-webkit-scrollbar{
+    scrollbar-width: none;
+}
+
 .container-fluid .loading-screen {
     position: absolute;
     width: 100%;
@@ -101,8 +105,9 @@
     width: 260px;
     height: 100%;
     /* border-right: 1px solid var(--border); */
-    /* background-color: var(--green); */
-    background-color: #ffffff;
+    background-color: var(--green);
+    /* background-color: #1A1E21; */
+    /* background-color: #ffffff; */
     box-shadow: var(--shadow-card);
     scrollbar-width: none;
 }
@@ -134,26 +139,29 @@
 .container-fluid .sidebar .sidebar-logo .side-text h3 {
     margin: 0;
     font-size: 18px;
-    font-weight: 600;
-    color: var(--green);
+    font-weight: 700;
+    /* color: var(--green); */
     /* color: #ffffff; */
-    color: #1A1A1A;
+    /* color: #1A1A1A; */
     /* color: var(--ink2); */
-    /* font-family: "Playfair Display"; */
+    color: #ffffff;
+    font-family: "Playfair Display";
     letter-spacing: .16em;
     width: 100%;
 }
-
+/* 
 .container-fluid .sidebar .sidebar-logo .side-text h3 b {
     color: var(--green);
-}
+} */
 
 .container-fluid .sidebar .sidebar-logo .side-text p {
     margin: 5px 0 0;
     /* color: #c8e6dc; */
     color: #808080;
+    /* color: var(--gold); */
     font-size: 12.5px;
-    font-weight: 500;
+    font-weight: 600;
+    /* letter-spacing: .16em; */
 }
 
 /* .container-fluid .sidebar .sidebar-logo h3 b{
@@ -174,7 +182,7 @@
     padding: 24px 0;
     height: calc(100vh - 78px);
     overflow-y: auto;
-    scrollbar-width: none;
+    /* scrollbar-width: none; */
 }
 
 .container-fluid .sidebar .sidebar-menu ul .menu {
@@ -293,8 +301,11 @@
     /* color: #212529; */
     /* color: #c8e6dc; */
     /* color: #1A1A1A; */
-    color: #6A7181;
+    /* color: #6A7181; */
     /* color: var(--muted); */
+    /* color: #FFFFFFA6; */
+    /* color: #70747B; */
+    color: #7E8386;
     font-size: 14.5px;
     font-weight: 600;
 }
@@ -307,34 +318,40 @@
     /* color: #212529; */
     /* color: #c8e6dc; */
     /* color: #1A1A1A; */
-    color: #6A7181;
+    /* color: #6A7181; */
     /* color: var(--muted); */
+    /* color: #FFFFFFA6; */
+    /* color: #70747B; */
+    color: #7E8386;
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover {
     /* background-color: #1450470d; */
     /* background-color: #17573f; */
     /* background-color: var(--green); */
-    background-color: var(--forest-light);
+    /* background-color: var(--forest-light); */
     /* background-color: #1E836C; */
+    background-color: #ffffff;
     /* background-color: var(--green); */
     border-radius: 10px;
 
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover a {
-    transform: translateX(5%);
+    transform: translateX(3%);
     transition: all 0.5s ease-out;
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover a .fa {
     /* color: #ffffff; */
-    color: var(--muted);
+    /* color: var(--muted); */
+    color: var(--forest);
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover a span {
     /* color: #ffffff; */
-    color: var(--muted);
+    /* color: var(--muted); */
+    color: var(--forest);
 }
 
 .container-fluid .sidebar .sidebar-menu ul li.active {
@@ -342,16 +359,18 @@
     /* background-color: #ffffff; */
     /* background-color: #1E836C; */
     /* border-radius: 10px; */
+    background-color: var(--teal);
     /* background-color: var(--green); */
     /* background-color: var(--green); */
     /* background-color: var(--forest-light); */
-    background: rgba(26, 92, 80, 0.13);
+    /* background: rgba(26, 92, 80, 0.13); */
     position: relative;
     /* border-radius: 10px; */
     /* color: #ffffff; */
     /* overflow: hidden; */
     border-radius: 10px;
 }
+
 /* 
 .container-fluid .sidebar .sidebar-menu ul li.active::before {
     content: '';
@@ -369,8 +388,8 @@
     /* color: #ffffff; */
     /* color: var(--green); */
     /* color: #1E6B55; */
-    /* color: #ffffff; */
-    color: var(--forest);
+    color: #ffffff;
+    /* color: var(--forest); */
 }
 
 .container-fluid .sidebar .sidebar-menu ul li.active a .fa {
@@ -379,8 +398,8 @@
     /* color: var(--ink2); */
     /* color: var(--green); */
     /* color: #1E6B55; */
-    /* color: #ffffff; */
-    color: var(--forest);
+    color: #ffffff;
+    /* color: var(--forest); */
 }
 
 .container-fluid .sidebar .sidebar-menu ul .sidebar-divider {
@@ -930,6 +949,12 @@
 @media only screen and (min-width: 1300px) {
     .container-fluid .sidebar .sidebar-menu ul {
         height: 100%;
+    }
+
+    .container-fluid .sidebar .sidebar-menu ul .logout li {
+        /* margin: 0 22px 0; */
+        margin-bottom: 1rem;
+
     }
 }
 
