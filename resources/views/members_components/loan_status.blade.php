@@ -31,7 +31,7 @@
 
             <main>
                 <div class="parent-main">
-                    <div class="main-header">
+                    {{-- <div class="main-header">
                         <div class="main-badge">
                             <a href="#">Home</a>
                             <span>></span>
@@ -41,39 +41,52 @@
                         <p>Track your active loan, view payment history, and manage documents.</p>
                     </div>
 
-                    <h4>Filter transaction:</h4>
+                    <h4>Filter transaction:</h4> --}}
 
-                    <div class="filter-parent">
+                    <h3>My Loan Histories <span>- history & status</span></h3>
 
-                        <div class="loan-type">
-                            <select name="loan_type" id="" class="form-select">
-                                <option value="">Choose loan type</option>
-                                <option value="Personal Loan">Personal Loan</option>
-                                <option value="Business Loan">Business Loan</option>
-                                <option value="Emergency Loan">Emergency Loan</option>
-                                <option value="Education Loan">Education Loan</option>
-                            </select>
-                        </div>
+                    <div class="parent-header">
+                        <div class="filter-parent">
 
-                        <div class="reference">
-                            <select name="reference" id="" class="form-select">
-                                <option value="">Choose reference</option>
-                                <option value="KPM-2026-48291">KPM-2026-48291</option>
-                                <option value="KPM-2026-48291">KPM-2026-48291</option>
-                                <option value="KPM-2026-48291">KPM-2026-48291</option>
-                                <option value="KPM-2026-48291">KPM-2026-48291</option>
-                                <option value="KPM-2026-48291">KPM-2026-48291</option>
-                            </select>
+                            <div class="search-parent">
+                                <i class="fa fa-search"></i>
+                                <input type="search" name="search" placeholder="Search by reference or type of loan">
+                            </div>
+
+                            <div class="loan-type">
+                                <select name="loan_type" id="" class="form-select" required>
+                                    <option value="" selected disabled style="color: #c4c0b8">Choose loan type</option>
+                                    <option value="Personal Loan">Personal Loan</option>
+                                    <option value="Business Loan">Business Loan</option>
+                                    <option value="Emergency Loan">Emergency Loan</option>
+                                    <option value="Education Loan">Education Loan</option>
+                                </select>
+                            </div>
+
+                            <div class="reference">
+                                <select name="reference" id="" class="form-select" required>
+                                    <option value="" selected disabled style="color: #c4c0b8">Choose reference</option>
+                                    <option value="KPM-2026-48291">KPM-2026-48291</option>
+                                    <option value="KPM-2026-48291">KPM-2026-48291</option>
+                                    <option value="KPM-2026-48291">KPM-2026-48291</option>
+                                    <option value="KPM-2026-48291">KPM-2026-48291</option>
+                                    <option value="KPM-2026-48291">KPM-2026-48291</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
                     <div class="loan-hero">
+                        <div class="alh-bg1"></div>
+                        <div class="alh-bg2"></div>
+                        <div class="alh-bg3"></div>
                         <div class="left-hero">
                             <span>Active Loan</span>
 
                             <h3>Personal Loan</h3>
 
-                            <p style="color: #808080; font-weight: 500; margin-top: 0.3rem;">KPM-2026-48291 · Active April 15, 2026</p>
+                            <p style="color: #808080; font-weight: 500; margin-top: 0.3rem;">KPM-2026-48291 · Active
+                                April 15, 2026</p>
 
                             <div class="parent-progress">
                                 <div class="progress-header">
@@ -89,10 +102,36 @@
 
                                 <p>₱12,500 remaining of ₱15,000 principal</p>
                             </div>
-                            
+
                         </div>
                         <div class="right-hero">
+                            <div class="alh-parent">
+                                <div class="alh-stat">
+                                    <span>Monthly Due</span>
+                                    <h5>₱2,083.00</h5>
+                                    <p>Every 15th</p>
+                                </div>
+                                <div class="alh-stat">
+                                    <span>Next Due</span>
+                                    <h5>June 15</h5>
+                                    <p>9 days away</p>
+                                </div>
+                                <div class="alh-stat">
+                                    <span>Balance</span>
+                                    <h5>₱15,500.00</h5>
+                                    <p>Remaining</p>
+                                </div>
+                            </div>
+                            {{-- <div class="hero-parent">
 
+                            </div> --}}
+                        </div>
+                    </div>
+
+                    <div class="status-alert">
+                        <i class="fa fa-check-circle"></i>
+                        <div class="status-alert-text">
+                            Your first payment of <strong>₱2,083.33</strong> was received on <strong>May 15, 2026</strong>. Your account is in good standing. Next payment due <strong>June 15, 2026</strong>.
                         </div>
                     </div>
                 </div>
@@ -122,7 +161,7 @@
                         <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form">
                             @csrf
                             <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
-                            <input type="hidden" name="member_id" value="{{ auth()->id() }}">
+                            <input type=" hidden" name="member_id" value="{{ auth()->id() }}">
                             <input type="hidden" name="payment_number" value="{{ $lendingStatus->payments_made + 1 }}">
 
                             <div class="modal-body" style="padding: 1.6rem; background: #fff;">

@@ -83,7 +83,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--forest) 0%, var(--gold) 50%, var(--forest) 100%);
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold) 50%, var(--gold) 100%);
             border-radius: 24px 24px 0 0;
         }
 
@@ -97,7 +97,7 @@
         .modal-invoice-sidebar {
             width: 250px;
             flex-shrink: 0;
-            background: linear-gradient(160deg, var(--forest-m) 0%, var(--forest) 60%, #1a3d2c 100%);
+            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal-dark) 60%, var(--teal-dark) 100%);
             padding: 26px 18px;
             display: flex;
             flex-direction: column;
@@ -139,12 +139,13 @@
         }
 
         .mis-title {
-            font-size: 19px;
+            font-size: 16px;
             font-weight: 700;
             color: #fff;
             position: relative;
             z-index: 1;
             margin-bottom: 1px;
+            /* font-family: "Playfair Display"; */
         }
 
         .mis-sub {
@@ -1133,7 +1134,7 @@
 
         .modal-footer-bar {
             padding: 14px 20px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--line);
             background: #fafafa;
             display: flex;
             align-items: center;
@@ -1183,16 +1184,18 @@
 
         .m-btn-outline {
             background: transparent;
-            color: var(--forest);
-            border: 1.5px solid var(--forest);
+            color: var(--accent);
+            /* border: 1.5px solid var(--blue); */
+            border: 1.5px solid var(--line)
         }
 
         .m-btn-outline:hover {
-            background: var(--forest-pale);
+            /* background: var(--blue); */
+            border: 1.5px solid var(--accent)
         }
 
         .m-btn-primary {
-            background: linear-gradient(135deg, var(--forest), var(--forest-l));
+            background: linear-gradient(135deg, var(--accent), var(--accent));
             color: #fff;
             box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
@@ -1393,7 +1396,7 @@
             <div class="main-sub-parent">
                 <main>
                     <div class="main-parent">
-                        <div class="main-header">
+                        {{-- <div class="main-header">
                             <div class="main-badge">
                                 <a href="#">Home</a>
                                 <span>></span>
@@ -1401,7 +1404,7 @@
                             </div>
                             <h2>Loan Application</h2>
                             <p>Manage your loan applications and track their status.</p>
-                        </div>
+                        </div> --}}
 
                         @if(!$canApplyLoan)
                             <div
@@ -1505,7 +1508,7 @@
                 <div class="modal-layout">
                     <!-- Live Invoice Sidebar -->
                     <div class="modal-invoice-sidebar">
-                        <div style="position:relative;z-index:1">
+                        <div style="position:relative;z-index:1;" class="d-flex flex-column align-items-start gap-1">
                             <div class="mis-eyebrow">Live Preview</div>
                             <div class="mis-title">Loan Invoice</div>
                             <div class="mis-sub">Updates as you fill</div>

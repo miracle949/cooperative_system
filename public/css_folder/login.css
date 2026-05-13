@@ -69,7 +69,7 @@ div.container-fluid {
     height: 100%;
     max-width: 50%;
     /* background-image: linear-gradient(160deg, rgba(26, 77, 58, 0.82) 0%, rgba(10, 30, 20, 0.70) 100%), url("../images/loginbg.jpg"); */
-    background-color: var(--green);
+    background-color: var(--teal);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -136,16 +136,17 @@ div.container-fluid {
 }
 
 .container-fluid .form-image h3 {
-    font-size: 40px;
-    width: 250px;
+    font-size: 42px;
+    width: 350px;
     line-height: 50px;
     margin: 2rem 0 0 0;
     font-family: "Playfair Display";
+    font-weight: 500;
 }
 
 .container-fluid .form-image h3 b {
     color: var(--gold);
-    font-weight: 600;
+    font-weight: 500;
     font-style: italic;
     font-family: "Playfair Display";
 }
@@ -162,7 +163,8 @@ div.container-fluid {
     color: var(--gold);
     font-weight: 600;
     margin: 0;
-    font-size: 21px;
+    /* font-size: 21px; */
+    font-size: 22px;
 }
 
 .container-fluid .form-image .total-members .members span {
@@ -189,10 +191,9 @@ div.container-fluid {
     animation: slowZoom 18s ease-in-out infinite alternate;
 } */
 
-.left-bg {
+/* .left-bg {
     position: absolute;
     inset: 0;
-    /* background: url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=1400&q=90') center/cover no-repeat; */
     background: url("../images/login-bg.jpg")center/cover no-repeat;
     filter: brightness(.38) saturate(.75);
     transform: scale(1.02);
@@ -204,20 +205,42 @@ div.container-fluid {
     position: absolute;
     inset: 0;
     background-color: var(--teal);
-    /* background: linear-gradient(108deg,
+    background: linear-gradient(108deg,
             rgba(15, 61, 52, .85) 0%,
             rgba(15, 61, 52, .72) 38%,
             rgba(15, 61, 52, .1) 65%,
-            rgba(15, 61, 52, .55) 100%); */
-    /* background: linear-gradient(
+            rgba(15, 61, 52, .55) 100%);
+    background: linear-gradient(
             rgba(15, 61, 52, .85) 0%,
             rgba(15, 61, 52, .72) 38%,
             rgba(15, 61, 52, .1) 65%,
-            rgba(15, 61, 52, .55) 100%); */
-    /* background-color: rgba(15, 61, 52, .85); */
-    /* background: linear-gradient(105deg, rgba(15, 61, 52, .55) 0%, rgba(15, 61, 52, .1) 45%, rgba(15, 61, 52, .6) 100%); */
-    /* background: linear-gradient(105deg, rgba(15, 61, 52, .55) 0%, rgba(15, 61, 52, .1) 45%, rgba(15, 61, 52, .6) 100%); */
+            rgba(15, 61, 52, .55) 100%);
+    background-color: rgba(15, 61, 52, .85);
+    background: linear-gradient(105deg, rgba(15, 61, 52, .55) 0%, rgba(15, 61, 52, .1) 45%, rgba(15, 61, 52, .6) 100%);
+    background: linear-gradient(105deg, rgba(15, 61, 52, .55) 0%, rgba(15, 61, 52, .1) 45%, rgba(15, 61, 52, .6) 100%);
     z-index: 1;
+} */
+
+.container-fluid .form-image::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(201, 168, 76, 0.07);
+}
+
+.container-fluid .form-image::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: 20%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .container-fluid .form-image .form-nav {
@@ -240,24 +263,27 @@ div.container-fluid {
     text-decoration: none;
     /* color: #808080; */
     color: rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .container-fluid .form-image .form-nav a .fa {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .container-fluid .form-image .form-nav a span {
     /* color: #808080; */
     color: rgba(255, 255, 255, 0.55);
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 600;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
 }
 
 .container-fluid .form-box-parent {
     /* width: 50%; */
     /* padding: 10.5rem 4rem 2.5rem; */
-    padding: 2.5rem 4rem;
+    /* padding: 2.5rem 4rem; */
     /* width: 100vh; */
     width: 100%;
     height: 100vh;
@@ -296,7 +322,7 @@ div.container-fluid {
 .container-fluid .form-parent .nav-form .nav-tag {
     font-size: 11.5px;
     text-transform: uppercase;
-    color: var(--blue);
+    color: var(--accent);
     font-weight: 500;
     /* margin-bottom: 12px; */
     display: flex;
@@ -309,7 +335,7 @@ div.container-fluid {
     content: '';
     width: 30px;
     height: 1px;
-    background: var(--blue);
+    background: var(--accent);
 }
 
 .container-fluid .form-parent p {
@@ -326,8 +352,8 @@ div.container-fluid {
     right: -12px;
     width: 60px;
     height: 60px;
-    border-top: 2px solid var(--blue);
-    border-right: 2px solid var(--blue);
+    border-top: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
     opacity: 0.4;
     pointer-events: none;
 }
@@ -338,8 +364,8 @@ div.container-fluid {
     left: -12px;
     width: 60px;
     height: 60px;
-    border-bottom: 2px solid var(--blue);
-    border-left: 2px solid var(--blue);
+    border-bottom: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
     opacity: 0.4;
     pointer-events: none;
 }
@@ -347,7 +373,7 @@ div.container-fluid {
 .form-nav-divider {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--blue), rgba(201, 168, 76, 0.1), transparent);
+    background: linear-gradient(90deg, var(--accent), rgba(201, 168, 76, 0.1), transparent);
     margin-top: 1.5rem;
     /* margin-bottom: 2.2rem; */
 }
@@ -367,7 +393,7 @@ div.container-fluid {
     content: '';
     flex: 1;
     height: 1px;
-    background-color: var(--border);
+    background-color: var(--line);
 }
 
 .container-fluid .form-parent .form-divider p {
@@ -398,7 +424,7 @@ div.container-fluid {
     /* color: var(--green); */
     /* color: #212529; */
     color: var(--ink);
-    font-weight: 500;
+    font-weight: 300;
     margin: 0px 0 0;
     font-family: "Playfair Display";
     width: 100%;
@@ -408,7 +434,7 @@ div.container-fluid {
 .container-fluid h2 b {
     font-family: "Playfair Display";
     font-style: italic;
-    color: var(--blue);
+    color: var(--accent);
     font-weight: 500;
 }
 
@@ -460,13 +486,13 @@ div.container-fluid {
 } */
 
 .container-fluid .form-input input:focus {
-    border-color: var(--blue);
+    border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1), 0 2px 12px rgba(201, 168, 76, 0.06);
 }
 
 .container-fluid .form-input input:focus+.focus-bar {
     transform: scaleX(1);
-    border-color: var(--blue);
+    border-color: var(--accent);
 }
 
 /* Animated focus bar under input */
@@ -526,14 +552,21 @@ div.container-fluid {
 
 .container-fluid button {
     border-radius: 8px;
-    font-size: 13.5px;
+    font-size: 12.5px;
     position: relative;
-    background-color: var(--blue);
+    background-color: var(--accent);
     letter-spacing: 0.25em;
     padding: 13px;
     text-transform: uppercase;
     /* box-shadow: 0 4px 20px rgba(26, 74, 58, 0.25); */
+    transition: background .2s, transform .15s;
 }
+
+.container-fluid button:hover {
+    background: var(--teal);
+    transform: scale(1.03);
+}
+
 
 /* .container-fluid button::before {
     content: '';
@@ -564,7 +597,7 @@ div.container-fluid {
 }
 
 .form-forgot a {
-    color: var(--blue);
+    color: var(--accent);
     text-decoration: none;
     font-weight: 500;
     font-size: 14.5px;
@@ -572,6 +605,7 @@ div.container-fluid {
 
 .form-change label {
     letter-spacing: none;
+    color: var(--muted);
 }
 
 .form-change label,
@@ -581,7 +615,7 @@ div.container-fluid {
 }
 
 .form-change a {
-    color: var(--blue);
+    color: var(--accent);
     font-weight: 500;
     text-decoration: none;
 }
@@ -623,7 +657,8 @@ div.container-fluid {
 @media only screen and (min-height: 590px) {
     .container-fluid .form-box-parent {
         /* width: 50%; */
-        padding: 10.5rem 4rem 3.5rem;
+        /* padding: 10.5rem 4rem 3.5rem; */
+        padding: 9.5rem 4rem 3.5rem;
         /* padding: 2.5rem 4rem; */
         /* width: 100vh; */
     }
@@ -657,6 +692,16 @@ div.container-fluid {
         font-size: 21px;
     }
 } */
+
+@media only screen and (min-width: 1300px) {
+    .container-fluid .form-box-parent {
+        /* width: 50%; */
+        /* padding: 10.5rem 4rem 3.5rem; */
+        padding: 3.5rem 4rem 3.5rem;
+        /* padding: 2.5rem 4rem; */
+        /* width: 100vh; */
+    }
+}
 
 @media only screen and (max-width: 1200px) {
     .login-image {

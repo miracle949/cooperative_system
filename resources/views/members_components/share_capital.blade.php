@@ -273,7 +273,6 @@
 <body>
 
     <div class="container-fluid p-0 m-0">
-        @include("components.navbar2")
         @include("components.offcanvas")
 
         {{-- ═══════════════════════════════════════
@@ -370,390 +369,408 @@
             </div>
         @endif
 
-        <main>
+        @include("components.sidebar")
 
-            {{-- ═══════════════════════════════════════
-            ADD / MANAGE SHARE CAPITAL MODAL
-            ═══════════════════════════════════════ --}}
-            <div class="modal fade" id="shareCapital" tabindex="-1" aria-labelledby="shareCapitalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content"
-                        style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 24px 60px rgba(0,0,0,0.15);">
+        <div class="rightbar">
+            @include("components.navbar2")
 
-                        <div class="modal-header" style="background: #1a4a3a; border: none; padding: 1.25rem 1.5rem;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div
-                                    style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fa fa-coins" style="color: #fff; font-size: 15px;"></i>
-                                </div>
-                                <div>
-                                    <h5 class="modal-title mb-0" id="shareCapitalLabel"
-                                        style="color: #fff; font-size: 15px; font-weight: 600;">Manage Share Capital
-                                    </h5>
-                                    <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase
-                                        additional shares</p>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-close btn-close-white m-0" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
+            <main>
 
-                        <div class="modal-body"
-                            style="padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                {{-- ═══════════════════════════════════════
+                ADD / MANAGE SHARE CAPITAL MODAL
+                ═══════════════════════════════════════ --}}
+                <div class="modal fade" id="shareCapital" tabindex="-1" aria-labelledby="shareCapitalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content"
+                            style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 24px 60px rgba(0,0,0,0.15);">
 
-                            <form action="{{ route('share_capital.store') }}" method="POST" id="modal-sc-form">
-                                @csrf
-
-                                {{-- Current balance pill --}}
-                                <div
-                                    style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                    <span style="font-size: 13px; color: #888;">Current Balance</span>
-                                    <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">
-                                        ₱{{ number_format($currentBalance ?? 0, 0) }} · {{ $currentShares ?? 0 }} shares
-                                    </span>
-                                </div>
-
-                                {{-- ── Inline error banner (withdrawal validation) ──
-                                Placed ABOVE the shares stepper so it's visible immediately --}}
-                                <div class="sc-inline-error" id="modal-inline-error">
-                                    <i class="fa fa-circle-exclamation"></i>
-                                    <span id="modal-inline-error-text"></span>
-                                </div>
-
-                                <p style="margin: 0 0 8px; font-size: 13px; color: #666;">Number of shares</p>
-                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                                    <button type="button" id="modal-dec"
-                                        style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                                    <input type="number" name="shares" id="modal-shares" value="1" min="1" readonly
-                                        style="width: 60px; text-align: center; font-size: 14.5px; font-weight: 600; color: #1a4a3a; border: 1.5px solid #ddd; border-radius: 10px; padding: 6px;">
-                                    <button type="button" id="modal-inc"
-                                        style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
-                                </div>
-
-                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
-                                    <button type="button" class="modal-qbtn active" data-v="1"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1
-                                        shares</button>
-                                    <button type="button" class="modal-qbtn" data-v="5"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5
-                                        shares</button>
-                                    <button type="button" class="modal-qbtn" data-v="10"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10
-                                        shares</button>
-                                    <button type="button" class="modal-qbtn" data-v="25"
-                                        style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25
-                                        shares</button>
-                                </div>
-
-                                <p style="font-size: 12px; color: #888; margin-bottom: 1rem;">
-                                    Cost: <strong id="modal-cost" style="color: #1a4a3a;">₱1,000</strong> · ₱1,000 per
-                                    Share
-                                </p>
-
-                                <hr style="border-color: #eee; margin: 0 0 1rem;">
-
-                                {{-- ══════════════════════════════════════════════
-                                TYPE DROPDOWN
-                                • No account (balance=0, shares=0) → Subscription only
-                                • Has account → Deposit / Withdrawal
-                                ══════════════════════════════════════════════ --}}
-                                <div style="margin-bottom: 0.9rem;">
-                                    <label
-                                        style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Type</label>
-                                    <select name="type" id="modal-type" required
-                                        style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
-                                        <option value="">Select type..</option>
-                                        <option value="Deposit">Deposit</option>
-                                        <option value="Withdrawal">Withdrawal</option>
-                                    </select>
-                                </div>
-
-                                {{-- Withdrawal notice (shown when Withdrawal is selected) --}}
-                                <div id="modal-withdrawal-notice"
-                                    style="display:none; background:#fff8e1; border:1.5px solid #ffe082; border-radius:10px; padding:0.65rem 1rem; margin-bottom:0.9rem; font-size:12px; color:#856404; line-height:1.5;">
-                                    <i class="fa fa-circle-info" style="margin-right:6px;"></i>
-                                    Withdrawal requests are subject to admin approval. Your current share balance will
-                                    <strong>not</strong> be reduced until the request is approved.
-                                </div>
-
-                                <div style="margin-bottom: 0.9rem;">
-                                    <label
-                                        style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Payment
-                                        Method</label>
-                                    <select class="select-form" name="payment_method" id="modal-pay" required
-                                        style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
-                                        <option value="" disabled selected>Select payment method...</option>
-                                        <option value="cash">Cash</option>
-                                        <option value="gcash">GCash</option>
-                                    </select>
-                                </div>
-
-                                <div style="margin-bottom: 0.5rem;">
-                                    <label style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">
-                                        Note <span style="font-size: 11px; color: #bbb;">(optional)</span>
-                                    </label>
-                                    <input type="text" name="note" id="modal-note"
-                                        placeholder="e.g. Monthly contribution"
-                                        style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; box-sizing: border-box;">
-                                </div>
-
-                                {{-- GCash pay box --}}
-                                <div id="modal-gcash-box"
-                                    style="display: none; margin-top: 0.8rem; background: #f0f7ff; border: 1.5px solid #c2deff; border-radius: 12px; padding: 0.75rem 1rem; align-items: center; justify-content: space-between; gap: 10px;">
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <div
-                                            style="width: 32px; height: 32px; background: #007DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                            <i class="fa-solid fa-mobile-screen-button"
-                                                style="color: #fff; font-size: 14px;"></i>
-                                        </div>
-                                        <div>
-                                            <p style="margin: 0; font-size: 13px; font-weight: 700; color: #0056b3;">Pay
-                                                via GCash</p>
-                                            <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure payment
-                                            </p>
-                                        </div>
+                            <div class="modal-header"
+                                style="background: #1a4a3a; border: none; padding: 1.25rem 1.5rem;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div
+                                        style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-coins" style="color: #fff; font-size: 15px;"></i>
                                     </div>
-                                    <button type="button" onclick="submitModalGcash()"
-                                        style="background: #007DFF; color: #fff; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">
-                                        Pay Now
-                                    </button>
+                                    <div>
+                                        <h5 class="modal-title mb-0" id="shareCapitalLabel"
+                                            style="color: #fff; font-size: 15px; font-weight: 600;">Manage Share Capital
+                                        </h5>
+                                        <p style="margin: 0; color: rgba(255,255,255,0.65); font-size: 12px;">Purchase
+                                            additional shares</p>
+                                    </div>
                                 </div>
+                                <button type="button" class="btn-close btn-close-white m-0" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
 
-                            </form>
+                            <div class="modal-body"
+                                style="padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
 
-                            {{-- Hidden GCash redirect form --}}
-                            <form id="modal-gcash-form" action="{{ route('share_capital.gcash') }}" method="POST"
-                                style="display:none;">
-                                @csrf
-                                <input type="hidden" name="shares" id="modal-gcash-shares">
-                                <input type="hidden" name="note" id="modal-gcash-note">
-                                <input type="hidden" name="type" id="modal-gcash-type">
-                            </form>
+                                <form action="{{ route('share_capital.store') }}" method="POST" id="modal-sc-form">
+                                    @csrf
+
+                                    {{-- Current balance pill --}}
+                                    <div
+                                        style="background: #f5f5f5; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <span style="font-size: 13px; color: #888;">Current Balance</span>
+                                        <span style="font-size: 13px; font-weight: 600; color: #1a1a1a;">
+                                            ₱{{ number_format($currentBalance ?? 0, 0) }} · {{ $currentShares ?? 0 }}
+                                            shares
+                                        </span>
+                                    </div>
+
+                                    {{-- ── Inline error banner (withdrawal validation) ──
+                                    Placed ABOVE the shares stepper so it's visible immediately --}}
+                                    <div class="sc-inline-error" id="modal-inline-error">
+                                        <i class="fa fa-circle-exclamation"></i>
+                                        <span id="modal-inline-error-text"></span>
+                                    </div>
+
+                                    <p style="margin: 0 0 8px; font-size: 13px; color: #666;">Number of shares</p>
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                        <button type="button" id="modal-dec"
+                                            style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
+                                        <input type="number" name="shares" id="modal-shares" value="1" min="1" readonly
+                                            style="width: 60px; text-align: center; font-size: 14.5px; font-weight: 600; color: #1a4a3a; border: 1.5px solid #ddd; border-radius: 10px; padding: 6px;">
+                                        <button type="button" id="modal-inc"
+                                            style="width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid #ddd; background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
+                                    </div>
+
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                                        <button type="button" class="modal-qbtn active" data-v="1"
+                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1
+                                            shares</button>
+                                        <button type="button" class="modal-qbtn" data-v="5"
+                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5
+                                            shares</button>
+                                        <button type="button" class="modal-qbtn" data-v="10"
+                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">10
+                                            shares</button>
+                                        <button type="button" class="modal-qbtn" data-v="25"
+                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">25
+                                            shares</button>
+                                    </div>
+
+                                    <p style="font-size: 12px; color: #888; margin-bottom: 1rem;">
+                                        Cost: <strong id="modal-cost" style="color: #1a4a3a;">₱1,000</strong> · ₱1,000
+                                        per
+                                        Share
+                                    </p>
+
+                                    <hr style="border-color: #eee; margin: 0 0 1rem;">
+
+                                    {{-- ══════════════════════════════════════════════
+                                    TYPE DROPDOWN
+                                    • No account (balance=0, shares=0) → Subscription only
+                                    • Has account → Deposit / Withdrawal
+                                    ══════════════════════════════════════════════ --}}
+                                    <div style="margin-bottom: 0.9rem;">
+                                        <label
+                                            style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Type</label>
+                                        <select name="type" id="modal-type" required
+                                            style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
+                                            <option value="">Select type..</option>
+                                            <option value="Deposit">Deposit</option>
+                                            <option value="Withdrawal">Withdrawal</option>
+                                        </select>
+                                    </div>
+
+                                    {{-- Withdrawal notice (shown when Withdrawal is selected) --}}
+                                    <div id="modal-withdrawal-notice"
+                                        style="display:none; background:#fff8e1; border:1.5px solid #ffe082; border-radius:10px; padding:0.65rem 1rem; margin-bottom:0.9rem; font-size:12px; color:#856404; line-height:1.5;">
+                                        <i class="fa fa-circle-info" style="margin-right:6px;"></i>
+                                        Withdrawal requests are subject to admin approval. Your current share balance
+                                        will
+                                        <strong>not</strong> be reduced until the request is approved.
+                                    </div>
+
+                                    <div style="margin-bottom: 0.9rem;">
+                                        <label
+                                            style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Payment
+                                            Method</label>
+                                        <select class="select-form" name="payment_method" id="modal-pay" required
+                                            style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; background: #fff;">
+                                            <option value="" disabled selected>Select payment method...</option>
+                                            <option value="cash">Cash</option>
+                                            <option value="gcash">GCash</option>
+                                        </select>
+                                    </div>
+
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <label
+                                            style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">
+                                            Note <span style="font-size: 11px; color: #bbb;">(optional)</span>
+                                        </label>
+                                        <input type="text" name="note" id="modal-note"
+                                            placeholder="e.g. Monthly contribution"
+                                            style="width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd; font-size: 14px; color: #333; box-sizing: border-box;">
+                                    </div>
+
+                                    {{-- GCash pay box --}}
+                                    <div id="modal-gcash-box"
+                                        style="display: none; margin-top: 0.8rem; background: #f0f7ff; border: 1.5px solid #c2deff; border-radius: 12px; padding: 0.75rem 1rem; align-items: center; justify-content: space-between; gap: 10px;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div
+                                                style="width: 32px; height: 32px; background: #007DFF; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                <i class="fa-solid fa-mobile-screen-button"
+                                                    style="color: #fff; font-size: 14px;"></i>
+                                            </div>
+                                            <div>
+                                                <p
+                                                    style="margin: 0; font-size: 13px; font-weight: 700; color: #0056b3;">
+                                                    Pay
+                                                    via GCash</p>
+                                                <p style="margin: 0; font-size: 11px; color: #5a8ac4;">Fast & secure
+                                                    payment
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="submitModalGcash()"
+                                            style="background: #007DFF; color: #fff; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                            Pay Now
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                                {{-- Hidden GCash redirect form --}}
+                                <form id="modal-gcash-form" action="{{ route('share_capital.gcash') }}" method="POST"
+                                    style="display:none;">
+                                    @csrf
+                                    <input type="hidden" name="shares" id="modal-gcash-shares">
+                                    <input type="hidden" name="note" id="modal-gcash-note">
+                                    <input type="hidden" name="type" id="modal-gcash-type">
+                                </form>
+
+                            </div>
+
+                            <div class="modal-footer"
+                                style="border: none; padding: 0 1.5rem 1.25rem; flex-direction: column; gap: 8px;">
+                                <button type="submit" form="modal-sc-form" id="modal-submit-btn"
+                                    style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa fa-coins"></i> Confirm Transaction
+                                </button>
+                                <button type="button" data-bs-dismiss="modal"
+                                    style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
+                                    Cancel
+                                </button>
+                            </div>
 
                         </div>
+                    </div>
+                </div>
 
-                        <div class="modal-footer"
-                            style="border: none; padding: 0 1.5rem 1.25rem; flex-direction: column; gap: 8px;">
-                            <button type="submit" form="modal-sc-form" id="modal-submit-btn"
-                                style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="fa fa-coins"></i> Confirm Transaction
+                <div class="main-parent">
+                    {{-- ═══════════════════════════════════════
+                    PAGE ACTION BUTTONS
+                    ═══════════════════════════════════════ --}}
+                    <div class="parent-main">
+                        <div class="download">
+                            <button>
+                                <i class="fa fa-arrow-down"></i>
+                                <span>Download Statement</span>
                             </button>
-                            <button type="button" data-bs-dismiss="modal"
-                                style="width: 100%; padding: 0.7rem; background: transparent; color: #888; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; cursor: pointer;">
-                                Cancel
+                        </div>
+                        <div class="share">
+                            <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                                <i class="fa fa-coins"></i>
+                                <span>Manage Share Capital</span>
                             </button>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-parent">
-                {{-- ═══════════════════════════════════════
-                PAGE ACTION BUTTONS
-                ═══════════════════════════════════════ --}}
-                <div class="parent-main">
-                    <div class="download">
-                        <button>
-                            <i class="fa fa-arrow-down"></i>
-                            <span>Download Statement</span>
-                        </button>
-                    </div>
-                    <div class="share">
-                        <button data-bs-toggle="modal" data-bs-target="#shareCapital">
-                            <i class="fa fa-coins"></i>
-                            <span>Manage Share Capital</span>
-                        </button>
-                    </div>
-                </div>
-
-                {{-- ═══════════════════════════════════════
-                STAT CARDS
-                ═══════════════════════════════════════ --}}
-                <div class="sc-stat-grid">
-
-                    <div class="sc-stat-card green" style="animation-delay:.05s">
-                        <div class="sc-stat-icon green">
-                            <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
-                        </div>
-                        <div class="sc-stat-label">Current Balance</div>
-                        <div class="sc-stat-value green">₱{{ number_format($currentBalance, 0) }}</div>
-                        <div class="sc-stat-sub">{{ $currentShares }} shares</div>
                     </div>
 
-                    <div class="sc-stat-card gold {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                        style="animation-delay:.10s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scRateModal') title='View dividend rate details'" : '' }}>
-                        @if($currentBalance > 0)
-                        <div class="sc-info-badge">i</div>@endif
-                        <div class="sc-stat-icon gold">
-                            <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
+                    {{-- ═══════════════════════════════════════
+                    STAT CARDS
+                    ═══════════════════════════════════════ --}}
+                    <div class="sc-stat-grid">
+
+                        <div class="sc-stat-card green" style="animation-delay:.05s">
+                            <div class="sc-stat-icon green">
+                                <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
+                            </div>
+                            <div class="sc-stat-label">Current Balance</div>
+                            <div class="sc-stat-value green">₱{{ number_format($currentBalance, 0) }}</div>
+                            <div class="sc-stat-sub">{{ $currentShares }} shares</div>
                         </div>
-                        <div class="sc-stat-label">Dividend Rate</div>
-                        <div class="sc-stat-value gold">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}</div>
-                        <div class="sc-stat-sub">
-                            {{ $currentBalance > 0 ? 'Annual return · click to learn' : 'No share capital yet' }}</div>
+
+                        <div class="sc-stat-card gold {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                            style="animation-delay:.10s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                            {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scRateModal') title='View dividend rate details'" : '' }}>
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon gold">
+                                <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
+                            </div>
+                            <div class="sc-stat-label">Dividend Rate</div>
+                            <div class="sc-stat-value gold">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}
+                            </div>
+                            <div class="sc-stat-sub">
+                                {{ $currentBalance > 0 ? 'Annual return · click to learn' : 'No share capital yet' }}
+                            </div>
+                        </div>
+
+                        <div class="sc-stat-card purple {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                            style="animation-delay:.15s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                            {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scLastModal') title='View last dividend details'" : '' }}>
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon purple">
+                                <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
+                            </div>
+                            <div class="sc-stat-label">Last Dividend</div>
+                            <div class="sc-stat-value purple">
+                                @if($currentBalance <= 0) —
+                                @elseif($lastDividendAmount) ₱{{ number_format($lastDividendAmount, 0) }}
+                                @else —
+                                @endif
+                            </div>
+                            <div class="sc-stat-sub">
+                                @if($currentBalance <= 0) No share capital yet
+                                @elseif($lastDividendDate) {{ $lastDividendPeriod }} · click to learn
+                                @else No payouts yet · click to learn
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="sc-stat-card blue {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                            style="animation-delay:.20s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
+                            {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scNextModal') title='View next dividend details'" : '' }}>
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon blue">
+                                <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
+                            </div>
+                            <div class="sc-stat-label">Next Dividend</div>
+                            <div class="sc-stat-value blue">
+                                {{ $currentBalance > 0 ? $nextDividendDate->format('M d, Y') : '—' }}
+                            </div>
+                            <div class="sc-stat-sub">
+                                {{ $currentBalance > 0 ? $nextDividendPeriod . ' · click to learn' : 'No share capital yet' }}
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="sc-stat-card purple {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                        style="animation-delay:.15s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scLastModal') title='View last dividend details'" : '' }}>
-                        @if($currentBalance > 0)
-                        <div class="sc-info-badge">i</div>@endif
-                        <div class="sc-stat-icon purple">
-                            <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
-                        </div>
-                        <div class="sc-stat-label">Last Dividend</div>
-                        <div class="sc-stat-value purple">
-                            @if($currentBalance <= 0) —
-                            @elseif($lastDividendAmount) ₱{{ number_format($lastDividendAmount, 0) }}
-                            @else —
-                            @endif
-                        </div>
-                        <div class="sc-stat-sub">
-                            @if($currentBalance <= 0) No share capital yet
-                            @elseif($lastDividendDate) {{ $lastDividendPeriod }} · click to learn
-                            @else No payouts yet · click to learn
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="sc-stat-card blue {{ $currentBalance > 0 ? 'clickable' : '' }}"
-                        style="animation-delay:.20s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
-                        {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scNextModal') title='View next dividend details'" : '' }}>
-                        @if($currentBalance > 0)
-                        <div class="sc-info-badge">i</div>@endif
-                        <div class="sc-stat-icon blue">
-                            <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
-                        </div>
-                        <div class="sc-stat-label">Next Dividend</div>
-                        <div class="sc-stat-value blue">
-                            {{ $currentBalance > 0 ? $nextDividendDate->format('M d, Y') : '—' }}</div>
-                        <div class="sc-stat-sub">
-                            {{ $currentBalance > 0 ? $nextDividendPeriod . ' · click to learn' : 'No share capital yet' }}
-                        </div>
-                    </div>
-
-                </div>
-
-                {{-- ═══════════════════════════════════════
-                CONTRIBUTION HISTORY
-                ═══════════════════════════════════════ --}}
-                <div class="contribution-parent">
-                    <h3>Contribution History</h3>
-                    <div class="parent-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Reference No.</th>
-                                    <th>Shares</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($contributions as $row)
+                    {{-- ═══════════════════════════════════════
+                    CONTRIBUTION HISTORY
+                    ═══════════════════════════════════════ --}}
+                    <div class="contribution-parent">
+                        <h3>Contribution History</h3>
+                        <div class="parent-table">
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <td>{{ \Carbon\Carbon::parse($row->transaction_date)->format('M d, Y') }}</td>
-                                        <td>{{ $row->type }}</td>
-                                        <td>{{ $row->reference_no }}</td>
-                                        <td>{{ (int) $row->shares }}</td>
-                                        <td>₱{{ number_format($row->total_amount, 0) }}</td>
-                                        <td>
-                                            @if($row->status === 'Completed' || $row->status === null)
-                                                <i class="fa fa-check-circle" style="color: #1a4a3a;"></i>
-                                                <span>Completed</span>
-                                            @elseif($row->status === 'Pending' && strtolower($row->type) === 'withdrawal')
-                                                <i class="fa fa-clock" style="color: #e6a817;"></i>
-                                                <span>Pending</span>
-                                            @else
-                                                <i class="fa fa-times-circle" style="color: #e03131;"></i>
-                                                <span>{{ $row->status }}</span>
-                                            @endif
-                                        </td>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Reference No.</th>
+                                        <th>Shares</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
                                     </tr>
-                                @empty
+                                </thead>
+                                <tbody>
+                                    @forelse($contributions as $row)
+                                        <tr>
+                                            <td>{{ \Carbon\Carbon::parse($row->transaction_date)->format('M d, Y') }}</td>
+                                            <td>{{ $row->type }}</td>
+                                            <td>{{ $row->reference_no }}</td>
+                                            <td>{{ (int) $row->shares }}</td>
+                                            <td>₱{{ number_format($row->total_amount, 0) }}</td>
+                                            <td>
+                                                @if($row->status === 'Completed' || $row->status === null)
+                                                    <i class="fa fa-check-circle" style="color: #1a4a3a;"></i>
+                                                    <span>Completed</span>
+                                                @elseif($row->status === 'Pending' && strtolower($row->type) === 'withdrawal')
+                                                    <i class="fa fa-clock" style="color: #e6a817;"></i>
+                                                    <span>Pending</span>
+                                                @else
+                                                    <i class="fa fa-times-circle" style="color: #e03131;"></i>
+                                                    <span>{{ $row->status }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6"
+                                                style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
+                                                <i class="fa fa-inbox"
+                                                    style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                                                No contributions yet.<br>
+                                                <span style="font-size: 11px;">Start by subscribing to share capital.</span>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- ═══════════════════════════════════════
+                    DIVIDEND HISTORY TABLE
+                    ═══════════════════════════════════════ --}}
+                    <div class="dividend-parent">
+                        <div
+                            style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
+                            <h3 style="margin:0;">Dividend History</h3>
+                            <span class="dividend-rate-chip">
+                                <i class="fa fa-percent" style="font-size:10px;"></i>
+                                Current Rate: {{ $dividendRate }}% p.a.
+                            </span>
+                        </div>
+                        <div class="parent-table">
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <td colspan="6"
-                                            style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
-                                            <i class="fa fa-inbox"
-                                                style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
-                                            No contributions yet.<br>
-                                            <span style="font-size: 11px;">Start by subscribing to share capital.</span>
-                                        </td>
+                                        <th>Period</th>
+                                        <th>Dividend Rate</th>
+                                        <th>Share Capital</th>
+                                        <th>Dividend Amount</th>
+                                        <th>Date Paid</th>
                                     </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @forelse($dividendHistory as $div)
+                                        <tr>
+                                            <td>{{ $div->period_label }}</td>
+                                            <td><span
+                                                    style="color:#C9A84C;font-weight:600;">{{ $div->dividend_rate }}%</span>
+                                            </td>
+                                            <td>₱{{ number_format($div->share_capital, 0) }}</td>
+                                            <td><span
+                                                    style="color:#1a4a3a;font-weight:600;">₱{{ number_format($div->dividend_amount, 0) }}</span>
+                                            </td>
+                                            <td>{{ \Carbon\Carbon::parse($div->date_paid)->format('M d, Y') }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5"
+                                                style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
+                                                <i class="fa fa-inbox"
+                                                    style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
+                                                No dividend history yet.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                {{-- ═══════════════════════════════════════
-                DIVIDEND HISTORY TABLE
-                ═══════════════════════════════════════ --}}
-                <div class="dividend-parent">
-                    <div
-                        style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem;">
-                        <h3 style="margin:0;">Dividend History</h3>
-                        <span class="dividend-rate-chip">
-                            <i class="fa fa-percent" style="font-size:10px;"></i>
-                            Current Rate: {{ $dividendRate }}% p.a.
-                        </span>
-                    </div>
-                    <div class="parent-table">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Period</th>
-                                    <th>Dividend Rate</th>
-                                    <th>Share Capital</th>
-                                    <th>Dividend Amount</th>
-                                    <th>Date Paid</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($dividendHistory as $div)
-                                    <tr>
-                                        <td>{{ $div->period_label }}</td>
-                                        <td><span style="color:#C9A84C;font-weight:600;">{{ $div->dividend_rate }}%</span>
-                                        </td>
-                                        <td>₱{{ number_format($div->share_capital, 0) }}</td>
-                                        <td><span
-                                                style="color:#1a4a3a;font-weight:600;">₱{{ number_format($div->dividend_amount, 0) }}</span>
-                                        </td>
-                                        <td>{{ \Carbon\Carbon::parse($div->date_paid)->format('M d, Y') }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5"
-                                            style="text-align: center; color: #aaa; padding: 2rem; font-size: 13px;">
-                                            <i class="fa fa-inbox"
-                                                style="font-size: 24px; display: block; margin-bottom: 8px;"></i>
-                                            No dividend history yet.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+            </main>
+        </div>
 
         {{-- ═══════════════════════════════════════
         ERROR TOAST
         ═══════════════════════════════════════ --}}
         @if(session('error'))
             <div style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                            background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                            padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                            display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                                background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                                padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                display: flex; align-items: center; gap: 12px; max-width: 360px;">
                 <div style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                                display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>

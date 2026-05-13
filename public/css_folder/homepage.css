@@ -59,8 +59,10 @@
 
 .container-fluid .main-parent {
     padding: 2rem 2rem 2rem;
-    height: 100vh;
+    height: calc(100vh - 70px);
     overflow-y: auto;
+    /* height: 100vh;
+    overflow-y: auto; */
     /* height: calc(100vh - 70px);
     overflow-y: auto; */
     /* background-color: var(--cream); */
@@ -69,6 +71,7 @@
     /* background-color: #F8FBFC; */
     /* background-color: #F4F6FA; */
     background-color: var(--cream);
+    /* background-color: #0f1623; */
 }
 
 .container-fluid .main-parent main h2 {
@@ -627,7 +630,7 @@
 }
 
 .container-fluid .member-status .member-account .member-head .icon {
-    background-color: var(--green);
+    background-color: var(--teal);
     width: 50px;
     height: 50px;
     min-width: 50px;
@@ -788,7 +791,7 @@
 
 .container-fluid .member-status .share-capital .share-body .body-footer a {
     text-decoration: none;
-    background-color: var(--green);
+    background-color: var(--teal);
     color: #ffffff;
     padding: 10px 30px;
     font-size: 13.5px;
@@ -876,7 +879,7 @@
 
 .container-fluid .member-status .savings-account .savings-body .body-footer a {
     text-decoration: none;
-    background-color: var(--green);
+    background-color: var(--teal);
     /* color: var(--green-dark); */
     color: #ffffff;
     padding: 10px 30px;

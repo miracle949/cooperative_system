@@ -14,9 +14,9 @@
 
         <!-- <i class="fa fa-bars" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu1"
                 aria-controls="staticBackdrop"></i> -->
-        <!-- <button class="collapse-button" onclick="toggleSidebar()">
+        <button class="collapse-button" onclick="toggleSidebar()">
             <i class="fa fa-bars"></i>
-        </button> -->
+        </button> 
 
         <h5>Good day, {{ $username }} <span>Here's your overview</span></h5>
     </div>
@@ -56,9 +56,9 @@
             aria-controls="staticBackdrop"></i>
     </div>
 
-    <div class="nav-acc2" id="nav-acc2">
+    {{-- <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa fa-bell" style="font-size: 17px; color: var(--green)"></i>
+            <i class="fa fa-bell" style="font-size: 17px; color: var(--blue)"></i>
             <li>
                 @if ($username)
                     @php
@@ -99,29 +99,12 @@
                     @endphp
                     <a href="#" onclick="toggleDropdown(event)"
                         class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem] position-relative">
-                        {{-- <img src="images/unnamed.png" width="35px" height="35px" style="border-radius: 50%" alt="">
-                        --}}
                         <div class="first-last">
                             <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</p>
                         </div>
                         <p style="margin: 0">
                             {{ auth()->user()->first_name ?? '' }}
                         </p>
-                        <!-- <div class="name">
-                                <div class="fullname">
-                                    <p style="margin: 0">
-                                        {{ auth()->user()->first_name ?? '' }}
-                                    </p>
-                                    <p>
-                                        {{ auth()->user()->last_name ?? '' }}
-                                    </p>
-                                </div>
-                                <div class="email">
-                                    <p style="margin: 0; font-size: 12px; color: var(--gray)">
-                                        {{ auth()->user()->email ?? '' }}
-                                    </p>
-                                </div>
-                            </div> -->
                         @if($navMissingCount > 0)
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                                 style="font-size: 12px; padding: 4px 8px;">
@@ -163,7 +146,7 @@
                 </ul>
             </li>
         </ul>
-    </div>
+    </div> --}}
 
     <script>
         function toggleDropdown(e) {

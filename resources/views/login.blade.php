@@ -57,22 +57,24 @@
 
         <div class="form-image">
 
-            <div class="left-bg"></div>
-            <div class="left-diagonal"></div>
+            {{-- <div class="left-bg"></div>
+            <div class="left-diagonal"></div> --}}
 
             <div class="form-nav">
                 <h4>KPMPCATS</h4>
 
                 <a href="{{ route("index") }}">
                     <i class="fa fa-chevron-left"></i>
-                    <span>Home</span>
+                    {{-- <i class="fa fa-arrow-left"></i> --}}
+                    <span>Back to Home</span>
                 </a>
             </div>
 
             <div class="form-body">
                 <div class="form-portal">Member Portal</div>
 
-                <h3>Welcome <b>Back, Member</b></h3>
+                {{-- <h3>Welcome <b>Back, Member</b></h3> --}}
+                <h3>Your <b>Cooperative,</b> Your Dashboard</h3>
 
                 <div class="line"></div>
 

@@ -4,64 +4,34 @@
    ═══════════════════════════════════════════════════ */
 
 /* ── CSS Variables ── */
-:root {
-    --teal: #1a5c50;
-    --forest: #1a4a3a;
-    --forest-deep: #122e25;
-    --forest-mid: #2d6a4f;
-    --forest-light: rgba(26, 74, 58, 0.07);
-    --gold: #C9A84C;
-    --gold-light: rgba(201, 168, 76, 0.10);
-    --purple: #7C3AED;
-    --purple-light: rgba(124, 58, 237, 0.08);
-    --blue: #2563EB;
-    --blue-light: rgba(37, 99, 235, 0.08);
-    --text: #1a1a1a;
-    /* --muted: #6B7B74; */
-    --muted: #5a7570;
-    --muted2: #7a908b;
-    --muted3: #6b7280;
-    --ink: #1c2b28;
-    --ink2: #181e1c;
-    /* --border: #E2E8E5; */
-    --off: #F7F9F8;
-    --white: #ffffff;
-    --mist: #e8efe9;
-    --shadow: rgba(26, 74, 58, 0.10);
-    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.07);
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --green-dark: #0f2e24;
-    --cream: #f5f0e8;
-    --cream2: #f7f5f0;
-    /* Legacy aliases (share_capital.css) */
-    --green: #1a4a3a;
-    --green-light: rgba(26, 74, 58, 0.07);
-    /* --ink: #0f1a14; */
-    --border: rgba(46, 92, 58, 0.18);
-    --border2: #e5e0d6;
-    --text-muted: #6b6b5e;
-    --line: rgba(26, 92, 80, .12);
-    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
-    --gold-dim: rgba(201, 168, 76, 0.12);
-}
-
 
 /* ═══════════════════════════════════════════════════
    LAYOUT — MAIN
    ═══════════════════════════════════════════════════ */
 
+.container-fluid .rightbar {
+    /* width: calc(100% - 220px);
+    margin-left: 220px;
+    margin-top: 70px;
+    padding: 2rem 2rem 3rem; */
+    width: calc(100% - 260px);
+    margin-left: 260px;
+    /* position: relative; */
+    /* background-color: #1450470d; */
+    /* background-color: var(--cream); */
+}
+
 main {
-    padding: 3rem;
+    padding: 2rem;
     /* background-color: #EAEDEB; */
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background-color: var(--cream);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-main .main-parent{
+main .main-parent {
     width: 100%;
     max-width: 1200px;
 }
@@ -786,10 +756,10 @@ main .share button {
     padding: 10px 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5;
-    background-color: var(--green);
+    background-color: var(--teal);
     color: #ffffff;
     font-weight: 600;
-    border-radius: 7px;
+    border-radius: 10px;
     font-size: 13.5px;
 }
 

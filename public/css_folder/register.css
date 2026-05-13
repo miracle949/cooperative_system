@@ -24,6 +24,8 @@ html {
 :root {
     /* ── NEW PALETTE ── */
     --teal: #1E2A4A;
+    --teal-dark: #131a30;
+    --teal-mid: #263359;
     /* Midnight Indigo — primary brand */
     --teal-dark: #131a30;
     /* darkened Midnight */
@@ -49,6 +51,8 @@ html {
     --muted: #6b7a99;
     /* desaturated mid-blue */
     --line: rgba(30, 42, 74, .1);
+    --sidebar-width: 260px;
+    --accent: #2563eb;
 }
 
 /* 
@@ -865,7 +869,7 @@ button {
 .container-fluid .actions .btn-next {
     /* background: #2563eb; */
     /* background-color: #1E4035; */
-    background-color: var(--blue);
+    background-color: var(--accent);
     color: white;
     font-size: 14.5px;
     border-radius: 10px;
@@ -873,7 +877,7 @@ button {
 }
 
 .container-fluid .actions .btn-next:hover {
-    background-color: var(--blue);
+    background-color: var(--accent);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
@@ -899,7 +903,7 @@ button {
 }
 
 .container-fluid .actions .btn-submit:hover {
-    background-color: var(--blue);
+    background-color: var(--accent);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }

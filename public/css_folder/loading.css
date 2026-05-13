@@ -41,10 +41,22 @@
     --muted: #6b7a99;
     /* desaturated mid-blue */
     --line: rgba(30, 42, 74, .1);
+    --sidebar-width: 260px;
+    --accent: #2563eb;
 }
 
 * {
     font-family: 'Poppins', sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2a3a54;
+    /* background-color: var(--teal); */
+    border-radius: 10px;
 }
 
 .name {
@@ -54,11 +66,11 @@
     gap: 0.2rem;
 }
 
-.name .fullname {
+/* .name .fullname {
     display: flex;
     align-items: left;
     gap: 0.5rem;
-}
+} */
 
 .name p {
     margin: 0;
@@ -83,6 +95,57 @@
     justify-content: center;
     align-items: center;
     display: none;
+}
+
+.container-fluid .sidebar .account .first-last {
+    width: 35px;
+    height: 35px;
+    background-color: var(--accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.container-fluid .sidebar .account .first-last p {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.container-fluid .sidebar .account p {
+    margin: 0;
+}
+
+.container-fluid .sidebar .account .first-name p {
+    margin: 0;
+    color: #ffffff;
+}
+
+.container-fluid .sidebar .account .first-name span {
+    color: #FFFFFF80;
+    font-size: 12.5px;
+}
+
+.container-fluid .sidebar .account {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    /* margin: 0 15px; */
+    padding: 20px 16px;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+    margin-top: 3rem;
+}
+
+.container-fluid .sidebar .account .first-name .fullname {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.container-fluid .sidebar .account .first-name .fullname p {
+    font-size: 14.5px;
+    font-weight: 600;
 }
 
 .container-fluid .sidebar {
@@ -148,7 +211,8 @@
 .container-fluid .sidebar .sidebar-logo .side-text p {
     margin: 5px 0 0;
     /* color: #c8e6dc; */
-    color: #808080;
+    /* color: #808080; */
+    color: #FFFFFF80;
     /* color: var(--gold); */
     font-size: 12.5px;
     font-weight: 600;
@@ -170,7 +234,7 @@
     /* padding: 0.2rem 0.9rem 0.7rem; */
     /* padding: 0.2rem 0.7rem 0.7rem; */
     /* padding: 0.2rem 0rem 0.7rem; */
-    padding: 24px 0;
+    padding: 24px 0 0;
     height: calc(100vh - 78px);
     overflow-y: auto;
     /* scrollbar-width: none; */
@@ -212,10 +276,10 @@
 .container-fluid .sidebar .sidebar-menu ul {
     margin: 0;
     padding: 0;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 4rem;
+    gap: 4rem; */
 }
 
 .container-fluid .sidebar .sidebar-menu ul .navigation {
@@ -230,6 +294,15 @@
     /* margin: 0 22px; */
 }
 
+/* .container-fluid .sidebar .sidebar-menu ul li:nth-child(13):hover{
+    background-color: red;
+    color: #ffffff;
+}
+
+.container-fluid .sidebar .sidebar-menu ul li:nth-child(13):hover a{
+    font-weight: 600;
+} */
+
 .container-fluid .sidebar .sidebar-menu ul .logout li {
     margin: 0 22px 0;
     /* background-color: #FDECEA; */
@@ -237,7 +310,7 @@
 
 }
 
-.container-fluid .sidebar .sidebar-menu ul .logout li:hover {
+/* .container-fluid .sidebar .sidebar-menu ul .logout li:hover {
     background-color: #FDECEA;
 }
 
@@ -255,7 +328,7 @@
 
 .container-fluid .sidebar .sidebar-menu ul .logout li a {
     color: #C0392B;
-}
+} */
 
 /* .container-fluid .sidebar .sidebar-menu ul .logout{
     padding: 12px 22px;
@@ -283,6 +356,7 @@
     background-color: var(--green);
 } */
 
+
 .container-fluid .sidebar .sidebar-menu ul li a {
     text-decoration: none;
     display: flex;
@@ -301,13 +375,25 @@
     /* color: #70747B; */
     /* color: #7E8386; */
     /* color: #9BAED4; */
-    color: rgba(255, 255, 255, .5);
+    /* color: rgba(255, 255, 255, .5); */
+    color: #a0aec0;
     font-size: 14.5px;
     font-weight: 500;
 }
 
+.container-fluid .sidebar .sidebar-menu ul li a .nav-icon {
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, .15);
+    /* background-color: #243047; */
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .container-fluid .sidebar .sidebar-menu ul li a .fa {
-    font-size: 16px;
+    font-size: 14px;
     /* color: var(--green); */
     /* color: #808080; */
     /* color: #8BACA3; */
@@ -360,7 +446,7 @@
     /* background-color: #ffffff; */
     /* background-color: #1E836C; */
     /* border-radius: 10px; */
-    background-color: var(--blue);
+    background-color: var(--accent);
     /* background-color: var(--green); */
     /* background-color: var(--green); */
     /* background-color: var(--forest-light); */
@@ -368,12 +454,12 @@
     position: relative;
     /* border-radius: 10px; */
     /* color: #ffffff; */
-    /* overflow: hidden; */
-    border-radius: 10px;
+    overflow: hidden;
+    border-radius: 7px;
 }
 
-/* 
-.container-fluid .sidebar .sidebar-menu ul li.active::before {
+
+/* .container-fluid .sidebar .sidebar-menu ul li.active::before {
     content: '';
     position: absolute;
     left: 0;
@@ -381,6 +467,7 @@
     width: 5px;
     height: 100%;
     background-color: var(--green);
+    background-color: #ffffff;
 } */
 
 .container-fluid .sidebar .sidebar-menu ul li.active a span {
@@ -473,14 +560,14 @@
     gap: 1rem;
 }
 
-.container-fluid nav .nav-logo h5{
+.container-fluid nav .nav-logo h5 {
     font-size: 16px;
     margin: 0;
     color: var(--ink);
     font-weight: 600;
 }
 
-.container-fluid nav .nav-logo h5 span{
+.container-fluid nav .nav-logo h5 span {
     font-size: 13px;
     color: var(--muted);
     font-weight: 300;
@@ -551,13 +638,19 @@
     text-decoration: none; */
     color: #ffffff;
     /* background-color: #1E4035; */
-    background-color: var(--blue);
+    background-color: var(--accent);
     text-decoration: none;
-    padding: 9px 22px;
-    font-size: 12px;
+    padding: 9px 25px;
+    font-size: 12.5px;
     letter-spacing: .08em;
     font-weight: 500;
     text-transform: uppercase;
+    transition: background .2s, transform .15s;
+}
+
+.container-fluid .nav-acc .nav-button a:hover {
+    background: var(--teal);
+    transform: scale(1.03);
 }
 
 .container-fluid .nav-menu {
@@ -778,7 +871,7 @@
 .container-fluid .nav-acc2 ul li a .first-last {
     width: 35px;
     height: 35px;
-    background-color: var(--green);
+    background-color: var(--accent);
     display: flex;
     justify-content: center;
     align-items: center;
