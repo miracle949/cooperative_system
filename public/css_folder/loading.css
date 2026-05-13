@@ -276,10 +276,11 @@
 .container-fluid .sidebar .sidebar-menu ul {
     margin: 0;
     padding: 0;
-    /* display: flex;
+    display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 4rem; */
+    /* gap: 4rem; */
+    gap: 2rem;
 }
 
 .container-fluid .sidebar .sidebar-menu ul .navigation {
