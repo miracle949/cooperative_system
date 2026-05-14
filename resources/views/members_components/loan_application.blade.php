@@ -1408,7 +1408,7 @@
 
                         @if(!$canApplyLoan)
                             <div
-                                style="display:flex;align-items:flex-start;gap:12px;background:#fdf9f0;border:1.5px solid #e8d5a3;border-radius:10px;padding:14px 18px; margin-top: 18px; margin-bottom:18px;">
+                                style="display:flex;align-items:flex-start;gap:12px;background:#fdf9f0;border:1.5px solid #e8d5a3;border-radius:10px;padding:14px 18px; margin-bottom:25px;">
                                 <div
                                     style="width:36px;height:36px;border-radius:50%;background:rgba(232,213,163,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     <i class="fa fa-circle-info" style="color:#b8862a;font-size:15px;"></i>
