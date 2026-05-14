@@ -20,9 +20,9 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <!-- <div class="menu">
-                <p>Loan Management</p>
-            </div> -->
+                    <!-- <div class="menu">
+                    <p>Loan Management</p>
+                </div> -->
                 <li class="{{ request()->routeIs('LoanApplication') ? 'active' : '' }}">
                     <a href="{{ route('LoanApplication') }}">
                         <div class="nav-icon">
@@ -39,9 +39,9 @@
                         <span>Loan Status</span>
                     </a>
                 </li>
-                <!-- <div class="menu">
-                <p>Member Finance</p>
-            </div> -->
+                    <!-- <div class="menu">
+                    <p>Member Finance</p>
+                </div> -->
                 <li class="{{ request()->routeIs('ShareCapitalMember') ? 'active' : '' }}">
                     <a href="{{ route('ShareCapitalMember') }}">
                         <div class="nav-icon">
