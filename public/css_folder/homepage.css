@@ -49,12 +49,15 @@
     margin-left: 260px;
     /* height: calc(100vh - 70px);
     overflow-y: auto; */
-    transition: width 0.3s ease, margin-left 0.3s ease;
+    /* transition: width 0.1s ease, margin-left 0.1s ease-in-out; */
 }
 
 .container-fluid .rightbar.expanded {
-    width: 100%;
-    margin-left: 0;
+    /* width: calc(100% - 100px);
+    margin-left: 100px;  */
+    width: calc(100% - 100px);
+    margin-left: 100px;
+    z-index: 1;
 }
 
 .container-fluid .main-parent {
@@ -301,7 +304,7 @@
     /* width: calc(100% / 3); */
     width: 100%;
     /* padding: 15px 33px 15px 33px; */
-    padding: 15px 20px 15px 20px;
+    padding: 18px 20px;
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     /* border: 1px solid #E2E8E5; */
     /* border: 1px solid var(--line); */
@@ -469,15 +472,51 @@
     width: 100%;
 }
 
-.container-fluid main .card-box p {
+/* .container-fluid main .card-box .card-transparent{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 3rem;
+} */
+
+/* .container-fluid main .card-box p {
     color: #6B7B74;
-    font-size: 14.8px;
-    margin: 24px 0 10px;
+    font-size: 13.5px;
+    margin: 0px 0 30px;
+    margin: 0;
+} */
+
+.container-fluid main .card-box p:nth-child(1) {
+    margin: 0 0 30px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
 }
 
-.container-fluid main .card-box span {
-    color: #1A1A1A;
-    font-size: 20px;
+.container-fluid main .card-parent .card-box:nth-child(1) p:nth-child(3){
+    color: var(--mint);
+    margin: 0;
+    font-size: 12.5px;
+} 
+
+.container-fluid main .card-parent .card-box:nth-child(2) p:nth-child(3){
+    color: var(--muted);
+    margin: 0;
+    font-size: 12.5px;
+} 
+
+.container-fluid main .card-parent .card-box:nth-child(3) p:nth-child(3){
+    color: var(--coral);
+    margin: 0;
+    font-size: 12.5px;
+} 
+
+.container-fluid main .card-parent .card-box h5 {
+    color: var(--ink);
+    font-size: 21px;
+    /* margin-top: 3rem; */
+    margin: 0 0 5px;
+    font-weight: 700;
 }
 
 /* .container-fluid main .card-box:nth-child(1) {
@@ -492,7 +531,7 @@
     background-color: #B1B400;
 } */
 
-.container-fluid main .card-box:nth-child(1) span {
+/* .container-fluid main .card-box:nth-child(1) span {
     color: var(--green);
     font-weight: 600;
 }
@@ -505,7 +544,7 @@
 .container-fluid main .card-box:nth-child(3) span {
     color: var(--green);
     font-weight: 600;
-}
+} */
 
 .container-fluid main .card-box:nth-child(1) .card-icon {
     background-color: rgba(30, 64, 53, 0.07);

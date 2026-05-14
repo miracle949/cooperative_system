@@ -32,9 +32,18 @@
     padding: 2rem 2rem 3rem; */
     width: calc(100% - 260px);
     margin-left: 260px;
+    /* transition: width 0.1s ease, margin-left 0.1s ease-in-out; */
     /* position: relative; */
     /* background-color: #1450470d; */
     /* background-color: var(--cream); */
+}
+
+.container-fluid .rightbar.expanded {
+    /* width: calc(100% - 100px);
+    margin-left: 100px;  */
+    width: calc(100% - 100px);
+    margin-left: 100px;
+    z-index: 1;
 }
 
 .container-fluid .main-sub-parent {

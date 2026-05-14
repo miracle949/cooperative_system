@@ -134,6 +134,23 @@
                             Your first payment of <strong>₱2,083.33</strong> was received on <strong>May 15, 2026</strong>. Your account is in good standing. Next payment due <strong>June 15, 2026</strong>.
                         </div>
                     </div>
+
+                    <div class="payment-breakdown">
+                        <div class="payment">
+                            <div class="payment-header">
+                                <h3>Payment Schedule</h3>
+
+                                <span>1 of 12 paid</span>
+                            </div>
+
+                            <table>
+
+                            </table>
+                        </div>
+                        <div class="loan">
+
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

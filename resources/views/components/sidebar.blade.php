@@ -13,7 +13,7 @@
                     <p>Main</p>
                 </div>
                 <li class="{{ request()->routeIs('MemberPortal') ? 'active' : '' }}">
-                    <a href="{{ route('MemberPortal') }}">
+                    <a href="{{ route('MemberPortal') }}" title="Dashboard">
                         <div class="nav-icon">
                             <i class="fa fa-home"></i>
                         </div>
@@ -24,7 +24,7 @@
                 <p>Loan Management</p>
             </div> -->
                 <li class="{{ request()->routeIs('LoanApplication') ? 'active' : '' }}">
-                    <a href="{{ route('LoanApplication') }}">
+                    <a href="{{ route('LoanApplication') }}" title="Loan Application">
                         <div class="nav-icon">
                             <i class="fa fa-file"></i>
                         </div>
@@ -32,7 +32,7 @@
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('LoanStatus') ? 'active' : '' }}">
-                    <a href="{{ route('LoanStatus') }}">
+                    <a href="{{ route('LoanStatus') }}" title="Loan Status">
                         <div class="nav-icon">
                             <i class="fa fa-hand-holding-dollar"></i>
                         </div>
@@ -43,7 +43,7 @@
                 <p>Member Finance</p>
             </div> -->
                 <li class="{{ request()->routeIs('ShareCapitalMember') ? 'active' : '' }}">
-                    <a href="{{ route('ShareCapitalMember') }}">
+                    <a href="{{ route('ShareCapitalMember') }}" title="Share Capital">
                         <div class="nav-icon">
                             <i class="fa fa-coins"></i>
                         </div>

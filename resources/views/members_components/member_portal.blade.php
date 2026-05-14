@@ -195,12 +195,13 @@
                             {{-- Savings Balance --}}
                             <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
                                 <div class="card-transparent">
-                                    <div class="card-head"></div>
-                                    <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
+                                    {{-- <div class="card-head"></div> --}}
+                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
                                         <i class="fa-solid fa-wallet"></i>
-                                    </div>
-                                    <p class="mt-4">Savings Balance</p>
-                                    <span>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</span>
+                                    </div> --}}
+                                    <p>Savings Balance</p>
+                                    <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
+                                    <p>↑ +₱3,200 this month</p>
                                 </div>
                                 <div class="card-update">
                                     <div class="update">
@@ -213,12 +214,13 @@
                             {{-- Active Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
                                 <div class="card-transparent">
-                                    <div class="card-head"></div>
-                                    <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
+                                    {{-- <div class="card-head"></div> --}}
+                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
                                         <i class="fa-solid fa-arrow-trend-up"></i>
-                                    </div>
-                                    <p class="mt-4">Active Loans</p>
-                                    <span>{{ $activeLoansCount }} Loan(s)</span>
+                                    </div> --}}
+                                    <p>Active Loans</p>
+                                    <h5>{{ $activeLoansCount }} Loan(s)</h5>
+                                    <p>2 active loans</p>
                                 </div>
                                 <div class="card-update">
                                     <div class="update">
@@ -231,13 +233,14 @@
                             {{-- Overdue Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
                                 <div class="card-transparent">
-                                    <div class="card-head"></div>
-                                    <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
+                                    {{-- <div class="card-head"></div> --}}
+                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
                                         <i class="fa-solid fa-exclamation-triangle"
                                             style="color:{{ $overdueCount > 0 ? '#dc2626' : '#22c55e' }}"></i>
-                                    </div>
-                                    <p class="mt-4">Overdue Loans</p>
-                                    <span>{{ $overdueCount }} Loan(s)</span>
+                                    </div> --}}
+                                    <p>Overdue Loans</p>
+                                    <h5>{{ $overdueCount }} Loan(s)</h5>
+                                    <p>⚠ Due May 15</p>
                                 </div>
                                 <div class="card-update">
                                     <div class="update">
@@ -269,7 +272,6 @@
 
                         <div class="card-box-parent">
 
-                            {{-- Loan Applications --}}
                             <div class="loan-application">
                                 <div class="loan-head">
                                     <div>
