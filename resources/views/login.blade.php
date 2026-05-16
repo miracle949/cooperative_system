@@ -27,7 +27,16 @@
 
 <body>
 
+
     <div class="container-fluid">
+
+        <div class="bg"></div>
+        <div class="grid-lines"></div>
+        <div class="stripe"></div>
+        <div class="stripe stripe-2"></div>
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-br"></div>
+        <div class="corner corner-tr"></div>
 
         <div class="loading-screen">
 
@@ -63,7 +72,7 @@
             <div class="form-nav">
                 <h4>KPMPCATS</h4>
 
-                <a href="{{ route("index") }}">
+                <a href="{{ route(" index") }}">
                     <i class="fa fa-chevron-left"></i>
                     <span>Back to Home</span>
                 </a>
@@ -132,8 +141,7 @@
                         <div class="form-input">
                             <label>Email Address</label>
                             <div style="position: relative;">
-                                <div class="envelope"
-                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--blue);">
+                                <div class="envelope" style="position: absolute; left: 16px; top: 36.2%;">
                                     <i class="fa fa-envelope"></i>
                                 </div>
                                 <input type="text" name="login" value="{{ old('login') }}"
@@ -145,8 +153,7 @@
                         <div class="form-input">
                             <label>Password</label>
                             <div style="position: relative;">
-                                <div class="lock"
-                                    style="position: absolute; left: 16px; top: 36.2%; color: var(--blue);">
+                                <div class="lock" style="position: absolute; left: 16px; top: 36.2%;">
                                     <i class="fa fa-lock"></i>
                                 </div>
                                 <input type="password" name="password" id="login-password"
@@ -165,8 +172,8 @@
                         </div>
 
                         <div class="mt-4 form-button">
-                            <button class="tw:w-full tw:py-1.5 tw:bg-black text-white fw-bold tw:hover:bg-gray-700"
-                                id="login" type="submit">
+                            <button class="tw:w-full tw:py-1.5 tw:bg-black fw-bold tw:hover:bg-gray-700" id="login"
+                                type="submit">
                                 <span>Sign In</span>
                                 <i class="fa fa-arrow-right"></i>
                             </button>
