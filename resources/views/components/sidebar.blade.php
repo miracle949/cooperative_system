@@ -14,47 +14,47 @@
                 </div>
                 <li class="{{ request()->routeIs('MemberPortal') ? 'active' : '' }}">
                     <a href="{{ route('MemberPortal') }}" title="Dashboard">
-                        <div class="nav-icon">
-                            <i class="fa fa-home"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-home"></i>
+                        <!-- </div> -->
                         <span>Dashboard</span>
                     </a>
                 </li>
-                    <!-- <div class="menu">
+                <!-- <div class="menu">
                     <p>Loan Management</p>
                 </div> -->
                 <li class="{{ request()->routeIs('LoanApplication') ? 'active' : '' }}">
                     <a href="{{ route('LoanApplication') }}" title="Loan Application">
-                        <div class="nav-icon">
-                            <i class="fa fa-file"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-file"></i>
+                        <!-- </div> -->
                         <span>Loan Application</span>
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('LoanStatus') ? 'active' : '' }}">
                     <a href="{{ route('LoanStatus') }}" title="Loan Status">
-                        <div class="nav-icon">
-                            <i class="fa fa-hand-holding-dollar"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-hand-holding-dollar"></i>
+                        <!-- </div> -->
                         <span>Loan Status</span>
                     </a>
                 </li>
-                    <!-- <div class="menu">
+                <!-- <div class="menu">
                     <p>Member Finance</p>
                 </div> -->
                 <li class="{{ request()->routeIs('ShareCapitalMember') ? 'active' : '' }}">
                     <a href="{{ route('ShareCapitalMember') }}" title="Share Capital">
-                        <div class="nav-icon">
-                            <i class="fa fa-coins"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-coins"></i>
+                        <!-- </div> -->
                         <span>Share Capital</span>
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('savings.index') ? 'active' : '' }}">
                     <a href="{{ route('savings.index') }}">
-                        <div class="nav-icon">
-                            <i class="fa fa-piggy-bank"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-piggy-bank"></i>
+                        <!-- </div> -->
                         <span>Savings</span>
                     </a>
                 </li>
@@ -67,45 +67,45 @@
 
                 <li>
                     <a href="#">
-                        <div class="nav-icon">
-                            <i class="fa fa-user"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-user"></i>
+                        <!-- </div> -->
                         <span>My Profile</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="#">
-                        <div class="nav-icon">
-                            <i class="fa fa-receipt"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-receipt"></i>
+                        <!-- </div> -->
                         <span>Transaction</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="#">
-                        <div class="nav-icon">
-                            <i class="fa fa-bell"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-bell"></i>
+                        <!-- </div> -->
                         <span>Notifications</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="#">
-                        <div class="nav-icon">
-                            <i class="fa fa-gear"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-gear"></i>
+                        <!-- </div> -->
                         <span>Settings</span>
                     </a>
                 </li>
 
                 <li>
                     <a href="{{ route('logout') }}">
-                        <div class="nav-icon">
-                            <i class="fa fa-sign-out"></i>
-                        </div>
+                        <!-- <div class="nav-icon"> -->
+                        <i class="fa fa-sign-out"></i>
+                        <!-- </div> -->
                         <span>Logout</span>
                     </a>
                 </li>

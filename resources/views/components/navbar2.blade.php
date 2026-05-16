@@ -155,12 +155,12 @@
             document.getElementById('nav-acc2').classList.toggle('open');
         }
 
-        document.addEventListener('click', function (e) {
-            const wrap = document.getElementById('nav-acc2');
-            if (!wrap.contains(e.target)) {
-                wrap.classList.remove('open');
-            }
-        });
+        // document.addEventListener('click', function (e) {
+        //     const wrap = document.getElementById('nav-acc2');
+        //     if (!wrap.contains(e.target)) {
+        //         wrap.classList.remove('open');
+        //     }
+        // });
     </script>
 
     <script>
