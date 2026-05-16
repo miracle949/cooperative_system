@@ -55,17 +55,16 @@
             </a>
         </div> --}}
 
-        <div class="form-image">
+        {{-- <div class="form-image">
 
-            {{-- <div class="left-bg"></div>
-            <div class="left-diagonal"></div> --}}
+            <div class="left-bg"></div>
+            <div class="left-diagonal"></div>
 
             <div class="form-nav">
                 <h4>KPMPCATS</h4>
 
                 <a href="{{ route("index") }}">
                     <i class="fa fa-chevron-left"></i>
-                    {{-- <i class="fa fa-arrow-left"></i> --}}
                     <span>Back to Home</span>
                 </a>
             </div>
@@ -73,7 +72,6 @@
             <div class="form-body">
                 <div class="form-portal">Member Portal</div>
 
-                {{-- <h3>Welcome <b>Back, Member</b></h3> --}}
                 <h3>Your <b>Cooperative,</b> Your Dashboard</h3>
 
                 <div class="line"></div>
@@ -98,7 +96,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="form-box-parent">
             <div class="form-parent">
                 {{-- <div class="logo tw:flex tw:justify-center tw:items-center">
@@ -107,8 +105,8 @@
 
                 <div class="nav-form">
 
-                    <div class="card-corner"></div>
-                    <div class="card-corner-bl"></div>
+                    {{-- <div class="card-corner"></div> --}}
+                    {{-- <div class="card-corner-bl"></div> --}}
 
                     <div class="nav-tag">Member Access</div>
 
@@ -179,7 +177,7 @@
                         </div>
 
                         <div class="text-center form-change">
-                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply for Membership <i
+                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply Membership <i
                                         class="fa fa-arrow-right"></i></a></label>
                         </div>
                     </div>

@@ -52,38 +52,53 @@ div.container-fluid {
     /* background-color: #1450470d; */
     /* background-color: #FFFAF0; */
     /* background-color: #F8F8F4; */
-    position: relative;
+    /* position: relative; */
     /* padding: 0 0; */
     height: 100vh;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     /* padding: 2rem; */
     padding: 0 0;
     /* height: 100vh; */
-    overflow: hidden;
+    /* overflow: hidden; */
+    background-image: url('../images/login-bg.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* filter: brightness(0.45) saturate(1.2); */
+    z-index: 0;
+    position: fixed;
+    inset: 0;
 }
 
-.container-fluid .form-image {
+div.container-fluid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(19, 26, 48, .75) 0%, rgba(38, 51, 89, .55) 100%);
+}
+
+/* .container-fluid .form-image {
     width: 100%;
     height: 100%;
     max-width: 50%;
-    /* background-image: linear-gradient(160deg, rgba(26, 77, 58, 0.82) 0%, rgba(10, 30, 20, 0.70) 100%), url("../images/loginbg.jpg"); */
+    background-image: linear-gradient(160deg, rgba(26, 77, 58, 0.82) 0%, rgba(10, 30, 20, 0.70) 100%), url("../images/loginbg.jpg");
     background-color: var(--teal);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     padding: 2rem;
     display: flex;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: left;
     flex-direction: column;
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-    /* padding-top: 5rem; */
-    /* gap: 1.5rem; */
-}
+    padding-top: 5rem;
+    gap: 1.5rem;
+} */
 
 .container-fluid .form-image .line {
     width: 10%;
@@ -301,13 +316,22 @@ div.container-fluid {
     /* border: 1px solid rgba(0, 0, 0, 0.2); */
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid #E2E8E5; */
-    border-radius: 10px;
+    border-radius: 24px;
     /* width: 100%; */
+    z-index: 999;
     /* width: 95%; */
     width: 100%;
+    max-width: 440px;
+    /* padding: 52px 48px 48px; */
+    padding: 52px 40px 48px;
     /* width: 100%; */
     position: relative;
     animation: slideIn 0.4s ease both;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .14);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
     /* width: 100%; */
 }
 
@@ -658,7 +682,7 @@ div.container-fluid {
     .container-fluid .form-box-parent {
         /* width: 50%; */
         /* padding: 10.5rem 4rem 3.5rem; */
-        padding: 9.5rem 4rem 3.5rem;
+        padding: 15.5rem 4rem 2.5rem;
         /* padding: 2.5rem 4rem; */
         /* width: 100vh; */
     }
