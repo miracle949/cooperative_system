@@ -224,6 +224,8 @@ div.container-fluid::after {
     margin: 0 0 2.5rem 0;
     line-height: 1.6;
     width: 100%;
+    max-width: 400px;
+    line-height: 25px;
 }
 
 /* Feature list */
@@ -302,7 +304,7 @@ div.container-fluid::after {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15rem 2rem 2rem;
+    padding: 18rem 2rem 2rem;
     scrollbar-width: none;
     /* Custom scrollbar */
     /* scrollbar-width: thin;
@@ -335,7 +337,7 @@ div.container-fluid::after {
     border: 1px solid rgba(255, 255, 255, .14);
     backdrop-filter: blur(28px) saturate(160%);
     -webkit-backdrop-filter: blur(28px) saturate(160%);
-    margin-top: 5rem;
+    /* margin-top: 5rem; */
 }
 
 .container-fluid .form-parent .nav-form {
@@ -430,6 +432,7 @@ div.container-fluid::after {
     font-size: 40px;
     color: #fff;
     font-weight: 600;
+    width: 350px;
     margin: 30px 0 0;
     font-family: "Playfair Display";
 }

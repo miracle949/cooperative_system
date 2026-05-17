@@ -51,7 +51,7 @@
 
                 <div class="form-image-body">
                     <h2>Welcome Back!</h2>
-                    <p>Manage and administer the Barangay Information System.</p>
+                    <p>Manage and administer the Cooperative Membership Management System.</p>
 
                     <div class="form-image-features">
 
@@ -70,8 +70,8 @@
                                 <i class="fa-solid fa-file-lines"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Manage Certificates</span>
-                                <p>Process and approve requests</p>
+                                <span>Member Records</span>
+                                <p>Manage member information</p>
                             </div>
                         </div>
 
@@ -80,8 +80,8 @@
                                 <i class="fa-solid fa-users"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Resident Management</span>
-                                <p>View and manage resident records</p>
+                                <span>Loans & Savings</span>
+                                <p>Track loans and savings</p>
                             </div>
                         </div>
 
@@ -90,8 +90,8 @@
                                 <i class="fa-solid fa-bullhorn"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Post Announcements</span>
-                                <p>Keep the community informed</p>
+                                <span>Announcements</span>
+                                <p>Stay updated with notices</p>
                             </div>
                         </div>
 
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="form-image-footer">
-                    <p>© 2025 Barangay Information System ♥</p>
+                    <p>© 2026 Cooperative Management System ♥</p>
                 </div>
             </div>
 
