@@ -607,13 +607,15 @@ div.container-fluid::after {
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
+
 @media only screen and (min-width: 1300px) {
     .container-fluid .form-image{
         /* justify-content: end; */
     }
 
     .container-fluid .form-box-parent {
-        padding: 0rem 0rem 0rem;
+        /* padding: 0rem 0rem 0rem; */
+        padding: 25rem 2rem 2rem;
         /* justify-content: start; */
     }
 }
