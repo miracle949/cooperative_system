@@ -607,13 +607,24 @@ div.container-fluid::after {
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
+
+@media only screen and (min-width: 1400px){
+    .container-fluid .form-box-parent {
+        /* padding: 0rem 0rem 0rem; */
+        padding: 12.5rem 2rem 2rem;
+        /* padding: 19rem 2rem 2rem; */
+        /* justify-content: start; */
+    }
+} 
+
 @media only screen and (min-width: 1300px) {
     .container-fluid .form-image{
         /* justify-content: end; */
     }
 
     .container-fluid .form-box-parent {
-        padding: 0rem 0rem 0rem;
+        /* padding: 0rem 0rem 0rem; */
+        padding: 19rem 2rem 2rem;
         /* justify-content: start; */
     }
 }
