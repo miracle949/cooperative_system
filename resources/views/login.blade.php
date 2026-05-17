@@ -17,16 +17,9 @@
 
     {{-- font awesome cdn link --}}
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
-
-    {{-- bootstrap link --}}
-    {{--
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    --}}
 </head>
 
 <body>
-
 
     <div class="container-fluid">
 
@@ -39,92 +32,88 @@
         <div class="corner corner-tr"></div>
 
         <div class="loading-screen">
-
             <div class="load"></div>
+        </div>
+
+        {{-- LEFT PANEL --}}
+        <div class="form-image">
+
+            <div class="form-sub-image">
+                <div class="form-image-logo">
+                    <a href="{{ route("index") }}">
+                        <img src="images/websitelogo.png" alt="BrgySphere Logo">
+                    </a>
+                    <div class="form-image-logo-text">
+                        <span class="logo-name">KPMPCATS</span>
+                        <span class="logo-sub">MEMBERSHIP MANAGEMENT</span>
+                    </div>
+                </div>
+
+                <div class="form-image-body">
+                    <h2>Welcome Back!</h2>
+                    <p>Manage and administer the Barangay Information System.</p>
+
+                    <div class="form-image-features">
+
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div class="feature-text">
+                                <span>Restricted Access</span>
+                                <p>Authorized personnel only</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div class="feature-text">
+                                <span>Manage Certificates</span>
+                                <p>Process and approve requests</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="feature-text">
+                                <span>Resident Management</span>
+                                <p>View and manage resident records</p>
+                            </div>
+                        </div>
+
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <div class="feature-text">
+                                <span>Post Announcements</span>
+                                <p>Keep the community informed</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-image-footer">
+                    <p>© 2025 Barangay Information System ♥</p>
+                </div>
+            </div>
 
         </div>
 
-        {{-- <nav>
-            <div class="logo">
-
-                <img src="images/logo2.png" alt="">
-
-                <div>
-                    <h2 class="fw-bold">Membership Application Form</h2>
-
-                    <p>Ready to become part of something special? We can't wait to welcome
-                        you.
-                </div>
-            </div>
-        </nav> --}}
-
-        {{-- <div class="back-to-landing">
-            <a href="{{ route(" Landingpage") }}">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-        </div> --}}
-
-        {{-- <div class="form-image">
-
-            <div class="left-bg"></div>
-            <div class="left-diagonal"></div>
-
-            <div class="form-nav">
-                <h4>KPMPCATS</h4>
-
-                <a href="{{ route(" index") }}">
-                    <i class="fa fa-chevron-left"></i>
-                    <span>Back to Home</span>
-                </a>
-            </div>
-
-            <div class="form-body">
-                <div class="form-portal">Member Portal</div>
-
-                <h3>Your <b>Cooperative,</b> Your Dashboard</h3>
-
-                <div class="line"></div>
-
-                <p>Access your account to manage records, track progress, and collaborate with your team — all in one
-                    secure, centralized platform built for excellence.</p>
-
-                <div class="total-members">
-                    <div class="members">
-                        <h4>12k+</h4>
-                        <span>Members</span>
-                    </div>
-
-                    <div class="members">
-                        <h4>99.9%</h4>
-                        <span>Uptime</span>
-                    </div>
-
-                    <div class="members">
-                        <h4>256-bit</h4>
-                        <span>Encryption</span>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+        {{-- RIGHT PANEL / FORM --}}
         <div class="form-box-parent">
             <div class="form-parent">
-                {{-- <div class="logo tw:flex tw:justify-center tw:items-center">
-                    <a href="{{ route(" index") }}"><img src="images/logo2.png" alt=""></a>
-                </div> --}}
 
                 <div class="nav-form">
-
-                    {{-- <div class="card-corner"></div> --}}
-                    {{-- <div class="card-corner-bl"></div> --}}
-
                     <div class="nav-tag">Member Access</div>
-
-                    <h2 class="text-left">Sign in to your <b>account</b></h2>
-
+                    <h1 class="text-left">Sign in to your <b>account</b></h1>
                     <p class="text-left">Enter your credentials to access the member portal.</p>
-
                     <div class="form-nav-divider"></div>
-
                 </div>
 
                 <form action="{{ route("UserLogin") }}" method="post">
@@ -179,14 +168,28 @@
                             </button>
                         </div>
 
-                        <div class="form-divider">
-                            or
-                        </div>
-
                         <div class="text-center form-change">
                             <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply Membership <i
                                         class="fa fa-arrow-right"></i></a></label>
                         </div>
+
+                        <div class="form-divider"></div>
+
+                        <div class="other-spec">
+                            <div class="spec">
+                                <span>12k+</span>
+                                <p>Members</p>
+                            </div>
+                            <div class="spec">
+                                <span>99.9%</span>
+                                <p>Uptime</p>
+                            </div>
+                            <div class="spec">
+                                <span>256-bit</span>
+                                <p>Encryption</p>
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -206,36 +209,8 @@
             }
         </script>
 
-
-        {{-- <div class="tw:w-[100%] tw:h-[100vh] tw:bg-white tw:relative login-image">
-            <div class="overlay"></div>
-            <img src="images/loginbg.jpg" class="tw:h-[100%]" alt="">
-        </div> --}}
     </div>
 
-    {{--
-    <script>
-        const loading = document.querySelector(".loading");
-        const login = document.getElementById("login");
-
-        login.addEventListener("click", () => {
-
-            loading.style.display = "block";
-            login.style.backgroundColor = "#364153";
-
-            setTimeout(() => {
-                loading.style.display = "none";
-                login.style.backgroundColor = "";
-
-                window.location.href = "/member-portal";
-            }, 3000);
-
-        });
-
-    </script> --}}
-
-    {{--
-    <script src="style.js"></script> --}}
 </body>
 
 </html>
