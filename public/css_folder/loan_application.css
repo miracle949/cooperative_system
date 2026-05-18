@@ -41,8 +41,8 @@
 .container-fluid .rightbar.expanded {
     /* width: calc(100% - 100px);
     margin-left: 100px;  */
-    width: calc(100% - 100px);
-    margin-left: 100px;
+    width: calc(100% - 80px);
+    margin-left: 80px;
     z-index: 1;
 }
 

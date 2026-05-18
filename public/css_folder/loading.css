@@ -169,7 +169,7 @@
 }
 
 .container-fluid .sidebar.collapsed {
-    width: 100px;
+    width: 80px;
     overflow: hidden;
     z-index: 999;
 }
@@ -228,6 +228,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px 20px 20px 20px;
 }
 
 .container-fluid .sidebar.collapsed .first-name{

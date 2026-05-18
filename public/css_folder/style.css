@@ -1396,6 +1396,10 @@ div.carousel-item.active {
     margin-top: 1rem;
 }
 
+#products_services .card .apply a .fa{
+    color: #ffffff;
+}
+
 #products_services .card:nth-child(1) .apply a {
     width: 100%;
     text-decoration: none;

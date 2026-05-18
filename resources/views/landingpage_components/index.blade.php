@@ -372,7 +372,7 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            &nbsp;→
+                            <p>&nbsp;→</p>
                         </a>
 
                     </div>
@@ -421,7 +421,7 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            &nbsp;→
+                            <p>&nbsp;→</p>
                         </a>
 
                     </div>
@@ -470,7 +470,7 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            &nbsp;→
+                            <p>&nbsp;→</p>
                         </a>
 
                     </div>
@@ -519,7 +519,7 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            &nbsp;→
+                            <p>&nbsp;→</p>
                         </a>
 
                     </div>
