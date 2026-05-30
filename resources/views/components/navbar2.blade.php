@@ -56,9 +56,9 @@
             aria-controls="staticBackdrop"></i>
     </div>
 
-    {{-- <div class="nav-acc2" id="nav-acc2">
+    <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa fa-bell" style="font-size: 17px; color: var(--blue)"></i>
+            <i class="fa fa-bell" style="font-size: 17px; color: var(--muted);"></i>
             <li>
                 @if ($username)
                     @php
@@ -146,7 +146,7 @@
                 </ul>
             </li>
         </ul>
-    </div> --}}
+    </div>
 
     <script>
         function toggleDropdown(e) {

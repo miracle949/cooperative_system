@@ -208,7 +208,8 @@ button {
     padding: 2rem;
     height: calc(100vh - 70px);
     overflow: auto;
-    background-color: var(--cream);
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
 }
 
 .container-fluid main .parent-main h3 {

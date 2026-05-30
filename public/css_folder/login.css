@@ -37,7 +37,7 @@ div.container-fluid {
     background-color: #ffffff;
     height: 100vh;
     display: flex;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
     /* align-items: stretch; */
     gap: 0;
     padding: 0;
@@ -153,11 +153,12 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* background-color: var(--blue); */
     /* display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start; */
-    width: 100%;
+    width: 90%;
     /* width: 440px;
     min-width: 440px; */
     height: 100vh;
@@ -190,7 +191,8 @@ div.container-fluid {
 }
 
 .form-image-logo-text .logo-name {
-    color: #fff;
+    /* color: #fff; */
+    color: var(--ink);
     font-size: 16px;
     font-weight: 700;
     letter-spacing: .16em;
@@ -198,11 +200,12 @@ div.container-fluid {
 }
 
 .form-image-logo-text .logo-sub {
-    color: rgba(255, 255, 255, .4);
+    /* color: rgba(255, 255, 255, .4); */
+    color: #6B7280;
     font-size: 10px;
     letter-spacing: .18em;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* Body section */
@@ -213,7 +216,7 @@ div.container-fluid {
 .form-image-body h2 {
     font-size: 40px;
     font-weight: 800;
-    color: #fff;
+    color: var(--teal);
     margin: 0 0 0.75rem 0;
     line-height: 1.1;
     font-family: "Playfair Display", serif;
@@ -247,13 +250,14 @@ div.container-fluid {
     width: 42px;
     height: 42px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, .07);
+    /* background: rgba(255, 255, 255, .07); */
+    background-color: var(--border);
     border: 1px solid rgba(255, 255, 255, .1);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: var(--gold);
+    color: var(--blue);
     font-size: 16px;
     transition: background .2s;
 }
@@ -270,13 +274,15 @@ div.container-fluid {
 }
 
 .feature-text span {
-    color: #fff;
+    /* color: #fff; */
+    color: var(--teal);
     font-size: 14px;
     font-weight: 600;
 }
 
 .feature-text p {
-    color: rgba(255, 255, 255, .4);
+    /* color: rgba(255, 255, 255, .4); */
+    color: var(--teal);
     font-size: 12.5px;
     margin: 0;
     line-height: 1.4;
@@ -300,6 +306,8 @@ div.container-fluid {
     z-index: 999;
     /* flex: 1; */
     width: 100%;
+    /* width: 630px;
+    height: 100%; */
     /* height: 100vh; */
     overflow-y: auto;
     display: flex;
@@ -307,7 +315,8 @@ div.container-fluid {
     align-items: center;
     padding: 19rem 2rem 2rem;
     scrollbar-width: none;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background-color: var(--teal-pale)
     /* Custom scrollbar */
     /* scrollbar-width: thin;
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
@@ -339,8 +348,9 @@ div.container-fluid {
     border: 1px solid rgba(255, 255, 255, .14); */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--border);
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    background-color: #ffffff;
+    /* backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%); */
     /* background-color: var(--teal); */
     /* margin-top: 5rem; */
 }
@@ -355,7 +365,7 @@ div.container-fluid {
 .container-fluid .form-parent .nav-form .nav-tag {
     font-size: 11.5px;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--blue);
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -367,19 +377,19 @@ div.container-fluid {
     content: '';
     width: 30px;
     height: 1px;
-    background: var(--gold);
+    background: var(--blue);
 }
 
 .container-fluid .form-parent p {
     width: 100%;
-    font-size: 13.5px;
+    font-size: 14px;
     margin: 0px 0px;
 }
 
 .form-nav-divider {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--gold), rgba(201, 168, 76, 0.1), transparent);
+    background: linear-gradient(90deg, var(--blue), rgba(201, 168, 76, 0.1), transparent);
     margin-top: 1.5rem;
 }
 
@@ -391,7 +401,8 @@ div.container-fluid {
     gap: 16px;
     font-size: 13px;
     color: #7a908b;
-    border: 1px solid rgba(255, 255, 255, .08);
+    /* border: 1px solid rgba(255, 255, 255, .08); */
+    border: 1px solid var(--border);
 }
 
 .container-fluid .form-parent .other-spec {
@@ -408,14 +419,15 @@ div.container-fluid {
 }
 
 .container-fluid .form-parent .other-spec .spec span {
-    color: var(--gold);
+    color: var(--blue);
     font-weight: 600;
     font-size: 18px;
 }
 
 .container-fluid .form-parent .other-spec .spec p {
     text-transform: uppercase;
-    color: rgba(255, 255, 255, .3);
+    /* color: rgba(255, 255, 255, .3); */
+    color: #6B7280;
 }
 
 @keyframes slideIn {
@@ -435,40 +447,47 @@ div.container-fluid {
 ══════════════════════════════════════ */
 .container-fluid h1 {
     font-size: 40px;
-    color: #fff;
+    /* color: #fff; */
+    color: var(--teal);
     font-weight: 600;
     width: 350px;
-    margin: 30px 0 0;
+    margin: 10px 0 0;
     font-family: "Playfair Display";
 }
 
 .container-fluid h1 b {
     font-family: "Playfair Display";
     font-style: italic;
-    color: var(--gold);
+    color: var(--blue);
     font-weight: 600;
 }
 
 .container-fluid p {
     font-size: 14px;
-    font-weight: 300;
+    font-weight: 600;
     margin: 0;
-    color: rgba(255, 255, 255, .5);
+    /* color: rgba(255, 255, 255, .5); */
+    /* color: #6B7280; */
+    color: var(--muted);
 }
 
 .container-fluid .form-input label {
     font-size: 11.5px;
     text-transform: uppercase;
     letter-spacing: .12em;
-    color: rgba(255, 255, 255, .45);
+    /* color: rgba(255, 255, 255, .45); */
+    color: #6B7280;
     font-weight: 600;
 }
 
 .container-fluid .form-input input {
     font-size: 14.5px;
-    background: rgba(255, 255, 255, .07);
-    border: 1px solid rgba(255, 255, 255, .12);
-    color: #fff;
+    /* background: rgba(255, 255, 255, .07); */
+    background-color: var(--border);
+    /* border: 1px solid rgba(255, 255, 255, .12); */
+    border: 1px solid var(--border);
+    /* color: #fff; */
+    color: var(--ink);
     padding: 13px 16px 13px 50px;
     width: 100%;
     border-radius: 8px;
@@ -483,35 +502,40 @@ div.container-fluid {
     -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
     box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
     -webkit-text-fill-color: #fff !important;
-    border: 1px solid rgba(255, 255, 255, .12) !important;
+    /* border: 1px solid rgba(255, 255, 255, .12) !important; */
+    border: 1px solid var(--border) !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 .container-fluid .form-input input:-webkit-autofill:focus {
-    border-color: var(--gold) !important;
+    border-color: var(--blue) !important;
     box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.11) inset,
         0 0 0 3px rgba(245, 166, 35, .12) !important;
+    color: #6B7280;
 }
 
 .container-fluid .form-input input::placeholder {
-    color: rgba(255, 255, 255, .25);
+    /* color: rgba(255, 255, 255, .25); */
+    color: #6B7280;
 }
 
 .container-fluid .form-input input:focus {
-    border-color: var(--gold);
+    border-color: var(--blue);
     background: rgba(255, 255, 255, .11);
     box-shadow: 0 0 0 3px rgba(245, 166, 35, .12);
 }
 
 .container-fluid .form-input:focus-within .envelope i,
 .container-fluid .form-input:focus-within .lock i {
-    color: var(--gold);
+    /* color: var(--gold); */
+    color: var(--blue);
+    /* color: #6B7280; */
 }
 
-.container-fluid .form-input input:focus+.focus-bar {
+/* .container-fluid .form-input input:focus+.focus-bar {
     transform: scaleX(1);
-    border-color: var(--accent);
-}
+    border-color: var(--blue);
+} */
 
 .focus-bar {
     position: absolute;
@@ -519,7 +543,7 @@ div.container-fluid {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    background: linear-gradient(90deg, var(--blue), var(--blue-light));
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -539,8 +563,9 @@ div.container-fluid {
     border-radius: 8px;
     font-size: 12.5px;
     position: relative;
-    background-color: var(--gold);
-    color: var(--teal);
+    background-color: var(--blue);
+    /* color: var(--teal); */
+    color: #ffffff;
     letter-spacing: 0.25em;
     padding: 13px;
     text-transform: uppercase;
@@ -558,7 +583,8 @@ div.container-fluid {
 
 .container-fluid button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(245, 166, 35, .5);
+    /* box-shadow: 0 12px 40px rgba(245, 166, 35, .5); */
+    box-shadow: 0 12px 40px rgba(79, 127, 250, .5);
     filter: brightness(1.05);
 }
 
@@ -569,7 +595,7 @@ div.container-fluid {
 }
 
 .form-forgot a {
-    color: var(--blue-light);
+    color: var(--blue);
     text-decoration: none;
     font-weight: 500;
     font-size: 14.5px;
@@ -580,7 +606,8 @@ div.container-fluid {
 }
 
 .form-change label {
-    color: rgba(255, 255, 255, .45);
+    /* color: rgba(255, 255, 255, .45); */
+    color: #6B7280;
 }
 
 .form-change label,
@@ -590,7 +617,7 @@ div.container-fluid {
 }
 
 .form-change a {
-    color: var(--blue-light);
+    color: var(--blue);
     font-weight: 500;
     text-decoration: none;
 }
@@ -605,7 +632,8 @@ div.container-fluid {
 
 .form-input .fa {
     font-size: 14px;
-    color: rgba(255, 255, 255, .25);
+    /* color: rgba(255, 255, 255, .25); */
+    color: #6B7280;
     transition: color 0.2s ease;
 }
 

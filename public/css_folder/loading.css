@@ -51,7 +51,7 @@
     /* background: #2a3a54; */
     /* background-color: var(--blue); */
     /* background-color: var(--teal); */
-    background-color: #6B7280;
+    /* background-color: #6B7280; */
     border-radius: 10px;
 }
 
@@ -324,12 +324,13 @@
 
 .container-fluid .sidebar .sidebar-menu ul .menu p {
     margin: 0;
-    font-weight: 500;
+    font-weight: 700;
     text-transform: uppercase;
     font-size: 11px;
     /* color: #C5C7F2; */
     /* color: rgba(255, 255, 255, .3); */
-    color: #6B7280;
+    /* color: #6B7280; */
+    color: var(--muted);
     /* color: #B7B9BD; */
     /* color: var(--muted2); */
     /* color: var(--green); */
@@ -442,7 +443,8 @@
     /* color: #70747B; */
     /* color: #7E8386; */
     /* color: #9BAED4; */
-    color: #6B7280;
+    /* color: #6B7280; */
+    color: var(--muted);
     /* color: rgba(255, 255, 255, .5); */
     /* color: #a0aec0; */
     font-size: 14.5px;
@@ -475,7 +477,7 @@
     /* color: #7E8386; */
     /* color: #9BAED4; */
     /* color: rgba(255, 255, 255, .5); */
-    color: var(--muted)
+    color: var(--muted);
 }
 
 .container-fluid .sidebar .sidebar-menu ul li:hover {
@@ -587,6 +589,7 @@
     /* background-color: var(--semi-white); */
     backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow);
     position: relative;
     /* z-index: 1000;
     position: fixed; */
@@ -878,7 +881,7 @@
 }
 
 .container-fluid .nav-acc2 ul li ul li:nth-child(1) .card-icon {
-    background-color: var(--green);
+    background-color: var(--blue);
 }
 
 .container-fluid .nav-acc2 ul li ul li:nth-child(1) .card-icon p {
@@ -946,7 +949,7 @@
 .container-fluid .nav-acc2 ul li a .first-last {
     width: 35px;
     height: 35px;
-    background-color: var(--accent);
+    background-color: var(--blue);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -956,7 +959,7 @@
 .container-fluid .nav-acc2 ul li a .first-last p {
     margin: 0;
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* navbar 3 */

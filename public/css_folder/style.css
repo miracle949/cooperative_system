@@ -303,7 +303,7 @@ line-height: 25px;
     position: absolute;
     inset: 0;
     /* background: linear-gradient(105deg, rgba(15, 61, 52, .55) 0%, rgba(15, 61, 52, .1) 45%, rgba(15, 61, 52, .6) 100%); */
-    background: linear-gradient(105deg, rgba(19, 26, 48, .65) 0%, rgba(19, 26, 48, .15) 45%, rgba(19, 26, 48, .70) 100%);
+    /* background: linear-gradient(105deg, rgba(19, 26, 48, .65) 0%, rgba(19, 26, 48, .15) 45%, rgba(19, 26, 48, .70) 100%); */
     /* background: linear-gradient(108deg,
             rgba(15, 61, 52, .85) 0%,
             rgba(15, 61, 52, .72) 38%,
