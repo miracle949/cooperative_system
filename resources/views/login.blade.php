@@ -23,13 +23,13 @@
 
     <div class="container-fluid">
 
-        <div class="bg"></div>
+        <!-- <div class="bg"></div>
         <div class="grid-lines"></div>
         <div class="stripe"></div>
         <div class="stripe stripe-2"></div>
         <div class="corner corner-tl"></div>
         <div class="corner corner-br"></div>
-        <div class="corner corner-tr"></div>
+        <div class="corner corner-tr"></div> -->
 
         <div class="loading-screen">
             <div class="load"></div>

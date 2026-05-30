@@ -875,8 +875,8 @@ div.carousel-item.active {
 /* ─── MARQUEE ─── */
 .marquee-bar {
     /* background: var(--ink); */
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     /* background-color: var(--teal); */
     /* border-bottom: 1px solid var(--border); */
     border-top: 1px solid var(--line);
@@ -924,9 +924,10 @@ div.carousel-item.active {
     /* background-color: #EAEDEB; */
     /* background-color: var(--cream); */
     /* background-color: #f9f9f9; */
-    background-color: var(--cream);
     /* background-color: var(--cream); */
-    /* background-color: #ffffff; */
+    /* background-color: var(--semi-white); */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     /* padding-bottom: 7rem; */
     padding: 16px 48px 112px;
     position: relative;
@@ -952,7 +953,7 @@ div.carousel-item.active {
     margin-top: 5rem;
     font-size: 11.5px;
     text-transform: uppercase;
-    color: var(accent);
+    color: var(--accent);
     position: relative;
     letter-spacing: .2em;
     display: flex;
@@ -1514,8 +1515,8 @@ hr {
     /* background-color: var(--ink); */
     /* background-color: #f9f9f9; */
     /* background-color: var(--cream); */
-    /* background-color: #ffffff; */
-    background-color: var(--cream);
+    background-color: #ffffff;
+    /* background-color: var(--cream); */
 }
 
 #section6 .header {
@@ -1828,8 +1829,8 @@ hr {
 }
 
 #section4 {
-    background-color: var(--cream);
-    /* background-color: #ffffff; */
+    /* background-color: var(--cream); */
+    background-color: #ffffff;
     /* background-color: #f9f9f9; */
     /* background-color: #ffffff; */
     padding: 7rem 3rem;
