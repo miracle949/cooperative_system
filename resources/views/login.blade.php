@@ -23,13 +23,13 @@
 
     <div class="container-fluid">
 
-        <div class="bg"></div>
+        <!-- <div class="bg"></div>
         <div class="grid-lines"></div>
         <div class="stripe"></div>
         <div class="stripe stripe-2"></div>
         <div class="corner corner-tl"></div>
         <div class="corner corner-br"></div>
-        <div class="corner corner-tr"></div>
+        <div class="corner corner-tr"></div> -->
 
         <div class="loading-screen">
             <div class="load"></div>
@@ -50,8 +50,8 @@
                 </div>
 
                 <div class="form-image-body">
-                    <h2>Welcome Back!</h2>
-                    <p>Manage and administer the Cooperative Membership Management System.</p>
+                    <h2>Welcome to your <b>Cooperative</b> Home</h2>
+                    <p>Access your membership, monitor your loans & savings, and stay informed with the latest announcements — all in one place.</p>
 
                     <div class="form-image-features">
 
@@ -60,8 +60,8 @@
                                 <i class="fa-solid fa-shield-halved"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Restricted Access</span>
-                                <p>Authorized personnel only</p>
+                                <span>Restricted Access - Authorized personnel only</span>
+                                <!-- <p>Authorized personnel only</p> -->
                             </div>
                         </div>
 
@@ -70,8 +70,8 @@
                                 <i class="fa-solid fa-file-lines"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Member Records</span>
-                                <p>Manage member information</p>
+                                <span>Member Records - Manage member information</span>
+                                <!-- <p>Manage member information</p> -->
                             </div>
                         </div>
 
@@ -80,8 +80,8 @@
                                 <i class="fa-solid fa-users"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Loans & Savings</span>
-                                <p>Track loans and savings</p>
+                                <span>Loans & Savings - Track loans and savings</span>
+                                <!-- <p>Track loans and savings</p> -->
                             </div>
                         </div>
 
@@ -90,8 +90,8 @@
                                 <i class="fa-solid fa-bullhorn"></i>
                             </div>
                             <div class="feature-text">
-                                <span>Announcements</span>
-                                <p>Stay updated with notices</p>
+                                <span>Announcements - Stay updated with notices</span>
+                                <!-- <p>Stay updated with notices</p> -->
                             </div>
                         </div>
 
