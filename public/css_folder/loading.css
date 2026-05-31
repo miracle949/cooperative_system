@@ -447,12 +447,10 @@
     /* color: #6B7280; */
     color: var(--muted);
     /* color: rgba(255, 255, 255, .5); */
-    color: #a0aec0;
-    font-size: 14px;
-    font-weight: 500;
     /* color: #a0aec0; */
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 600;
+    /* color: #a0aec0; */
 }
 
 .container-fluid .sidebar .sidebar-menu ul li a .nav-icon {
