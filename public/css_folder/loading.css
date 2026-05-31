@@ -96,7 +96,7 @@
 .container-fluid .sidebar .account .first-last {
     width: 45px;
     height: 45px;
-    background-color: var(--accent);
+    background-color: var(--blue);
     display: flex;
     justify-content: center;
     align-items: center;

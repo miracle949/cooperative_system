@@ -151,9 +151,10 @@ div.container-fluid {
 .container-fluid .form-image {
     z-index: 999;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     /* background-color: var(--blue); */
+    background-color: var(--teal);
     /* display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -162,7 +163,7 @@ div.container-fluid {
     /* width: 440px;
     min-width: 440px; */
     height: 100vh;
-    padding: 3rem 3.5rem;
+    padding: 2rem 3.5rem;
     /* flex-shrink: 0; */
     /* overflow: hidden; */
     position: relative;
@@ -173,7 +174,7 @@ div.container-fluid {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-image-logo img {
@@ -192,7 +193,8 @@ div.container-fluid {
 
 .form-image-logo-text .logo-name {
     /* color: #fff; */
-    color: var(--ink);
+    /* color: var(--ink); */
+    color: #ffffff;
     font-size: 16px;
     font-weight: 700;
     letter-spacing: .16em;
@@ -201,7 +203,8 @@ div.container-fluid {
 
 .form-image-logo-text .logo-sub {
     /* color: rgba(255, 255, 255, .4); */
-    color: #6B7280;
+    /* color: #6B7280; */
+    color: rgba(255, 255, 255, 0.5);
     font-size: 10px;
     letter-spacing: .18em;
     text-transform: uppercase;
@@ -216,14 +219,21 @@ div.container-fluid {
 .form-image-body h2 {
     font-size: 40px;
     font-weight: 800;
-    color: var(--teal);
+    color: #ffffff;
     margin: 0 0 0.75rem 0;
     line-height: 1.1;
+    width: 370px;
     font-family: "Playfair Display", serif;
 }
 
+.form-image-body h2 b {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    color: var(--blue);
+}
+
 .form-image-body>p {
-    color: rgba(255, 255, 255, .5);
+    /* color: rgba(255, 255, 255, .5); */
     font-size: 14px;
     margin: 0 0 2.5rem 0;
     line-height: 1.6;
@@ -237,7 +247,12 @@ div.container-fluid {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+}
+
+.form-image-features p{
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 600;
 }
 
 .feature-item {
@@ -251,13 +266,16 @@ div.container-fluid {
     height: 42px;
     border-radius: 10px;
     /* background: rgba(255, 255, 255, .07); */
-    background-color: var(--border);
-    border: 1px solid rgba(255, 255, 255, .1);
+    /* background-color: var(--border);
+    border: 1px solid rgba(255, 255, 255, .1); */
+    background: rgba(79, 127, 250, 0.12);
+    border: 1px solid rgba(79, 127, 250, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: var(--blue);
+    /* color: var(--blue); */
+    color: #ffffff;
     font-size: 16px;
     transition: background .2s;
 }
@@ -275,7 +293,9 @@ div.container-fluid {
 
 .feature-text span {
     /* color: #fff; */
-    color: var(--teal);
+    /* color: var(--teal); */
+    /* color: #ffffff; */
+    color: rgba(255, 255, 255, 0.75);
     font-size: 14px;
     font-weight: 600;
 }
@@ -290,7 +310,7 @@ div.container-fluid {
 
 /* Footer */
 .form-image-footer {
-    margin-top: 3rem;
+    margin-top: 1.5rem;
 }
 
 .form-image-footer p {
@@ -317,8 +337,8 @@ div.container-fluid {
     scrollbar-width: none;
     /* background-color: #ffffff; */
     background-color: var(--teal-pale)
-    /* Custom scrollbar */
-    /* scrollbar-width: thin;
+        /* Custom scrollbar */
+        /* scrollbar-width: thin;
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
 }
 
@@ -384,6 +404,7 @@ div.container-fluid {
     width: 100%;
     font-size: 14px;
     margin: 0px 0px;
+    color: #808080;
 }
 
 .form-nav-divider {
@@ -464,11 +485,13 @@ div.container-fluid {
 
 .container-fluid p {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
     /* color: rgba(255, 255, 255, .5); */
     /* color: #6B7280; */
-    color: var(--muted);
+    /* color: var(--muted); */
+    /* color: #808080; */
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .container-fluid .form-input label {
@@ -677,8 +700,8 @@ div.container-fluid {
     }
 } */
 
-@media only screen and (max-width: 1030px){
-    .container-fluid .form-image{
+@media only screen and (max-width: 1030px) {
+    .container-fluid .form-image {
         display: none;
     }
 }
