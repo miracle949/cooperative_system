@@ -195,6 +195,7 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1.5px solid var(--line);
     /* height: 100%; */
     /* padding: 20px 0px 40px 40px; */
 }

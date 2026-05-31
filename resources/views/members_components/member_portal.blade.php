@@ -65,7 +65,7 @@
             top: 0;
             right: 0;
             bottom: 0;
-            left: var(--sidebar-width, 260px);
+            left: var(--sidebar-width, 250px);
             background: #fff;
             z-index: 9998;
             padding: 20px 32px 32px 32px;
@@ -601,7 +601,7 @@
     {{-- ─── Skeleton dismiss logic ─────────────────────────── --}}
     <script>
         (function () {
-            var MIN_DISPLAY = 1000; // minimum ms to show skeleton (change to 1000 for 1 second)
+            var MIN_DISPLAY = 2000; // minimum ms to show skeleton (change to 1000 for 1 second)
             var startTime   = Date.now();
             var pageLoaded  = false;
             var dismissed   = false;

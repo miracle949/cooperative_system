@@ -41,7 +41,7 @@
     --muted: #6b7a99;
     /* desaturated mid-blue */
     --line: rgba(30, 42, 74, .1);
-    --sidebar-width: 260px;
+    --sidebar-width: 250px;
     --accent: #2563eb;
     --mint: #22C993;
     --coral: #FF6B6B;
@@ -156,7 +156,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 260px;
+    width: 250px;
     height: 100%;
     /* border-right: 1px solid var(--border); */
     /* background-color: var(--green); */
@@ -443,7 +443,7 @@
     /* color: #9BAED4; */
     /* color: rgba(255, 255, 255, .5); */
     color: #a0aec0;
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 500;
 }
 

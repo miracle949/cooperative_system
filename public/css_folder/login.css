@@ -33,7 +33,7 @@
 }
 
 div.container-fluid {
-    background-color: var(--teal-dark);
+    background-color: var(--teal);
     height: 100vh;
     display: flex;
     justify-content: space-evenly;
@@ -175,8 +175,8 @@ div.container-fluid::after {
 }
 
 .form-image-logo img {
-    width: 44px;
-    height: 44px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, .2);
     object-fit: cover;
@@ -304,7 +304,7 @@ div.container-fluid::after {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 19rem 2rem 2rem;
+    padding: 18rem 2rem 2rem;
     scrollbar-width: none;
     /* Custom scrollbar */
     /* scrollbar-width: thin;
@@ -329,6 +329,7 @@ div.container-fluid::after {
     border-radius: 24px;
     z-index: 10;
     width: 490px;
+    /* padding: 52px 48px 48px; */
     padding: 52px 48px 48px;
     position: relative;
     animation: slideIn 0.4s ease both;
@@ -608,14 +609,7 @@ div.container-fluid::after {
    RESPONSIVE
 ══════════════════════════════════════ */
 
-@media only screen and (min-width: 1400px){
-    .container-fluid .form-box-parent {
-        /* padding: 0rem 0rem 0rem; */
-        padding: 12.5rem 2rem 2rem;
-        /* padding: 19rem 2rem 2rem; */
-        /* justify-content: start; */
-    }
-} 
+
 
 @media only screen and (min-width: 1300px) {
     .container-fluid .form-image{
@@ -624,7 +618,7 @@ div.container-fluid::after {
 
     .container-fluid .form-box-parent {
         /* padding: 0rem 0rem 0rem; */
-        padding: 19rem 2rem 2rem;
+        padding: 12rem 2rem 2rem;
         /* justify-content: start; */
     }
 }

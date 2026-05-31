@@ -131,9 +131,9 @@ Route::get('/savings/admin/balance/{memberId}', [SavingsController::class, 'getM
     ->name('savings.admin.balance')
     ->middleware('auth');
 
-Route::post('/savings/gcash',          [SavingsController::class, 'payViaGcash'])->name('savings.gcash');
-Route::get('/savings/gcash/success',   [SavingsController::class, 'gcashSuccess'])->name('savings.gcash.success');
-Route::get('/savings/gcash/failed',    [SavingsController::class, 'gcashFailed'])->name('savings.gcash.failed');
+Route::post('/savings/gcash', [SavingsController::class, 'payViaGcash'])->name('savings.gcash');
+Route::get('/savings/gcash/success', [SavingsController::class, 'gcashSuccess'])->name('savings.gcash.success');
+Route::get('/savings/gcash/failed', [SavingsController::class, 'gcashFailed'])->name('savings.gcash.failed');
 
 Route::get('/loan-status', [lendingController::class, 'loanStatus'])
     ->name('LoanStatus')
@@ -150,7 +150,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ✅ Final — just these two lines, no wrapping group needed
-Route::post('/otp/send',   [OtpController::class, 'send'])->name('otp.send');
+Route::post('/otp/send', [OtpController::class, 'send'])->name('otp.send');
 Route::post('/otp/verify', [OtpController::class, 'verify'])->name('otp.verify');
 
 // ✅ With web middleware — session persists correctly
@@ -171,7 +171,7 @@ Route::post("/savings/unarchive/{id}", [UserController::class, "unarchiveSavings
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
 
 // API to get payment count for a loan
-Route::get('/loan/{id}/payments-count', function($id) {
+Route::get('/loan/{id}/payments-count', function ($id) {
     $count = \DB::table('lending_repayments_tbls')->where('lending_id', $id)->count();
     return response()->json(['payments_made' => $count]);
 });

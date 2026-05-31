@@ -41,7 +41,7 @@
             <div class="form-sub-image">
                 <div class="form-image-logo">
                     <a href="{{ route("index") }}">
-                        <img src="images/websitelogo.png" alt="BrgySphere Logo">
+                        <img src="images/logo5.jpg" alt="BrgySphere Logo">
                     </a>
                     <div class="form-image-logo-text">
                         <span class="logo-name">KPMPCATS</span>

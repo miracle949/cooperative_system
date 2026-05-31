@@ -128,14 +128,14 @@
                         </div>
                     </div>
 
-                    <div class="status-alert">
+                    {{-- <div class="status-alert">
                         <i class="fa fa-check-circle"></i>
                         <div class="status-alert-text">
                             Your first payment of <strong>₱2,083.33</strong> was received on <strong>May 15, 2026</strong>. Your account is in good standing. Next payment due <strong>June 15, 2026</strong>.
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="payment-breakdown">
+                    {{-- <div class="payment-breakdown">
                         <div class="payment">
                             <div class="payment-header">
                                 <h3>Payment Schedule</h3>
@@ -150,7 +150,7 @@
                         <div class="loan">
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </main>
         </div>
