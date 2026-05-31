@@ -9,9 +9,10 @@
     src: url('../Playfair_Display/static/PlayfairDisplay-Bold.ttf') format('truetype');
     font-weight: 600;
 }
-    
+
 
 :root {
+    --bg: #f2f4f8;
     --teal: #1E2A4A;
     --teal-dark: #131a30;
     --teal-mid: #263359;
@@ -32,12 +33,26 @@
     --sidebar-width: 250px;
     --border: #E5EAF3;
     --border-hover: #D9E5FE;
-    --sidebar-width: 260px;
+    --sidebar-width: 250px;
     --accent: #2563eb;
     --mint: #22C993;
     --coral: #FF6B6B;
     --semi-white: #FAF9F6;
     --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
+
+    /* --- add these --- */
+    --ice-blue: #E8F4FD;
+    /* info banners, table row hover */
+    --gold-pale: #FFF8EC;
+    /* gold badge backgrounds */
+    --mint-pale: #EDFAF4;
+    /* savings cards, success states */
+    --coral-pale: #FFF0F0;
+    /* overdue row bg, error states */
+    --lavender-tint: #F7F8FC;
+    /* card hover bg */
+    --navy-soft: #2D3F6B;
+    /* subheadings, borders */
 }
 
 * {
@@ -162,6 +177,7 @@
     /* background-color: #1a2236; */
     /* background-color: #1A1E21; */
     background-color: #ffffff;
+
     box-shadow: var(--shadow);
     scrollbar-width: none;
 }

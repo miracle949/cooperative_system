@@ -205,11 +205,12 @@ div.container-fluid {
 .form-image-logo-text .logo-sub {
     /* color: rgba(255, 255, 255, .4); */
     /* color: #6B7280; */
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 10px;
+    /* color: rgba(255, 255, 255, 0.5); */
+    color: var(--gold);
+    font-size: 11px;
     letter-spacing: .18em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 /* Body section */
@@ -343,10 +344,11 @@ div.container-fluid {
     align-items: center;
     padding: 16rem 2rem 2rem;
     scrollbar-width: none;
+    background-color: var(--bg);
     /* background-color: #ffffff; */
-    background-color: var(--teal-pale)
-        /* Custom scrollbar */
-        /* scrollbar-width: thin;
+    /* background-color: var(--teal-pale); */
+    /* Custom scrollbar */
+    /* scrollbar-width: thin;
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
 }
 
@@ -531,9 +533,9 @@ div.container-fluid {
 .container-fluid .form-input input:-webkit-autofill:hover,
 .container-fluid .form-input input:-webkit-autofill:focus,
 .container-fluid .form-input input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
-    box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.07) inset !important;
-    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--border) inset !important;
+    box-shadow: 0 0 0 1000px var(--border) inset !important;
+    -webkit-text-fill-color: var(--ink) !important;
     /* border: 1px solid rgba(255, 255, 255, .12) !important; */
     border: 1px solid var(--border) !important;
     transition: background-color 5000s ease-in-out 0s;
@@ -541,8 +543,8 @@ div.container-fluid {
 
 .container-fluid .form-input input:-webkit-autofill:focus {
     border-color: var(--blue) !important;
-    box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.11) inset,
-        0 0 0 3px rgba(245, 166, 35, .12) !important;
+    box-shadow: 0 0 0 1000px var(--border) inset,
+    0 0 0 3px rgba(79, 127, 250, .12) !important;
     color: #6B7280;
 }
 
@@ -554,7 +556,7 @@ div.container-fluid {
 .container-fluid .form-input input:focus {
     border-color: var(--blue);
     background: rgba(255, 255, 255, .11);
-    box-shadow: 0 0 0 3px rgba(245, 166, 35, .12);
+    box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
 }
 
 .container-fluid .form-input:focus-within .envelope i,
@@ -659,7 +661,7 @@ div.container-fluid {
 }
 
 .form-input:nth-child(2) {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 .form-input .fa {

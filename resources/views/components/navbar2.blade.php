@@ -18,7 +18,7 @@
             <i class="fa fa-bars"></i>
         </button> 
 
-        <h5>Good day, {{ $username }} <span>Here's your overview</span></h5>
+        <!-- <h5>Good day, {{ $username }} <span>Here's your overview</span></h5> -->
     </div>
 
     <!-- <div class="nav-list nav-list2">

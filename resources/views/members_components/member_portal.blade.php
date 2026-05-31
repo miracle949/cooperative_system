@@ -30,7 +30,7 @@
             padding: 1rem 1.5rem;
             color: var(--teal);
             background-color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
             border: 1px solid #E2E8E5;
             width: 250px;
             display: flex;
@@ -39,24 +39,51 @@
             gap: 1rem;
             z-index: 99999;
             overflow: hidden;
-            animation: toastSlideIn .4s cubic-bezier(.22,1,.36,1) forwards;
+            animation: toastSlideIn .4s cubic-bezier(.22, 1, .36, 1) forwards;
         }
-        .toast-message.hide { animation: toastFadeOut .4s ease-in forwards; }
+
+        .toast-message.hide {
+            animation: toastFadeOut .4s ease-in forwards;
+        }
+
         .toast-message::before {
             content: '';
             position: absolute;
-            left: 0; top: 0; bottom: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
             background-color: var(--teal);
-            height: 100%; width: 5px;
+            height: 100%;
+            width: 5px;
         }
-        .toast-message p { margin: 0; font-weight: 600; }
+
+        .toast-message p {
+            margin: 0;
+            font-weight: 600;
+        }
+
         @keyframes toastSlideIn {
-            from { opacity: 0; transform: translateX(60px); }
-            to   { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
+
         @keyframes toastFadeOut {
-            from { opacity: 1; transform: translateX(0); }
-            to   { opacity: 0; transform: translateX(60px); }
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(60px);
+            }
         }
 
         /* ─── Skeleton overlay ───────────────────────────────── */
@@ -74,18 +101,33 @@
         }
 
         @keyframes skshimmer {
-            0%   { background-position: -700px 0; }
-            100% { background-position:  700px 0; }
+            0% {
+                background-position: -700px 0;
+            }
+
+            100% {
+                background-position: 700px 0;
+            }
         }
+
         .sk {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 700px 100%;
             animation: skshimmer 1.4s infinite linear;
             border-radius: 6px;
         }
-        .sk-round  { border-radius: 50%; }
-        .sk-pill   { border-radius: 20px; }
-        .sk-card   { border-radius: 12px; }
+
+        .sk-round {
+            border-radius: 50%;
+        }
+
+        .sk-pill {
+            border-radius: 20px;
+        }
+
+        .sk-card {
+            border-radius: 12px;
+        }
 
         /* fade out skeleton */
         #skeleton-overlay.sk-hide {
@@ -93,73 +135,71 @@
             pointer-events: none;
         }
 
-        /* ─── Real content: hidden until skeleton removed ────── */
+        /* ─── Real content ───────────────────────────────────── */
         #page-content {
-            opacity: 0;
             transition: opacity .4s ease .1s;
-            display: contents; /* transparent wrapper — doesn't break .rightbar layout */
+            display: contents;
         }
-        #page-content.sk-ready { opacity: 1; }
+
+        #page-content.sk-ready {
+            opacity: 1 !important;
+        }
     </style>
 </head>
 
 <body>
 
     {{-- ═══════════════════════════════════════════════
-         SKELETON OVERLAY — shown while page loads
+    SKELETON OVERLAY — only shown right after login
     ═══════════════════════════════════════════════ --}}
-    <div id="skeleton-overlay" aria-hidden="true">
+    @if (session('just_logged_in'))
+        <div id="skeleton-overlay" aria-hidden="true">
 
-        {{-- Header greeting --}}
-        {{-- <div style="display:flex; gap:14px; align-items:center; margin-bottom:28px;">
-            <div class="sk sk-round" style="width:52px; height:52px; flex-shrink:0;"></div>
-            <div style="flex:1;">
-                <div class="sk" style="height:11px; width:160px; margin-bottom:9px;"></div>
-                <div class="sk" style="height:20px; width:260px; margin-bottom:7px;"></div>
-                <div class="sk" style="height:11px; width:310px;"></div>
+            {{-- Navbar bar --}}
+            <div class="sk sk-card" style="height:70px; margin-bottom:28px;"></div>
+
+            {{-- Welcome banner --}}
+            <div class="sk sk-card" style="height:150px; margin-bottom:28px;"></div>
+
+            {{-- 3 summary cards --}}
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;">
+                <div class="sk sk-card" style="height:165px;"></div>
+                <div class="sk sk-card" style="height:165px;"></div>
+                <div class="sk sk-card" style="height:165px;"></div>
             </div>
-        </div> --}}
-        <div class="sk sk-card" style="height:70px; margin-bottom:28px;"></div>
 
-        <div class="sk sk-card" style="height:150px; margin-bottom:28px;"></div>
+            {{-- Apply banner --}}
+            <div class="sk sk-card" style="height:114px; margin-bottom:24px;"></div>
 
-        {{-- 3 summary cards --}}
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;">
-            <div class="sk sk-card" style="height:165px;"></div>
-            <div class="sk sk-card" style="height:165px;"></div>
-            <div class="sk sk-card" style="height:165px;"></div>
-        </div>
+            {{-- Loans + right sidebar --}}
+            <div style="display:grid; grid-template-columns:1fr 300px; gap:18px;">
 
-        {{-- Apply banner --}}
-        <div class="sk sk-card" style="height:114px; margin-bottom:24px;"></div>
-
-        {{-- Loans + right sidebar --}}
-        <div style="display:grid; grid-template-columns:1fr 300px; gap:18px;">
-
-            {{-- Loan panel --}}
-            <div>
-                {{-- Tab buttons --}}
-                <div style="display:flex; gap:8px; margin-bottom:14px;">
-                    <div class="sk sk-pill" style="width:64px; height:34px;"></div>
-                    <div class="sk sk-pill" style="width:84px; height:34px;"></div>
-                    <div class="sk sk-pill" style="width:74px; height:34px;"></div>
-                    <div class="sk sk-pill" style="width:78px; height:34px;"></div>
+                {{-- Loan panel --}}
+                <div>
+                    {{-- Tab buttons --}}
+                    <div style="display:flex; gap:8px; margin-bottom:14px;">
+                        <div class="sk sk-pill" style="width:64px; height:34px;"></div>
+                        <div class="sk sk-pill" style="width:84px; height:34px;"></div>
+                        <div class="sk sk-pill" style="width:74px; height:34px;"></div>
+                        <div class="sk sk-pill" style="width:78px; height:34px;"></div>
+                    </div>
+                    {{-- Loan card 1 --}}
+                    <div class="sk sk-card" style="height:170px; margin-bottom:14px;"></div>
+                    {{-- Loan card 2 --}}
+                    <div class="sk sk-card" style="height:170px;"></div>
                 </div>
-                {{-- Loan card 1 --}}
-                <div class="sk sk-card" style="height:170px; margin-bottom:14px;"></div>
-                {{-- Loan card 2 --}}
-                <div class="sk sk-card" style="height:170px;"></div>
+
+                {{-- Right sidebar --}}
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <div class="sk sk-card" style="height:148px;"></div>
+                    <div class="sk sk-card" style="height:168px;"></div>
+                    <div class="sk sk-card" style="height:148px;"></div>
+                </div>
             </div>
 
-            {{-- Right sidebar --}}
-            <div style="display:flex; flex-direction:column; gap:14px;">
-                <div class="sk sk-card" style="height:148px;"></div>
-                <div class="sk sk-card" style="height:168px;"></div>
-                <div class="sk sk-card" style="height:148px;"></div>
-            </div>
         </div>
-
-    </div>{{-- end #skeleton-overlay --}}
+    @endif
+    {{-- end #skeleton-overlay --}}
 
 
     {{-- Sidebar always visible — outside the fading wrapper --}}
@@ -168,23 +208,29 @@
         @include("components.sidebar")
 
         {{-- ═══════════════════════════════════════════════
-             REAL PAGE CONTENT (only rightbar fades in)
+        REAL PAGE CONTENT
+        — hidden on first login load, visible otherwise
         ═══════════════════════════════════════════════ --}}
-        <div id="page-content">
+        <div id="page-content" @if(session('just_logged_in')) style="opacity:0;" @endif>
             <div class="rightbar">
                 @include("components.navbar2")
 
                 <div class="main-parent">
                     <main>
 
+                        <!-- <p>April 25, 2026</p> -->
+                        <h2>Good day, {{ $username }}! <span>Here's your overview</span></h2>
+
                         @if ($username)
                             <div class="main-header">
                                 <div class="main-intro">
                                     <div class="main-intro-icon"></div>
                                     <div class="main-intro-text">
-                                        <p style="letter-spacing:.16em;">Member Cooperative Portal</p>
-                                        <h3>Hello Welcome, {{ $username }}!</h3>
-                                        <p>Here's a summary of your cooperative account as of today.</p>
+                                        <span>Member Cooperative Assistant</span>
+                                        <!-- <h3>Hello Welcome, {{ $username }}!</h3> -->
+                                        <!-- <p>Here's a summary of your cooperative account as of today.</p> -->
+                                        <p>Your money are growing steadily. Every peso you save today builds a stronger
+                                            tomorrow for you and the community.</p>
                                     </div>
                                 </div>
                             </div>
@@ -194,30 +240,28 @@
 
                             {{-- Savings Balance --}}
                             <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
-                                <div class="card-transparent">
-                                    {{-- <div class="card-head"></div> --}}
-                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
-                                        <i class="fa-solid fa-wallet"></i>
-                                    </div> --}}
+                                <!-- <div class="card-transparent">
                                     <p>Savings Balance</p>
                                     <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
                                     <p>↑ +₱3,200 this month</p>
-                                </div>
-                                <div class="card-update">
+                                </div> -->
+                                <div class="card-header">
+                                    <p>Savings Balance</p>
+
                                     <div class="update">
                                         <i class="fa fa-arrow-up"></i>
                                         <p>Active</p>
                                     </div>
                                 </div>
+                                <div class="card-body">
+                                    <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
+                                    <p>↑ +₱3,200 this month</p>
+                                </div>
                             </div>
 
                             {{-- Active Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
-                                <div class="card-transparent">
-                                    {{-- <div class="card-head"></div> --}}
-                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
-                                        <i class="fa-solid fa-arrow-trend-up"></i>
-                                    </div> --}}
+                                <!-- <div class="card-transparent">
                                     <p>Active Loans</p>
                                     <h5>{{ $activeLoansCount }} Loan(s)</h5>
                                     <p>2 active loans</p>
@@ -227,17 +271,25 @@
                                         <i class="fa fa-arrow-up"></i>
                                         <p>Active</p>
                                     </div>
+                                </div> -->
+
+                                <div class="card-header">
+                                    <p>Active Loans</p>
+
+                                    <div class="update">
+                                        <i class="fa fa-arrow-up"></i>
+                                        <p>Active</p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $activeLoansCount }} Loan(s)</h5>
+                                    <p>2 active loans</p>
                                 </div>
                             </div>
 
                             {{-- Overdue Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
-                                <div class="card-transparent">
-                                    {{-- <div class="card-head"></div> --}}
-                                    {{-- <div class="card-icon mt-2 d-flex justify-content-center align-items-center" style="border-radius:10px">
-                                        <i class="fa-solid fa-exclamation-triangle"
-                                            style="color:{{ $overdueCount > 0 ? '#dc2626' : '#22c55e' }}"></i>
-                                    </div> --}}
+                                <!-- <div class="card-transparent">
                                     <p>Overdue Loans</p>
                                     <h5>{{ $overdueCount }} Loan(s)</h5>
                                     <p>⚠ Due May 15</p>
@@ -250,6 +302,22 @@
                                             <p style="color:#22c55e;">No overdue</p>
                                         @endif
                                     </div>
+                                </div> -->
+
+                                <div class="card-header">
+                                    <p>Overdue Loans</p>
+
+                                    <div class="update">
+                                        @if($overdueCount > 0)
+                                            <p style="color:#dc2626;">Total: ₱{{ number_format($totalLateFees, 2) }}</p>
+                                        @else
+                                            <p style="color:#0f6e56;">No overdue</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $overdueCount }} Loan(s)</h5>
+                                    <p>⚠ Due May 15</p>
                                 </div>
                             </div>
 
@@ -270,7 +338,246 @@
                             </div>
                         </div>
 
-                        <div class="card-box-parent">
+                        <h3>Quick Summary</h3>
+
+                        <div class="card-box-summary">
+
+                            <div class="recent-transaction">
+                                <div class="recent-header">
+                                    <div>
+                                        <h4>Recent Transactions</h4>
+                                        <p>Latest account activity across all accounts</p>
+                                    </div>
+
+                                    <div>
+                                        <a href="#">View all</a>
+                                    </div>
+                                </div>
+                                <div class="recent-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th>Reference</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Savings Deposit</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Loan Payment</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Loan Payment</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Share Capital Contribution</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Savings Deposit</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Savings Deposit</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Savings Deposit</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>May 28, 2026</td>
+                                                <td>Savings Deposit</td>
+                                                <td>
+                                                    REF-052801</td>
+                                                <td>Savings</td>
+                                                <td>+₱3,200.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="loan-overview">
+                                <div class="loan-header">
+                                    <div>
+                                        <h4>Loan Overview</h4>
+                                        <p>Your loan details and repayment progress</p>
+                                    </div>
+
+                                    <div>
+                                        <a href="#">View all</a>
+                                    </div>
+                                </div>
+                                <div class="loan-body">
+                                    <table class="table">
+                                        <thead>
+
+                                            <tr>
+                                                <th>Loan #</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Balance</th>
+                                                <th>Next Due</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr>
+                                                <td>
+                                                    <p>LN-2024-001</p>
+
+                                                    <p>Released Jan 10</p>
+                                                </td>
+                                                <td>Emergency Loan</td>
+                                                <td>₱15,000</td>
+                                                <td>
+                                                    <p>₱9,200</p>
+
+                                                    <div class="parent-progress">
+                                                        <div class="progress"></div>
+                                                    </div>
+
+                                                    <p>39% paid</p>
+                                                </td>
+                                                <td>June 15</td>
+                                                <td>Active</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <p>LN-2024-001</p>
+
+                                                    <p>Released Jan 10</p>
+                                                </td>
+                                                <td>Personal Loan</td>
+                                                <td>₱15,000</td>
+                                                <td>
+                                                    <p>₱9,200</p>
+
+                                                    <div class="parent-progress">
+                                                        <div class="progress"></div>
+                                                    </div>
+
+                                                    <p>39% paid</p>
+                                                </td>
+                                                <td>June 15</td>
+                                                <td>Active</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <p>LN-2024-001</p>
+
+                                                    <p>Released Jan 10</p>
+                                                </td>
+                                                <td>Education Loan</td>
+                                                <td>₱15,000</td>
+                                                <td>
+                                                    <p>₱9,200</p>
+
+                                                    <div class="parent-progress">
+                                                        <div class="progress"></div>
+                                                    </div>
+
+                                                    <p>39% paid</p>
+                                                </td>
+                                                <td>June 15</td>
+                                                <td>Active</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <p>LN-2024-001</p>
+
+                                                    <p>Released Jan 10</p>
+                                                </td>
+                                                <td>Education Loan</td>
+                                                <td>₱15,000</td>
+                                                <td>
+                                                    <p>₱9,200</p>
+
+                                                    <div class="parent-progress">
+                                                        <div class="progress"></div>
+                                                    </div>
+
+                                                    <p>39% paid</p>
+                                                </td>
+                                                <td>June 15</td>
+                                                <td>Active</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>
+                                                    <p>LN-2024-001</p>
+
+                                                    <p>Released Jan 10</p>
+                                                </td>
+                                                <td>Education Loan</td>
+                                                <td>₱15,000</td>
+                                                <td>
+                                                    <p>₱9,200</p>
+
+                                                    <div class="parent-progress">
+                                                        <div class="progress"></div>
+                                                    </div>
+
+                                                    <p>39% paid</p>
+                                                </td>
+                                                <td>June 15</td>
+                                                <td>Active</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="card-box-parent">
 
                             <div class="loan-application">
                                 <div class="loan-head">
@@ -306,7 +613,7 @@
                                     <div class="parent-loan">
                                         @foreach ($loans as $loan)
                                             @php
-                                                $lendingStatus  = \App\Models\lending_status_tbl::where('lending_id', $loan->id)->first();
+                                                $lendingStatus   = \App\Models\lending_status_tbl::where('lending_id', $loan->id)->first();
                                                 $loanAmount      = $loan->lending_amount ?? 0;
                                                 $remainingBalance = $lendingStatus->remaining_balance ?? $loanAmount;
                                                 $monthlyPayment  = $loan->monthly_payment ?? 0;
@@ -330,16 +637,16 @@
 
                                                     @php
                                                         $statusColor = match($loan->status) {
-                                                            'Approved'           => '#1a4a3a',
-                                                            'Pending'            => '#e6a817',
-                                                            'Rejected','Declined'=> '#e03131',
-                                                            default              => '#888',
+                                                            'Approved'            => '#1a4a3a',
+                                                            'Pending'             => '#e6a817',
+                                                            'Rejected','Declined' => '#e03131',
+                                                            default               => '#888',
                                                         };
                                                         $statusBg = match($loan->status) {
-                                                            'Approved'           => '#e8f5e9',
-                                                            'Pending'            => '#fff8e1',
-                                                            'Rejected','Declined'=> '#fef2f2',
-                                                            default              => '#f5f5f5',
+                                                            'Approved'            => '#e8f5e9',
+                                                            'Pending'             => '#fff8e1',
+                                                            'Rejected','Declined' => '#fef2f2',
+                                                            default               => '#f5f5f5',
                                                         };
                                                     @endphp
 
@@ -572,7 +879,7 @@
                                 </div>
                             </div>
 
-                        </div>
+                        </div>  -->
                     </section>
                 </div>
             </div>
@@ -584,7 +891,9 @@
     @if (session("message"))
         <div class="toast-message">
             <i class="fa fa-check-circle"></i>
-            <div><p>{{ session("message") }}</p></div>
+            <div>
+                <p>{{ session("message") }}</p>
+            </div>
         </div>
         <script>
             setTimeout(() => {
@@ -598,55 +907,60 @@
     @endif
 
 
-    {{-- ─── Skeleton dismiss logic ─────────────────────────── --}}
-    <script>
-        (function () {
-            var MIN_DISPLAY = 2000; // minimum ms to show skeleton (change to 1000 for 1 second)
-            var startTime   = Date.now();
-            var pageLoaded  = false;
-            var dismissed   = false;
+    {{-- ─── Skeleton dismiss logic — only runs after login ─── --}}
+    @if (session('just_logged_in'))
+        <script>
+            (function () {
+                var MIN_DISPLAY = 2000; // ms to show skeleton after login
+                var startTime = Date.now();
+                var pageLoaded = false;
+                var dismissed = false;
 
-            function dismissSkeleton() {
-                if (dismissed) return;
-                dismissed = true;
+                function dismissSkeleton() {
+                    if (dismissed) return;
+                    dismissed = true;
 
-                var overlay = document.getElementById('skeleton-overlay');
-                var content = document.getElementById('page-content');
-                if (!overlay) return;
+                    var overlay = document.getElementById('skeleton-overlay');
+                    var content = document.getElementById('page-content');
 
-                overlay.classList.add('sk-hide');
-                content.classList.add('sk-ready');
+                    if (overlay) {
+                        overlay.classList.add('sk-hide');
+                        overlay.addEventListener('transitionend', function () {
+                            overlay.remove();
+                        }, { once: true });
+                    }
 
-                overlay.addEventListener('transitionend', function () {
-                    overlay.remove();
-                }, { once: true });
-            }
-
-            function tryDismiss() {
-                if (!pageLoaded) return; // wait for page load first
-                var elapsed  = Date.now() - startTime;
-                var remaining = MIN_DISPLAY - elapsed;
-                if (remaining <= 0) {
-                    dismissSkeleton();
-                } else {
-                    setTimeout(dismissSkeleton, remaining);
+                    if (content) {
+                        content.classList.add('sk-ready');
+                    }
                 }
-            }
 
-            if (document.readyState === 'complete') {
-                pageLoaded = true;
-                tryDismiss();
-            } else {
-                window.addEventListener('load', function () {
+                function tryDismiss() {
+                    if (!pageLoaded) return;
+                    var elapsed = Date.now() - startTime;
+                    var remaining = MIN_DISPLAY - elapsed;
+                    if (remaining <= 0) {
+                        dismissSkeleton();
+                    } else {
+                        setTimeout(dismissSkeleton, remaining);
+                    }
+                }
+
+                if (document.readyState === 'complete') {
                     pageLoaded = true;
                     tryDismiss();
-                });
-            }
+                } else {
+                    window.addEventListener('load', function () {
+                        pageLoaded = true;
+                        tryDismiss();
+                    });
+                }
 
-            // Hard fallback — never stay stuck beyond 6 s
-            setTimeout(dismissSkeleton, 6000);
-        })();
-    </script>
+                // Hard fallback — never stay stuck beyond 6s
+                setTimeout(dismissSkeleton, 6000);
+            })();
+        </script>
+    @endif
 
 
     <script>
@@ -662,4 +976,5 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 </body>
+
 </html>

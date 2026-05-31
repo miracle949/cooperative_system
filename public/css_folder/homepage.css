@@ -61,7 +61,9 @@
 }
 
 .container-fluid .main-parent {
-    padding: 2rem 2rem 2rem;
+    /* padding: 2rem 2rem 2rem; */
+    /* padding: 24px 28px; */
+    padding: 2rem 1.5rem;
     height: calc(100vh - 70px);
     overflow-y: auto;
     /* height: 100vh;
@@ -75,13 +77,29 @@
     /* background-color: #F4F6FA; */
     /* background-color: var(--cream); */
     /* background-color: var(--semi-white); */
+    /* background-color: var(--bg); */
     background-color: #ffffff;
+    /* background-color: var(--teal-pale); */
     /* background-color: #0f1623; */
 }
 
+/* .container-fluid .main-parent main p{
+    margin: 0 0 5px;
+    text-transform: uppercase;
+    font-size: 14.5px;
+    letter-spacing: .15em;
+} */
+
 .container-fluid .main-parent main h2 {
-    font-size: 23px;
+    font-size: 20px;
     font-weight: 600;
+    color: var(--teal);
+}
+
+.container-fluid .main-parent main h2 span {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 14.5px;
 }
 
 .container-fluid .main-parent main h4 {
@@ -158,6 +176,10 @@
     /* font-weight: 600; */
 }
 
+/* .container-fluid main h2{
+    font-size: 18px;
+} */
+
 .container-fluid main .main-header {
     /* padding: 48px 48px 0px 48px; */
     position: relative;
@@ -165,7 +187,9 @@
 
 .container-fluid main .main-intro {
     /* margin-top: 20px; */
-    padding: 1.5rem 2.3rem;
+    /* padding: 1.5rem 2.3rem; */
+    padding: 1rem 2rem;
+    height: 80px;
     background-color: var(--teal);
     /* border-radius: 20px; */
     border-radius: 14px;
@@ -182,7 +206,7 @@
     gap: 0.8rem;
     position: relative;
     /* overflow: hidden; */
-    margin-top: 1rem;
+    margin-top: 6.5rem;
 }
 
 .container-fluid main .main-intro .main-intro-icon {
@@ -207,7 +231,17 @@
     margin-left: 180px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
+    position: absolute;
+    left: 15px;
+    top: -80px;
+    right: 0;
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+    width: 400px;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
 }
 
 /* .container-fluid main .main-header::before {
@@ -239,7 +273,8 @@
     font-size: 27px;
     font-weight: 600;
     /* color: #1E4035; */
-    color: #ffffff;
+    /* color: #ffffff; */
+    color: var(--teal);
     /* width: 22.3ch; */
     width: 100%;
     /* font-family: "Playfair Display"; */
@@ -258,27 +293,46 @@
     }
 } */
 
-.container-fluid main .main-intro p {
+/* .container-fluid main .main-intro p {
     margin: 0px 0px 0 0px;
-    text-transform: uppercase;
-    font-size: 11.5px;
     width: 100%;
-    /* color: #C9A84C; */
-    color: var(--gold);
     font-weight: 600;
+} */
+
+.container-fluid main .main-intro span {
+    margin: 0px 0px 0 0px;
+    width: 100%;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-size: 14.5px;
+    /* font-family: "Playfair Display"; */
 }
 
-.container-fluid main .main-intro p:nth-child(3) {
-    /* color: var(--muted); */
-    /* color: #FFFFFFA6; */
-    color: rgba(255, 255, 255, .5);
+.container-fluid main .main-intro p {
+    color: var(--teal);
+    /* color: #808080; */
     text-transform: none;
     margin-top: 15px;
     margin: 0;
-    /* font-size: 14.5px; */
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 500;
 }
+
+/* .container-fluid main .main-intro p:nth-child(1) {
+    text-transform: uppercase;
+    color: var(--teal);
+    font-size: 13px;
+}
+
+.container-fluid main .main-intro p:nth-child(3) {
+    color: var(--teal);
+    text-transform: none;
+    margin-top: 15px;
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 500;
+} */
 
 .container-fluid main h3 {
     font-size: 23px;
@@ -319,8 +373,6 @@
     /* border-radius: 20px; */
     border-radius: 12px;
     z-index: 1;
-    display: flex;
-    justify-content: space-between;
     animation: slideIn 0.4s ease both;
     overflow: hidden;
     cursor: pointer;
@@ -354,13 +406,111 @@
     }
 }
 
-.container-fluid main .card-box .card-update {
+.container-fluid main .card-box:nth-child(1) .card-header .update {
+    /* background-color: rgba(30, 64, 53, 0.1); */
+    background-color: var(--mint-pale);
+    padding: 7px;
+    border-radius: 28px;
+}
+
+.container-fluid main .card-box:nth-child(1) .card-header .update .fa,
+.container-fluid main .card-box:nth-child(1) .card-header .update p {
+    /* color: #1E4035; */
+    color: #0f6e56;
+}
+
+.container-fluid main .card-box:nth-child(1) .card-body p{
+    color: #0f6e56;
+}
+
+.container-fluid main .card-box:nth-child(2) .card-header .update {
+    /* background-color: rgba(201, 168, 76, 0.12); */
+    background-color: var(--gold-pale);
+    padding: 7px;
+    border-radius: 28px;
+}
+
+.container-fluid main .card-box:nth-child(2) .card-header .update .fa,
+.container-fluid main .card-box:nth-child(2) .card-header .update p {
+    /* color: #C9A84C; */
+    color: #854F0B;
+}
+
+.container-fluid main .card-box:nth-child(2) .card-body p{
+    color: var(--muted);
+}
+
+.container-fluid main .card-box:nth-child(3) .card-header .update {
+    /* background-color: rgba(201, 168, 76, 0.12); */
+    background-color: var(--mint-pale);
+    padding: 7px;
+    border-radius: 28px;
+}
+
+.container-fluid main .card-box:nth-child(3) .card-header .update .fa,
+.container-fluid main .card-box:nth-child(3) .card-header .update p {
+    /* color: #C9A84C; */
+    color: #0f6e56;
+}
+
+.container-fluid main .card-box:nth-child(3) .card-body p{
+    color: var(--coral);
+}
+
+.container-fluid main .card-box .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid main .card-box .card-header p {
+    font-size: 14.5px;
+    /* color: #808080; */
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.container-fluid main .card-box p {
+    margin: 0;
+}
+
+.container-fluid main .card-box .card-header .update {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.container-fluid main .card-box .card-header .update .fa {
+    font-size: 11px;
+}
+
+.container-fluid main .card-box .card-header .update p {
+    font-size: 12px;
+    text-transform: none;
+    font-weight: 600;
+}
+
+.container-fluid main .card-box .card-body {
+    margin-top: 1.5rem;
+}
+
+.container-fluid main .card-box .card-body h5 {
+    margin: 0;
+    color: var(--teal);
+    font-weight: 800;
+}
+
+.container-fluid main .card-box .card-body p {
+    font-size: 13.5px;
+    margin: 10px 0 0;
+}
+
+/* .container-fluid main .card-box .card-update {
     display: flex;
 }
 
 .container-fluid main .card-box .card-update .update {
     display: flex;
-    /* width: 80px; */
     width: 100%;
     height: 30px;
     padding: 7px;
@@ -402,7 +552,7 @@
 
 .container-fluid main .card-box:nth-child(3) .card-update .update p {
     color: #1E4035;
-}
+} */
 
 .container-fluid main .card-box:nth-child(1) {
     position: relative;
@@ -490,38 +640,37 @@
     margin: 0;
 } */
 
-.container-fluid main .card-box p:nth-child(1) {
+/* .container-fluid main .card-box p:nth-child(1) {
     margin: 0 0 30px;
     font-size: 12.5px;
     font-weight: 500;
     color: var(--muted);
 }
 
-.container-fluid main .card-parent .card-box:nth-child(1) p:nth-child(3){
+.container-fluid main .card-parent .card-box:nth-child(1) p:nth-child(3) {
     color: var(--mint);
     margin: 0;
     font-size: 12.5px;
-} 
+}
 
-.container-fluid main .card-parent .card-box:nth-child(2) p:nth-child(3){
+.container-fluid main .card-parent .card-box:nth-child(2) p:nth-child(3) {
     color: var(--muted);
     margin: 0;
     font-size: 12.5px;
-} 
+}
 
-.container-fluid main .card-parent .card-box:nth-child(3) p:nth-child(3){
+.container-fluid main .card-parent .card-box:nth-child(3) p:nth-child(3) {
     color: var(--coral);
     margin: 0;
     font-size: 12.5px;
-} 
+}
 
 .container-fluid main .card-parent .card-box h5 {
     color: var(--ink);
     font-size: 21px;
-    /* margin-top: 3rem; */
     margin: 0 0 10px;
     font-weight: 700;
-}
+} */
 
 /* .container-fluid main .card-box:nth-child(1) {
     background-color: #1C6AFF;
@@ -621,6 +770,292 @@
     padding: 10px 20px;
     border-radius: 10px;
     font-weight: 600;
+}
+
+.container-fluid section h3 {
+    font-size: 18px;
+    margin: 25px 0;
+    font-weight: 600;
+    color: var(--teal);
+}
+
+.container-fluid section .card-box-summary {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    gap: 1rem;
+}
+
+.container-fluid section .card-box-summary h4 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--teal);
+}
+
+/* .container-fluid section .card-box-summary a {
+    text-decoration: none;
+    font-size: 15.5px;
+} */
+
+.container-fluid section .card-box-summary .loan-overview {
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ffffff;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th {
+    font-size: 13.5px;
+    color: var(--muted);
+    background-color: #f7f9fc;
+    padding: 10px 20px;
+    text-align: start;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td {
+    padding: 12px 20px;
+    font-size: 13.5px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-header p {
+    font-size: 13.5px;
+    margin: 5px 0 0;
+    color: var(--muted);
+    /* width: 280px; */
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-header a {
+    font-size: 13.5px;
+    text-decoration: none;
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body {
+    overflow: auto;
+    width: 100%;
+    /* max-height: 485px; */
+    max-height: 400px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table {
+    min-width: 600px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th {
+    font-size: 13.5px;
+    color: var(--muted);
+    background-color: #f7f9fc;
+    padding: 10px 20px;
+    text-align: start;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th:nth-child(5) {
+    width: 150px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td {
+    padding: 12px 20px;
+    font-size: 13.5px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) p {
+    margin: 0;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) p:nth-child(1) {
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) p:nth-child(2) {
+    color: var(--muted);
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) {
+    width: 150px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) p {
+    margin: 0;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) p:nth-child(1) {
+    color: var(--blue);
+    font-weight: 600;
+
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) p:nth-child(3) {
+    color: var(--muted);
+    margin-top: 0.7rem;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) .parent-progress {
+    position: relative;
+    padding: 0.3rem;
+    background-color: #f2f4f8;
+    width: 100%;
+    border-radius: 28px;
+    margin-top: 0.7rem;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) .parent-progress .progress {
+    position: absolute;
+    background-color: var(--blue);
+    left: 0;
+    bottom: 0;
+    top: 0;
+    height: 100%;
+    width: 40%;
+    border-radius: 28px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(5) {
+    width: 300px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td p {
+    margin: 0;
+    font-size: 13.5px;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) p:nth-child(1) {
+    color: var(--teal);
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) p:nth-child(2) {
+    color: #808080;
+}
+
+.container-fluid section .card-box-summary .recent-transaction {
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-header p {
+    font-size: 13.5px;
+    margin: 5px 0 0;
+    color: var(--muted);
+    /* width: 280px; */
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-header a {
+    font-size: 13.5px;
+    text-decoration: none;
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .recent-transaction {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body {
+    overflow: auto;
+    width: 100%;
+    /* max-height: 485px; */
+    max-height: 400px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table {
+    min-width: 600px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table thead tr th {
+    font-size: 13.5px;
+    color: var(--muted);
+    background-color: #f7f9fc;
+    padding: 10px 20px;
+    text-align: start;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table thead tr th:nth-child(1) {
+    width: 150px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td {
+    padding: 12px 20px;
+    font-size: 13.5px;
+}
+
+/* .container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4){
+    width: 150px;
+} */
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) p:nth-child(1) {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) p:nth-child(3) {
+    color: var(--muted);
+    margin-top: 0.7rem;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) .parent-progress {
+    position: relative;
+    padding: 0.3rem;
+    background-color: #f2f4f8;
+    width: 100%;
+    border-radius: 28px;
+    margin-top: 0.7rem;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) .parent-progress .progress {
+    position: absolute;
+    background-color: var(--blue);
+    left: 0;
+    bottom: 0;
+    top: 0;
+    height: 100%;
+    width: 40%;
+    border-radius: 28px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(5) {
+    width: 130px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td p {
+    margin: 0;
+    font-size: 13.5px;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(1) p:nth-child(1) {
+    color: var(--teal);
+    font-weight: 600;
+}
+
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(1) p:nth-child(2) {
+    color: #808080;
 }
 
 .container-fluid section .card-box-parent {
@@ -1455,6 +1890,19 @@
         padding: 0;
         width: 100%;
         max-width: 370px;
+    }
+
+    .container-fluid main .main-intro .main-intro-text {
+        width: 500px;
+        top: -60px;
+    }
+
+    .container-fluid main .main-intro span {
+        font-size: 14.5px;
+    }
+
+    .container-fluid main .main-intro p {
+        font-size: 14.5px;
     }
 }
 

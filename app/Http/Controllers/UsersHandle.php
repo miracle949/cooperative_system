@@ -309,31 +309,31 @@ class UsersHandle extends Controller
 
         foreach ($loans->where('status', 'Approved') as $loan) {
             $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
-            
+
             if (!$loan->due_date && $loan->created_at) {
                 $dueDate = $loan->created_at->copy()->addMonths($termMonths);
                 $loan->due_date = $dueDate->format('Y-m-d');
                 $loan->save();
             }
-            
+
             if (!$loan->due_date) {
                 continue;
             }
-            
+
             $dueDate = Carbon::parse($loan->due_date);
             $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
-            
+
             if ($today->gte($penaltyStartDate)) {
                 $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
                 $monthsOverdue = max(0, $monthsOverdue);
-                
+
                 if ($monthsOverdue > 0) {
                     $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
-                    
+
                     $loan->late_fee = $lateFee;
                     $loan->penalty_applied_at = now();
                     $loan->save();
-                    
+
                     $penalizedLoans[] = [
                         'id' => $loan->id,
                         'lending_type' => $loan->lending_type,
@@ -559,23 +559,38 @@ class UsersHandle extends Controller
             ->values();
 
         $memberSince = $user->created_at->format('F Y');
-        
+
         $missingCount = 0;
-        if($otherinfo && empty($otherinfo->contact_no)) $missingCount++;
-        if($otherinfo && empty($otherinfo->present_address)) $missingCount++;
-        if($otherinfo && empty($otherinfo->permanent_address)) $missingCount++;
-        if($otherinfo && empty($otherinfo->date_of_birth)) $missingCount++;
-        if($otherinfo && empty($otherinfo->place_of_birth)) $missingCount++;
-        if($otherinfo && empty($otherinfo->sex)) $missingCount++;
-        if($otherinfo && empty($otherinfo->civil_status)) $missingCount++;
-        if($otherinfo && empty($otherinfo->citizenship)) $missingCount++;
-        if($otherinfo && empty($otherinfo->blood_type)) $missingCount++;
-        if($otherinfo && empty($otherinfo->height)) $missingCount++;
-        if($otherinfo && empty($otherinfo->weight)) $missingCount++;
-        if($membergovernIds && empty($membergovernIds->sss_id)) $missingCount++;
-        if($membergovernIds && empty($membergovernIds->philhealth_id)) $missingCount++;
-        if($membergovernIds && empty($membergovernIds->pagibig_id)) $missingCount++;
-        if($membergovernIds && empty($membergovernIds->tin_id)) $missingCount++;
+        if ($otherinfo && empty($otherinfo->contact_no))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->present_address))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->permanent_address))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->date_of_birth))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->place_of_birth))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->sex))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->civil_status))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->citizenship))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->blood_type))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->height))
+            $missingCount++;
+        if ($otherinfo && empty($otherinfo->weight))
+            $missingCount++;
+        if ($membergovernIds && empty($membergovernIds->sss_id))
+            $missingCount++;
+        if ($membergovernIds && empty($membergovernIds->philhealth_id))
+            $missingCount++;
+        if ($membergovernIds && empty($membergovernIds->pagibig_id))
+            $missingCount++;
+        if ($membergovernIds && empty($membergovernIds->tin_id))
+            $missingCount++;
 
         return view(
             "members_components.profile",
@@ -665,7 +680,7 @@ class UsersHandle extends Controller
 
     //     $govIdsData = [];
     //     $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
-        
+
     //     foreach ($idFields as $field) {
     //         if ($request->hasFile($field)) {
     //             $file = $request->file($field);
@@ -676,7 +691,7 @@ class UsersHandle extends Controller
     //             $govIdsData[$field] = $membergovernIds->$field;
     //         }
     //     }
-        
+
     //     if (!empty($govIdsData)) {
     //         Membergovern_ids_tbl::updateOrCreate(
     //             ['user_id' => $userId],
@@ -710,27 +725,42 @@ class UsersHandle extends Controller
         $userId = Auth::id();
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
-        
+
         $otherinfo = Otherinfo_tbl::where('user_id', $userId)->first();
         $membergovernIds = Membergovern_ids_tbl::where('user_id', $userId)->first();
         $family = Family_tbl::where('user_id', $userId)->first();
-        
+
         $missingCount = 0;
-        if(empty($otherinfo->contact_no)) $missingCount++;
-        if(empty($otherinfo->present_address)) $missingCount++;
-        if(empty($otherinfo->permanent_address)) $missingCount++;
-        if(empty($otherinfo->date_of_birth)) $missingCount++;
-        if(empty($otherinfo->place_of_birth)) $missingCount++;
-        if(empty($otherinfo->sex)) $missingCount++;
-        if(empty($otherinfo->civil_status)) $missingCount++;
-        if(empty($otherinfo->citizenship)) $missingCount++;
-        if(empty($otherinfo->blood_type)) $missingCount++;
-        if(empty($otherinfo->height)) $missingCount++;
-        if(empty($otherinfo->weight)) $missingCount++;
-        if(empty($membergovernIds->sss_id)) $missingCount++;
-        if(empty($membergovernIds->philhealth_id)) $missingCount++;
-        if(empty($membergovernIds->pagibig_id)) $missingCount++;
-        if(empty($membergovernIds->tin_id)) $missingCount++;
+        if (empty($otherinfo->contact_no))
+            $missingCount++;
+        if (empty($otherinfo->present_address))
+            $missingCount++;
+        if (empty($otherinfo->permanent_address))
+            $missingCount++;
+        if (empty($otherinfo->date_of_birth))
+            $missingCount++;
+        if (empty($otherinfo->place_of_birth))
+            $missingCount++;
+        if (empty($otherinfo->sex))
+            $missingCount++;
+        if (empty($otherinfo->civil_status))
+            $missingCount++;
+        if (empty($otherinfo->citizenship))
+            $missingCount++;
+        if (empty($otherinfo->blood_type))
+            $missingCount++;
+        if (empty($otherinfo->height))
+            $missingCount++;
+        if (empty($otherinfo->weight))
+            $missingCount++;
+        if (empty($membergovernIds->sss_id))
+            $missingCount++;
+        if (empty($membergovernIds->philhealth_id))
+            $missingCount++;
+        if (empty($membergovernIds->pagibig_id))
+            $missingCount++;
+        if (empty($membergovernIds->tin_id))
+            $missingCount++;
 
 
         return view(
@@ -758,7 +788,9 @@ class UsersHandle extends Controller
         if (strtolower($user->role) === "admin") {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
         } else {
-            return redirect()->route("MemberPortal")->with("message", "Login successfully!");
+            return redirect()->route("MemberPortal")
+                ->with("message", "Login successfully!")
+                ->with("just_logged_in", true); // ← add this
         }
     }
 
@@ -812,6 +844,7 @@ class UsersHandle extends Controller
             } else {
 
                 $request->session()->regenerate();
+                $request->session()->flash('just_logged_in', true);
                 return redirect()->route('UserHandle');
 
             }
