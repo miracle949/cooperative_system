@@ -166,8 +166,30 @@ div.container-fluid {
     height: 100vh;
     padding: 2rem 3.5rem;
     /* flex-shrink: 0; */
-    /* overflow: hidden; */
+    overflow: hidden;
     position: relative;
+}
+
+.container-fluid .form-image::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79, 127, 250, .18) 0%, transparent 70%);
+}
+
+.container-fluid .form-image::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -80px;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 166, 35, .1) 0%, transparent 70%);
 }
 
 /* Logo row */
@@ -544,7 +566,7 @@ div.container-fluid {
 .container-fluid .form-input input:-webkit-autofill:focus {
     border-color: var(--blue) !important;
     box-shadow: 0 0 0 1000px var(--border) inset,
-    0 0 0 3px rgba(79, 127, 250, .12) !important;
+        0 0 0 3px rgba(79, 127, 250, .12) !important;
     color: #6B7280;
 }
 

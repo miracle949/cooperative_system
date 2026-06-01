@@ -14,6 +14,7 @@
     {{-- css link --}}
     <link rel="stylesheet" href="css_folder/homepage.css">
     <link rel="stylesheet" href="css_folder/loading.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     {{-- bootstrap and tailwind link --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -129,13 +130,11 @@
             border-radius: 12px;
         }
 
-        /* fade out skeleton */
         #skeleton-overlay.sk-hide {
             opacity: 0;
             pointer-events: none;
         }
 
-        /* ─── Real content ───────────────────────────────────── */
         #page-content {
             transition: opacity .4s ease .1s;
             display: contents;
@@ -143,6 +142,92 @@
 
         #page-content.sk-ready {
             opacity: 1 !important;
+        }
+
+        /* ─── Financial Trends Chart Card ───────────────────── */
+        .section-card {
+            background: #ffffff;
+            border: 1px solid rgba(15, 31, 69, 0.10);
+            border-radius: 12px;
+            overflow: hidden;
+            /* margin: 20px 0 32px 0; */
+            margin: 25px 0 0;
+        }
+
+        .section-header {
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid rgba(15, 31, 69, 0.10);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f1f45;
+        }
+
+        .section-sub {
+            font-size: 11px;
+            color: #8891ad;
+            margin-top: 2px;
+        }
+
+        .chart-wrap {
+            padding: 16px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .chart-tab {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 99px;
+            border: 1px solid rgba(15, 31, 69, 0.10);
+            background: none;
+            color: #8891ad;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .chart-tab.active {
+            background: #0f1f45;
+            color: #fff;
+            border-color: #0f1f45;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #8891ad;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -173,23 +258,16 @@
 
             {{-- Loans + right sidebar --}}
             <div style="display:grid; grid-template-columns:1fr 300px; gap:18px;">
-
-                {{-- Loan panel --}}
                 <div>
-                    {{-- Tab buttons --}}
                     <div style="display:flex; gap:8px; margin-bottom:14px;">
                         <div class="sk sk-pill" style="width:64px; height:34px;"></div>
                         <div class="sk sk-pill" style="width:84px; height:34px;"></div>
                         <div class="sk sk-pill" style="width:74px; height:34px;"></div>
                         <div class="sk sk-pill" style="width:78px; height:34px;"></div>
                     </div>
-                    {{-- Loan card 1 --}}
                     <div class="sk sk-card" style="height:170px; margin-bottom:14px;"></div>
-                    {{-- Loan card 2 --}}
                     <div class="sk sk-card" style="height:170px;"></div>
                 </div>
-
-                {{-- Right sidebar --}}
                 <div style="display:flex; flex-direction:column; gap:14px;">
                     <div class="sk sk-card" style="height:148px;"></div>
                     <div class="sk sk-card" style="height:168px;"></div>
@@ -199,7 +277,6 @@
 
         </div>
     @endif
-    {{-- end #skeleton-overlay --}}
 
 
     {{-- Sidebar always visible — outside the fading wrapper --}}
@@ -207,10 +284,6 @@
         @include("components.offcanvas")
         @include("components.sidebar")
 
-        {{-- ═══════════════════════════════════════════════
-        REAL PAGE CONTENT
-        — hidden on first login load, visible otherwise
-        ═══════════════════════════════════════════════ --}}
         <div id="page-content" @if(session('just_logged_in')) style="opacity:0;" @endif>
             <div class="rightbar">
                 @include("components.navbar2")
@@ -218,7 +291,6 @@
                 <div class="main-parent">
                     <main>
 
-                        <!-- <p>April 25, 2026</p> -->
                         <h2>Good day, {{ $username }}! <span>Here's your overview</span></h2>
 
                         @if ($username)
@@ -227,8 +299,6 @@
                                     <div class="main-intro-icon"></div>
                                     <div class="main-intro-text">
                                         <span>Member Cooperative Assistant</span>
-                                        <!-- <h3>Hello Welcome, {{ $username }}!</h3> -->
-                                        <!-- <p>Here's a summary of your cooperative account as of today.</p> -->
                                         <p>Your money are growing steadily. Every peso you save today builds a stronger
                                             tomorrow for you and the community.</p>
                                     </div>
@@ -240,14 +310,8 @@
 
                             {{-- Savings Balance --}}
                             <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
-                                <!-- <div class="card-transparent">
-                                    <p>Savings Balance</p>
-                                    <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
-                                    <p>↑ +₱3,200 this month</p>
-                                </div> -->
                                 <div class="card-header">
                                     <p>Savings Balance</p>
-
                                     <div class="update">
                                         <i class="fa fa-arrow-up"></i>
                                         <p>Active</p>
@@ -261,21 +325,8 @@
 
                             {{-- Active Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
-                                <!-- <div class="card-transparent">
-                                    <p>Active Loans</p>
-                                    <h5>{{ $activeLoansCount }} Loan(s)</h5>
-                                    <p>2 active loans</p>
-                                </div>
-                                <div class="card-update">
-                                    <div class="update">
-                                        <i class="fa fa-arrow-up"></i>
-                                        <p>Active</p>
-                                    </div>
-                                </div> -->
-
                                 <div class="card-header">
                                     <p>Active Loans</p>
-
                                     <div class="update">
                                         <i class="fa fa-arrow-up"></i>
                                         <p>Active</p>
@@ -289,24 +340,8 @@
 
                             {{-- Overdue Loans --}}
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
-                                <!-- <div class="card-transparent">
-                                    <p>Overdue Loans</p>
-                                    <h5>{{ $overdueCount }} Loan(s)</h5>
-                                    <p>⚠ Due May 15</p>
-                                </div>
-                                <div class="card-update">
-                                    <div class="update">
-                                        @if($overdueCount > 0)
-                                            <p style="color:#dc2626;">Total: ₱{{ number_format($totalLateFees, 2) }}</p>
-                                        @else
-                                            <p style="color:#22c55e;">No overdue</p>
-                                        @endif
-                                    </div>
-                                </div> -->
-
                                 <div class="card-header">
                                     <p>Overdue Loans</p>
-
                                     <div class="update">
                                         @if($overdueCount > 0)
                                             <p style="color:#dc2626;">Total: ₱{{ number_format($totalLateFees, 2) }}</p>
@@ -348,7 +383,6 @@
                                         <h4>Recent Transactions</h4>
                                         <p>Latest account activity across all accounts</p>
                                     </div>
-
                                     <div>
                                         <a href="#">View all</a>
                                     </div>
@@ -368,71 +402,56 @@
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Loan Payment</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Loan Payment</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Share Capital Contribution</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
-
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
-                                                <td>
-                                                    REF-052801</td>
+                                                <td>REF-052801</td>
                                                 <td>Savings</td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
@@ -447,7 +466,6 @@
                                         <h4>Loan Overview</h4>
                                         <p>Your loan details and repayment progress</p>
                                     </div>
-
                                     <div>
                                         <a href="#">View all</a>
                                     </div>
@@ -455,7 +473,6 @@
                                 <div class="loan-body">
                                     <table class="table">
                                         <thead>
-
                                             <tr>
                                                 <th>Loan #</th>
                                                 <th>Type</th>
@@ -466,106 +483,86 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             <tr>
                                                 <td>
                                                     <p>LN-2024-001</p>
-
                                                     <p>Released Jan 10</p>
                                                 </td>
                                                 <td>Emergency Loan</td>
                                                 <td>₱15,000</td>
                                                 <td>
                                                     <p>₱9,200</p>
-
                                                     <div class="parent-progress">
                                                         <div class="progress"></div>
                                                     </div>
-
                                                     <p>39% paid</p>
                                                 </td>
                                                 <td>June 15</td>
                                                 <td>Active</td>
                                             </tr>
-
                                             <tr>
                                                 <td>
                                                     <p>LN-2024-001</p>
-
                                                     <p>Released Jan 10</p>
                                                 </td>
                                                 <td>Personal Loan</td>
                                                 <td>₱15,000</td>
                                                 <td>
                                                     <p>₱9,200</p>
-
                                                     <div class="parent-progress">
                                                         <div class="progress"></div>
                                                     </div>
-
                                                     <p>39% paid</p>
                                                 </td>
                                                 <td>June 15</td>
                                                 <td>Active</td>
                                             </tr>
-
                                             <tr>
                                                 <td>
                                                     <p>LN-2024-001</p>
-
                                                     <p>Released Jan 10</p>
                                                 </td>
                                                 <td>Education Loan</td>
                                                 <td>₱15,000</td>
                                                 <td>
                                                     <p>₱9,200</p>
-
                                                     <div class="parent-progress">
                                                         <div class="progress"></div>
                                                     </div>
-
                                                     <p>39% paid</p>
                                                 </td>
                                                 <td>June 15</td>
                                                 <td>Active</td>
                                             </tr>
-
                                             <tr>
                                                 <td>
                                                     <p>LN-2024-001</p>
-
                                                     <p>Released Jan 10</p>
                                                 </td>
                                                 <td>Education Loan</td>
                                                 <td>₱15,000</td>
                                                 <td>
                                                     <p>₱9,200</p>
-
                                                     <div class="parent-progress">
                                                         <div class="progress"></div>
                                                     </div>
-
                                                     <p>39% paid</p>
                                                 </td>
                                                 <td>June 15</td>
                                                 <td>Active</td>
                                             </tr>
-
                                             <tr>
                                                 <td>
                                                     <p>LN-2024-001</p>
-
                                                     <p>Released Jan 10</p>
                                                 </td>
                                                 <td>Education Loan</td>
                                                 <td>₱15,000</td>
                                                 <td>
                                                     <p>₱9,200</p>
-
                                                     <div class="parent-progress">
                                                         <div class="progress"></div>
                                                     </div>
-
                                                     <p>39% paid</p>
                                                 </td>
                                                 <td>June 15</td>
@@ -577,314 +574,147 @@
                             </div>
                         </div>
 
-                        <!-- <div class="card-box-parent">
-
-                            <div class="loan-application">
-                                <div class="loan-head">
-                                    <div>
-                                        <h4>Loan Application</h4>
-                                        <p>Track all your lending applications</p>
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('LoanStatus') }}">View all <i class="fa fa-arrow-right"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="buttons-parent">
-                                    <button class="tab-btn active" onclick="filterLoans('all')">
-                                        <span>All</span>
-                                        <p>{{ $loans->count() }}</p>
-                                    </button>
-                                    <button class="tab-btn" onclick="filterLoans('Approved')">
-                                        <span>Approved</span>
-                                        <p>{{ $loans->where('status','Approved')->count() }}</p>
-                                    </button>
-                                    <button class="tab-btn" onclick="filterLoans('Pending')">
-                                        <span>Pending</span>
-                                        <p>{{ $loans->where('status','Pending')->count() }}</p>
-                                    </button>
-                                    <button class="tab-btn" onclick="filterLoans('Rejected')">
-                                        <span>Rejected</span>
-                                        <p>{{ $loans->whereIn('status',['Rejected','Declined'])->count() }}</p>
-                                    </button>
-                                </div>
-
-                                @if ($loans->isNotEmpty())
-                                    <div class="parent-loan">
-                                        @foreach ($loans as $loan)
-                                            @php
-                                                $lendingStatus   = \App\Models\lending_status_tbl::where('lending_id', $loan->id)->first();
-                                                $loanAmount      = $loan->lending_amount ?? 0;
-                                                $remainingBalance = $lendingStatus->remaining_balance ?? $loanAmount;
-                                                $monthlyPayment  = $loan->monthly_payment ?? 0;
-                                                $paid = ($loanAmount > 0 && $lendingStatus)
-                                                    ? max(0, round(($lendingStatus->total_paid / $loan->total_payment) * 100))
-                                                    : 0;
-                                                $statusGroup = in_array($loan->status, ['Rejected','Declined']) ? 'Rejected' : $loan->status;
-                                                $penaltyInfo = collect($penalizedLoans ?? [])->firstWhere('id', $loan->id);
-                                                $daysLeft = ($lendingStatus && $lendingStatus->next_due_date)
-                                                    ? (int) now()->startOfDay()->diffInDays(
-                                                        \Carbon\Carbon::parse($lendingStatus->next_due_date)->startOfDay(), false)
-                                                    : null;
-                                            @endphp
-
-                                            <div class="loan-box" data-status="{{ $statusGroup }}">
-                                                <div class="box-head">
-                                                    <div class="box-text">
-                                                        <h5>{{ $loan->lending_type }}</h5>
-                                                        <p>Applied on {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</p>
-                                                    </div>
-
-                                                    @php
-                                                        $statusColor = match($loan->status) {
-                                                            'Approved'            => '#1a4a3a',
-                                                            'Pending'             => '#e6a817',
-                                                            'Rejected','Declined' => '#e03131',
-                                                            default               => '#888',
-                                                        };
-                                                        $statusBg = match($loan->status) {
-                                                            'Approved'            => '#e8f5e9',
-                                                            'Pending'             => '#fff8e1',
-                                                            'Rejected','Declined' => '#fef2f2',
-                                                            default               => '#f5f5f5',
-                                                        };
-                                                    @endphp
-
-                                                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
-                                                        @if($penaltyInfo)
-                                                            <div class="box-icon" style="background:#fef2f2; border:1.5px solid #dc2626; border-radius:20px; padding:4px 12px; display:flex; align-items:center; gap:6px;">
-                                                                <div class="dot" style="width:7px; height:7px; border-radius:50%; background:#dc2626; flex-shrink:0;"></div>
-                                                                <span style="color:#dc2626; font-size:12px; font-weight:700;">Overdue</span>
-                                                            </div>
-                                                        @else
-                                                            <div class="box-icon" style="background:{{ $statusBg }}; border:1.5px solid {{ $statusColor }}; border-radius:20px; padding:4px 12px; display:flex; align-items:center; gap:6px;">
-                                                                <div class="dot" style="width:7px; height:7px; border-radius:50%; background:{{ $statusColor }}; flex-shrink:0;"></div>
-                                                                <span style="color:{{ $statusColor }}; font-size:12px; font-weight:700;">{{ $loan->status }}</span>
-                                                            </div>
-                                                        @endif
-
-                                                        @if($loan->status === 'Approved' && $lendingStatus && $lendingStatus->next_due_date)
-                                                            <p style="margin:0; font-size:12px; color:#888;">
-                                                                Next Due: <strong style="color:{{ $daysLeft === null ? '#1a4a3a' : ($daysLeft < 0 ? '#e03131' : ($daysLeft <= 7 ? '#e6a817' : '#1a4a3a')) }};">
-                                                                    {{ \Carbon\Carbon::parse($lendingStatus->next_due_date)->format('M d, Y') }}
-                                                                </strong>
-                                                            </p>
-                                                        @endif
-                                                    </div>
-                                                </div>
-
-                                                <div class="box-body">
-                                                    <div class="parent-box">
-                                                        <div class="box amount">
-                                                            <p>Loan Amount</p>
-                                                            <h5>₱{{ number_format($loanAmount, 2) }}</h5>
-                                                        </div>
-                                                        <div class="box purpose">
-                                                            <p>Purpose</p>
-                                                            <h5>{{ $loan->purpose_loan }}</h5>
-                                                        </div>
-                                                        <div class="box monthly-payment">
-                                                            <p>Monthly Payment</p>
-                                                            <h5>₱{{ number_format($monthlyPayment, 2) }}</h5>
-                                                        </div>
-                                                        <div class="box remaining-balance">
-                                                            <p>Remaining Balance</p>
-                                                            <h5>₱{{ number_format($remainingBalance, 2) }}</h5>
-                                                        </div>
-                                                    </div>
-
-                                                    @if($penaltyInfo)
-                                                        <div class="parent-box" style="margin-top:10px;">
-                                                            <div class="box remaining-balance" style="border:1px solid #dc2626; background:#fef2f2;">
-                                                                <p style="color:#dc2626;">Late Fee ({{ $penaltyInfo['months_overdue'] }} month(s) overdue)</p>
-                                                                <h5 style="color:#dc2626;">₱{{ number_format($penaltyInfo['late_fee'], 2) }}</h5>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-
-                                                    <div class="parent-progress">
-                                                        <div class="progress-head">
-                                                            <p>Repayment Progress</p>
-                                                            <span>{{ $paid }}% Paid</span>
-                                                        </div>
-                                                        <div class="progress-body">
-                                                            <div class="progress" style="width:{{ max(0, $paid) }}%"></div>
-                                                        </div>
-                                                        @if($loan->status === 'Approved' && $lendingStatus)
-                                                            <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:11.5px; color:#999;">
-                                                                <span>{{ $lendingStatus->payments_made }} of {{ $lendingStatus->total_payments }} payments made</span>
-                                                                <span>₱{{ number_format($lendingStatus->total_paid, 2) }} paid</span>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-
-                                                <div class="box-footer">
-                                                    <div class="box-approved">
-                                                        @if($loan->status === 'Approved')
-                                                            <i class="fa fa-check" style="color:#1a4a3a;"></i>
-                                                            <p style="color:#1a4a3a; font-weight:600; margin:0;">Approved on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}</p>
-                                                        @elseif($loan->status === 'Pending')
-                                                            <i class="fa fa-hourglass" style="color:#e6a817;"></i>
-                                                            <p style="color:#e6a817; font-weight:600; margin:0;">Awaiting admin review</p>
-                                                        @elseif($loan->status === 'Rejected')
-                                                            <i class="fa fa-xmark" style="color:#e03131;"></i>
-                                                            <p style="color:#e03131; font-weight:600; margin:0;">Rejected on {{ \Carbon\Carbon::parse($loan->updated_at)->format('F d, Y') }}</p>
-                                                        @endif
-                                                    </div>
-                                                    <div class="box-link">
-                                                        @if($loan->status === 'Rejected' || $loan->status === 'Declined')
-                                                            <a href="#">View Reason</a>
-                                                            <a href="{{ route('LoanApplication') }}">Re-apply <i class="fa fa-arrow-right"></i></a>
-                                                        @elseif($loan->status === 'Pending')
-                                                        @else
-                                                            <a href="#">View Loan <i class="fa fa-arrow-right"></i></a>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <div class="parent-loan-empty">
-                                        <i class="fa fa-clipboard-list"></i>
-                                        <h3>No Loan Transaction yet</h3>
-                                    </div>
-                                @endif
-                            </div>
-
-                            {{-- Right Sidebar --}}
-                            <div class="right-main">
-                                <div class="member-status">
-
-                                    {{-- Member Account --}}
-                                    <div class="member-account">
-                                        <div class="member-head">
-                                            <div class="icon">
-                                                <p>{{ strtoupper(substr($firstName ?: ($username ?? 'U'), 0, 1)) }}</p>
-                                            </div>
-                                            <div class="text">
-                                                <h4>
-                                                    {{ $firstName ?: $username }}
-                                                    {{ $middleName ? strtoupper(substr($middleName, 0, 1)) . '. ' : '' }}
-                                                    {{ $lastName }}
-                                                </h4>
-                                                <p>Member ID: {{ $member->member_id ?? 'N/A' }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="member-body">
-                                            <div class="body-text">
-                                                <p>Membership:</p>
-                                                @if($member->approval_status === 'Pending')
-                                                    <span style="color:var(--gold)">{{ $member->approval_status ?? 'N/A' }}</span>
-                                                @elseif($member->approval_status === 'Declined')
-                                                    <span style="color:#DC2626">{{ $member->approval_status ?? 'N/A' }}</span>
-                                                @else
-                                                    <span style="color:#1a4a3a; font-weight:600;">{{ $member->approval_status ?? 'N/A' }}</span>
-                                                @endif
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Member Since:</p>
-                                                <span>{{ $member ? \Carbon\Carbon::parse($member->created_at)->format('F Y') : 'N/A' }}</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Status:</p>
-                                                <div class="membership_status">
-                                                    @if($member->membership_status === 'Unofficial')
-                                                        <div class="dot" style="width:8px; height:8px; background-color:var(--gold); border-radius:50%"></div>
-                                                        <span style="color:var(--gold)">{{ $member->membership_status ?? 'N/A' }}</span>
-                                                    @elseif($member->membership_status === 'Not Active')
-                                                        <div class="dot" style="width:8px; height:8px; background-color:#DC2626; border-radius:50%"></div>
-                                                        <span style="color:#DC2626">{{ $member->membership_status ?? 'N/A' }}</span>
-                                                    @else
-                                                        <div class="dot" style="width:8px; height:8px; background-color:#1a4a3a; border-radius:50%"></div>
-                                                        <span style="color:#1a4a3a; font-weight:600;">{{ $member->membership_status ?? 'N/A' }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Share Capital --}}
-                                    <div class="share-capital">
-                                        <div class="share-head">
-                                            <h4>Share Capital</h4>
-                                            <p>Your equity summary</p>
-                                        </div>
-                                        <div class="share-body">
-                                            <div class="body-text">
-                                                <p>Total Balance:</p>
-                                                <span>₱{{ number_format($shareCapitalBalance, 2) }}</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Total Shares:</p>
-                                                <span>{{ $shareCapitalShares }} shares</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Dividend Rate:</p>
-                                                <span>{{ $dividendRate }}% p.a</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Next Dividend:</p>
-                                                <span>{{ $nextDividendDate->format('F d, Y') }}</span>
-                                            </div>
-                                            <div class="body-footer">
-                                                <a href="{{ route('ShareCapitalMember') }}">
-                                                    <i class="fa fa-coins"></i> Manage Share Capital
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Savings Account --}}
-                                    <div class="savings-account">
-                                        <div class="savings-head">
-                                            <h4>Savings Account</h4>
-                                            <p>Regular savings</p>
-                                        </div>
-                                        <div class="savings-body">
-                                            <div class="body-text">
-                                                <p>Balance:</p>
-                                                <span>₱{{ number_format($savingsAccount->balance ?? 0, 2) }}</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Interest Rate:</p>
-                                                <span>2.5% p.a.</span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Last Deposit:</p>
-                                                <span>
-                                                    @php
-                                                        $lastDeposit = \App\Models\savings_transaction_tbl::where('savings_account_id', $savingsAccount->id ?? 0)
-                                                            ->where('type', 'deposit')
-                                                            ->orderByDesc('transaction_date')
-                                                            ->value('transaction_date');
-                                                    @endphp
-                                                    {{ $lastDeposit ? \Carbon\Carbon::parse($lastDeposit)->format('F d, Y') : 'No deposits yet' }}
-                                                </span>
-                                            </div>
-                                            <div class="body-text">
-                                                <p>Account Status:</p>
-                                                <span>{{ ucfirst($savingsAccount->status ?? 'Active') }}</span>
-                                            </div>
-                                            <div class="body-footer">
-                                                <a href="{{ route('savings.index') }}">
-                                                    <i class="fa fa-plus"></i>
-                                                    <span>Deposit Savings</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                        {{-- ═══════════════════════════════════════════════
+                        FINANCIAL TRENDS CHART
+                        Copied from newCoop4.html sample dashboard
+                        ═══════════════════════════════════════════════ --}}
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div>
+                                    <div class="section-title">Financial Trends</div>
+                                    <div class="section-sub">Savings &amp; loan repayments over time</div>
                                 </div>
                             </div>
+                            <div class="chart-wrap">
+                                <div class="chart-tabs">
+                                    <button class="chart-tab active" onclick="switchChart('monthly', this)">Monthly</button>
+                                    <button class="chart-tab" onclick="switchChart('cumulative', this)">Cumulative</button>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="trendsChart"></canvas>
+                                </div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#1e9e6b"></div>Savings
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#1560c0"></div>Loan Payments
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#f0a500"></div>Share Capital
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end Financial Trends Chart --}}
 
-                        </div>  -->
                     </section>
                 </div>
             </div>
         </div>{{-- end #page-content --}}
     </div>{{-- end .container-fluid --}}
+
+    {{-- ═══════════════════════════════════════════════
+    FINANCIAL TRENDS CHART SCRIPT
+    ═══════════════════════════════════════════════ --}}
+    <script>
+        const months = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'];
+
+        const monthlyData = {
+            savings: [1500, 2000, 0, 2000, 2500, 2000, 3200],
+            loanPay: [0, 0, 1500, 850, 2350, 1500, 2350],
+            capital: [500, 500, 500, 500, 500, 500, 500],
+        };
+
+        const cumulativeData = {
+            savings: monthlyData.savings.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
+            loanPay: monthlyData.loanPay.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
+            capital: monthlyData.capital.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
+        };
+
+        const commonDataset = (data) => [
+            {
+                label: 'Savings',
+                data: data.savings,
+                borderColor: '#1e9e6b',
+                backgroundColor: 'rgba(30,158,107,.10)',
+                tension: .4,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            },
+            {
+                label: 'Loan Payments',
+                data: data.loanPay,
+                borderColor: '#1560c0',
+                backgroundColor: 'rgba(21,96,192,.08)',
+                tension: .4,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 2
+            },
+            {
+                label: 'Share Capital',
+                data: data.capital,
+                borderColor: '#f0a500',
+                backgroundColor: 'rgba(240,165,0,.08)',
+                tension: .4,
+                fill: false,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                borderWidth: 2,
+                borderDash: [5, 4]
+            },
+        ];
+
+        const ctx = document.getElementById('trendsChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: months, datasets: commonDataset(monthlyData) },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f1f45',
+                        titleColor: 'rgba(255,255,255,.6)',
+                        bodyColor: '#fff',
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: ctx => ` ${ctx.dataset.label}: ₱${ctx.parsed.y.toLocaleString()}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 }, color: '#8891ad' }
+                    },
+                    y: {
+                        grid: { color: 'rgba(15,31,69,.06)' },
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#8891ad',
+                            callback: v => '₱' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v)
+                        }
+                    }
+                }
+            }
+        });
+
+        function switchChart(type, btn) {
+            document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            const d = type === 'monthly' ? monthlyData : cumulativeData;
+            chart.data.datasets = commonDataset(d);
+            chart.update();
+        }
+    </script>
 
 
     {{-- Toast --}}
@@ -911,7 +741,7 @@
     @if (session('just_logged_in'))
         <script>
             (function () {
-                var MIN_DISPLAY = 2000; // ms to show skeleton after login
+                var MIN_DISPLAY = 2000;
                 var startTime = Date.now();
                 var pageLoaded = false;
                 var dismissed = false;
@@ -956,7 +786,6 @@
                     });
                 }
 
-                // Hard fallback — never stay stuck beyond 6s
                 setTimeout(dismissSkeleton, 6000);
             })();
         </script>
