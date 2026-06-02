@@ -725,7 +725,7 @@
     /* overflow-y: auto; */
 }
 
-.container-fluid section .ask-box {
+.container-fluid .ask-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -739,18 +739,18 @@
     border-radius: 12px;
 }
 
-.container-fluid section .ask-box .text-box h4,
-.container-fluid section .ask-box .text-box p {
+.container-fluid .ask-box .text-box h4,
+.container-fluid .ask-box .text-box p {
     margin: 0;
     color: #ffffff;
 }
 
-.container-fluid section .ask-box .text-box h4 {
+.container-fluid .ask-box .text-box h4 {
     font-size: 19px;
     font-weight: 600;
 }
 
-.container-fluid section .ask-box .text-box p {
+.container-fluid .ask-box .text-box p {
     margin-top: 0.5rem;
     font-size: 12px;
     /* color: #808080; */
@@ -759,7 +759,7 @@
     /* max-width: 380px; */
 }
 
-.container-fluid section .ask-box .link-box a {
+.container-fluid .ask-box .link-box a {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -774,9 +774,9 @@
     font-weight: 600;
 }
 
-.container-fluid section h3 {
+.container-fluid h3 {
     font-size: 18px;
-    margin: 25px 0;
+    margin: 25px 0 25px;
     font-weight: 600;
     color: var(--teal);
 }
@@ -786,6 +786,7 @@
     justify-content: space-between;
     /* align-items: center; */
     gap: 1rem;
+    margin: 25px 0 0;
 }
 
 .container-fluid section .card-box-summary h4 {
@@ -835,6 +836,7 @@
     font-size: 13.5px;
     color: var(--muted);
     background-color: #f7f9fc;
+    border-bottom: 1px solid var(--border);
     padding: 10px 20px;
     text-align: start;
 }
@@ -868,6 +870,15 @@
     min-width: 600px;
 }
 
+.container-fluid section .card-box-summary .loan-overview .loan-body table thead {
+    border-bottom: 1px solid var(--border);
+    background-color: #f7f9fc;
+}
+
+/* .container-fluid section .card-box-summary .loan-overview .loan-body table tbody{
+    
+} */
+
 .container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th {
     font-size: 13.5px;
     color: var(--muted);
@@ -879,9 +890,9 @@
     z-index: 1;
 }
 
-.container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th:nth-child(5) {
+/* .container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th:nth-child(5) {
     width: 150px;
-}
+} */
 
 .container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td {
     padding: 12px 20px;
@@ -900,8 +911,12 @@
     color: var(--muted);
 }
 
-.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) {
+/* .container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) {
     width: 150px;
+} */
+
+.container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(1) {
+    width: 130px;
 }
 
 .container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(4) p {
@@ -940,7 +955,7 @@
 }
 
 .container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td:nth-child(5) {
-    width: 300px;
+    width: 145px;
 }
 
 .container-fluid section .card-box-summary .loan-overview .loan-body table tbody tr td p {
@@ -1003,10 +1018,15 @@
     min-width: 600px;
 }
 
+.container-fluid section .card-box-summary .recent-transaction .recent-body table thead {
+    border-bottom: 1px solid var(--border);
+}
+
 .container-fluid section .card-box-summary .recent-transaction .recent-body table thead tr th {
     font-size: 13.5px;
     color: var(--muted);
     background-color: #f7f9fc;
+    border-bottom: 1px solid var(--border);
     padding: 10px 20px;
     /* text-align: start; */
     position: sticky;
@@ -1038,8 +1058,8 @@
     font-size: 13.5px;
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(1), 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(3){
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(1),
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(3) {
     color: var(--muted);
 }
 
@@ -1047,10 +1067,31 @@
     width: 150px;
 } */
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) p:nth-child(1) {
-    color: var(--blue);
+.container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) span:nth-child(1) {
+    color: var(--green);
     font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 28px;
+    background-color: var(--green-bg);
+    font-size: 12px;
 }
+
+/* .container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(5) span {
+    color: var(--green);
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 28px;
+    background-color: var(--green-bg);
+    font-size: 12px;
+} */
+
+/* .container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) span:nth-child(2) {
+    color: var(--savings);
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 28px;
+    background-color: var(--savings-bg);
+} */
 
 .container-fluid section .card-box-summary .recent-transaction .recent-body table tbody tr td:nth-child(4) p:nth-child(3) {
     color: var(--muted);
@@ -1447,6 +1488,112 @@
     font-size: 13px;
     color: var(--green);
     font-weight: 600;
+}
+
+/* .container-fluid .share-graph {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 25px;
+} */
+
+.container-fluid .share-graph .share-parent {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* ─── Financial Trends Chart Card ───────────────────── */
+.section-card {
+    background: #ffffff;
+    /* border: 1px solid rgba(15, 31, 69, 0.10); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    /* margin: 20px 0 32px 0; */
+    /* margin: 25px 0 0; */
+    width: 100%;
+}
+
+.section-header {
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid rgba(15, 31, 69, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.section-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0f1f45;
+}
+
+.section-sub {
+    font-size: 13.5px;
+    color: #8891ad;
+    margin-top: 5px;
+}
+
+.chart-wrap {
+    padding: 16px 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chart-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.chart-tab {
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(15, 31, 69, 0.10);
+    background: none;
+    color: #8891ad;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.chart-tab.active {
+    background: #0f1f45;
+    color: #fff;
+    border-color: #0f1f45;
+}
+
+.chart-container {
+    position: relative;
+    height: 260px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    /* flex-wrap: wrap; */
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    color: #8891ad;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .container-fluid .loan-application .buttons-parent {

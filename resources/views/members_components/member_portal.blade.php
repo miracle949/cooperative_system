@@ -143,92 +143,6 @@
         #page-content.sk-ready {
             opacity: 1 !important;
         }
-
-        /* ─── Financial Trends Chart Card ───────────────────── */
-        .section-card {
-            background: #ffffff;
-            border: 1px solid rgba(15, 31, 69, 0.10);
-            border-radius: 12px;
-            overflow: hidden;
-            /* margin: 20px 0 32px 0; */
-            margin: 25px 0 0;
-        }
-
-        .section-header {
-            padding: 16px 20px 14px;
-            border-bottom: 1px solid rgba(15, 31, 69, 0.10);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #0f1f45;
-        }
-
-        .section-sub {
-            font-size: 11px;
-            color: #8891ad;
-            margin-top: 2px;
-        }
-
-        .chart-wrap {
-            padding: 16px 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chart-tabs {
-            display: flex;
-            gap: 4px;
-        }
-
-        .chart-tab {
-            font-size: 11px;
-            font-weight: 500;
-            padding: 5px 12px;
-            border-radius: 99px;
-            border: 1px solid rgba(15, 31, 69, 0.10);
-            background: none;
-            color: #8891ad;
-            cursor: pointer;
-            transition: all .15s;
-        }
-
-        .chart-tab.active {
-            background: #0f1f45;
-            color: #fff;
-            border-color: #0f1f45;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 260px;
-        }
-
-        .chart-legend {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            color: #8891ad;
-        }
-
-        .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
     </style>
 </head>
 
@@ -359,21 +273,52 @@
                         </div>
                     </main>
 
+                    <div class="ask-box">
+                        <div class="text-box">
+                            <h4>Need financial assistance?</h4>
+                            <p>Apply for a lending today — fast processing, exclusive member rates.</p>
+                        </div>
+                        <div class="link-box">
+                            <a href="{{ route('LoanApplication') }}">
+                                <i class="fa fa-plus"></i>
+                                <span>Apply for a Loan</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <h3>Quick Summary</h3>
+
                     <section>
-                        <div class="ask-box">
-                            <div class="text-box">
-                                <h4>Need financial assistance?</h4>
-                                <p>Apply for a lending today — fast processing, exclusive member rates.</p>
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div>
+                                    <div class="section-title">Financial Trends</div>
+                                    <div class="section-sub">Savings &amp; loan repayments over time</div>
+                                </div>
                             </div>
-                            <div class="link-box">
-                                <a href="{{ route('LoanApplication') }}">
-                                    <i class="fa fa-plus"></i>
-                                    <span>Apply for a Loan</span>
-                                </a>
+                            <div class="chart-wrap">
+                                <div class="chart-tabs">
+                                    <button class="chart-tab active"
+                                        onclick="switchChart('monthly', this)">Monthly</button>
+                                    <button class="chart-tab"
+                                        onclick="switchChart('cumulative', this)">Cumulative</button>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="trendsChart"></canvas>
+                                </div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#1e9e6b"></div>Savings
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#1560c0"></div>Loan Payments
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#f0a500"></div>Share Capital
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <h3>Quick Summary</h3>
 
                         <div class="card-box-summary">
 
@@ -403,14 +348,18 @@
                                                 <td>May 28, 2026</td>
                                                 <td>Savings Deposit</td>
                                                 <td>REF-052801</td>
-                                                <td>Savings</td>
+                                                <td>
+                                                    <span>Savings</span>
+                                                </td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
                                             <tr>
                                                 <td>May 28, 2026</td>
                                                 <td>Loan Payment</td>
                                                 <td>REF-052801</td>
-                                                <td>Savings</td>
+                                                <td>
+                                                    <span>Loan</span>
+                                                </td>
                                                 <td>+₱3,200.00</td>
                                             </tr>
                                             <tr>
@@ -578,34 +527,12 @@
                         FINANCIAL TRENDS CHART
                         Copied from newCoop4.html sample dashboard
                         ═══════════════════════════════════════════════ --}}
-                        <div class="section-card">
-                            <div class="section-header">
-                                <div>
-                                    <div class="section-title">Financial Trends</div>
-                                    <div class="section-sub">Savings &amp; loan repayments over time</div>
-                                </div>
+                        <!-- <div class="share-graph">
+                            <div class="share-parent">
+                                <h2>Text</h2>
                             </div>
-                            <div class="chart-wrap">
-                                <div class="chart-tabs">
-                                    <button class="chart-tab active" onclick="switchChart('monthly', this)">Monthly</button>
-                                    <button class="chart-tab" onclick="switchChart('cumulative', this)">Cumulative</button>
-                                </div>
-                                <div class="chart-container">
-                                    <canvas id="trendsChart"></canvas>
-                                </div>
-                                <div class="chart-legend">
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#1e9e6b"></div>Savings
-                                    </div>
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#1560c0"></div>Loan Payments
-                                    </div>
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#f0a500"></div>Share Capital
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                        </div> -->
                         {{-- end Financial Trends Chart --}}
 
                     </section>
