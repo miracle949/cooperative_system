@@ -39,7 +39,7 @@
             <!-- <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
                 style="border-radius: 28px">Get Started <i class="fa fa-arrow-right"></i></a> -->
             <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
-                style="border-radius: 28px">Member Login</a>
+                style="border-radius: 28px">Get Started</a>
         </div>
     </div>
 </nav>

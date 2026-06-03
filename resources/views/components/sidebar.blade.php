@@ -36,7 +36,7 @@
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-hand-holding-dollar"></i>
                         <!-- </div> -->
-                        <span>Loan Status</span>
+                        <span>Repayments</span>
                     </a>
                 </li>
                 <!-- <div class="menu">

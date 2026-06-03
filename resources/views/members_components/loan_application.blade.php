@@ -97,7 +97,7 @@
         .modal-invoice-sidebar {
             width: 250px;
             flex-shrink: 0;
-            background: linear-gradient(160deg, var(--teal-dark) 0%, var(--teal-dark) 60%, var(--teal-dark) 100%);
+            background: linear-gradient(160deg, var(--teal) 0%, var(--teal) 60%, var(--teal) 100%);
             padding: 26px 18px;
             display: flex;
             flex-direction: column;
@@ -1425,9 +1425,23 @@
                             </div>
                         @endif
 
+                        <div class="card-box-parent">
+                            <div class="card-box">
+
+                            </div>
+
+                            <div class="card-box">
+                                
+                            </div>
+
+                            <div class="card-box">
+                                
+                            </div>
+                        </div>
+
                         <div class="table-header">
                             <div class="main-text">
-                                <h3>My Loan Applications <span>- history & status</span></h3>
+                                <h3>Loan Applications <span>- history & status</span></h3>
                             </div>
                             <div class="main-button">
                                 <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
@@ -1439,7 +1453,7 @@
                         </div>
 
                         <div class="table-parent">
-                            <div class="table-filter">
+                            <!-- <div class="table-filter">
                                 <div class="filter search-parent">
                                     <i class="fa fa-search"></i>
                                     <input type="search" name="search" placeholder="Search by reference, type, purpose">
@@ -1464,7 +1478,7 @@
                                 <div class="filter date">
                                     <input type="date" class="form-control">
                                 </div>
-                            </div>
+                            </div> -->
                             <table class="table m-0">
                                 <thead>
                                     <tr>
