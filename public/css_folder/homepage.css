@@ -94,6 +94,7 @@
     font-size: 20px;
     font-weight: 600;
     color: var(--teal);
+    /* color: var(--color-primary); */
 }
 
 .container-fluid .main-parent main h2 span {

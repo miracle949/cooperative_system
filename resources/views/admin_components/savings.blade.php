@@ -102,8 +102,8 @@
     }
     
     // Store the correct JSON before exiting @php block
-    $withdrawalDataJson = json_encode($monthlyWithdrawalData);
-    $highestMonthJson = json_encode($highestWithdrawalMonth);
+    // $withdrawalDataJson = json_encode($monthlyWithdrawalData);
+    // $highestMonthJson = json_encode($highestWithdrawalMonth);
     
     \Log::info("JSON string count: " . strlen($withdrawalDataJson));
     \Log::info("Stored JSON: " . $withdrawalDataJson);

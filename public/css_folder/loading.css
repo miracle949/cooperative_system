@@ -10,8 +10,14 @@
     font-weight: 600;
 }
 
+/* @font-face {
+    font-family: 'Onest';
+    src: url('../Onest/static/Onest-Bold.ttf') format('truetype');
+    font-weight: 600;
+} */
 
-:root {
+
+/* :root {
     --bg: #f2f4f8;
     --teal: #1E2A4A;
     --teal-dark: #131a30;
@@ -44,23 +50,46 @@
     --savings-bg: #e4edff;
     --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
 
-    /* --- add these --- */
     --ice-blue: #E8F4FD;
-    /* info banners, table row hover */
     --gold-pale: #FFF8EC;
-    /* gold badge backgrounds */
     --mint-pale: #EDFAF4;
-    /* savings cards, success states */
     --coral-pale: #FFF0F0;
-    /* overdue row bg, error states */
     --lavender-tint: #F7F8FC;
-    /* card hover bg */
     --navy-soft: #2D3F6B;
-    /* subheadings, borders */
+} */
+
+/* :root {
+  --color-primary:        #00BCD4;
+  --color-primary-dark:   #0097A7;
+  --color-primary-cta:    #00ACC1;
+
+  --color-bg-light-cyan:  #E0F7FA;
+  --color-bg-light-gray:  #F5F7FA;
+  --color-bg-white:       #FFFFFF;
+
+  --color-text-heading:   #1A2E44;
+  --color-text-muted:     #7A8FA6;
+
+  --color-accent-yellow:  #FFD54F;
+  --color-accent-green:   #4CAF50;
+} */
+
+:root {
+    --white: #FFFFFF;
+    --cyan: #05C8E8;
+    --ice: #E4FBFE;
+    --deep: #1A4048;
+    --deep2: #122d33;
+    --mid: #2a5f70;
+    --accent: #00e5ff;
+    --gold: #f0c040;
+    --soft: #b2eef6;
+    --border: #E5EAF3;
 }
 
 * {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
+    /* font-family: "Onest", sans-serif; */
 }
 
 ::-webkit-scrollbar {
@@ -601,17 +630,19 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(12px); */
     /* background: rgba(247, 245, 240, .9); */
-    background-color: #ffffff;
-    border: none;
+    /* background-color: #ffffff; */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(5, 200, 232, 0.12);
     /* background-color: #ffffff; */
     /* box-shadow: var(--shadow-sm); */
     /* backdrop-filter: blur(16px); */
     /* border-bottom: 1px solid var(--border); */
     /* background: rgba(240, 244, 255, .92); */
     /* background-color: var(--semi-white); */
-    backdrop-filter: blur(16px);
+    /* backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow); */
     position: relative;
     /* z-index: 1000;
     position: fixed; */
@@ -679,10 +710,12 @@
 
 .container-fluid nav .nav-logo h3 {
     margin: 0;
-    font-size: 20px;
+    /* font-size: 20px; */
+    font-size: 19px;
     font-weight: 600;
     /* color: var(--green); */
-    color: var(--ink);
+    /* color: var(--ink); */
+    color: var(--deep);
     font-family: "Playfair Display";
     letter-spacing: .16em;
 }
@@ -708,12 +741,16 @@
     /* color: #ffffff; */
     /* color: var(--muted); */
     /* color: var(--text); */
-    color: var(--muted);
+    /* color: var(--muted); */
+    /* color: var(--color-text-heading); */
+    /* color: #1A4048; */
+    color: var(--deep);
+    /* font-family: "Onest", sans-serif; */
     /* font-weight: 500; */
     font-size: 14.5px;
     /* color: #6B7B74; */
     /* text-transform: uppercase; */
-    font-weight: normal;
+    font-weight: 500;
 }
 
 .container-fluid nav .nav-list a::before {
@@ -736,9 +773,12 @@
     /* color: #000;
     border: 1px solid black;
     text-decoration: none; */
-    color: #ffffff;
+    /* color: #ffffff; */
+    color: var(--white);
     /* background-color: #1E4035; */
-    background-color: var(--accent);
+    /* background-color: var(--accent); */
+    /* background-color: var(--cyan); */
+    background-color: var(--cyan);
     text-decoration: none;
     padding: 9px 25px;
     font-size: 12.5px;
@@ -746,6 +786,7 @@
     font-weight: 500;
     text-transform: uppercase;
     transition: background .2s, transform .15s;
+    border-radius: 7px;
 }
 
 .container-fluid .nav-acc .nav-button a:hover {

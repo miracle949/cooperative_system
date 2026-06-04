@@ -1,5 +1,5 @@
 <nav id="main-nav"
-    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[2rem] tw:bg-[#ffffff] tw:p-[1rem]"
+    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[1.5rem] tw:bg-[#ffffff] tw:p-[1rem]"
     style="position: fixed; top: 0; z-index: 1000; height: 64px; transition: height 0.3s ease, box-shadow 0.3s ease;">
     <div class="nav-logo">
         <img src="images/logo2.png" width="45px" height="45px" style="border-radius: 50%; transition: all 0.3s ease;"
@@ -38,8 +38,7 @@
         <div class="nav-button">
             <!-- <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
                 style="border-radius: 28px">Get Started <i class="fa fa-arrow-right"></i></a> -->
-            <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold"
-                style="border-radius: 28px">Get Started</a>
+            <a href="{{ route("LoginPage") }}" class="text-decoration-none tw:hover:bg-gray-700 fw-semibold">Get Started</a>
         </div>
     </div>
 </nav>

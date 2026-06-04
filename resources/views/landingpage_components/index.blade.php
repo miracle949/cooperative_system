@@ -33,70 +33,94 @@
 
         <main class="z-1">
 
+            <!-- <div class="main-text">
+                <h4>Personal loans from</h4>
+
+                <h2>Top Lenders All </h2>
+            </div> -->
+
             <section class="carousel" id="carousel" style="margin-top: 64px;">
                 <div class="carousel-track" id="carouselTrack">
 
-                    <!-- SLIDE 1 -->
                     <div class="slide active">
-                        <img class="slide-bg" src="../images/1.jpg" alt="Trusted Cooperative Partner" />
-                        <div class="slide-overlay"></div>
-                        <div class="slide-chevron"></div>
-                        <div class="slide-content">
-                            <div class="slide-eyebrow">Trusted Cooperative Partner</div>
-                            <h2 class="slide-title">Empowering Members<br /><em>with Financial Solutions</em></h2>
-                            <div class="slide-rule"></div>
-                            <p class="slide-body">A member-owned cooperative built on trust and mutual growth —
-                                empowering every member with world-class financial tools.</p>
-                            <a href="#" class="slide-btn">Learn More &nbsp;→</a>
-                        </div>
-                    </div>
-
-                    <!-- SLIDE 2 -->
-                    <div class="slide">
-                        <img class="slide-bg" src="../images/2.jpg" alt="Services at Your Fingertips" />
-                        <div class="slide-overlay"></div>
-                        <div class="slide-chevron"></div>
-                        <div class="slide-content">
-                            <div class="slide-eyebrow">Digital Services</div>
-                            <h2 class="slide-title">Services at Your<br /><em>Fingertips</em></h2>
-                            <div class="slide-rule"></div>
-                            <p class="slide-body">Access your cooperative services anytime, anywhere — loans, dividends,
-                                voting, and more from your device.</p>
-                            <a href="#" class="slide-btn">Learn More &nbsp;→</a>
-                        </div>
-                    </div>
-
-                    <!-- SLIDE 3 -->
-                    <div class="slide">
-                        <img class="slide-bg" src="../images/3.jpg" alt="Your Loan, Approved!" />
+                        <img class="slide-bg" src="../images/5.jpg" alt="Trusted Cooperative Partner" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
                             <div class="slide-eyebrow">Loan Services</div>
-                            <h2 class="slide-title">Your Loan,<br /><em>Approved!</em></h2>
+                            <h2 class="slide-title">Your Loan <em>Approved</em> Instantly.</h2>
                             <div class="slide-rule"></div>
                             <p class="slide-body">We make loan applications simple, fast, and stress-free — so you can
-                                focus on what matters most.</p>
-                            <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+                                focus on what matters most. Powered by cutting-edge cooperative management technology.
+                            </p>
+
+                            <div class="slide-btn-group">
+                                <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+
+                                <a href="#" class="slide-btn">About Us &nbsp;→</a>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- SLIDE 4 -->
                     <div class="slide">
-                        <img class="slide-bg" src="../images/4.jpg" alt="Growing Together as One" />
+                        <img class="slide-bg" src="../images/6.jpg" alt="Services at Your Fingertips" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
-                            <div class="slide-eyebrow">Community</div>
-                            <h2 class="slide-title">Growing Together<br /><em>as One</em></h2>
+                            <div class="slide-eyebrow">Member Management</div>
+                            <h2 class="slide-title">Know Every <em>Member</em> Every Details.</h2>
                             <div class="slide-rule"></div>
-                            <p class="slide-body">We are committed to uplifting every member through unity, shared
-                                values, and community-driven growth.</p>
-                            <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+                            <p class="slide-body">A complete member registry with share capital tracking, contribution
+                                history, tier management, and automated lifecycle notifications — all in one place.</p>
+
+                            <div class="slide-btn-group">
+                                <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+
+                                <a href="#" class="slide-btn">About Us &nbsp;→</a>
+                            </div>
                         </div>
                     </div>
 
-                </div><!-- /track -->
+                    <div class="slide">
+                        <img class="slide-bg" src="../images/7.jpg" alt="Your Loan, Approved!" />
+                        <div class="slide-overlay"></div>
+                        <div class="slide-chevron"></div>
+                        <div class="slide-content">
+                            <div class="slide-eyebrow">Financial Reports</div>
+                            <h2 class="slide-title">Reports that <em>Tell the</em> Full Story.</h2>
+                            <div class="slide-rule"></div>
+                            <p class="slide-body">We make loan applications simple, fast, and stress-free — so you can
+                                focus on what matters most.</p>
+
+                            <div class="slide-btn-group">
+                                <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+
+                                <a href="#" class="slide-btn">About Us &nbsp;→</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <img class="slide-bg" src="../images/8.jpg" alt="Growing Together as One" />
+                        <div class="slide-overlay"></div>
+                        <div class="slide-chevron"></div>
+                        <div class="slide-content">
+                            <div class="slide-eyebrow">Compliance & Governance</div>
+                            <h2 class="slide-title">Stay <em>Compliant</em> Stay Trusted.</h2>
+                            <div class="slide-rule"></div>
+                            <p class="slide-body">Built-in CDA compliance tools, tamper-proof audit trails, and digital
+                                member governance features ensure your cooperative operates with full transparency and
+                                accountability.</p>
+
+                            <div class="slide-btn-group">
+                                <a href="#" class="slide-btn">Learn More &nbsp;→</a>
+
+                                <a href="#" class="slide-btn">About Us &nbsp;→</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
 
                 <button class="carousel-prev" id="prevBtn">
                     <span>&#8592;</span>
@@ -192,16 +216,117 @@
                     What We Offer
                 </div>
 
-                <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2>
+                <!-- <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2> -->
+                <h2 class="text-left mt-3">Get Your Loan In <b>4 Easy Steps</b></h2>
 
-                <p class="text-left">We offer more than
+                <!-- <p class="text-left">We offer more than
                     just financial services
                     - we
                     provide a supportive community
-                    dedicated to your financial well-being.</p>
+                    dedicated to your financial well-being.</p> -->
+
+                <p class="text-left">We've simplified the loan process so you spend less time on paperwork and more time
+                    on what matters.</p>
+
+                <div class="step-to-apply">
+                    <div class="step-card">
+                        <div class="number">
+                            <h5>01</h5>
+                        </div>
+                        <div class="words">
+                            <p>Create Your Account</p>
+                            <span>Sign up as a member. Membership is open to all Filipinos aged 18 and above with a
+                                valid ID.</span>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="number">
+                            <h5>02</h5>
+                        </div>
+                        <div class="words">
+                            <p>Choose a Loan Product</p>
+                            <span>Pick the loan type that fits your need and check your estimated monthly
+                                amortization.</span>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="number">
+                            <h5>03</h5>
+                        </div>
+                        <div class="words">
+                            <p>Submit Requirements</p>
+                            <span>Upload your documents online — valid ID, proof of income, and completed application
+                                form.</span>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="number">
+                            <h5>04</h5>
+                        </div>
+                        <div class="words">
+                            <p>Receive Your Funds</p>
+                            <span>Upon approval, funds are released within 1–3 business days directly to your
+                                account.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="card-box-parent">
+            <div class="how-visual">
+                <div class="phone-frame">
+                    <div class="phone-notch">
+
+                    </div>
+                    <div class="app-screen">
+                        <div class="app-header">
+                            <div>
+                                <span>Good morning 👋</span>
+                                <h6>Juan Dela Cruz</h6>
+                            </div>
+                            <div class="dot-green">
+                                
+                            </div>
+                        </div>
+
+                        <div class="app-body">
+                            <div class="app-balance-label">Total Loan Balance</div>
+                            <div class="app-balance">₱142,500</div>
+                            <div class="app-change">↑ 62% paid off</div>
+
+                            <div class="app-divider"></div>
+
+                            <div class="app-row">
+                                <div class="app-row-label">Monthly Due</div>
+                                <div class="app-row-val">₱4,250</div>
+                            </div>
+
+                            <div class="app-row">
+                                <div class="app-row-label">Due Date</div>
+                                <div class="app-row-val">June 15</div>
+                            </div>
+
+                            <div class="app-row">
+                                <div class="app-row-label">Interest Rate</div>
+                                <div class="app-row-val">4.8% p.a</div>
+                            </div>
+
+                            <div class="app-row">
+                                <div class="app-row-label">Monthly Term</div>
+                                <div class="app-row-val">6 months</div>
+                            </div>
+                        </div>
+
+                        <div class="app-progress-bar">
+                            <div class="app-progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="card-box-parent">
                 <div class="card-box reveal reveal-delay-1">
                     <div class="card-icon">
                         <p>01</p>
@@ -251,7 +376,7 @@
                         <span>Automated financial reports and real-time dashboards, always accurate and on time.</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             {{-- <div class="d-flex justify-content-center align-items-center column-gap-5 flex-wrap">
 
