@@ -753,6 +753,11 @@
     font-weight: 500;
 }
 
+.container-fluid nav .nav-list ul li:nth-child(1) a{
+    color: var(--cyan);
+    font-weight: 600;
+}
+
 .container-fluid nav .nav-list a::before {
     content: "";
     position: absolute;

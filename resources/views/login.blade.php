@@ -38,7 +38,9 @@
         {{-- LEFT PANEL --}}
         <div class="form-image">
 
-            <div class="form-sub-image">
+            <img src="images/login-img7.jpg" alt="Login Image">
+
+            <!-- <div class="form-sub-image">
                 <div class="form-image-logo">
                     <a href="{{ route("index") }}">
                         <img src="images/logo5.jpg" alt="BrgySphere Logo">
@@ -61,7 +63,6 @@
                             </div>
                             <div class="feature-text">
                                 <span>Restricted Access - Authorized personnel only</span>
-                                <!-- <p>Authorized personnel only</p> -->
                             </div>
                         </div>
 
@@ -71,7 +72,6 @@
                             </div>
                             <div class="feature-text">
                                 <span>Member Records - Manage member information</span>
-                                <!-- <p>Manage member information</p> -->
                             </div>
                         </div>
 
@@ -81,7 +81,6 @@
                             </div>
                             <div class="feature-text">
                                 <span>Loans & Savings - Track loans and savings</span>
-                                <!-- <p>Track loans and savings</p> -->
                             </div>
                         </div>
 
@@ -91,7 +90,6 @@
                             </div>
                             <div class="feature-text">
                                 <span>Announcements - Stay updated with notices</span>
-                                <!-- <p>Stay updated with notices</p> -->
                             </div>
                         </div>
 
@@ -101,7 +99,7 @@
                 <div class="form-image-footer">
                     <p>© 2026 Cooperative Management System ♥</p>
                 </div>
-            </div>
+            </div> -->
 
         </div>
 

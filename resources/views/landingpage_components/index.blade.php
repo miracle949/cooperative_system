@@ -188,7 +188,7 @@
             </div> --}}
         </main>
 
-        <div class="marquee-bar">
+        <!-- <div class="marquee-bar">
             <div class="marquee-track">
                 <span class="marquee-item">Member Governance <span class="marquee-sep">✦</span></span>
                 <span class="marquee-item">Loan & Savings Management <span class="marquee-sep">✦</span></span>
@@ -207,7 +207,7 @@
                 <span class="marquee-item">Member Portal <span class="marquee-sep">✦</span></span>
                 <span class="marquee-item">Audit Trails <span class="marquee-sep">✦</span></span>
             </div>
-        </div>
+        </div> -->
 
         <section class="" id="section1">
 
@@ -276,11 +276,18 @@
             </div>
 
             <div class="how-visual">
-                <div class="phone-frame">
+                <video autoplay muted loop playsinline>
+                    <source src="videos/mobile-steps.mp4" type="video/mp4">
+                </video>
+                <!-- <div class="phone-frame">
                     <div class="phone-notch">
 
                     </div>
                     <div class="app-screen">
+                        <div class="app-logo">
+                            <img src="images/logo2.png" alt="Logo">
+                            <h4>KPMPCATS</h4>
+                        </div>
                         <div class="app-header">
                             <div>
                                 <span>Good morning 👋</span>
@@ -323,7 +330,7 @@
                             <div class="app-progress-fill"></div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- <div class="card-box-parent">
@@ -968,7 +975,7 @@
         </section>
 
         <section id="section5">
-            <h2 class="text-center">Ready to Join Our Community?</h2>
+            <h2 class="text-center">Ready to Join <b>Our Community?</b></h2>
 
             <div class="d-flex justify-content-center align-items-center">
                 <p class="text-center">Start your journey towards financial security and prosperity. Become a
@@ -978,7 +985,7 @@
             <div class="become-buttons">
                 <a href="{{ route("RegisterPage") }}">Become a Member <i class="fa fa-arrow-right"></i></a>
 
-                <a href="{{ route("LoginPage") }}">Member Login <i class="fa fa-arrow-right"></i></a>
+                <a href="{{ route("LoginPage") }}">Go to Login <i class="fa fa-arrow-right"></i></a>
             </div>
         </section>
 

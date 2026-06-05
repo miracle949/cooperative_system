@@ -155,22 +155,27 @@ div.container-fluid {
     justify-content: start;
     align-items: center;
     /* background-color: var(--blue); */
-    background-color: var(--teal);
+    background-color: var(--white);
     /* display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start; */
-    width: 90%;
+    border-right: 1px solid var(--border);
+    width: 100%;
     /* width: 440px;
     min-width: 440px; */
     height: 100vh;
-    padding: 2rem 3.5rem;
+    /* padding: 2rem 3.5rem; */
     /* flex-shrink: 0; */
     overflow: hidden;
     position: relative;
 }
 
-.container-fluid .form-image::before {
+.container-fluid .form-image img{
+    height: 635px;
+}
+
+/* .container-fluid .form-image::before {
     content: '';
     position: absolute;
     top: -120px;
@@ -190,7 +195,7 @@ div.container-fluid {
     height: 360px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(245, 166, 35, .1) 0%, transparent 70%);
-}
+} */
 
 /* Logo row */
 .form-image-logo {
@@ -364,9 +369,10 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 16rem 2rem 2rem;
+    padding: 17rem 2rem 2rem;
     scrollbar-width: none;
-    background-color: var(--bg);
+    /* background-color: var(--bg); */
+    background-color: var(--ice);
     /* background-color: #ffffff; */
     /* background-color: var(--teal-pale); */
     /* Custom scrollbar */
@@ -418,8 +424,8 @@ div.container-fluid {
 .container-fluid .form-parent .nav-form .nav-tag {
     font-size: 11.5px;
     text-transform: uppercase;
-    color: var(--blue);
-    font-weight: 500;
+    color: var(--cyan);
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -430,20 +436,21 @@ div.container-fluid {
     content: '';
     width: 30px;
     height: 1px;
-    background: var(--blue);
+    background: var(--cyan);
 }
 
 .container-fluid .form-parent p {
     width: 100%;
     font-size: 14px;
     margin: 0px 0px;
-    color: #808080;
+    /* color: #808080; */
+    color: var(--mid);
 }
 
 .form-nav-divider {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--blue), rgba(201, 168, 76, 0.1), transparent);
+    background: linear-gradient(90deg, var(--cyan), rgba(201, 168, 76, 0.1), transparent);
     margin-top: 1.5rem;
 }
 
@@ -473,7 +480,7 @@ div.container-fluid {
 }
 
 .container-fluid .form-parent .other-spec .spec span {
-    color: var(--blue);
+    color: var(--cyan);
     font-weight: 600;
     font-size: 18px;
 }
@@ -482,6 +489,7 @@ div.container-fluid {
     text-transform: uppercase;
     /* color: rgba(255, 255, 255, .3); */
     color: #6B7280;
+    /* color: var(--mid); */
 }
 
 @keyframes slideIn {
@@ -502,7 +510,7 @@ div.container-fluid {
 .container-fluid h1 {
     font-size: 40px;
     /* color: #fff; */
-    color: var(--teal);
+    color: var(--deep);
     font-weight: 600;
     width: 350px;
     margin: 10px 0 0;
@@ -512,7 +520,7 @@ div.container-fluid {
 .container-fluid h1 b {
     font-family: "Playfair Display";
     font-style: italic;
-    color: var(--blue);
+    color: var(--cyan);
     font-weight: 600;
 }
 
@@ -619,7 +627,7 @@ div.container-fluid {
     border-radius: 8px;
     font-size: 12.5px;
     position: relative;
-    background-color: var(--blue);
+    background-color: var(--cyan);
     /* color: var(--teal); */
     color: #ffffff;
     letter-spacing: 0.25em;
@@ -640,7 +648,8 @@ div.container-fluid {
 .container-fluid button:hover {
     transform: translateY(-2px);
     /* box-shadow: 0 12px 40px rgba(245, 166, 35, .5); */
-    box-shadow: 0 12px 40px rgba(79, 127, 250, .5);
+    /* box-shadow: 0 12px 40px rgba(79, 127, 250, .5); */
+    box-shadow: 0 16px 48px rgba(18, 45, 51, 0.25);
     filter: brightness(1.05);
 }
 
@@ -651,7 +660,7 @@ div.container-fluid {
 }
 
 .form-forgot a {
-    color: var(--blue);
+    color: var(--cyan);
     text-decoration: none;
     font-weight: 500;
     font-size: 14.5px;
@@ -673,7 +682,7 @@ div.container-fluid {
 }
 
 .form-change a {
-    color: var(--blue);
+    color: var(--cyan);
     font-weight: 500;
     text-decoration: none;
 }
