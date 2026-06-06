@@ -63,7 +63,7 @@
 .container-fluid .main-parent {
     /* padding: 2rem 2rem 2rem; */
     /* padding: 24px 28px; */
-    padding: 2rem 1.5rem;
+    padding: 2rem;
     height: calc(100vh - 70px);
     overflow-y: auto;
     /* height: 100vh;
@@ -77,7 +77,11 @@
     /* background-color: #F4F6FA; */
     /* background-color: var(--cream); */
     /* background-color: var(--semi-white); */
-    background-color: var(--bg);
+    /* background-color: var(--bg); */
+    /* background-color: #F7F9F8; */
+    /* background: #f0f6f8; */
+    /* background: #eaf3f6; */
+    /* background: #f0f6f8; */
     /* background-color: #ffffff; */
     /* background-color: var(--teal-pale); */
     /* background-color: #0f1623; */
@@ -85,7 +89,7 @@
 
 /* .container-fluid .main-parent main p{
     margin: 0 0 5px;
-    text-transform: uppercase;
+    text-transform: uppercase;F7F9F8
     font-size: 14.5px;
     letter-spacing: .15em;
 } */
@@ -93,12 +97,12 @@
 .container-fluid .main-parent main h2 {
     font-size: 20px;
     font-weight: 600;
-    color: var(--teal);
+    color: var(--deep2);
     /* color: var(--color-primary); */
 }
 
 .container-fluid .main-parent main h2 span {
-    color: var(--muted);
+    color: var(--mid);
     font-weight: 500;
     font-size: 14.5px;
 }
@@ -198,7 +202,7 @@
     border: 1px solid #E2E8E5; */
     /* box-shadow: var(--shadow-card); */
     /* border: 1px solid rgba(229, 224, 214, 0.6); */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border: 1px solid var(--border);
     /* box-shadow: var(--shadow); */
     /* display: flex;
@@ -209,6 +213,16 @@
     /* overflow: hidden; */
     margin-top: 6.5rem;
 }
+
+/* .container-fluid main .main-intro::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan) 0%, var(--soft) 100%);
+} */
 
 .container-fluid main .main-intro .main-intro-icon {
     /* width: 200px;
@@ -238,12 +252,14 @@
     left: 10px;
     top: -80px;
     right: 0;
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(5, 200, 232, 0.15);
     padding: 1rem 1.5rem;
     width: 400px;
     border-radius: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid var(--border);
+    /* border: 1px solid var(--border); */
 }
 
 /* .container-fluid main .main-header::before {
@@ -276,7 +292,7 @@
     font-weight: 600;
     /* color: #1E4035; */
     /* color: #ffffff; */
-    color: var(--teal);
+    color: var(--deep2);
     /* width: 22.3ch; */
     width: 100%;
     /* font-family: "Playfair Display"; */
@@ -304,15 +320,17 @@
 .container-fluid main .main-intro span {
     margin: 0px 0px 0 0px;
     width: 100%;
-    font-weight: 800;
+    font-weight: 600;
     /* text-transform: uppercase; */
-    color: var(--teal);
+    /* color: var(--teal); */
+    color: var(--deep2);
     font-size: 14.5px;
     /* font-family: "Playfair Display"; */
 }
 
 .container-fluid main .main-intro p {
-    color: var(--teal);
+    /* color: var(--teal); */
+    color: #5a7a85;
     /* color: #808080; */
     text-transform: none;
     margin-top: 15px;
@@ -469,7 +487,7 @@
 .container-fluid main .card-box .card-header p {
     font-size: 14.5px;
     /* color: #808080; */
-    color: var(--muted);
+    color: var(--mid);
     font-weight: 500;
 }
 
@@ -730,11 +748,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--teal);
+    background-color: var(--deep);
+    /* background: linear-gradient(90deg, rgba(5, 200, 232, 0.18) 0%, transparent 70%); */
     /* box-shadow: var(--shadow-card);
     border: 1px solid rgba(229, 224, 214, 0.6); */
     border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     padding: 2rem 2rem;
     /* border-radius: 20px; */
     border-radius: 12px;

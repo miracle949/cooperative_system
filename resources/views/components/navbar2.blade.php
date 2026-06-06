@@ -16,7 +16,7 @@
                 aria-controls="staticBackdrop"></i> -->
         <button class="collapse-button" onclick="toggleSidebar()">
             <i class="fa fa-bars"></i>
-        </button> 
+        </button>
 
         <!-- <h5>Good day, {{ $username }} <span>Here's your overview</span></h5> -->
     </div>
@@ -58,7 +58,7 @@
 
     <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa fa-bell" style="font-size: 17px; color: var(--muted);"></i>
+            <i class="fa fa-bell" style="font-size: 17px; color: #5a7a85;;"></i>
             <li>
                 @if ($username)
                     @php

@@ -38,9 +38,27 @@
         {{-- LEFT PANEL --}}
         <div class="form-image">
 
-            <img src="images/login-img7.jpg" alt="Login Image">
+            <video src="videos/video1.mp4" autoplay muted playsinline class="active"></video>
+            <video src="videos/video2.mp4" autoplay muted playsinline></video>
+            <video src="videos/video3.mp4" autoplay muted playsinline></video>
+            <video src="videos/video4.mp4" autoplay muted playsinline></video>
 
-            <!-- <div class="form-sub-image">
+            <div class="vid-dots">
+                <div class="vid-dot active" id="dot0"></div>
+                <div class="vid-dot" id="dot1"></div>
+                <div class="vid-dot" id="dot2"></div>
+                <div class="vid-dot" id="dot3"></div>
+            </div>
+
+            <div class="form-sub-image">
+                <!-- <div class="form-sub-tag">— MEMBER PORTAL</div>
+
+                <div class="form-sub-body">
+                    <h2>Your Financial Future <br> Starts <em>Right Here.</em></h2>
+                    <p>Access your loans, savings, and cooperative benefits all in one secure place. Trusted by
+                        thousands of members across the Philippines.</p>
+                </div> -->
+
                 <div class="form-image-logo">
                     <a href="{{ route("index") }}">
                         <img src="images/logo5.jpg" alt="BrgySphere Logo">
@@ -52,8 +70,10 @@
                 </div>
 
                 <div class="form-image-body">
-                    <h2>Welcome to your <b>Cooperative</b> Home</h2>
-                    <p>Access your membership, monitor your loans & savings, and stay informed with the latest announcements — all in one place.</p>
+                    <h2>Your Financial Future Starts <b>Right Here.</b></h2>
+                    <p>Access your membership, monitor your loans & savings, and stay informed with the latest
+                        announcements
+                        — all in one place.</p>
 
                     <div class="form-image-features">
 
@@ -99,13 +119,81 @@
                 <div class="form-image-footer">
                     <p>© 2026 Cooperative Management System ♥</p>
                 </div>
-            </div> -->
+            </div>
 
         </div>
+
+        <!-- <div class="form-sub-image">
+            <div class="form-image-logo">
+                <a href="{{ route("index") }}">
+                    <img src="images/logo5.jpg" alt="BrgySphere Logo">
+                </a>
+                <div class="form-image-logo-text">
+                    <span class="logo-name">KPMPCATS</span>
+                    <span class="logo-sub">MEMBERSHIP MANAGEMENT</span>
+                </div>
+            </div>
+
+            <div class="form-image-body">
+                <h2>Welcome to your <b>Cooperative</b> Home</h2>
+                <p>Access your membership, monitor your loans & savings, and stay informed with the latest announcements
+                    — all in one place.</p>
+
+                <div class="form-image-features">
+
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="feature-text">
+                            <span>Restricted Access - Authorized personnel only</span>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <div class="feature-text">
+                            <span>Member Records - Manage member information</span>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <span>Loans & Savings - Track loans and savings</span>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div class="feature-text">
+                            <span>Announcements - Stay updated with notices</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-image-footer">
+                <p>© 2026 Cooperative Management System ♥</p>
+            </div>
+        </div> -->
 
         {{-- RIGHT PANEL / FORM --}}
         <div class="form-box-parent">
             <div class="form-parent">
+
+                <!-- <div class="nav-logo">
+                    <img src="images/logo2.png" alt="">
+
+                    <h3>KPMPCATS</h3>
+                </div> -->
 
                 <div class="nav-form">
                     <div class="nav-tag">Member Access</div>
@@ -192,6 +280,46 @@
                 </form>
             </div>
         </div>
+
+        <script>
+            const vids = document.querySelectorAll('.form-image video');
+            const dots = document.querySelectorAll('.vid-dot');
+            let current = 0;
+
+            // Demo fallback sources (remove when real video files are in place)
+            const demoSrc = [
+                'video1.mp4'
+                'video2.mp4'
+                'video3.mp4'
+                'video4.mp4'
+            ];
+            vids.forEach((v, i) => {
+                if (!v.src || v.src.includes('videos/')) v.src = demoSrc[i];
+            });
+
+            function switchTo(index) {
+                vids[current].classList.remove('active');
+                dots[current].classList.remove('active');
+                current = index;
+                vids[current].classList.add('active');
+                dots[current].classList.add('active');
+                vids[current].play();
+            }
+
+            vids.forEach((v, i) => {
+                v.addEventListener('ended', () => {
+                    switchTo((i + 1) % vids.length);
+                });
+            });
+
+            // start first video
+            vids[0].play();
+
+            function togglePw() {
+                const pw = document.getElementById('pw');
+                pw.type = pw.type === 'password' ? 'text' : 'password';
+            }
+        </script>
 
         <script>
             function toggleLoginPassword() {
