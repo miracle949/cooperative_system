@@ -204,9 +204,18 @@ div.container-fluid {
     inset: 0;
     /* background: linear-gradient(to right, transparent 60%, rgba(0, 0, 0, 0.18) 100%); */
     /* background: linear-gradient(135deg, rgba(5, 200, 232, 0.4) 0%, rgba(228, 251, 254, 0.2) 100%); */
-    background:
+    /* background:
         linear-gradient(135deg, rgba(5, 200, 232, 0.55) 0%, rgba(228, 251, 254, 0.35) 100%),
-        rgba(2, 40, 48, 0.6);
+        rgba(2, 40, 48, 0.6); */
+    /* background: linear-gradient(135deg, rgba(5, 200, 232, 0.55) 0%, rgba(228, 251, 254, 0.35) 100%),
+        rgba(2, 40, 48, 0.6); */
+    /* background:
+        linear-gradient(135deg, rgba(30, 42, 74, 0.85) 0%, rgba(30, 42, 74, 0.70) 100%),
+        rgba(12, 17, 30, 0.6); */
+    background:
+        linear-gradient(135deg, rgba(30, 42, 74, 0.65) 0%, rgba(30, 42, 74, 0.50) 100%),
+        rgba(12, 17, 30, 0.6);
+
     pointer-events: none;
 }
 
@@ -372,7 +381,7 @@ div.container-fluid {
     /* color: rgba(255, 255, 255, .4); */
     /* color: #6B7280; */
     /* color: rgba(255, 255, 255, 0.5); */
-    color: var(--cyan);
+    color: var(--blue);
     font-size: 11px;
     letter-spacing: .18em;
     text-transform: uppercase;
@@ -397,7 +406,7 @@ div.container-fluid {
 .form-image-body h2 b {
     font-family: "Playfair Display", serif;
     font-style: italic;
-    color: var(--cyan);
+    color: var(--blue);
     font-weight: 600;
 }
 
@@ -409,6 +418,7 @@ div.container-fluid {
     width: 100%;
     max-width: 500px;
     line-height: 25px;
+    color: var(--muted);
 }
 
 /* Feature list */
@@ -442,7 +452,8 @@ div.container-fluid {
     /* border: 1px solid rgba(79, 127, 250, 0.2); */
     /* background-color: var(--gold-light); */
     /* border: 1px solid rgba(255, 255, 255, .1); */
-    background: rgba(255, 255, 255, 0.08);
+    /* background: rgba(255, 255, 255, 0.08); */
+    background-color: var(--blue);
     border: 1px solid rgba(201, 169, 110, .2);
     display: flex;
     align-items: center;
@@ -508,7 +519,8 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 19rem 2rem 2rem;
+    padding: 16rem 2rem 2rem;
+    background-color: #F5F6FA;
     /* background-color: var(--ice); */
     /* background-color: var(--ice); */
     /* background-color: var(--cyan); */
@@ -554,6 +566,7 @@ div.container-fluid {
     border: 1px solid rgba(255, 255, 255, .14); */
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
     background-color: #ffffff;
     /* backdrop-filter: blur(28px) saturate(160%);
     -webkit-backdrop-filter: blur(28px) saturate(160%); */
@@ -605,7 +618,7 @@ div.container-fluid {
 .container-fluid .form-parent .nav-form .nav-tag {
     font-size: 11.5px;
     text-transform: uppercase;
-    color: var(--cyan);
+    color: var(--blue);
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -617,7 +630,7 @@ div.container-fluid {
     content: '';
     width: 30px;
     height: 1px;
-    background: var(--cyan);
+    background: var(--blue);
 }
 
 .container-fluid .form-parent p {
@@ -625,13 +638,13 @@ div.container-fluid {
     font-size: 14px;
     margin: 0px 0px;
     /* color: #808080; */
-    color: var(--mid);
+    color: var(--muted);
 }
 
 .form-nav-divider {
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--cyan), rgba(201, 168, 76, 0.1), transparent);
+    background: linear-gradient(90deg, var(--blue), rgba(201, 168, 76, 0.1), transparent);
     margin-top: 1.5rem;
 }
 
@@ -661,7 +674,7 @@ div.container-fluid {
 }
 
 .container-fluid .form-parent .other-spec .spec span {
-    color: var(--cyan);
+    color: var(--blue);
     font-weight: 600;
     font-size: 18px;
 }
@@ -691,7 +704,7 @@ div.container-fluid {
 .container-fluid h1 {
     font-size: 40px;
     /* color: #fff; */
-    color: var(--deep);
+    color: var(--teal);
     font-weight: 600;
     width: 350px;
     margin: 10px 0 0;
@@ -701,7 +714,7 @@ div.container-fluid {
 .container-fluid h1 b {
     font-family: "Playfair Display";
     font-style: italic;
-    color: var(--cyan);
+    color: var(--blue);
     font-weight: 600;
 }
 
@@ -711,9 +724,9 @@ div.container-fluid {
     margin: 0;
     /* color: rgba(255, 255, 255, .5); */
     /* color: #6B7280; */
-    /* color: var(--muted); */
+    color: var(--muted);
     /* color: #808080; */
-    color: rgba(255, 255, 255, 0.5);
+    /* color: rgba(255, 255, 255, 0.5); */
 }
 
 .container-fluid .form-input label {
@@ -809,7 +822,7 @@ div.container-fluid {
     border-radius: 8px;
     font-size: 12.5px;
     position: relative;
-    background-color: var(--cyan);
+    background-color: var(--blue);
     /* color: var(--teal); */
     color: #ffffff;
     letter-spacing: 0.25em;
@@ -842,7 +855,7 @@ div.container-fluid {
 }
 
 .form-forgot a {
-    color: var(--cyan);
+    color: var(--blue);
     text-decoration: none;
     font-weight: 500;
     font-size: 14.5px;
@@ -864,7 +877,7 @@ div.container-fluid {
 }
 
 .form-change a {
-    color: var(--cyan);
+    color: var(--blue);
     font-weight: 500;
     text-decoration: none;
 }

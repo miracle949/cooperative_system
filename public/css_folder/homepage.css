@@ -71,7 +71,7 @@
     /* height: calc(100vh - 70px);
     overflow-y: auto; */
     /* background-color: var(--cream); */
-    /* background-color: #F5F6FA; */
+    background-color: #F5F6FA;
     /* margin-top: 70px; */
     /* background-color: #F8FBFC; */
     /* background-color: #F4F6FA; */
@@ -748,7 +748,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--deep);
+    background-color: var(--teal);
     /* background: linear-gradient(90deg, rgba(5, 200, 232, 0.18) 0%, transparent 70%); */
     /* box-shadow: var(--shadow-card);
     border: 1px solid rgba(229, 224, 214, 0.6); */
