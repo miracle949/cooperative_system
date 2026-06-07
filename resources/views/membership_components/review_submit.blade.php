@@ -250,7 +250,7 @@
         <div class="row">
             <div class="col-lg-12 mt-4">
                 <div class="card py-3 px-4" style="background-color: var(--gold-light); border: 1px solid rgba(201, 169, 110, .3);">
-                    <p class="m-0" style="font-size: 14.5px; color: var(--gold);"><b>Note:</b> By submitting this application, you authorize
+                    <p class="m-0" style="font-size: 14.5px;"><b>Note:</b> By submitting this application, you authorize
                         the cooperative to verify the information provided and to conduct necessary background checks as
                         required by law.</p>
                 </div>

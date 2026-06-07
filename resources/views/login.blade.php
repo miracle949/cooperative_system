@@ -286,33 +286,23 @@
             const dots = document.querySelectorAll('.vid-dot');
             let current = 0;
 
-            // Demo fallback sources (remove when real video files are in place)
-            const demoSrc = [
-                'video1.mp4'
-                'video2.mp4'
-                'video3.mp4'
-                'video4.mp4'
-            ];
-            vids.forEach((v, i) => {
-                if (!v.src || v.src.includes('videos/')) v.src = demoSrc[i];
-            });
-
             function switchTo(index) {
                 vids[current].classList.remove('active');
                 dots[current].classList.remove('active');
                 current = index;
                 vids[current].classList.add('active');
                 dots[current].classList.add('active');
+                vids[current].currentTime = 0; // rewind before playing
                 vids[current].play();
             }
 
             vids.forEach((v, i) => {
                 v.addEventListener('ended', () => {
-                    switchTo((i + 1) % vids.length);
+                    switchTo((i + 1) % vids.length); // loops back to 0 after video 4
                 });
             });
 
-            // start first video
+            // Start first video
             vids[0].play();
 
             function togglePw() {

@@ -157,7 +157,7 @@
 
         <div class="logo-image">
             <div class="tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
-                style="border: 1px solid var(--line);>
+                style="border: 1px solid var(--border); border-radius: 10px;">
                 <img src="" alt="" class="" id="inputImage">
                 <p class="fw-semibold" id="text" style="font-size: 13.5px;">Photo</p>
                 <p class="tw:text-[#808080]" id="text2" style="font-size: 13.5px;">Click here!</p>
@@ -166,136 +166,138 @@
         </div>
     </div>
 
-    <div class="line-header"></div>
+    <!-- <div class="line-header"></div> -->
 
-    <div class="form-step-parents">
-        <div class="step-personal">
+    <div class="form-sub-parents">
+        <div class="form-step-parents">
+            <div class="step-personal">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 mt-4">
+                        <label>Firstname *</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control"
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+                    </div>
+                    <div class="col-lg-4 col-md-4 mt-4">
+                        <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
+                        <input type="text" name="middle_name" id="middle_name" class="form-control"
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+                    </div>
+                    <div class="col-lg-4 col-md-4 mt-4">
+                        <label>Lastname *</label>
+                        <input type="text" name="last_name" id="last_name" class="form-control"
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 mt-4">
+                        <label>Date of Birth *</label>
+                        <input type="date" name="date_of_birth" id="date_birth" class="form-control">
+                        <small id="dob_error" class="text-danger"></small>
+                    </div>
+                    <div class="col-lg-6 mt-4">
+                        <label>Civil Status *</label>
+                        <select name="civil_status" id="civil_status" class="form-select">
+                            <option value="">Select Status</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Separated">Separated</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 mt-4">
+                        <label>Place of Birth *</label>
+                        <input type="text" name="place_of_birth" id="place_birth" class="form-control">
+                    </div>
+                    <div class="col-lg-6 mt-4">
+                        <label>Sex</label>
+                        <select name="sex" class="form-select" id="sex">
+                            <option value="">Choose sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 mt-4">
+                        <label>Citizenship</label>
+                        <select name="citizenship" id="citizenship" class="form-select">
+                            <option value="">Select citizenship</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 mt-4">
+                        <label>Skills/Expertise <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
+                        <input type="text" name="skills_expertise" class="form-control" id="skills_expertise">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="line-body"></div> -->
+
+        <div class="form-step-body">
             <div class="row">
-                <div class="col-lg-4 col-md-4 mt-4">
-                    <label>Firstname *</label>
-                    <input type="text" name="first_name" id="first_name" class="form-control"
-                        oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())"
-                    >
+                <div class="col-lg-4 mt-4">
+                    <label>Email *</label>
+                    <input type="email" name="email" id="email" class="form-control"
+                        pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
+                        title="Only Gmail addresses are allowed (e.g. example@gmail.com)">
+                    <div class="reminder">
+                        <span>Enter existing email address</span>
+                    </div>
                 </div>
-                <div class="col-lg-4 col-md-4 mt-4">
-                    <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                    <input type="text" name="middle_name" id="middle_name" class="form-control"
-                        oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+
+                {{-- ── Password with strength indicator ── --}}
+                <div class="col-lg-4 mt-4">
+                    <label>Password *</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" class="form-control"
+                            style="padding-right: 40px;" autocomplete="new-password"
+                            oninput="checkPasswordStrength(this.value); checkPasswordMatch();">
+                    </div>
+                    <div class="strength-bar-wrap strength-0" id="strength-bars">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <div class="strength-label label-0" id="strength-label"></div>
                 </div>
-                <div class="col-lg-4 col-md-4 mt-4">
-                    <label>Lastname *</label>
-                    <input type="text" name="last_name" id="last_name" class="form-control"
-                        oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())"
-                    >
+
+                <div class="col-lg-4 mt-4">
+                    <label>Confirm Password *</label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password_confirmation" id="password_confirmation"
+                            class="form-control" style="padding-right: 40px;" autocomplete="new-password"
+                            oninput="checkPasswordMatch();">
+                    </div>
+                    <div class="match-hint" id="match-hint"></div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-lg-6 col-md-12 mt-4">
-                    <label>Date of Birth *</label>
-                    <input type="date" name="date_of_birth" id="date_birth" class="form-control">
-                    <small id="dob_error" class="text-danger"></small>
+                    <label>Username *</label>
+                    <input type="text" name="username" id="username" class="form-control">
                 </div>
                 <div class="col-lg-6 mt-4">
-                    <label>Civil Status *</label>
-                    <select name="civil_status" id="civil_status" class="form-select">
-                        <option value="">Select Status</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Widowed">Widowed</option>
-                        <option value="Separated">Separated</option>
+                    <label class="text-start">Membership category?</label>
+                    <select name="membership_category" id="select_type" class="form-select">
+                        <option value="" disabled selected>Select category</option>
+                        <option value="Operator">Operator - (Manages transport operations.)</option>
+                        <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
+                        <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
+                        <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
+                        </option>
+                        <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
+                            helper).)</option>
+                        <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple
+                            transport
+                            units.)</option>
+                        <option value="Investor Associate">Investor Associate - (Provides capital but not involved in
+                            daily
+                            operations.)</option>
                     </select>
                 </div>
-                <div class="col-lg-6 mt-4">
-                    <label>Place of Birth *</label>
-                    <input type="text" name="place_of_birth" id="place_birth" class="form-control">
-                </div>
-                <div class="col-lg-6 mt-4">
-                    <label>Sex</label>
-                    <select name="sex" class="form-select" id="sex">
-                        <option value="">Choose sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                </div>
-                <div class="col-lg-6 mt-4">
-                    <label>Citizenship</label>
-                    <select name="citizenship" id="citizenship" class="form-select">
-                        <option value="">Select citizenship</option>
-                    </select>
-                </div>
-                <div class="col-lg-6 mt-4">
-                    <label>Skills/Expertise <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                    <input type="text" name="skills_expertise" class="form-control" id="skills_expertise">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="line-body"></div>
-
-    <div class="form-step-body">
-        <div class="row">
-            <div class="col-lg-4 mt-4">
-                <label>Email *</label>
-                <input type="email" name="email" id="email" class="form-control"
-                    pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
-                    title="Only Gmail addresses are allowed (e.g. example@gmail.com)">
-                <div class="reminder">
-                    <span>Enter existing email address</span>
-                </div>
-            </div>
-
-            {{-- ── Password with strength indicator ── --}}
-            <div class="col-lg-4 mt-4">
-                <label>Password *</label>
-                <div class="password-wrapper">
-                    <input type="password" name="password" id="password" class="form-control"
-                        style="padding-right: 40px;" autocomplete="new-password"
-                        oninput="checkPasswordStrength(this.value); checkPasswordMatch();">
-                </div>
-                <div class="strength-bar-wrap strength-0" id="strength-bars">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-                <div class="strength-label label-0" id="strength-label"></div>
-            </div>
-
-            <div class="col-lg-4 mt-4">
-                <label>Confirm Password *</label>
-                <div class="password-wrapper">
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control"
-                        style="padding-right: 40px;" autocomplete="new-password" oninput="checkPasswordMatch();"
-                    >
-                </div>
-                <div class="match-hint" id="match-hint"></div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 col-md-12 mt-4">
-                <label>Username *</label>
-                <input type="text" name="username" id="username" class="form-control">
-            </div>
-            <div class="col-lg-6 mt-4">
-                <label class="text-start">Membership category?</label>
-                <select name="membership_category" id="select_type" class="form-select">
-                    <option value="" disabled selected>Select category</option>
-                    <option value="Operator">Operator - (Manages transport operations.)</option>
-                    <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
-                    <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
-                    <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
-                    </option>
-                    <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
-                        helper).)</option>
-                    <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple transport
-                        units.)</option>
-                    <option value="Investor Associate">Investor Associate - (Provides capital but not involved in daily
-                        operations.)</option>
-                </select>
             </div>
         </div>
     </div>
@@ -317,7 +319,7 @@ Rendered here but immediately moved to
 
             {{-- Icon --}}
             <div
-                style="width:44px; height:44px; border-radius:50%; background: var(--green); display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+                style="width:44px; height:44px; border-radius:50%; background: var(--blue); display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -338,11 +340,11 @@ Rendered here but immediately moved to
 
             <div class="d-flex gap-2 mt-3">
                 <button id="otp-confirm-btn" type="button"
-                    style="flex:1; height:40px; background: var(--green); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+                    style="flex:1; height:40px; background: var(--blue); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
                     Confirm
                 </button>
                 <button id="otp-cancel-btn" type="button"
-                    style="height:40px; flex:1; padding:0 16px; background:transparent; color:var(--green); border:0.5px solid var(--green); border-radius:8px; font-size:14px; cursor:pointer;">
+                    style="height:40px; flex:1; padding:0 16px; background:transparent; color:var(--blue); border:0.5px solid var(--blue); border-radius:8px; font-size:14px; cursor:pointer;">
                     Cancel
                 </button>
             </div>

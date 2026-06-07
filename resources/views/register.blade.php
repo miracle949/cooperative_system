@@ -89,7 +89,10 @@
                     {{-- <img src="../images/logo2.png" alt=""> --}}
                     <div class="nav-text">
                         {{-- <h2 class="fw-bold">Membership Application Form</h2> --}}
-                        <h2>KPMPCATS</h2>
+                        <div class="nav-side">
+                            <img src="images/logo2.png" alt="">
+                            <h2>KPMPCATS</h2>
+                        </div>
 
                         <a href="{{ route("index") }}">
                             <i class="fa fa-chevron-left"></i>
@@ -225,7 +228,7 @@
                             {{-- Step 4 --}}
                             @include('membership_components.review_submit')
 
-                            <div class="line-agreement"></div>
+                            <!-- <div class="line-agreement"></div> -->
 
                             <!-- Buttons -->
                             <div class="actions">

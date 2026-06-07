@@ -323,14 +323,15 @@
     font-weight: 600;
     /* text-transform: uppercase; */
     /* color: var(--teal); */
-    color: var(--deep2);
+    color: var(--teal);
     font-size: 14.5px;
     /* font-family: "Playfair Display"; */
 }
 
 .container-fluid main .main-intro p {
     /* color: var(--teal); */
-    color: #5a7a85;
+    /* color: #5a7a85; */
+    color: var(--muted);
     /* color: #808080; */
     text-transform: none;
     margin-top: 15px;
