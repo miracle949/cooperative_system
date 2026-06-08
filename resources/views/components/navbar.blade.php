@@ -44,6 +44,7 @@
         background-color: var(--teal);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         transition: background-color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, height 0.3s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     #main-nav .nav-list a {
@@ -51,10 +52,10 @@
         transition: color 0.4s ease;
     }
 
-    #main-nav .nav-list ul li:nth-child(1) a {
+    /* #main-nav .nav-list ul li:nth-child(1) a {
         color: var(--blue) !important;
         font-weight: 600;
-    }
+    } */
 
     #main-nav .nav-logo h3 {
         color: #ffffff;
@@ -77,11 +78,11 @@
         color: #1a2a5e !important;
         transition: color 0.4s ease;
     }
-
+/* 
     #main-nav.scrolled .nav-list ul li:nth-child(1) a {
         color: var(--blue) !important;
         font-weight: 600;
-    }
+    } */
 
     #main-nav.scrolled .nav-logo h3 {
         color: #1a2a5e !important;
