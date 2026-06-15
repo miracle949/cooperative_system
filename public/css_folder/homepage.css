@@ -252,8 +252,8 @@
     left: 10px;
     top: -80px;
     right: 0;
-    /* background-color: #ffffff; */
-    background: rgba(255, 255, 255, 0.95);
+    background-color: #ffffff;
+    /* background: rgba(255, 255, 255, 0.95); */
     border: 1px solid rgba(5, 200, 232, 0.15);
     padding: 1rem 1.5rem;
     width: 400px;
@@ -331,7 +331,8 @@
 .container-fluid main .main-intro p {
     /* color: var(--teal); */
     /* color: #5a7a85; */
-    color: var(--muted);
+    color: var(--teal);
+    /* color: #212529; */
     /* color: #808080; */
     text-transform: none;
     margin-top: 15px;

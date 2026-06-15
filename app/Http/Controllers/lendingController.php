@@ -33,7 +33,6 @@ class lendingController extends Controller
 
         $currentShares = $deposits - $withdrawals;
         $canApplyLoan = $currentShares >= 10;
-
         $maxLoan = 25000;
 
         // Get all active loans (Pending, Approved, Completed) and calculate remaining balance
@@ -47,6 +46,49 @@ class lendingController extends Controller
         $totalActiveLoan = 0;
         $totalPaidOnActiveLoans = 0;
 
+        $approvedLoans = DB::table('lending_program_tbls as l')
+            ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'l.id')
+            ->where('l.user_id', $memberId)
+            ->where('l.status', 'Approved')
+            ->select('l.*', 's.due_date', 's.remaining_balance', 's.status as loan_status')
+            ->get();
+
+        $today = now()->timezone('Asia/Manila')->toDateString();
+        $weekEnd = now()->timezone('Asia/Manila')->addDays(7)->toDateString();
+
+        $dueTodayCount = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date === $today && ($l->remaining_balance ?? 0) > 0
+        )->count();
+
+        $dueThisWeekCount = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date > $today && $l->due_date <= $weekEnd && ($l->remaining_balance ?? 0) > 0
+        )->count();
+
+        $overdueCount = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date < $today && ($l->remaining_balance ?? 0) > 0
+        )->count();
+
+        // All loans (any status) for the table
+        $allLoans = DB::table('lending_program_tbls')
+            ->where('user_id', $memberId)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($loan) {
+                $typeMap = [
+                    'Personal Lending' => 'Personal Loan',
+                    'Emergency Lending' => 'Emergency Loan',
+                    'Business Lending' => 'Business Loan',
+                    'Education Lending' => 'Education Loan',
+                ];
+                $loan->lending_type = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+                return $loan;
+            });
+
+        $allLoansCount = $allLoans->count();
+
         foreach ($loans as $loan) {
             // Skip Completed loans - they're fully paid
             if ($loan->status === 'Completed') {
@@ -55,18 +97,18 @@ class lendingController extends Controller
 
             // Use lending_amount (principal only) - not total_payment which includes interest
             $principal = (float) $loan->lending_amount;
-            
+
             $status = DB::table('lending_status_tbls')
                 ->where('lending_id', $loan->id)
                 ->first();
 
             if ($status && $principal > 0) {
                 $totalPaid = isset($status->total_paid) ? (float) $status->total_paid : 0;
-                
+
                 // Get total payment (principal + interest)
                 $totalPayment = isset($loan->total_payment) ? (float) $loan->total_payment : $principal;
                 $remainingBalance = isset($status->remaining_balance) ? (float) $status->remaining_balance : $principal;
-                
+
                 // Calculate remaining principal proportionally
                 // remaining_balance/total_payment = remaining_principal/principal
                 if ($totalPayment > 0 && $remainingBalance > 0) {
@@ -74,7 +116,7 @@ class lendingController extends Controller
                 } else {
                     $principalRemaining = $principal;
                 }
-                
+
                 // Cap at original principal
                 $principalRemaining = min($principal, max(0, $principalRemaining));
 
@@ -90,18 +132,36 @@ class lendingController extends Controller
             }
         }
 
-$remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
+        $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
         // Force to integer for calculation then back
         $remainingLoanableCents = (int) round($remainingLoanable * 100);
-        
+
         // If within 1 cent of max, just set to exact max
         if ($remainingLoanableCents >= 2499900 || $totalActiveLoan < 0.02) {
             $remainingLoanable = 25000.00;
         } else {
             $remainingLoanable = $remainingLoanableCents / 100;
         }
-        
+
         $hasFullyLoaned = $totalActiveLoan >= $maxLoan;
+
+        // Due today loans (full records)
+        $dueTodayLoans = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date === $today && ($l->remaining_balance ?? 0) > 0
+        )->values();
+
+        // Due this week loans (full records)
+        $dueThisWeekLoans = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date > $today && $l->due_date <= $weekEnd && ($l->remaining_balance ?? 0) > 0
+        )->values();
+
+        // Overdue loans (full records)
+        $overdueLoans = $approvedLoans->filter(
+            fn($l) =>
+            $l->due_date && $l->due_date < $today && ($l->remaining_balance ?? 0) > 0
+        )->values();
 
         return compact(
             'currentShares',
@@ -109,7 +169,16 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
             'totalActiveLoan',
             'remainingLoanable',
             'hasFullyLoaned',
-            'totalPaidOnActiveLoans'
+            'totalPaidOnActiveLoans',
+            // ── new ──
+            'allLoans',
+            'allLoansCount',
+            'dueTodayCount',
+            'dueThisWeekCount',
+            'overdueCount',
+            'dueTodayLoans',
+            'dueThisWeekLoans',
+            'overdueLoans'
         );
     }
 
@@ -120,7 +189,7 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
         $email = Auth::check() ? Auth::user()->email : null;
 
         $dbSettings = DB::table('loan_settings_tbls')->pluck('interest_rate', 'loan_type')->toArray();
-        
+
         $loanSettings = [];
         $typeMap = [
             'Personal Lending' => 'Personal Loan',
@@ -128,7 +197,7 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
             'Business Lending' => 'Business Loan',
             'Education Lending' => 'Education Loan',
         ];
-        
+
         foreach ($typeMap as $formType => $dbType) {
             $rate = $dbSettings[$dbType] ?? 2;
             $loanSettings[$formType] = $rate / 100;
@@ -184,7 +253,7 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
 
         // Count only principal (lending_amount), excluding interest
         $totalActiveLoan = 0;
-        
+
         foreach ($loans as $loan) {
             if ($loan->status === 'Completed') {
                 continue;
@@ -198,14 +267,14 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
             if ($status && $principal > 0) {
                 $totalPayment = isset($loan->total_payment) ? (float) $loan->total_payment : $principal;
                 $remainingBalance = isset($status->remaining_balance) ? (float) $status->remaining_balance : $principal;
-                
+
                 if ($totalPayment > 0 && $remainingBalance > 0) {
                     $principalRemaining = ($remainingBalance / $totalPayment) * $principal;
                 } else {
                     $principalRemaining = $principal;
                 }
                 $principalRemaining = min($principal, max(0, $principalRemaining));
-                
+
                 if ($principalRemaining > 0.01) {
                     $totalActiveLoan += $principalRemaining;
                 }
@@ -218,7 +287,7 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
 
         $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
         $remainingLoanableCents = (int) round($remainingLoanable * 100);
-        
+
         if ($remainingLoanableCents >= 2499900 || $totalActiveLoan < 0.02) {
             $remainingLoanable = 25000.00;
         } else {
@@ -247,7 +316,7 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
         // Use cents comparison to avoid floating point issues
         $requestedCents = (int) ($request->lending_amount * 100);
         $maxLoanCents = (int) ($maxLoan * 100);
-        
+
         if ($requestedCents > $maxLoanCents) {
             return redirect()->back()
                 ->with('loan_blocked', 'The maximum loan amount allowed is ₱25,000.')
@@ -401,23 +470,39 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
     }
 
     // ─── Loan Status page ─────────────────────────────────────────────────────────
+    // ─── Loan Status page ─────────────────────────────────────────────────────────
     public function loanStatus(Request $request)
     {
         $memberId = auth()->id();
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
 
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
         // Show Approved AND Completed loans in the sidebar so members
         // can still view their repayment history after fully paying.
         $loans = lending_program_tbl::where('user_id', $memberId)
             ->whereIn('status', ['Approved', 'Completed'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($loan) use ($typeMap) {
+                $loan->display_type = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+                return $loan;
+            });
 
         $selectedId = $request->get('loan_id');
         $selectedLoan = $selectedId
             ? lending_program_tbl::where('id', $selectedId)->where('user_id', $memberId)->first()
             : $loans->first();
+
+        if ($selectedLoan) {
+            $selectedLoan->display_type = $typeMap[$selectedLoan->lending_type] ?? $selectedLoan->lending_type;
+        }
 
         $lendingStatus = $selectedLoan
             ? lending_status_tbl::where('lending_id', $selectedLoan->id)->first()
@@ -447,9 +532,89 @@ $remainingLoanable = max(0, $maxLoan - $totalActiveLoan);
                 ->orderBy('payment_date', 'desc')->get()
             : collect();
 
+        // ── Build computed hero/breakdown data ──────────────────────────────────
+        $paymentSchedule = collect();
+        $progressPercent = 0;
+        $remainingPrincipal = 0;
+        $monthlyDue = 0;
+        $nextDueDate = null;
+        $daysAway = null;
+        $fullBalanceRemaining = 0;
+        $monthsRemaining = 0;
+        $serviceFee = 0;
+        $interestRate = 0;
+        $totalInterest = 0;
+
+        if ($selectedLoan && $lendingStatus) {
+            $principal = (float) $selectedLoan->lending_amount;
+            $totalPayments = (int) $lendingStatus->total_payments;
+            $paymentsMade = (int) $lendingStatus->payments_made;
+            $totalPayment = (float) ($selectedLoan->total_payment ?? $principal);
+            $monthlyDue = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : 0;
+
+            $progressPercent = $totalPayments > 0
+                ? min(100, round(($paymentsMade / $totalPayments) * 100, 2))
+                : 0;
+
+            $totalInterest = (float) ($selectedLoan->total_interest ?? 0);
+            $interestRate = (float) ($lendingStatus->interest_rate ?? 0);
+            $serviceFee = round($principal * 0.01, 2);
+
+            // Remaining principal proportional to remaining balance
+            $remainingBalance = (float) $lendingStatus->remaining_balance;
+            if ($totalPayment > 0 && $remainingBalance > 0) {
+                $remainingPrincipal = round(($remainingBalance / $totalPayment) * $principal, 2);
+            } else {
+                $remainingPrincipal = 0;
+            }
+
+            $fullBalanceRemaining = $remainingBalance;
+            $monthsRemaining = max(0, $totalPayments - $paymentsMade);
+
+            // Build amortization / payment schedule using created_at as the base date
+            $startDate = \Carbon\Carbon::parse($selectedLoan->created_at);
+            $today = now()->timezone('Asia/Manila');
+
+            for ($i = 1; $i <= $totalPayments; $i++) {
+                $dueDateForRow = $startDate->copy()->addMonths($i);
+                $isPaid = $i <= $paymentsMade;
+
+                $paymentSchedule->push([
+                    'number' => $i,
+                    'date' => $dueDateForRow->format('M d, Y'),
+                    'amount' => $monthlyDue,
+                    'paid' => $isPaid,
+                ]);
+
+                if (!$isPaid && !$nextDueDate) {
+                    $nextDueDate = $dueDateForRow;
+                }
+            }
+
+            if ($nextDueDate) {
+                $daysAway = $today->diffInDays($nextDueDate, false);
+            }
+        }
+
         return view('members_components.loan_status', array_merge(
             ['username' => $username, 'email' => $email],
-            compact('loans', 'selectedLoan', 'lendingStatus', 'paymentHistory')
+            compact(
+                'loans',
+                'selectedLoan',
+                'lendingStatus',
+                'paymentHistory',
+                'paymentSchedule',
+                'progressPercent',
+                'remainingPrincipal',
+                'monthlyDue',
+                'nextDueDate',
+                'daysAway',
+                'fullBalanceRemaining',
+                'monthsRemaining',
+                'serviceFee',
+                'interestRate',
+                'totalInterest'
+            )
         ));
     }
 }

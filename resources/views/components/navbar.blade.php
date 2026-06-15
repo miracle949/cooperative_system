@@ -38,8 +38,7 @@
     </div>
 </nav>
 
-<style>
-    /* ── Default (top) state — TEAL ────────────────────── */
+<!-- <style>
     #main-nav {
         background-color: var(--teal);
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -52,10 +51,10 @@
         transition: color 0.4s ease;
     }
 
-    /* #main-nav .nav-list ul li:nth-child(1) a {
+    #main-nav .nav-list ul li:nth-child(1) a {
         color: var(--blue) !important;
         font-weight: 600;
-    } */
+    }
 
     #main-nav .nav-logo h3 {
         color: #ffffff;
@@ -67,7 +66,6 @@
         transition: color 0.4s ease;
     }
 
-    /* ── Scrolled state — WHITE ─────────────────────────── */
     #main-nav.scrolled {
         background-color: #ffffff !important;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
@@ -78,11 +76,11 @@
         color: #1a2a5e !important;
         transition: color 0.4s ease;
     }
-/* 
+
     #main-nav.scrolled .nav-list ul li:nth-child(1) a {
         color: var(--blue) !important;
         font-weight: 600;
-    } */
+    }
 
     #main-nav.scrolled .nav-logo h3 {
         color: #1a2a5e !important;
@@ -119,4 +117,4 @@
             nav.style.height = '64px';
         }
     });
-</script>
+</script> -->

@@ -403,8 +403,8 @@ line-height: 25px;
     line-height: 1.1;
     /* color: #fff; */
     /* color: var(--cyan); */
-    /* color: var(--teal); */
-    color: #ffffff;
+    color: var(--teal);
+    /* color: #ffffff; */
     margin-bottom: 10px;
     opacity: 0;
     transform: translateY(20px);
@@ -445,8 +445,8 @@ line-height: 25px;
     font-size: 17px;
     line-height: 1.8;
     /* color: rgba(255, 255, 255, .7); */
-    /* color: var(--muted); */
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--muted);
+    /* color: rgba(255, 255, 255, 0.75); */
     font-weight: 300;
     max-width: 480px;
     margin-bottom: 35px;

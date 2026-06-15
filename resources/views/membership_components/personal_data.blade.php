@@ -157,7 +157,7 @@
 
         <div class="logo-image">
             <div class="tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
-                style="border: 1px solid var(--border); border-radius: 10px;">
+                style="border-radius: 10px;">
                 <img src="" alt="" class="" id="inputImage">
                 <p class="fw-semibold" id="text" style="font-size: 13.5px;">Photo</p>
                 <p class="tw:text-[#808080]" id="text2" style="font-size: 13.5px;">Click here!</p>

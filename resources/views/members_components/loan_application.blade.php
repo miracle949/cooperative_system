@@ -17,24 +17,44 @@
 
     <style>
         :root {
-            --ink: #0d0f14;
-            --surface: #f4f1ec;
-            --gold: #b8943f;
-            --gold-l: #d4b06a;
-            --gold-pale: rgba(184, 148, 63, .08);
-            --forest: #1b3d2f;
-            --forest-m: #245240;
-            --forest-l: #2e6b53;
-            --forest-pale: rgba(27, 61, 47, .07);
-            --muted: #7a7f8e;
-            --light: #b8bcc8;
-            --border: #e6e2da;
-            --danger: #c94c4c;
-            --success: #1e7a4e;
-            --warn-bg: #fdf9f0;
-            --warn-b: #e8d5a3;
-            --radius: 18px;
-            --radius-sm: 12px;
+            --bg: #f2f4f8;
+            --teal: #1E2A4A;
+            --teal-dark: #131a30;
+            --teal-mid: #263359;
+            --teal-dark: #131a30;
+            --teal-mid: #263359;
+            --teal-pale: #F0F4FF;
+            --gold: #F5A623;
+            --blue: #4F7FFA;
+            --blue-light: #95B3FC;
+            --blue-pale: #D9E5FE;
+            --blue-mist: #EEF3FF;
+            --coral: #FF6B6B;
+            --mint: #22C993;
+            --cream: #F0F4FF;
+            --ink: #1E2A4A;
+            --muted: #6b7a99;
+            --line: rgba(30, 42, 74, .1);
+            --sidebar-width: 250px;
+            --border: #E5EAF3;
+            --border-hover: #D9E5FE;
+            --sidebar-width: 250px;
+            --accent: #2563eb;
+            --mint: #22C993;
+            --coral: #FF6B6B;
+            --semi-white: #FAF9F6;
+            --green: #1e9e6b;
+            --green-bg: #e6f7f1;
+            --savings: #1560c0;
+            --savings-bg: #e4edff;
+            --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
+
+            --ice-blue: #E8F4FD;
+            --gold-pale: #FFF8EC;
+            --mint-pale: #EDFAF4;
+            --coral-pale: #FFF0F0;
+            --lavender-tint: #F7F8FC;
+            --navy-soft: #2D3F6B;
         }
 
         .loan-modal-overlay {
@@ -77,15 +97,15 @@
             transform: translateY(0) scale(1);
         }
 
-        .modal-accent-bar {
+        /* .modal-accent-bar {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--gold) 0%, var(--gold) 50%, var(--gold) 100%);
+            background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 50%, var(--blue) 100%);
             border-radius: 24px 24px 0 0;
-        }
+        } */
 
         .modal-layout {
             display: flex;
@@ -98,6 +118,8 @@
             width: 250px;
             flex-shrink: 0;
             background: linear-gradient(160deg, var(--teal) 0%, var(--teal) 60%, var(--teal) 100%);
+            /* background-color: #ffffff; */
+            border-right: 1px solid var(--border);
             padding: 26px 18px;
             display: flex;
             flex-direction: column;
@@ -115,6 +137,7 @@
             height: 160px;
             border-radius: 50%;
             background: rgba(184, 148, 63, .12);
+            /* background-color: var(--blue-mist); */
         }
 
         .modal-invoice-sidebar::after {
@@ -126,6 +149,7 @@
             height: 120px;
             border-radius: 50%;
             background: rgba(184, 148, 63, .07);
+            /* background-color: var(--blue-mist); */
         }
 
         .mis-eyebrow {
@@ -133,7 +157,8 @@
             font-weight: 700;
             letter-spacing: 2.5px;
             text-transform: uppercase;
-            color: rgba(184, 148, 63, .8);
+            /* color: rgba(184, 148, 63, .8); */
+            color: var(--muted);
             position: relative;
             z-index: 1;
         }
@@ -141,7 +166,8 @@
         .mis-title {
             font-size: 16px;
             font-weight: 700;
-            color: #fff;
+            /* color: var(--teal); */
+            color: #ffffff;
             position: relative;
             z-index: 1;
             margin-bottom: 1px;
@@ -150,14 +176,17 @@
 
         .mis-sub {
             font-size: 10.5px;
-            color: rgba(255, 255, 255, .45);
+            /* color: rgba(255, 255, 255, .45); */
+            color: var(--muted);
             position: relative;
             z-index: 1;
         }
 
         .mis-amount-box {
             background: rgba(255, 255, 255, .07);
+            /* background-color: var(--blue-mist); */
             border: 1px solid rgba(255, 255, 255, .12);
+            /* border: 1px solid var(--border); */
             border-radius: 12px;
             padding: 14px;
             text-align: center;
@@ -171,18 +200,23 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, .5);
+            /* color: #ffffff; */
+            /* color: var(--blue); */
             margin-bottom: 6px;
         }
 
         .mis-amount-val {
             font-size: 20px;
             font-weight: 700;
-            color: var(--gold-l);
+            color: #ffffff;
+            /* color: var(--blue); */
             line-height: 1;
         }
 
         .mis-amount-val.dim {
-            color: rgba(255, 255, 255, .3);
+            /* color: rgba(255, 255, 255, .3); */
+            /* color: #ffffff; */
+            /* color: var(--blue); */
             font-family: 'Space Grotesk', sans-serif;
             font-size: 20px;
         }
@@ -190,6 +224,8 @@
         .mis-amount-hint {
             font-size: 9.5px;
             color: rgba(255, 255, 255, .35);
+            /* color: #ffffff; */
+            /* color: var(--blue); */
             margin-top: 5px;
         }
 
@@ -215,16 +251,20 @@
 
         .mis-lbl {
             color: rgba(255, 255, 255, .5);
+            /* color: var(--muted); */
+            font-weight: 600;
         }
 
         .mis-val {
-            color: #fff;
+            /* color: var(--teal); */
+            color: #ffffff;
             font-weight: 700;
             font-size: 12px;
         }
 
         .mis-val.dim {
             color: rgba(255, 255, 255, .3);
+            /* color: var(--teal); */
             font-weight: 400;
         }
 
@@ -248,13 +288,15 @@
         .mis-total-lbl {
             font-size: 12px;
             font-weight: 700;
-            color: #fff;
+            color: rgba(255, 255, 255, .5);
+            /* color: var(--muted); */
         }
 
         .mis-total-val {
             font-size: 12px;
             font-weight: 700;
-            color: var(--gold-l);
+            /* color: var(--teal); */
+            color: #ffffff;
         }
 
         .mis-total-val.dim {
@@ -277,7 +319,8 @@
             align-items: center;
             padding: 16px 24px;
             border-bottom: 1px solid var(--border);
-            background: #fafafa;
+            /* background: #fafafa; */
+            background-color: #ffffff;
             flex-shrink: 0;
         }
 
@@ -302,13 +345,15 @@
         }
 
         .m-step.active .m-step-circle {
-            background: var(--gold);
-            color: var(--forest);
-            box-shadow: 0 0 0 3px rgba(184, 148, 63, .2);
+            background: var(--blue);
+            /* color: var(--forest); */
+            color: #fff;
+            /* box-shadow: 0 0 0 3px rgba(184, 148, 63, .2); */
+            box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
         }
 
         .m-step.done .m-step-circle {
-            background: var(--forest);
+            background: var(--blue);
             color: #fff;
         }
 
@@ -326,7 +371,7 @@
         }
 
         .m-step.active .m-step-info .m-step-num {
-            color: var(--gold);
+            color: var(--blue);
         }
 
         .m-step.done .m-step-info .m-step-num {
@@ -361,6 +406,7 @@
             display: none;
             padding: 24px 28px;
             animation: panelIn .3s ease both;
+            /* background-color: var(--bg); */
         }
 
         .modal-panel.active {
@@ -400,7 +446,7 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--gold);
+            color: var(--blue);
             margin-bottom: 14px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
@@ -414,7 +460,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--gold);
+            background: var(--blue);
             display: block;
         }
 
@@ -454,8 +500,8 @@
             font-weight: 700;
             padding: 1px 7px;
             border-radius: 8px;
-            background: var(--gold-pale);
-            color: var(--gold);
+            background: var(--blue-mist);
+            color: var(--blue);
         }
 
         .p-inp-wrap {
@@ -505,8 +551,9 @@
         .p-input:focus,
         .p-select:focus,
         .p-textarea:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(184, 148, 63, .12);
+            border-color: var(--blue);
+            /* box-shadow: 0 0 0 3px rgba(184, 148, 63, .12); */
+            box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
         }
 
         /* ── Field error state ── */
@@ -625,7 +672,7 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--gold);
+            color: var(--blue);
             padding-bottom: 6px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 14px;
@@ -639,7 +686,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--gold);
+            background: var(--blue);
             display: block;
         }
 
@@ -664,13 +711,18 @@
         }
 
         .upload-card-modal:hover {
-            border-color: var(--forest);
-            background: var(--forest-pale);
+            /* border-color: var(--forest);
+            background: var(--forest-pale); */
+            border-color: var(--blue);
+            /* background-color: var(--blue-mist); */
+            background-color: #ffffff;
         }
 
         .upload-card-modal.has-file {
-            border-color: var(--success);
-            background: rgba(30, 122, 78, .04);
+            border-color: var(--blue);
+            /* background: rgba(30, 122, 78, .04); */
+            /* background-color: var(--blue-mist); */
+            background-color: #ffffff;
         }
 
         .upload-card-modal input[type=file] {
@@ -721,12 +773,19 @@
 
         .uc-badge.required {
             background: rgba(201, 68, 68, .1);
-            color: var(--danger);
+            /* color: var(--danger); */
+            color: #dc2626;
+        }
+
+        .uc-badge.uploaded {
+            /* background: rgba(34, 201, 147, .12); */
+            background-color: var(--blue-mist);
+            color: var(--blue);
         }
 
         .uc-badge.optional {
-            background: var(--gold-pale);
-            color: var(--gold);
+            background: var(--blue-mist);
+            color: var(--blue);
         }
 
         .uc-filename {
@@ -915,7 +974,7 @@
             text-transform: uppercase;
             color: var(--gold);
             margin-bottom: 8px;
-            display: flex;
+            display: none;
             align-items: center;
             gap: 6px;
         }
@@ -933,6 +992,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
+            display: none;
         }
 
         .amort-scroll-m {
@@ -994,11 +1054,16 @@
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: var(--forest-pale);
+            background: var(--blue);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 12px;
+        }
+
+        .confirm-ring-m .fa {
+            color: #ffffff;
+            font-size: 20px;
         }
 
         .confirm-ring-m svg {
@@ -1028,13 +1093,14 @@
         }
 
         .sum-head-m {
-            background: var(--forest);
+            background: var(--blue);
             padding: 10px 14px;
             font-size: 9.5px;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, .6);
+            /* color: rgba(255, 255, 255, .6); */
+            color: #ffffff;
         }
 
         .sum-row-m {
@@ -1050,7 +1116,10 @@
         }
 
         .sum-row-m.total {
-            background: #f0f4f2;
+            /* background: #f0f4f2; */
+            /* background-color: var(--blue); */
+            background-color: #ffffff;
+            /* background-color: #fafafa; */
         }
 
         .sum-lbl-m {
@@ -1058,12 +1127,13 @@
         }
 
         .sum-lbl-m.bold {
-            color: var(--ink);
+            color: var(--teal);
             font-weight: 700;
         }
 
         .sum-val-m {
             font-weight: 700;
+            color: var(--teal);
         }
 
         .sum-val-m.green {
@@ -1071,11 +1141,13 @@
         }
 
         .sum-val-m.gold {
-            color: var(--gold);
+            color: var(--teal);
         }
 
         .sum-val-m.bigf {
             font-size: 14.5px;
+            color: var(--teal);
+            /* color: #ffffff; */
         }
 
         .cb-row-m {
@@ -1184,18 +1256,18 @@
 
         .m-btn-outline {
             background: transparent;
-            color: var(--accent);
+            color: var(--blue);
             /* border: 1.5px solid var(--blue); */
             border: 1.5px solid var(--line)
         }
 
         .m-btn-outline:hover {
             /* background: var(--blue); */
-            border: 1.5px solid var(--accent)
+            border: 1.5px solid var(--blue)
         }
 
         .m-btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent));
+            background: linear-gradient(135deg, var(--blue), var(--blue));
             color: #fff;
             box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
@@ -1206,9 +1278,11 @@
         }
 
         .m-btn-gold {
-            background: linear-gradient(135deg, var(--gold), var(--gold-l));
-            color: var(--forest);
-            box-shadow: 0 4px 14px rgba(184, 148, 63, .3);
+            background: linear-gradient(135deg, var(--blue), var(--blue));
+            /* color: var(--forest); */
+            color: #fff;
+            /* box-shadow: 0 4px 14px rgba(184, 148, 63, .3); */
+            box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
 
         .m-btn-gold:hover {
@@ -1427,88 +1501,406 @@
 
                         <div class="card-box-parent">
                             <div class="card-box">
-
+                                <div class="card-header">
+                                    <h5>Due Today</h5>
+                                    <i class="fa fa-circle-exclamation"></i>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ $dueTodayCount }}</p>
+                                    <span>Borrowers with payments due today</span>
+                                </div>
                             </div>
 
                             <div class="card-box">
-                                
+                                <div class="card-header">
+                                    <h5>Due This Week</h5>
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ $dueThisWeekCount }}</p>
+                                    <span>Upcoming loan repayments</span>
+                                </div>
                             </div>
 
                             <div class="card-box">
-                                
+                                <div class="card-header">
+                                    <h5>Overdue</h5>
+                                    <i class="fa fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="card-body">
+                                    <p>{{ $overdueCount }}</p>
+                                    <span>Missed or unpaid loan payments</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="table-header">
-                            <div class="main-text">
-                                <h3>Loan Applications <span>- history & status</span></h3>
-                            </div>
-                            <div class="main-button">
-                                <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
-                                style="opacity:.5;cursor:not-allowed;" @endif>
-                                    <i class="fa fa-plus"></i>
-                                    <span>Apply for a Loan</span>
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                    aria-selected="true">
+                                    All Loans
+                                    @if(isset($allLoansCount) && $allLoansCount > 0)
+                                        <span
+                                            style="background:#e0e7ff;color:#3730a3;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $allLoansCount }}</span>
+                                    @endif
+                                </button>
+                                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
+                                    aria-selected="false">
+                                    Due Today
+                                    @if(isset($dueTodayCount) && $dueTodayCount > 0)
+                                        <span
+                                            style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueTodayCount }}</span>
+                                    @endif
+                                </button>
+                                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact"
+                                    aria-selected="false">
+                                    Due This Week
+                                    @if(isset($dueThisWeekCount) && $dueThisWeekCount > 0)
+                                        <span
+                                            style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueThisWeekCount }}</span>
+                                    @endif
+                                </button>
+                                <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled"
+                                    aria-selected="false">
+                                    Overdue
+                                    @if(isset($overdueCount) && $overdueCount > 0)
+                                        <span
+                                            style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $overdueCount }}</span>
+                                    @endif
                                 </button>
                             </div>
+                        </nav>
+
+                        <div class="tab-content" id="nav-tabContent">
+
+                            {{-- ══ TAB 1: ALL LOANS ══ --}}
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                aria-labelledby="nav-home-tab" tabindex="0">
+                                <div class="table-header">
+                                    <div class="main-text">
+                                        <h3>Loans ({{ $allLoansCount ?? 0 }}) <span>- Manage All Loan
+                                                Applications</span></h3>
+                                    </div>
+                                    <div class="main-button">
+                                        <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
+                                        style="opacity:.5;cursor:not-allowed;" @endif>
+                                            <i class="fa fa-plus"></i>
+                                            <span>Apply for a Loan</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-parent">
+                                    <div class="table-filter">
+                                        <div class="filter search-parent">
+                                            <i class="fa fa-search"></i>
+                                            <input type="search" id="search-all"
+                                                oninput="filterTable('all-loans-tbody', this.value)"
+                                                placeholder="Search by reference, type, purpose">
+                                        </div>
+                                    </div>
+                                    <table class="table m-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference</th>
+                                                <th>Date Applied</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Term</th>
+                                                <th>Purpose</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="all-loans-tbody">
+                                            @forelse($allLoans ?? [] as $loan)
+                                                <tr>
+                                                    <td style="font-weight:600;color:#1e2a4a;">{{ $loan->reference_no }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}</td>
+                                                    <td>{{ $loan->lending_type }}</td>
+                                                    <td style="font-weight:600;">
+                                                        ₱{{ number_format($loan->lending_amount, 2) }}</td>
+                                                    <td>{{ $loan->lending_type_term }}</td>
+                                                    <td>{{ $loan->purpose_loan }}</td>
+                                                    <td>
+                                                        @php
+                                                            $s = $loan->status;
+                                                            $sc = match ($s) {
+                                                                'Approved' => 'background:#e6f7f1;color:#1e9e6b;',
+                                                                'Pending' => 'background:#fff8e1;color:#856404;',
+                                                                'Rejected' => 'background:#fef2f2;color:#dc2626;',
+                                                                'Completed' => 'background:#e0e7ff;color:#3730a3;',
+                                                                default => 'background:#f3f4f6;color:#6b7280;',
+                                                            };
+                                                        @endphp
+                                                        <span
+                                                            style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700; border: 1px solid var(--border);{{ $sc }}">{{ $s }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            style="background:none;border:1px solid var(--border);cursor:pointer;color:#4f7ffa;"
+                                                            title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8"
+                                                        style="text-align:center;color:#6b7a99;padding:32px;font-size:13px;">
+                                                        <i class="fa fa-folder-open"
+                                                            style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                        No loan applications yet.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    <div class="parent-pagination">
+                                        <p>Showing <span>{{ count($allLoans ?? []) }}</span> of
+                                            <span>{{ $allLoansCount ?? 0 }}</span> applications</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ══ TAB 2: DUE TODAY ══ --}}
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                aria-labelledby="nav-profile-tab" tabindex="0">
+                                <div class="table-header">
+                                    <div class="main-text">
+                                        <h3>Due Today ({{ $dueTodayCount ?? 0 }}) <span>- Payments Due Today</span></h3>
+                                    </div>
+                                </div>
+                                <div class="table-parent">
+                                    <div class="table-filter">
+                                        <div class="filter search-parent">
+                                            <i class="fa fa-search"></i>
+                                            <input type="search" oninput="filterTable('due-today-tbody', this.value)"
+                                                placeholder="Search by reference, type, purpose">
+                                        </div>
+                                    </div>
+                                    <table class="table m-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference</th>
+                                                <th>Date Applied</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Term</th>
+                                                <th>Purpose</th>
+                                                <th>Due Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="due-today-tbody">
+                                            @forelse($dueTodayLoans ?? [] as $loan)
+                                                <tr>
+                                                    <td style="font-weight:600;color:#1e2a4a;">{{ $loan->reference_no }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}</td>
+                                                    <td>{{ $loan->lending_type }}</td>
+                                                    <td style="font-weight:600;">
+                                                        ₱{{ number_format($loan->lending_amount, 2) }}</td>
+                                                    <td>{{ $loan->lending_type_term }}</td>
+                                                    <td>{{ $loan->purpose_loan }}</td>
+                                                    <td>
+                                                        <span
+                                                            style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fff8e1;color:#856404;">
+                                                            {{ $loan->due_date }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            style="background:none; border: 1px solid var(--border); cursor:pointer;color:#4f7ffa;"
+                                                            title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8"
+                                                        style="text-align:center;color:#6b7a99;padding:32px;font-size:13px;">
+                                                        <i class="fa fa-calendar-check"
+                                                            style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                        No payments due today.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    <div class="parent-pagination">
+                                        <p>Showing <span>{{ count($dueTodayLoans ?? []) }}</span> of
+                                            <span>{{ $dueTodayCount ?? 0 }}</span> records</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ══ TAB 3: DUE THIS WEEK ══ --}}
+                            <div class="tab-pane fade" id="nav-contact" role="tabpanel"
+                                aria-labelledby="nav-contact-tab" tabindex="0">
+                                <div class="table-header">
+                                    <div class="main-text">
+                                        <h3>Due This Week ({{ $dueThisWeekCount ?? 0 }}) <span>- Upcoming
+                                                Repayments</span></h3>
+                                    </div>
+                                </div>
+                                <div class="table-parent">
+                                    <div class="table-filter">
+                                        <div class="filter search-parent">
+                                            <i class="fa fa-search"></i>
+                                            <input type="search" oninput="filterTable('due-week-tbody', this.value)"
+                                                placeholder="Search by reference, type, purpose">
+                                        </div>
+                                    </div>
+                                    <table class="table m-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference</th>
+                                                <th>Date Applied</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Term</th>
+                                                <th>Purpose</th>
+                                                <th>Due Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="due-week-tbody">
+                                            @forelse($dueThisWeekLoans ?? [] as $loan)
+                                                <tr>
+                                                    <td style="font-weight:600;color:#1e2a4a;">{{ $loan->reference_no }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}</td>
+                                                    <td>{{ $loan->lending_type }}</td>
+                                                    <td style="font-weight:600;">
+                                                        ₱{{ number_format($loan->lending_amount, 2) }}</td>
+                                                    <td>{{ $loan->lending_type_term }}</td>
+                                                    <td>{{ $loan->purpose_loan }}</td>
+                                                    <td>
+                                                        <span
+                                                            style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fff8e1;color:#856404;">
+                                                            {{ $loan->due_date }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            style="background:none;border:none;cursor:pointer;color:#4f7ffa;"
+                                                            title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8"
+                                                        style="text-align:center;color:#6b7a99;padding:32px;font-size:13px;">
+                                                        <i class="fa fa-calendar"
+                                                            style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                        No upcoming payments this week.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    <div class="parent-pagination">
+                                        <p>Showing <span>{{ count($dueThisWeekLoans ?? []) }}</span> of
+                                            <span>{{ $dueThisWeekCount ?? 0 }}</span> records</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ══ TAB 4: OVERDUE ══ --}}
+                            <div class="tab-pane fade" id="nav-disabled" role="tabpanel"
+                                aria-labelledby="nav-disabled-tab" tabindex="0">
+                                <div class="table-header">
+                                    <div class="main-text">
+                                        <h3>Overdue ({{ $overdueCount ?? 0 }}) <span>- Missed or Unpaid Payments</span>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="table-parent">
+                                    <div class="table-filter">
+                                        <div class="filter search-parent">
+                                            <i class="fa fa-search"></i>
+                                            <input type="search" oninput="filterTable('overdue-tbody', this.value)"
+                                                placeholder="Search by reference, type, purpose">
+                                        </div>
+                                    </div>
+                                    <table class="table m-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference</th>
+                                                <th>Date Applied</th>
+                                                <th>Type</th>
+                                                <th>Amount</th>
+                                                <th>Term</th>
+                                                <th>Purpose</th>
+                                                <th>Due Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="overdue-tbody">
+                                            @forelse($overdueLoans ?? [] as $loan)
+                                                <tr>
+                                                    <td style="font-weight:600;color:#1e2a4a;">{{ $loan->reference_no }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}</td>
+                                                    <td>{{ $loan->lending_type }}</td>
+                                                    <td style="font-weight:600;">
+                                                        ₱{{ number_format($loan->lending_amount, 2) }}</td>
+                                                    <td>{{ $loan->lending_type_term }}</td>
+                                                    <td>{{ $loan->purpose_loan }}</td>
+                                                    <td>
+                                                        <span
+                                                            style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#fef2f2;color:#dc2626;">
+                                                            {{ $loan->due_date }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            style="background:none;border:none;cursor:pointer;color:#4f7ffa;"
+                                                            title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8"
+                                                        style="text-align:center;color:#6b7a99;padding:32px;font-size:13px;">
+                                                        <i class="fa fa-circle-check"
+                                                            style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;color:#1e9e6b;"></i>
+                                                        No overdue payments. Great job!
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    <div class="parent-pagination">
+                                        <p>Showing <span>{{ count($overdueLoans ?? []) }}</span> of
+                                            <span>{{ $overdueCount ?? 0 }}</span> records</p>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <div class="table-parent">
-                            <!-- <div class="table-filter">
-                                <div class="filter search-parent">
-                                    <i class="fa fa-search"></i>
-                                    <input type="search" name="search" placeholder="Search by reference, type, purpose">
-                                </div>
-                                <div class="filter status">
-                                    <select name="status" class="form-select">
-                                        <option value="">All Statuses</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
-                                </div>
-                                <div class="filter type">
-                                    <select name="type" class="form-select">
-                                        <option value="">All Types</option>
-                                        <option value="personal">Personal Loan</option>
-                                        <option value="business">Business Loan</option>
-                                        <option value="emergency">Emergency Loan</option>
-                                        <option value="education">Educational Loan</option>
-                                    </select>
-                                </div>
-                                <div class="filter date">
-                                    <input type="date" class="form-control">
-                                </div>
-                            </div> -->
-                            <table class="table m-0">
-                                <thead>
-                                    <tr>
-                                        <th>Reference</th>
-                                        <th>Date Applied</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Term</th>
-                                        <th>Purpose</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>KPM-2026-48291</td>
-                                        <td>2023-10-15</td>
-                                        <td>Personal Loan</td>
-                                        <td>Home Improvement</td>
-                                        <td>12 mos</td>
-                                        <td>$10,000</td>
-                                        <td>Pending</td>
-                                        <td><button><i class="fa fa-eye"></i></button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="parent-pagination">
-                                <p>Showing <span>1</span> of <span>1</span> applications</p>
-                            </div>
-                        </div>
+                        {{-- Search filter JS --}}
+                        <script>
+                            function filterTable(tbodyId, query) {
+                                const tbody = document.getElementById(tbodyId);
+                                if (!tbody) return;
+                                const q = query.toLowerCase().trim();
+                                tbody.querySelectorAll('tr').forEach(row => {
+                                    row.style.display = q === '' || row.textContent.toLowerCase().includes(q) ? '' : 'none';
+                                });
+                            }
+                        </script>
                     </div>
                 </main>
             </div>
@@ -1668,15 +2060,16 @@
                                                 <option value="6 months">6 months</option>
                                             </select>
                                         </div>
-                                        <div class="p-sel-wrap" style="display:none" id="term-business-wrap">
-                                            <select class="p-select np" name="lending_type_term_business"
-                                                id="lending_type_term_business"
-                                                onchange="mSyncTerm();mCompute();mClearError(this);"
-                                                style="display:none" {{ !$canApplyLoan ? 'disabled' : '' }}>
-                                                <option value="">Select term</option>
-                                                <option value="6 months">6 months</option>
-                                                <option value="12 months">12 months</option>
-                                            </select>
+                                        <div style="display:none" id="term-business-wrap">
+                                            <div class="p-sel-wrap">
+                                                <select class="p-select np" name="lending_type_term_business"
+                                                    id="lending_type_term_business"
+                                                    onchange="mSyncTerm();mCompute();mClearError(this);">
+                                                    <option value="">Select term</option>
+                                                    <option value="6 months">6 months</option>
+                                                    <option value="12 months">12 months</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <input type="hidden" name="lending_type_term" id="lending_type_term">
                                         <div class="p-field-error" id="err-lending_type_term">
@@ -1970,7 +2363,8 @@
                                                 <p style="margin:0 0 8px;font-size:12.5px;line-height:1.5;">You have an
                                                     active loan of
                                                     <strong>₱{{ number_format($totalActiveLoan, 2) }}</strong>. You may
-                                                    still borrow up to:</p>
+                                                    still borrow up to:
+                                                </p>
                                                 <div
                                                     style="background:#f5f5f5;border-radius:20px;height:8px;overflow:hidden;margin-bottom:6px;">
                                                     <div
@@ -2147,10 +2541,11 @@
                         <div class="modal-panel" id="mp3">
                             <div class="confirm-hero-m">
                                 <div class="confirm-ring-m">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path
                                             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
+                                    </svg> -->
+                                    <i class="fa fa-shield"></i>
                                 </div>
                                 <div class="confirm-title-m">Review Your Application</div>
                                 <div class="confirm-sub-m">Verify all details carefully before submitting.</div>
@@ -2166,14 +2561,14 @@
                                         id="cf-term">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Monthly Income</span><span
                                         class="sum-val-m" id="cf-income">—</span></div>
-                                <div class="sum-row-m"><span class="sum-lbl-m">Purpose</span><span class="sum-val-m"
-                                        id="cf-purpose">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Interest Rate</span><span
                                         class="sum-val-m" id="cf-rate">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Monthly Payment</span><span
                                         class="sum-val-m gold" id="cf-monthly">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Total Interest</span><span
                                         class="sum-val-m" id="cf-int">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Purpose</span><span class="sum-val-m"
+                                        id="cf-purpose">—</span></div>
                                 <div class="sum-row-m total"><span class="sum-lbl-m bold">Total Payable</span><span
                                         class="sum-val-m green bigf" id="cf-total">—</span></div>
                             </div>
@@ -2244,7 +2639,9 @@
             <div class="modal-overlay-success" id="success-modal">
                 <div class="success-modal-box">
                     <div class="sm-head">
-                        <div class="sm-icon">✅</div>
+                        <div class="sm-icon">
+                            <i class="fa fa-check"></i>
+                        </div>
                     </div>
                     <div class="sm-body">
                         <h2>Application Submitted!</h2>
@@ -2394,19 +2791,25 @@
         // ══════════════════════════════════════════════════════════
         function mUpdateTermOptions() {
             const type = document.getElementById('lending_type').value;
+            const nbWrap = document.getElementById('lending_type_term_nonbusiness').closest('.p-sel-wrap')
+                || document.getElementById('lending_type_term_nonbusiness').parentElement;
+            const bWrap = document.getElementById('term-business-wrap');
             const nbEl = document.getElementById('lending_type_term_nonbusiness');
             const bEl = document.getElementById('lending_type_term_business');
 
             if (type === 'Business Loan') {
-                nbEl.style.display = 'none';
+                nbWrap.style.display = 'none';
+                bWrap.style.display = 'block';
                 bEl.style.display = 'block';
                 if (bEl.options.length > 1) bEl.selectedIndex = 1;
             } else if (type) {
-                nbEl.style.display = 'block';
+                nbWrap.style.display = 'block';
+                bWrap.style.display = 'none';
                 bEl.style.display = 'none';
                 if (nbEl.options.length > 1) nbEl.selectedIndex = 1;
             } else {
-                nbEl.style.display = 'block';
+                nbWrap.style.display = 'block';
+                bWrap.style.display = 'none';
                 bEl.style.display = 'none';
             }
             mSyncTerm();
@@ -2715,15 +3118,32 @@
             const card = document.getElementById(cardId);
             const nameEl = document.getElementById(nameId);
             if (!card || !nameEl) return;
+
+            const badge = card.querySelector('.uc-badge');
+
             if (input.files && input.files[0]) {
                 card.classList.add('has-file');
                 card.style.border = '';
                 const errEl = card.querySelector('.uc-error');
                 if (errEl) { errEl.style.display = 'none'; }
                 nameEl.textContent = input.files[0].name;
+
+                if (badge) {
+                    badge.textContent = 'Uploaded';
+                    badge.classList.remove('required', 'optional');
+                    badge.classList.add('uploaded');
+                }
             } else {
                 card.classList.remove('has-file');
                 nameEl.textContent = '';
+
+                if (badge) {
+                    // restore original label — store it on first render
+                    const original = badge.dataset.original || 'Required';
+                    badge.textContent = original;
+                    badge.classList.remove('uploaded');
+                    badge.classList.add(original.toLowerCase());
+                }
             }
         }
     </script>

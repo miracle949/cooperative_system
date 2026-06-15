@@ -192,3 +192,5 @@ Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])
 Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update");
 Route::get("/dashboard-archives", [UserController::class, "dashboard_archives"])->name("archives");
 Route::get("/dashboard-financial-activity", [UserController::class, "dashboard_financial_activity"])->name("financial.activity");
+
+Route::get("/loan-stats", [UsersHandle::class, "loanStats"])->name("loan_stats");

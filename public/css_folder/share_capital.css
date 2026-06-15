@@ -14,8 +14,8 @@
     margin-left: 220px;
     margin-top: 70px;
     padding: 2rem 2rem 3rem; */
-    width: calc(100% - 260px);
-    margin-left: 260px;
+    width: calc(100% - 250px);
+    margin-left: 250px;
     /* position: relative; */
     /* background-color: #1450470d; */
     /* background-color: var(--cream); */
@@ -25,7 +25,7 @@ main {
     padding: 2rem;
     /* background-color: #EAEDEB; */
     /* background-color: #ffffff; */
-    background-color: var(--cream);
+    background-color: var(--bg);
     display: flex;
     justify-content: center;
     align-items: center;

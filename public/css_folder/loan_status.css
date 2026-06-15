@@ -189,9 +189,9 @@ button {
 
 
 .container-fluid .rightbar {
-    width: calc(100% - 260px);
+    width: calc(100% - 250px);
     /* height: calc(100vh - 70px); */
-    margin-left: 260px;
+    margin-left: 250px;
     /* overflow-y: auto; */
     /* padding: 2rem 1.5rem 6rem 1.5rem; */
     /* background-color: #F7F9F8; */
@@ -205,16 +205,16 @@ button {
 }
 
 .container-fluid main .parent-main {
-    padding: 2rem;
+    padding: 2rem 1.5rem;
     height: calc(100vh - 70px);
     overflow: auto;
-    /* background-color: var(--cream); */
-    background-color: #ffffff;
+    background-color: var(--bg);
+    /* background-color: #ffffff; */
 }
 
 .container-fluid main .parent-main h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
     color: var(--ink);
     font-weight: 600;
 }
@@ -323,6 +323,9 @@ button {
     /* padding: 2rem; */
     padding: 28px 30px;
     background-color: var(--teal);
+    /* background-color: #ffffff; */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     border-radius: 10px;
@@ -383,6 +386,264 @@ div.status-alert-text {
     background: rgba(255, 255, 255, .03);
 }
 
+.container-fluid main .parent-main .loan-parent-box {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box {
+    background-color: #ffffff;
+    padding: 18px 20px;
+    width: calc(100% / 3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box h5 {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box p {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--teal);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box span {
+    font-size: 13.5px;
+    color: var(--muted);
+}
+
+.container-fluid main .parent-main .schedule-charges {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent,
+.container-fluid main .parent-main .schedule-charges .charges-parent {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-header,
+.container-fluid main .parent-main .schedule-charges .charges-parent .charges-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .header-tag::before,
+.container-fluid main .parent-main .schedule-charges .charges-parent .header-tag::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .header-tag,
+.container-fluid main .parent-main .schedule-charges .charges-parent .header-tag {
+    margin: 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    /* text-transform: uppercase; */
+    color: var(--teal);
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    gap: 12px;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-header span,
+.container-fluid main .parent-main .schedule-charges .charges-parent .charges-header span {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding: 0 0 10px;
+    font-size: 13.5px;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 500;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item span {
+    color: var(--teal);
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item p {
+    color: var(--teal);
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item-amount p {
+    color: var(--teal);
+    font-weight: 500;
+
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item-amount p:nth-child(2) {
+    background: rgba(30, 122, 78, .1);
+    color: #0f6e56;
+    padding: 6px 10px;
+    border-radius: 28px;
+}
+
+.container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item-amount p:nth-child(3) {
+    background: rgba(30, 122, 78, .1);
+    color: #0f6e56;
+    padding: 6px 10px;
+    border-radius: 28px;
+}
+
+.container-fluid main .parent-main .loan-history {
+    margin-top: 1.5rem;
+    background-color: #ffffff;
+    padding: 18px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.container-fluid main .parent-main .loan-history .loan-header .header-tag {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--teal);
+}
+
+.container-fluid main .parent-main .loan-history .loan-header .header-tag::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--teal);
+}
+
+.container-fluid main .parent-main .loan-history .loan-body {
+    margin-top: 1.5rem;
+}
+
+.container-fluid main .parent-main .loan-history .loan-body .parent-table table {
+    margin: 0;
+}
+
+.container-fluid main .parent-main .loan-history .loan-body .parent-table table thead tr th {
+    font-size: 13.5px;
+    color: var(--teal);
+    text-align: center;
+}
+
+.container-fluid main .parent-main .loan-history .loan-body .parent-table table tbody tr td {
+    font-size: 13.5px;
+    color: var(--teal);
+    text-align: center;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body{
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+    padding: 0 0 10px;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon{
+    width: 30px;
+    height: 30px;
+    background-color: var(--blue);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon .fa{
+    color: #ffffff;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .total-charges{
+    font-size: 13.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .total-charges p{
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item p{
+    color: var(--muted);
+}
+
+/* .container-fluid main .parent-main .loan-history .loan-body .parent-table table tbody {
+    height: 400px;
+    overflow-y: auto;
+} */
+
 /* .container-fluid main .parent-main .loan-hero::before {
     content: '';
     position: absolute;
@@ -416,7 +677,8 @@ div.status-alert-text {
 }
 
 .container-fluid main .parent-main .loan-hero .left-hero span:nth-child(1) {
-    color: var(--gold);
+    /* color: var(--blue); */
+    color: #ffffff;
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 2.5px;
@@ -456,7 +718,7 @@ div.status-alert-text {
 }
 
 .container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-header span {
-    color: var(--gold);
+    color: #ffffff;
     font-size: 11px;
     font-weight: 600;
 }
@@ -482,7 +744,7 @@ div.status-alert-text {
     left: 0;
     top: 0;
     bottom: 0;
-    background-color: var(--gold);
+    background-color: var(--blue);
     z-index: 1;
 }
 
@@ -498,6 +760,65 @@ div.status-alert-text {
     display: flex;
     justify-content: end;
     gap: 1rem;
+}
+
+.container-fluid main .parent-main .payment-parent{
+    margin-top: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text h5{
+    margin: 0;
+    font-size: 13.5px;
+    /* color: var(--teal); */
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text h5::before{
+    content: '';
+    width: 10px;
+    height: 1px;
+    border-radius: 50%;
+    background: var(--blue);
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text p{
+    font-size: 16.5px;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text span{
+    font-size: 13.5px;
+    color: var(--muted);
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text span b{
+    color: var(--teal);
+}
+
+.container-fluid main .parent-main .payment-parent .payment-button button{
+    font-size: 14.5px;
+    padding: 10px 30px;
+    border-radius: 10px;
+    background-color: var(--blue);
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .alh-stat {
@@ -524,7 +845,8 @@ div.status-alert-text {
 }
 
 .alh-stat:nth-child(1) h5 {
-    color: var(--gold);
+    /* color: var(--blue); */
+    color: #ffffff;
 }
 
 .alh-stat h5 {
