@@ -95,7 +95,6 @@
             return false;
         }
 
-        // ✅ Send OTP only if not already sent for this email
         if (otpAlreadySentEmail !== email) {
             try {
                 const sendRes = await fetch(OTP_SEND_URL, {
@@ -123,7 +122,6 @@
             }
         }
 
-        // ✅ Show modal and wait for user input
         return new Promise((resolve) => {
             if (emailDisp) emailDisp.textContent = email;
             input.value = '';
