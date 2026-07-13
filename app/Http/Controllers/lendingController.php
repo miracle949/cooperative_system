@@ -456,7 +456,7 @@ class lendingController extends Controller
 
             if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
                 $status->status = 'Completed';
-                $status->payments_made = $status->total_payments; // ← ADD THIS LINE
+                $status->payments_made = $status->total_payments; // 
 
                 lending_program_tbl::where('id', $request->lending_id)
                     ->update(['status' => 'Completed']);
