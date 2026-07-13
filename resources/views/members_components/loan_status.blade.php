@@ -77,7 +77,7 @@
 
                     @if($loans->isEmpty())
                         <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
-                            <p style="color:#fff;margin:0;">You have no approved loans yet.</p>
+                            <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
                         </div>
                     @else
                         @foreach($loans as $loan)
@@ -395,10 +395,10 @@
                             </label>
                             <div style="position: relative;">
                                 <span
-                                    style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #1a4a3a; font-weight: 700; font-size: 15px;">₱</span>
+                                    style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--teal); font-weight: 500; font-size: 15px;">₱</span>
                                 <input type="number" id="repay-amount-input" class="form-control"
                                     value="{{ $monthlyDue }}"
-                                    style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 600; color: #1a4a3a; height: 46px;"
+                                    style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 15px; font-weight: 500; color: var(--teal); height: 46px;"
                                     readonly>
                             </div>
                         </div>

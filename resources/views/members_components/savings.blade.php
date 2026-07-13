@@ -111,245 +111,252 @@
 <body>
 
     <div class="container-fluid p-0 m-0">
-        @include("components.navbar2")
+    
         @include("components.offcanvas")
+        @include("components.sidebar")
 
-        <div class="main-sub-parent">
-            <div class="main-parent">
-                <main>
-                    @if(!$hasShareCapital)
-                        {{-- Lock overlay banner --}}
-                        <div style="
-                            width: 100%;
-                            background: #fff8e1;
-                            border: 1.5px solid #ffe082;
-                            border-radius: 12px;
-                            padding: 1rem 1.25rem 1rem;
-                            margin-bottom: 1rem;
-                            display: flex;
-                            align-items: center;
-                            gap: 12px;
-                            font-size: 0.88rem;
-                            color: #856404;
-                                    ">
-                            <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
-                            <span>
-                                Your savings features are <strong>locked</strong>.
-                                Please <a href="{{ route('ShareCapitalMember') }}"
-                                    style="color:#1a4a3a;font-weight:700;text-decoration:underline;">subscribe to Share
-                                    Capital</a> first to unlock deposits, withdrawals, and your savings stats.
-                            </span>
-                        </div>
-                    @endif
-                    <div class="card-box-parent">
-                        <div class="card-box-text">
-                            <h3>Total Savings Balance</h3>
-                            <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
-                            <span>Last updated {{ $lastUpdated }} ·
-                                {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
-                                active
-                            </span>
-                        </div>
-
-                        <div class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
-
-                            {{-- Deposit --}}
-                            @if($hasShareCapital)
-                                <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal"
-                                    style="cursor:pointer;">
-                                    <div class="card-icon">
-                                        <i class="fa-solid fa-circle-arrow-down"></i>
-                                    </div>
-                                    <div>
-                                        <p>Deposit</p>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="card-box" disabled style="opacity:0.45; cursor:not-allowed;"
-                                    title="You must have active share capital to use savings.">
-                                    <div class="card-icon">
-                                        <i class="fa-solid fa-circle-arrow-down"></i>
-                                    </div>
-                                    <div>
-                                        <p>Deposit</p>
-                                    </div>
-                                </div>
-                            @endif
-
-                            {{-- Withdraw --}}
-                            @if($hasShareCapital)
-                                <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal"
-                                    style="cursor:pointer;">
-                                    <div class="card-icon">
-                                        <i class="fa-solid fa-circle-arrow-up"></i>
-                                    </div>
-                                    <div>
-                                        <p>Withdraw</p>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="card-box" disabled style="cursor:not-allowed; opacity:0.45;"
-                                    title="You must have active share capital to use savings.">
-                                    <div class="card-icon">
-                                        <i class="fa-solid fa-circle-arrow-up"></i>
-                                    </div>
-                                    <div>
-                                        <p>Withdraw</p>
-                                    </div>
-                                </div>
-                            @endif
-
-                        </div>
-                    </div>
-                </main>
-
-                <section>
-                    <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
-
-                        @if($hasShareCapital)
-
-                            <div class="card-box tw:bg-white">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-peso-sign"></i>
-                                </div>
-                                <p>Total Savings</p>
-                                <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
-                                <span>All time contributions</span>
+        <div class="rightbar">
+            @include("components.navbar2")
+            <div class="main-sub-parent">
+                <div class="main-parent">
+                    <main>
+                        @if(!$hasShareCapital)
+                            {{-- Lock overlay banner --}}
+                            <div style="
+                                width: 100%;
+                                background: #fff8e1;
+                                border: 1.5px solid #ffe082;
+                                border-radius: 12px;
+                                padding: 1rem 1.25rem 1rem;
+                                margin-bottom: 1rem;
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                                font-size: 0.88rem;
+                                color: #856404;
+                                        ">
+                                <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
+                                <span>
+                                    Your savings features are <strong>locked</strong>.
+                                    Please <a href="{{ route('ShareCapitalMember') }}"
+                                        style="color:#1a4a3a;font-weight:700;text-decoration:underline;">subscribe to Share
+                                        Capital</a> first to unlock deposits, withdrawals, and your savings stats.
+                                </span>
                             </div>
-
-                            <div class="card-box tw:bg-white">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-arrow-trend-up"></i>
-                                </div>
-                                <p>Monthly Average</p>
-                                <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                                <span>Per month average</span>
-                            </div>
-
-                            <div class="card-box tw:bg-white">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </div>
-                                <p>Total Months</p>
-                                <h4>{{ $totalMonths }} Months</h4>
-                                <span>Months saving</span>
-                            </div>
-
-                        @else
-
-                            <div class="card-box tw:bg-white" style="cursor:not-allowed;"
-                                title="You must have active share capital to use savings.">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-peso-sign"></i>
-                                </div>
-                                <p>Total Savings</p>
-                                <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
-                                <span>All time contributions</span>
-                            </div>
-
-                            <div class="card-box tw:bg-white" style="cursor:not-allowed;"
-                                title="You must have active share capital to use savings.">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-arrow-trend-up"></i>
-                                </div>
-                                <p>Monthly Average</p>
-                                <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                                <span>Per month average</span>
-                            </div>
-
-                            <div class="card-box tw:bg-white" style="cursor:not-allowed;"
-                                title="You must have active share capital to use savings.">
-                                <div class="card-accent"></div>
-                                <div class="card-icon d-flex justify-content-center align-items-center">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </div>
-                                <p>Total Months</p>
-                                <h4>{{ $totalMonths }} Months</h4>
-                                <span>Months saving</span>
-                            </div>
-
                         @endif
-
-                    </div>
-                </section>
-
-                <section id="section2">
-                    <div class="card-box-parent">
-                        <div class="d-flex justify-content-between align-items-center card-box-title">
-                            <div class="title">
-                                <h3>Transaction History</h3>
-                                <p class="tw:text-[#808080]">View your monthly transactions breakdown</p>
+                        <div class="card-box-parent">
+                            <div class="card-box-text">
+                                <h3>Total Savings Balance</h3>
+                                <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
+                                <span>Last updated {{ $lastUpdated }} ·
+                                    {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
+                                    active
+                                </span>
                             </div>
-                            <div class="gap-3 print">
-                                <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
-                                    <i class="fa-solid fa-download"></i> CSV
-                                </button>
-                                <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
-                                    <i class="fa fa-solid fa-download"></i> PDF
-                                </button>
+
+                            <div
+                                class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
+
+                                {{-- Deposit --}}
+                                @if($hasShareCapital)
+                                    <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal"
+                                        style="cursor:pointer;">
+                                        <div class="card-icon">
+                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                        </div>
+                                        <div>
+                                            <p>Deposit</p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="card-box" disabled style="opacity:0.45; cursor:not-allowed;"
+                                        title="You must have active share capital to use savings.">
+                                        <div class="card-icon">
+                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                        </div>
+                                        <div>
+                                            <p>Deposit</p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Withdraw --}}
+                                @if($hasShareCapital)
+                                    <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal"
+                                        style="cursor:pointer;">
+                                        <div class="card-icon">
+                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                        </div>
+                                        <div>
+                                            <p>Withdraw</p>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="card-box" disabled style="cursor:not-allowed; opacity:0.45;"
+                                        title="You must have active share capital to use savings.">
+                                        <div class="card-icon">
+                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                        </div>
+                                        <div>
+                                            <p>Withdraw</p>
+                                        </div>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>
+                    </main>
 
-                        {{-- Grouped transactions by month --}}
-                        @forelse ($groupedTransactions as $monthYear => $transactions)
-                            <div class="card-box">
-                                <h4>{{ $monthYear }}</h4>
-                                <div class="mt-4 overflow-x-auto">
-                                    <table class="table table-striped table-hover table-scroll">
-                                        <thead>
-                                            <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
-                                                <th>Date</th>
-                                                <th>Type</th>
-                                                <th>Reference No.</th>
-                                                <th class="text-end">Amount</th>
-                                                <th class="text-end">Receipt</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($transactions as $tx)
-                                                <tr>
-                                                    <td>{{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}</td>
-                                                    <td>{{ ucfirst(str_replace('_', ' ', $tx->type)) }}</td>
-                                                    <td>
-                                                        @if ($tx->reference_no)
-                                                            <span class="tx-ref">{{ $tx->reference_no }}</span>
-                                                        @else
-                                                            <span style="color:#000000;font-size:0.78rem">—</span>
-                                                        @endif
-                                                    </td>
-                                                    <td class="text-end"
-                                                        style="font-weight:600; color:{{ $tx->type === 'withdrawal' ? '#DC2626' : '#1E4035' }}">
-                                                        {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
-                                                        {{ number_format($tx->amount, 2) }}
-                                                    </td>
-                                                    <td class="text-end">
-                                                        @if ($tx->reference_no)
-                                                            <a href="{{ route('savings.receipt', $tx->reference_no) }}"
-                                                                title="Download Receipt" style="color:#1E4035;font-size:0.9rem;">
-                                                                <i class="fa-solid fa-file-arrow-down"></i>
-                                                            </a>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                    <section>
+                        <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
+
+                            @if($hasShareCapital)
+
+                                <div class="card-box tw:bg-white">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-peso-sign"></i>
+                                    </div>
+                                    <p>Total Savings</p>
+                                    <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                                    <span>All time contributions</span>
+                                </div>
+
+                                <div class="card-box tw:bg-white">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    </div>
+                                    <p>Monthly Average</p>
+                                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                                    <span>Per month average</span>
+                                </div>
+
+                                <div class="card-box tw:bg-white">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                    </div>
+                                    <p>Total Months</p>
+                                    <h4>{{ $totalMonths }} Months</h4>
+                                    <span>Months saving</span>
+                                </div>
+
+                            @else
+
+                                <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                                    title="You must have active share capital to use savings.">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-peso-sign"></i>
+                                    </div>
+                                    <p>Total Savings</p>
+                                    <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                                    <span>All time contributions</span>
+                                </div>
+
+                                <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                                    title="You must have active share capital to use savings.">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    </div>
+                                    <p>Monthly Average</p>
+                                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                                    <span>Per month average</span>
+                                </div>
+
+                                <div class="card-box tw:bg-white" style="cursor:not-allowed;"
+                                    title="You must have active share capital to use savings.">
+                                    <div class="card-accent"></div>
+                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                    </div>
+                                    <p>Total Months</p>
+                                    <h4>{{ $totalMonths }} Months</h4>
+                                    <span>Months saving</span>
+                                </div>
+
+                            @endif
+
+                        </div>
+                    </section>
+
+                    <section id="section2">
+                        <div class="card-box-parent">
+                            <div class="d-flex justify-content-between align-items-center card-box-title">
+                                <div class="title">
+                                    <h3>Transaction History</h3>
+                                    <p class="tw:text-[#808080]">View your monthly transactions breakdown</p>
+                                </div>
+                                <div class="gap-3 print">
+                                    <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
+                                        <i class="fa-solid fa-download"></i> CSV
+                                    </button>
+                                    <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
+                                        <i class="fa fa-solid fa-download"></i> PDF
+                                    </button>
                                 </div>
                             </div>
-                        @empty
-                            <div class="card-box text-center py-5">
-                                <i class="fa-solid fa-folder-open fa-2x mb-3" style="color:#d0d0d0;"></i>
-                                <p style="color:#808080;margin-top:0.5rem;">No transactions yet.</p>
-                            </div>
-                        @endforelse
 
-                    </div>
-                </section>
+                            {{-- Grouped transactions by month --}}
+                            @forelse ($groupedTransactions as $monthYear => $transactions)
+                                <div class="card-box">
+                                    <h4>{{ $monthYear }}</h4>
+                                    <div class="mt-4 overflow-x-auto">
+                                        <table class="table table-striped table-hover table-scroll">
+                                            <thead>
+                                                <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Reference No.</th>
+                                                    <th class="text-end">Amount</th>
+                                                    <th class="text-end">Receipt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($transactions as $tx)
+                                                    <tr>
+                                                        <td>{{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
+                                                        </td>
+                                                        <td>{{ ucfirst(str_replace('_', ' ', $tx->type)) }}</td>
+                                                        <td>
+                                                            @if ($tx->reference_no)
+                                                                <span class="tx-ref">{{ $tx->reference_no }}</span>
+                                                            @else
+                                                                <span style="color:#000000;font-size:0.78rem">—</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-end"
+                                                            style="font-weight:600; color:{{ $tx->type === 'withdrawal' ? '#DC2626' : '#1E4035' }}">
+                                                            {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
+                                                            {{ number_format($tx->amount, 2) }}
+                                                        </td>
+                                                        <td class="text-end">
+                                                            @if ($tx->reference_no)
+                                                                <a href="{{ route('savings.receipt', $tx->reference_no) }}"
+                                                                    title="Download Receipt"
+                                                                    style="color:#1E4035;font-size:0.9rem;">
+                                                                    <i class="fa-solid fa-file-arrow-down"></i>
+                                                                </a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="card-box text-center py-5">
+                                    <i class="fa-solid fa-folder-open fa-2x mb-3" style="color:#d0d0d0;"></i>
+                                    <p style="color:#808080;margin-top:0.5rem;">No transactions yet.</p>
+                                </div>
+                            @endforelse
+
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
 

@@ -386,7 +386,7 @@
                             style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 24px 60px rgba(0,0,0,0.15);">
 
                             <div class="modal-header"
-                                style="background: #1a4a3a; border: none; padding: 1.25rem 1.5rem;">
+                                style="background: var(--blue); border: none; padding: 1.25rem 1.5rem;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <div
                                         style="width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
@@ -439,7 +439,7 @@
 
                                     <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
                                         <button type="button" class="modal-qbtn active" data-v="1"
-                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1.5px solid #1a4a3a;">1
+                                            style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--blue); color: #fff; border: 1.5px solid var(--blue);">
                                             shares</button>
                                         <button type="button" class="modal-qbtn" data-v="5"
                                             style="padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1.5px solid #ddd;">5
@@ -548,7 +548,7 @@
                             <div class="modal-footer"
                                 style="border: none; padding: 0 1.5rem 1.25rem; flex-direction: column; gap: 8px;">
                                 <button type="submit" form="modal-sc-form" id="modal-submit-btn"
-                                    style="width: 100%; padding: 0.75rem; background: #1a4a3a; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    style="width: 100%; padding: 0.75rem; background: var(--blue); color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                     <i class="fa fa-coins"></i> Confirm Transaction
                                 </button>
                                 <button type="button" data-bs-dismiss="modal"

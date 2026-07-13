@@ -17,10 +17,10 @@
                 <a href="{{ route("index") }}" class="tw:no-underline text-decoration-none">Home</a>
             </li>
             <li class="tw:list-none">
-                <a href="#products_services" class="tw:no-underline text-decoration-none">Products & Services</a>
+                <a href="#section1" class="tw:no-underline text-decoration-none">Membership</a>
             </li>
             <li class="tw:list-none">
-                <a href="#" class="tw:no-underline text-decoration-none">Membership</a>
+                <a href="#products_services" class="tw:no-underline text-decoration-none">Products & Services</a>
             </li>
             <li class="tw:list-none">
                 <a href="{{ route("ContactPage") }}" class="tw:no-underline text-decoration-none">Contact Us</a>
