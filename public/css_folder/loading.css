@@ -673,7 +673,7 @@
     /* backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow); */
-    box-shadow: var(--shadow);
+    /* box-shadow: var(--shadow); */
     position: relative;
     /* z-index: 1000;
     position: fixed; */
