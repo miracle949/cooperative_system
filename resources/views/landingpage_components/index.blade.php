@@ -43,7 +43,7 @@
                 <div class="carousel-track" id="carouselTrack">
 
                     <div class="slide active">
-                        <img class="slide-bg" src="../images/5.jpg" alt="Trusted Cooperative Partner" />
+                        <img class="slide-bg" src="../images/hero-3.png" alt="Trusted Cooperative Partner" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="slide">
-                        <img class="slide-bg" src="../images/6.jpg" alt="Services at Your Fingertips" />
+                        <img class="slide-bg" src="../images/hero-4.png" alt="Services at Your Fingertips" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="slide">
-                        <img class="slide-bg" src="../images/7.jpg" alt="Your Loan, Approved!" />
+                        <img class="slide-bg" src="../images/hero-5.png" alt="Your Loan, Approved!" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="slide">
-                        <img class="slide-bg" src="../images/8.jpg" alt="Growing Together as One" />
+                        <img class="slide-bg" src="../images/hero-6.png" alt="Growing Together as One" />
                         <div class="slide-overlay"></div>
                         <div class="slide-chevron"></div>
                         <div class="slide-content">
