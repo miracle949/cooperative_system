@@ -592,7 +592,7 @@ class lendingController extends Controller
             }
 
             if ($nextDueDate) {
-                $daysAway = $today->diffInDays($nextDueDate, false);
+                $daysAway = number_format($today->diffInDays($nextDueDate, false));
             }
         }
 

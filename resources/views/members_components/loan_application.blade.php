@@ -1612,7 +1612,7 @@
                                                 <th>Term</th>
                                                 <th>Purpose</th>
                                                 <th>Status</th>
-                                                <th>Actions</th>
+                                                {{-- <th>Actions</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody id="all-loans-tbody">
@@ -1640,13 +1640,13 @@
                                                         <span
                                                             style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700; border: 1px solid var(--border);{{ $sc }}">{{ $s }}</span>
                                                     </td>
-                                                    <td>
+                                                    {{-- <td>
                                                         <button
                                                             style="background:none;border:1px solid var(--border);cursor:pointer;color:#4f7ffa;"
                                                             title="View">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @empty
                                                 <tr>
