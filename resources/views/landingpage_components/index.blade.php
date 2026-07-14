@@ -39,7 +39,7 @@
                 <h2>Top Lenders All </h2>
             </div> -->
 
-            <section class="carousel" id="carousel" style="margin-top: 64px;">
+            <!-- <section class="carousel" id="carousel" style="margin-top: 64px;">
                 <div class="carousel-track" id="carouselTrack">
 
                     <div class="slide active">
@@ -139,8 +139,152 @@
                 <div class="carousel-counter"><span id="slideNum">01</span> / 04</div>
 
                 <div class="carousel-progress" id="progress"></div>
-            </section>
 
+                <div class="main-text">
+                    <div class="first-slide">
+                        <div class="slide-eye">Loan Services</div>
+                        <h2>Your Loan <em>Approved</em> Instantly.</h2>
+                        <p>We make loan applications simple, fast, and stress-free — so you can
+                            focus on what matters most. Powered by cutting-edge cooperative management technology.</p>
+                    </div>
+
+                    <div class="second-slide">
+                        <div class="slide-eye">Member Management</div>
+                        <h2>Know Every <em>Member</em> Every Details.</h2>
+                        <p>A complete member registry with share capital tracking, contribution
+                            history, tier management, and automated lifecycle notifications — all in one place.</p>
+                    </div>
+
+                    <div class="third-slide">
+                        <div class="slide-eye">Financial Reports</div>
+                        <h2>Reports that <em>Tell the</em> Full Story.</h2>
+                        <p>We make loan applications simple, fast, and stress-free — so you can
+                            focus on what matters most.</p>
+                    </div>
+
+                    <div class="fourth-slide">
+                        <div class="slide-eye">FCompliance & Governance</div>
+                        <h2>Stay <em>Compliant</em> Stay Trusted.</h2>
+                        <p>Built-in CDA compliance tools, tamper-proof audit trails, and digital
+                            member governance features ensure your cooperative operates with full transparency and
+                            accountability.</p>
+                    </div>
+                </div>
+
+                <div class="main-img">
+                    <img src="../images/hero-3.png" alt="">
+                    <img src="../images/hero-4.png" alt="">
+                    <img src="../images/hero-5.png" alt="">
+                    <img src="../images/hero-6.png" alt="">
+                </div>
+            </section> -->
+
+
+            <section class="carousel" id="carousel" style="margin-top: 64px;">
+                <div class="carousel-track">
+                    <div class="main-text">
+                        <div class="slide first-slide active">
+                            <div class="slide-eye">Loan Services</div>
+                            <h2>Your Loan <em>Approved</em> Instantly.</h2>
+                            <p>We make loan applications simple, fast, and stress-free — so you can
+                                focus on what matters most. Powered by cutting-edge cooperative management technology.
+                            </p>
+
+                            <div class="button-group">
+                                <a href="#">
+                                    Learn More
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+
+                                <a href="#">
+                                    Abous Us
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="slide second-slide">
+                            <div class="slide-eye">Member Management</div>
+                            <h2>Know Every <em>Member</em> Every Details.</h2>
+                            <p>A complete member registry with share capital tracking, contribution
+                                history, tier management, and automated lifecycle notifications — all in one place.</p>
+
+                            <div class="button-group">
+                                <a href="#">
+                                    Learn More
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+
+                                <a href="#">
+                                    Abous Us
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="slide third-slide">
+                            <div class="slide-eye">Financial Reports</div>
+                            <h2>Reports that <em>Tell the</em> Full Story.</h2>
+                            <p>We make loan applications simple, fast, and stress-free — so you can
+                                focus on what matters most.</p>
+
+                            <div class="button-group">
+                                <a href="#">
+                                    Learn More
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+
+                                <a href="#">
+                                    Abous Us
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="slide fourth-slide">
+                            <div class="slide-eye">Compliance & Governance</div>
+                            <h2>Stay <em>Compliant</em> Stay Trusted.</h2>
+                            <p>Built-in CDA compliance tools, tamper-proof audit trails, and digital
+                                member governance features ensure your cooperative operates with full transparency and
+                                accountability.</p>
+
+                            <div class="button-group">
+                                <a href="#">
+                                    Learn More
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+
+                                <a href="#">
+                                    Abous Us
+
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="carousel-dots">
+                            <span class="dot active" data-slide="0"></span>
+                            <span class="dot" data-slide="1"></span>
+                            <span class="dot" data-slide="2"></span>
+                            <span class="dot" data-slide="3"></span>
+                        </div>
+                    </div>
+
+                    <div class="main-img">
+                        <img src="../images/hero-3.png" class="slide-img active" alt="">
+                        <img src="../images/hero-4.png" class="slide-img" alt="">
+                        <img src="../images/hero-5.png" class="slide-img" alt="">
+                        <img src="../images/hero-6.png" class="slide-img" alt="">
+                    </div>
+                </div>
+            </section>
             {{-- <div class="main-text">
                 <span>Established 2010 · 1,200 - Members</span>
 
@@ -188,6 +332,28 @@
             </div> --}}
         </main>
 
+        <div class="marquee-parent">
+            <div class="stat">
+                <strong>₱2.4B+</strong>
+                <span>Funded to Members</span>
+            </div>
+
+            <div class="stat">
+                <strong>12,400</strong>
+                <span>Active Members</span>
+            </div>
+
+            <div class="stat">
+                <strong>48 Hrs</strong>
+                <span>Avg. Approval Time</span>
+            </div>
+
+            <div class="stat">
+                <strong>4.9 / 5</strong>
+                <span>Average Rating</span>
+            </div>
+        </div>
+
         <!-- <div class="marquee-bar">
             <div class="marquee-track">
                 <span class="marquee-item">Member Governance <span class="marquee-sep">✦</span></span>
@@ -211,75 +377,78 @@
 
         <section class="" id="section1">
 
-            <div class="card-side">
-                <div class="card-tag">
-                    What We Offer
-                </div>
+            <div class="parent-tutorial">
+                <div class="card-side">
+                    <div class="card-tag">
+                        What We Offer
+                    </div>
 
-                <!-- <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2> -->
-                <h2 class="text-left mt-3">Get Your Loan In <b>4 Easy Steps</b></h2>
+                    <!-- <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2> -->
+                    <h2 class="text-left mt-3">Get Your Loan In <b>4 Easy Steps</b></h2>
 
-                <!-- <p class="text-left">We offer more than
+                    <!-- <p class="text-left">We offer more than
                     just financial services
                     - we
                     provide a supportive community
                     dedicated to your financial well-being.</p> -->
 
-                <p class="text-left">We've simplified the loan process so you spend less time on paperwork and more time
-                    on what matters.</p>
+                    <p class="text-left">We've simplified the loan process so you spend less time on paperwork and more
+                        time
+                        on what matters.</p>
 
-                <div class="step-to-apply">
-                    <div class="step-card">
-                        <div class="number">
-                            <h5>01</h5>
+                    <div class="step-to-apply">
+                        <div class="step-card">
+                            <div class="number">
+                                <h5>01</h5>
+                            </div>
+                            <div class="words">
+                                <p>Create Your Account</p>
+                                <span>Sign up as a member. Membership is open to all Filipinos aged 18 and above with a
+                                    valid ID.</span>
+                            </div>
                         </div>
-                        <div class="words">
-                            <p>Create Your Account</p>
-                            <span>Sign up as a member. Membership is open to all Filipinos aged 18 and above with a
-                                valid ID.</span>
-                        </div>
-                    </div>
 
-                    <div class="step-card">
-                        <div class="number">
-                            <h5>02</h5>
+                        <div class="step-card">
+                            <div class="number">
+                                <h5>02</h5>
+                            </div>
+                            <div class="words">
+                                <p>Choose a Loan Product</p>
+                                <span>Pick the loan type that fits your need and check your estimated monthly
+                                    amortization.</span>
+                            </div>
                         </div>
-                        <div class="words">
-                            <p>Choose a Loan Product</p>
-                            <span>Pick the loan type that fits your need and check your estimated monthly
-                                amortization.</span>
-                        </div>
-                    </div>
 
-                    <div class="step-card">
-                        <div class="number">
-                            <h5>03</h5>
+                        <div class="step-card">
+                            <div class="number">
+                                <h5>03</h5>
+                            </div>
+                            <div class="words">
+                                <p>Submit Requirements</p>
+                                <span>Upload your documents online — valid ID, proof of income, and completed
+                                    application
+                                    form.</span>
+                            </div>
                         </div>
-                        <div class="words">
-                            <p>Submit Requirements</p>
-                            <span>Upload your documents online — valid ID, proof of income, and completed application
-                                form.</span>
-                        </div>
-                    </div>
 
-                    <div class="step-card">
-                        <div class="number">
-                            <h5>04</h5>
-                        </div>
-                        <div class="words">
-                            <p>Receive Your Funds</p>
-                            <span>Upon approval, funds are released within 1–3 business days directly to your
-                                account.</span>
+                        <div class="step-card">
+                            <div class="number">
+                                <h5>04</h5>
+                            </div>
+                            <div class="words">
+                                <p>Receive Your Funds</p>
+                                <span>Upon approval, funds are released within 1–3 business days directly to your
+                                    account.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="how-visual">
-                <video autoplay muted loop playsinline>
-                    <source src="videos/mobile-steps.mp4" type="video/mp4">
-                </video>
-                <!-- <div class="phone-frame">
+                <div class="how-visual">
+                    <video autoplay muted loop playsinline>
+                        <source src="videos/mobile-steps.mp4" type="video/mp4">
+                    </video>
+                    <!-- <div class="phone-frame">
                     <div class="phone-notch">
 
                     </div>
@@ -331,6 +500,7 @@
                         </div>
                     </div>
                 </div> -->
+                </div>
             </div>
 
             <!-- <div class="card-box-parent">
@@ -993,6 +1163,46 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const images = document.querySelectorAll('.slide-img');
+            const dots = document.querySelectorAll('.dot');
+            let current = 0;
+            let timer;
+
+            function goToSlide(index) {
+                slides[current].classList.remove('active');
+                images[current].classList.remove('active');
+                dots[current].classList.remove('active');
+
+                current = index;
+
+                slides[current].classList.add('active');
+                images[current].classList.add('active');
+                dots[current].classList.add('active');
+            }
+
+            function nextSlide() {
+                goToSlide((current + 1) % slides.length);
+            }
+
+            function startAutoplay() {
+                timer = setInterval(nextSlide, 5000);
+            }
+
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', () => {
+                    clearInterval(timer);
+                    goToSlide(i);
+                    startAutoplay();
+                });
+            });
+
+            startAutoplay();
+        });
+    </script>
+
+    <!-- <script>
         const track = document.getElementById('carouselTrack');
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
@@ -1044,7 +1254,7 @@
 
         goTo(0);
         startAuto();
-    </script>
+    </script> -->
 
     <script>
         const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
