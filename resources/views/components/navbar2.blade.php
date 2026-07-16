@@ -1,4 +1,4 @@
-<nav
+<nav id="dashboard-nav"
     class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[2rem] tw:h-[70px] tw:bg-[#ffffff] tw:p-[1rem]">
     <div class="nav-logo">
         {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}

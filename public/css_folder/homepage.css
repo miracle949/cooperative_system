@@ -71,7 +71,8 @@
     /* height: calc(100vh - 70px);
     overflow-y: auto; */
     /* background-color: var(--cream); */
-    background-color: #F5F6FA;
+    /* background-color: #F5F6FA; */
+    background-color: var(--lavender-tint);
     /* margin-top: 70px; */
     /* background-color: #F8FBFC; */
     /* background-color: #F4F6FA; */

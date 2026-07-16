@@ -180,7 +180,7 @@
             </section> -->
 
 
-            <section class="carousel" id="carousel" style="margin-top: 64px;">
+            <section class="carousel" id="carousel">
                 <div class="carousel-track">
                     <div class="main-text">
                         <div class="slide first-slide active">
@@ -418,24 +418,26 @@
         </main>
 
         <div class="marquee-parent">
-            <div class="stat">
-                <strong>₱2.4B+</strong>
-                <span>Funded to Members</span>
-            </div>
+            <div class="marquee-section-parent">
+                <div class="stat">
+                    <strong>₱2.4B+</strong>
+                    <span>Funded to Members</span>
+                </div>
 
-            <div class="stat">
-                <strong>12,400</strong>
-                <span>Active Members</span>
-            </div>
+                <div class="stat">
+                    <strong>12,400</strong>
+                    <span>Active Members</span>
+                </div>
 
-            <div class="stat">
-                <strong>48 Hrs</strong>
-                <span>Avg. Approval Time</span>
-            </div>
+                <div class="stat">
+                    <strong>48 Hrs</strong>
+                    <span>Avg. Approval Time</span>
+                </div>
 
-            <div class="stat">
-                <strong>4.9 / 5</strong>
-                <span>Average Rating</span>
+                <div class="stat">
+                    <strong>4.9 / 5</strong>
+                    <span>Average Rating</span>
+                </div>
             </div>
         </div>
 
@@ -568,7 +570,9 @@
                             <img src="images/choose-product.jpg" alt="">
                         </div>
                         <h3>Choose a Loan Product</h3>
-                        <p>Select the loan that best fits your financial needs and review its terms and repayment options. Compare interest rates and eligibility requirements carefully. Apply with confidence.</p>
+                        <p>Select the loan that best fits your financial needs and review its terms and repayment
+                            options. Compare interest rates and eligibility requirements carefully. Apply with
+                            confidence.</p>
                     </div>
 
                     <div class="work-card">
@@ -576,7 +580,9 @@
                             <img src="images/submit.jpg" alt="">
                         </div>
                         <h3>Submit Your Application</h3>
-                        <p>Complete the application form and submit the required documents for review. Ensure all details provided are accurate and up to date. Our team will verify your submission promptly.</p>
+                        <p>Complete the application form and submit the required documents for review. Ensure all
+                            details provided are accurate and up to date. Our team will verify your submission promptly.
+                        </p>
                     </div>
 
                     <div class="work-card">
@@ -584,7 +590,8 @@
                             <img src="images/receive.jpg" alt="">
                         </div>
                         <h3>Receive Approval & Funds</h3>
-                        <p>After approval, your loan will be processed without delay. Funds will be released through your chosen disbursement method, following the cooperative's established loan policies.</p>
+                        <p>After approval, your loan will be processed without delay. Funds will be released through
+                            your chosen disbursement method, following the cooperative's established loan policies.</p>
                     </div>
                 </div>
             </div>
@@ -816,470 +823,479 @@
         </div> --}}
         </section>
 
-        <section class="d-flex justify-left align-items-left flex-column pe-5 ps-5" id="products_services">
+        <section class="" id="products_services">
 
-            <div class="header">
-                <!-- <span>Loan Products</span> -->
-                <div class="products-tag">Loan Products</div>
+            <div class="product_services_parent">
+                <div class="header">
+                    <!-- <span>Loan Products</span> -->
+                    <div class="products-tag">Loan Products</div>
 
-                <h2 class="text-left reveal reveal-delay-1">Choose a Loan Built
-                    for <b>Your Needs</b></h2>
+                    <h2 class="text-left reveal reveal-delay-1">Choose a Loan Built
+                        for <b>Your Needs</b></h2>
 
-                <p class="text-left tw:text-[16px] reveal reveal-delay-2">Choose from our
-                    variety of loan
-                    products
-                    designed to meet your financial needs.
-                </p>
-            </div>
-
-            <div class="card-parent">
-
-                <div class="card reveal reveal-delay-1">
-                    <div class="popular">
-                        <div class="popular-text">Most Popular</div>
-                    </div>
-                    <div class="card-icon">
-                        <i class="fa fa-user"></i>
-                    </div>
-
-                    <span>Loan</span>
-
-                    <h4>Personal Loan</h4>
-
-                    <p>For personal expenses, life events, home improvements, and everything in between.</p>
-
-                    <hr>
-
-                    <div class="starting">
-                        <p>Starting at</p>
-                        <p><b>2%</b></p>
-                        <p>/ monthly</p>
-                    </div>
-
-                    <div class="check-parent">
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Quick approval processs</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Flexible repayment terms</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>No hidden charges</p>
-                        </div>
-                    </div>
-
-                    <div class="apply">
-                        <a href="{{ route("LoginPage") }}">
-                            <p>Apply Now</p>
-                            <!-- <p>&nbsp;→</p> -->
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
-
-                    </div>
+                    <p class="text-left tw:text-[16px] reveal reveal-delay-2">Choose from our
+                        variety of loan
+                        products
+                        designed to meet your financial needs.
+                    </p>
                 </div>
 
-                <div class="card reveal reveal-delay-2">
-                    <div class="card-icon">
-                        <i class="fa fa-briefcase"></i>
-                    </div>
+                <div class="card-parent">
 
-                    <span>Loan</span>
-
-                    <h4>Business Loan</h4>
-
-                    <p>For personal expenses, life events, home improvements, and everything in between.</p>
-
-                    <hr>
-
-                    <div class="starting">
-                        <p>Starting at</p>
-                        <p><b>2%</b></p>
-                        <p>/ monthly</p>
-                    </div>
-
-                    <div class="check-parent">
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Quick approval processs</p>
+                    <div class="card reveal reveal-delay-1">
+                        <div class="popular">
+                            <div class="popular-text">Most Popular</div>
                         </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Flexible repayment terms</p>
+                        <div class="card-icon">
+                            <i class="fa fa-user"></i>
                         </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
+
+                        <span>Loan</span>
+
+                        <h4>Personal Loan</h4>
+
+                        <p>For personal expenses, life events, home improvements, and everything in between.</p>
+
+                        <hr>
+
+                        <div class="starting">
+                            <p>Starting at</p>
+                            <p><b>2%</b></p>
+                            <p>/ monthly</p>
+                        </div>
+
+                        <div class="check-parent">
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Quick approval processs</p>
                             </div>
-                            <p>No hidden charges</p>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Flexible repayment terms</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>No hidden charges</p>
+                            </div>
+                        </div>
+
+                        <div class="apply">
+                            <a href="{{ route("LoginPage") }}">
+                                <p>Apply Now</p>
+                                <!-- <p>&nbsp;→</p> -->
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+
                         </div>
                     </div>
 
-                    <div class="apply">
-                        <a href="{{ route("LoginPage") }}">
-                            <p>Apply Now</p>
-                            <!-- <p>&nbsp;→</p> -->
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
+                    <div class="card reveal reveal-delay-2">
+                        <div class="card-icon">
+                            <i class="fa fa-briefcase"></i>
+                        </div>
 
+                        <span>Loan</span>
+
+                        <h4>Business Loan</h4>
+
+                        <p>For personal expenses, life events, home improvements, and everything in between.</p>
+
+                        <hr>
+
+                        <div class="starting">
+                            <p>Starting at</p>
+                            <p><b>2%</b></p>
+                            <p>/ monthly</p>
+                        </div>
+
+                        <div class="check-parent">
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Quick approval processs</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Flexible repayment terms</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>No hidden charges</p>
+                            </div>
+                        </div>
+
+                        <div class="apply">
+                            <a href="{{ route("LoginPage") }}">
+                                <p>Apply Now</p>
+                                <!-- <p>&nbsp;→</p> -->
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+
+                        </div>
                     </div>
+
+                    <div class="card reveal reveal-delay-1">
+                        <div class="card-icon">
+                            <i class="fa fa-hand-holding-medical"></i>
+                        </div>
+
+                        <span>Loan</span>
+
+                        <h4>Emergency Loan</h4>
+
+                        <p>For personal expenses, life events, home improvements, and everything in between.</p>
+
+                        <hr>
+
+                        <div class="starting">
+                            <p>Starting at</p>
+                            <p><b>2%</b></p>
+                            <p>/ monthly</p>
+                        </div>
+
+                        <div class="check-parent">
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Quick approval processs</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Flexible repayment terms</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>No hidden charges</p>
+                            </div>
+                        </div>
+
+                        <div class="apply">
+                            <a href="{{ route("LoginPage") }}">
+                                <p>Apply Now</p>
+                                <!-- <p>&nbsp;→</p> -->
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <div class="card reveal reveal-delay-2">
+                        <div class="card-icon">
+                            <i class="fa fa-graduation-cap"></i>
+                        </div>
+
+                        <span>Loan</span>
+
+                        <h4>Education Loan</h4>
+
+                        <p>For personal expenses, life events, home improvements, and everything in between.</p>
+
+                        <hr>
+
+                        <div class="starting">
+                            <p>Starting at</p>
+                            <p><b>2%</b></p>
+                            <p>/ monthly</p>
+                        </div>
+
+                        <div class="check-parent">
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Quick approval processs</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>Flexible repayment terms</p>
+                            </div>
+                            <div class="check-text">
+                                <div class="check-icon">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <p>No hidden charges</p>
+                            </div>
+                        </div>
+
+                        <div class="apply">
+                            <a href="{{ route("LoginPage") }}">
+                                <p>Apply Now</p>
+                                <!-- <p>&nbsp;→</p> -->
+                                <i class="fa fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+                    </div>
+                    {{-- <div class="card reveal reveal-delay-1 mw-100" style="border-radius: 10px;">
+                        <div class="card-body tw:flex tw:justify-start tw:flex-col">
+                            <div class="card-header border-0 p-0">
+                                <h3>Personal Loan</h3>
+
+                                <p>For Personal expenses and life events.</p>
+                            </div>
+
+                            <hr style="margin: 10px 0px">
+
+                            <span>Starting at 2%</span>
+                        </div>
+                    </div>
+
+                    <div class="card reveal reveal-delay-2 mw-100" style="border-radius: 10px;">
+                        <div class="card-body tw:flex tw:justify-start tw:flex-col">
+                            <div class="card-header border-0 p-0">
+                                <h3>Business Loan</h3>
+
+                                <p>Grow your business with capital support</p>
+                            </div>
+
+                            <hr style="margin: 10px 0px">
+
+                            <span>Starting at 2%</span>
+                        </div>
+                    </div>
+
+                    <div class="card reveal reveal-delay-1 mw-100" style="border-radius: 10px;">
+                        <div class="card-body tw:flex tw:justify-start tw:flex-col">
+                            <div class="card-header border-0 p-0">
+                                <h3>Emergency Loan</h3>
+
+                                <p>Quick access for urgent financial needs.</p>
+                            </div>
+
+                            <hr style="margin: 10px 0px">
+
+                            <span>Starting at 2%</span>
+                        </div>
+                    </div>
+
+                    <div class="card reveal reveal-delay-2 mw-100" style="border-radius: 10px;">
+                        <div class="card-body tw:flex tw:justify-start tw:flex-col">
+                            <div class="card-header border-0 p-0">
+                                <h3>Education Loan</h3>
+
+                                <p>Make your dream home a reality.</p>
+                            </div>
+
+                            <hr style="margin: 10px 0px">
+
+                            <span>Starting at 2%</span>
+                        </div>
+                    </div> --}}
                 </div>
-
-                <div class="card reveal reveal-delay-1">
-                    <div class="card-icon">
-                        <i class="fa fa-hand-holding-medical"></i>
-                    </div>
-
-                    <span>Loan</span>
-
-                    <h4>Emergency Loan</h4>
-
-                    <p>For personal expenses, life events, home improvements, and everything in between.</p>
-
-                    <hr>
-
-                    <div class="starting">
-                        <p>Starting at</p>
-                        <p><b>2%</b></p>
-                        <p>/ monthly</p>
-                    </div>
-
-                    <div class="check-parent">
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Quick approval processs</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Flexible repayment terms</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>No hidden charges</p>
-                        </div>
-                    </div>
-
-                    <div class="apply">
-                        <a href="{{ route("LoginPage") }}">
-                            <p>Apply Now</p>
-                            <!-- <p>&nbsp;→</p> -->
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
-
-                    </div>
-                </div>
-
-                <div class="card reveal reveal-delay-2">
-                    <div class="card-icon">
-                        <i class="fa fa-graduation-cap"></i>
-                    </div>
-
-                    <span>Loan</span>
-
-                    <h4>Education Loan</h4>
-
-                    <p>For personal expenses, life events, home improvements, and everything in between.</p>
-
-                    <hr>
-
-                    <div class="starting">
-                        <p>Starting at</p>
-                        <p><b>2%</b></p>
-                        <p>/ monthly</p>
-                    </div>
-
-                    <div class="check-parent">
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Quick approval processs</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>Flexible repayment terms</p>
-                        </div>
-                        <div class="check-text">
-                            <div class="check-icon">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <p>No hidden charges</p>
-                        </div>
-                    </div>
-
-                    <div class="apply">
-                        <a href="{{ route("LoginPage") }}">
-                            <p>Apply Now</p>
-                            <!-- <p>&nbsp;→</p> -->
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
-
-                    </div>
-                </div>
-                {{-- <div class="card reveal reveal-delay-1 mw-100" style="border-radius: 10px;">
-                    <div class="card-body tw:flex tw:justify-start tw:flex-col">
-                        <div class="card-header border-0 p-0">
-                            <h3>Personal Loan</h3>
-
-                            <p>For Personal expenses and life events.</p>
-                        </div>
-
-                        <hr style="margin: 10px 0px">
-
-                        <span>Starting at 2%</span>
-                    </div>
-                </div>
-
-                <div class="card reveal reveal-delay-2 mw-100" style="border-radius: 10px;">
-                    <div class="card-body tw:flex tw:justify-start tw:flex-col">
-                        <div class="card-header border-0 p-0">
-                            <h3>Business Loan</h3>
-
-                            <p>Grow your business with capital support</p>
-                        </div>
-
-                        <hr style="margin: 10px 0px">
-
-                        <span>Starting at 2%</span>
-                    </div>
-                </div>
-
-                <div class="card reveal reveal-delay-1 mw-100" style="border-radius: 10px;">
-                    <div class="card-body tw:flex tw:justify-start tw:flex-col">
-                        <div class="card-header border-0 p-0">
-                            <h3>Emergency Loan</h3>
-
-                            <p>Quick access for urgent financial needs.</p>
-                        </div>
-
-                        <hr style="margin: 10px 0px">
-
-                        <span>Starting at 2%</span>
-                    </div>
-                </div>
-
-                <div class="card reveal reveal-delay-2 mw-100" style="border-radius: 10px;">
-                    <div class="card-body tw:flex tw:justify-start tw:flex-col">
-                        <div class="card-header border-0 p-0">
-                            <h3>Education Loan</h3>
-
-                            <p>Make your dream home a reality.</p>
-                        </div>
-
-                        <hr style="margin: 10px 0px">
-
-                        <span>Starting at 2%</span>
-                    </div>
-                </div> --}}
             </div>
         </section>
 
         <section id="section6">
-            <div class="header">
-                <!-- <span>What We Offer</span> -->
-                <div class="section6-tag">What We Offer</div>
+            <div class="section6-parent">
+                <div class="header">
+                    <!-- <span>What We Offer</span> -->
+                    <div class="section6-tag">What We Offer</div>
 
-                <h2>Everything a Cooperative <b>Needs to Thrive</b></h2>
-            </div>
-
-            <!-- <h3>Needs to Thrive</h3> -->
-
-            <div class="card-parent-box">
-                <div class="card-box reveal reveal-delay-1">
-                    <span>01</span>
-
-                    <i class="fa fa-users"></i>
-
-                    <h4>Member Management</h4>
-
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
+                    <h2>Everything a Cooperative <b>Needs to Thrive</b></h2>
                 </div>
 
-                <div class="card-box reveal reveal-delay-2">
-                    <span>02</span>
+                <!-- <h3>Needs to Thrive</h3> -->
 
-                    <i class="fa fa-users"></i>
+                <div class="card-parent-box">
+                    <div class="card-box reveal reveal-delay-1">
+                        <span>01</span>
 
-                    <h4>Loan & Savings</h4>
+                        <i class="fa fa-users"></i>
 
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
-                </div>
+                        <h4>Member Management</h4>
 
-                <div class="card-box reveal reveal-delay-1">
-                    <span>03</span>
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
 
-                    <i class="fa fa-users"></i>
+                    <div class="card-box reveal reveal-delay-2">
+                        <span>02</span>
 
-                    <h4>Financial Reports</h4>
+                        <i class="fa fa-users"></i>
 
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
-                </div>
+                        <h4>Loan & Savings</h4>
 
-                <div class="card-box reveal reveal-delay-2">
-                    <span>04</span>
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
 
-                    <i class="fa fa-users"></i>
+                    <div class="card-box reveal reveal-delay-1">
+                        <span>03</span>
 
-                    <h4>Financial Reports</h4>
+                        <i class="fa fa-users"></i>
 
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
-                </div>
+                        <h4>Financial Reports</h4>
 
-                <div class="card-box reveal reveal-delay-1">
-                    <span>04</span>
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
 
-                    <i class="fa fa-users"></i>
+                    <div class="card-box reveal reveal-delay-2">
+                        <span>04</span>
 
-                    <h4>Financial Reports</h4>
+                        <i class="fa fa-users"></i>
 
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
-                </div>
+                        <h4>Financial Reports</h4>
 
-                <div class="card-box reveal reveal-delay-2">
-                    <span>04</span>
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
 
-                    <i class="fa fa-users"></i>
+                    <div class="card-box reveal reveal-delay-1">
+                        <span>04</span>
 
-                    <h4>Financial Reports</h4>
+                        <i class="fa fa-users"></i>
 
-                    <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
-                        history, and automated status notifications for every member lifecycle event.</p>
+                        <h4>Financial Reports</h4>
+
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
+
+                    <div class="card-box reveal reveal-delay-2">
+                        <span>04</span>
+
+                        <i class="fa fa-users"></i>
+
+                        <h4>Financial Reports</h4>
+
+                        <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
+                            history, and automated status notifications for every member lifecycle event.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="section4">
 
-            <div class="header">
-                <!-- <span>Member Stories</span> -->
-                <div class="section4-tag">Member Stories</div>
-                <h2 class="text-left">What Our <b>Members Say</b></h2>
-                <p class="text-left">Real experiences from the people who trust us with their financial future.</p>
-            </div>
-
-            <div class="card-box-parent">
-                <div class="card-box reveal reveal-delay-1">
-                    <span>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </span>
-
-                    <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS has
-                        helped my family through so many milestones."</p>
-
-                    <div class="card-account">
-                        <div class="card-icon">
-                            <p>M</p>
-                        </div>
-                        <div class="card-text">
-                            <p>Maria Santos</p>
-                            <span>Member since 2011</span>
-                        </div>
-                    </div>
+            <div class="section4-parent">
+                <div class="header">
+                    <!-- <span>Member Stories</span> -->
+                    <div class="section4-tag">Member Stories</div>
+                    <h2 class="text-left">What Our <b>Members Say</b></h2>
+                    <p class="text-left">Real experiences from the people who trust us with their financial future.</p>
                 </div>
 
-                <div class="card-box reveal reveal-delay-2">
-                    <span>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </span>
+                <div class="card-box-parent">
+                    <div class="card-box reveal reveal-delay-1">
+                        <span>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </span>
 
-                    <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS has
-                        helped my family through so many milestones."</p>
+                        <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS
+                            has
+                            helped my family through so many milestones."</p>
 
-                    <div class="card-account">
-                        <div class="card-icon">
-                            <p>M</p>
-                        </div>
-                        <div class="card-text">
-                            <p>Maria Santos</p>
-                            <span>Member since 2011</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-box reveal reveal-delay-1">
-                    <span>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </span>
-
-                    <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS has
-                        helped my family through so many milestones."</p>
-
-                    <div class="card-account">
-                        <div class="card-icon">
-                            <p>M</p>
-                        </div>
-                        <div class="card-text">
-                            <p>Maria Santos</p>
-                            <span>Member since 2011</span>
+                        <div class="card-account">
+                            <div class="card-icon">
+                                <p>M</p>
+                            </div>
+                            <div class="card-text">
+                                <p>Maria Santos</p>
+                                <span>Member since 2011</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {{-- <div class="card-box-text">
-                    <div class="parent-active">
-                        <div class="active-members reveal-scale">
-                            <span>5,000+</span>
-                            <p>Active Members</p>
-                        </div>
 
-                        <div class="active-members reveal-scale reveal-delay-1">
-                            <span>₱500M+</span>
-                            <p>Total Savings</p>
-                        </div>
+                    <div class="card-box reveal reveal-delay-2">
+                        <span>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </span>
 
-                        <div class="active-members reveal-scale">
-                            <span>₱300M+</span>
-                            <p>Loan Disbursed</p>
-                        </div>
+                        <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS
+                            has
+                            helped my family through so many milestones."</p>
 
-                        <div class="active-members reveal-scale reveal-delay-1">
-                            <span>15 Years</span>
-                            <p>Serving Community</p>
+                        <div class="card-account">
+                            <div class="card-icon">
+                                <p>M</p>
+                            </div>
+                            <div class="card-text">
+                                <p>Maria Santos</p>
+                                <span>Member since 2011</span>
+                            </div>
                         </div>
                     </div>
-                    <p>Our cooperative has been a pillar of financial stability for thousands of families,
-                        providing
-                        accessible financial services and fostering a culture of savings and mutual aid.</p>
+
+                    <div class="card-box reveal reveal-delay-1">
+                        <span>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </span>
+
+                        <p>"The loan process was so simple and the rates are genuinely better than any bank. KPMPCATS
+                            has
+                            helped my family through so many milestones."</p>
+
+                        <div class="card-account">
+                            <div class="card-icon">
+                                <p>M</p>
+                            </div>
+                            <div class="card-text">
+                                <p>Maria Santos</p>
+                                <span>Member since 2011</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div class="card-box-text">
+                        <div class="parent-active">
+                            <div class="active-members reveal-scale">
+                                <span>5,000+</span>
+                                <p>Active Members</p>
+                            </div>
+
+                            <div class="active-members reveal-scale reveal-delay-1">
+                                <span>₱500M+</span>
+                                <p>Total Savings</p>
+                            </div>
+
+                            <div class="active-members reveal-scale">
+                                <span>₱300M+</span>
+                                <p>Loan Disbursed</p>
+                            </div>
+
+                            <div class="active-members reveal-scale reveal-delay-1">
+                                <span>15 Years</span>
+                                <p>Serving Community</p>
+                            </div>
+                        </div>
+                        <p>Our cooperative has been a pillar of financial stability for thousands of families,
+                            providing
+                            accessible financial services and fostering a culture of savings and mutual aid.</p>
+                    </div>
+                    <div class="card-box-image">
+                        <img src="images/empowering.jpg" alt="">
+                    </div> --}}
                 </div>
-                <div class="card-box-image">
-                    <img src="images/empowering.jpg" alt="">
-                </div> --}}
             </div>
         </section>
 
