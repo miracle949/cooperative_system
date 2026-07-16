@@ -49,7 +49,7 @@
     --savings: #1560c0;
     --savings-bg: #e4edff;
     --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
-    --lavender-tint: #F7F8FC;
+    /* --lavender-tint: #F7F8FC; */
     --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
 
     --ice-blue: #E8F4FD;
@@ -653,7 +653,7 @@
     margin: 12px 10px;
 }
 
-.container-fluid nav {
+.container-fluid #main-nav {
     /* background-color: var(--cream); */
     /* background-color: #ffffff;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -669,18 +669,36 @@
     background-color: #ffffff;
     /* box-shadow: var(--shadow-sm); */
     /* backdrop-filter: blur(16px); */
-    border-bottom: 1px solid var(--border);
+    /* border-bottom: 1px solid var(--border); */
     /* background: rgba(240, 244, 255, .92); */
     /* background-color: var(--semi-white); */
     /* backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow); */
     /* box-shadow: var(--shadow); */
-    position: relative;
     /* z-index: 1000;
     position: fixed; */
+    border-bottom: 1px solid var(--border);
     z-index: 1000;
     top: 0;
+    width: 100%;
+    position: relative;
+    padding: 16px 24px;
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container-fluid #dashboard-nav{
+    border-bottom: 1px solid var(--border);
+    background-color: #ffffff;
+}
+
+.container-fluid nav .nav-parent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
 }
 
@@ -1250,7 +1268,7 @@
     /* margin-left: 15px; */
 }
 
-@media only screen and (min-width: 1300px) {
+@media only screen and (min-width: 1301px) {
     .container-fluid .sidebar .sidebar-menu ul {
         height: 100%;
     }
@@ -1259,6 +1277,16 @@
         /* margin: 0 22px 0; */
         margin-bottom: 1rem;
 
+    }
+
+    .container-fluid nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container-fluid nav .nav-parent {
+        width: 1400px;
     }
 }
 
@@ -1310,6 +1338,34 @@
 
     .container-fluid .sidebar .sidebar-menu {
         padding: 15px 0 0;
+    }
+}
+
+@media only screen and (max-width: 1125px){
+    .container-fluid .nav-list {
+        display: none;
+    }
+
+    .container-fluid .nav-button {
+        display: none;
+    }
+
+    .container-fluid .nav-menu{
+        display: flex;
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+    .container-fluid .nav-list {
+        display: none;
+    }
+
+    .container-fluid .nav-button {
+        display: none;
+    }
+
+    .container-fluid .nav-menu{
+        display: flex;
     }
 }
 
