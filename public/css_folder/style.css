@@ -302,6 +302,7 @@ line-height: 25px;
     font-weight: 600;
     color: var(--teal);
     width: 450px;
+    width: 480px;
 }
 
 .main-text .slide h2 em {
@@ -746,7 +747,6 @@ line-height: 25px;
 
 .how-it-works-parent {
     padding: 10rem 2rem;
-    background-color: var(--lavender-tint);
 }
 
 .how-it-works-parent .how-it-works .how-it-works-header .how-it-card-tag {
@@ -795,7 +795,7 @@ line-height: 25px;
 .how-it-works-parent .how-it-works .how-it-works-body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    gap: 30px;
     margin-top: 4rem;
     position: relative;
 }
@@ -805,7 +805,6 @@ line-height: 25px;
     top: 50px; /* vertical center of the 100px icon box */
     left: 60px;
     right: 60px;
-    /* width: 100%; */
     height: 0;
     border-top: 2px dashed var(--blue-pale);
     z-index: 0;
@@ -816,39 +815,29 @@ line-height: 25px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
     position: relative;
     z-index: 1;
 }
 
 .how-it-works-parent .how-it-works .how-it-works-body .work-card .word-card-icon{
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
+    /* border: 1px solid black; */
     border-radius: 7px;
-    box-shadow: var(--shadow);
-}
-
-.how-it-works-parent .how-it-works .how-it-works-body .work-card .word-card-icon img{
-    width: 100px;
-    height: 100px;
-    border-radius: 7px;
-    box-shadow: var(--shadow);
 }
 
 .how-it-works-parent .how-it-works .how-it-works-body .work-card h3{
-    font-size: 19px;
-    margin: 25px 0 0;
-    font-weight: 600;
+    font-size: 20px;
+    margin: 0;
 }
 
 .how-it-works-parent .how-it-works .how-it-works-body .work-card p{
     text-align: center;
-    font-size: 14.5px;
+    font-size: 15px;
     margin: 0;
     width: 100%;
-    max-width: 350px;
-    line-height: 27px;
-    color: var(--muted);
+    max-width: 400px;
 }
 
 #section1 {
@@ -1238,7 +1227,7 @@ line-height: 25px;
     /* background-color: var(--green); */
     /* background-color: #ffffff; */
     /* background-color: var(--deep2); */
-    /* background-color: var(--lavender-tint); */
+    background-color: var(--lavender-tint);
     padding-bottom: 4rem;
     padding-top: 4rem;
     position: relative;
@@ -1930,7 +1919,7 @@ hr {
     /* background-color: var(--lavender-tint); */
     /* padding-bottom: 5rem;
     padding-top: 5rem; */
-    padding: 8rem 2rem 8rem 2rem;
+    padding: 5rem 2rem 5rem 2rem;
     /* margin-top: 4.5rem; */
     position: relative;
     overflow: hidden;
@@ -2029,54 +2018,12 @@ hr {
     height: 100%;
     max-width: 50%; */
     /* padding: 3rem; */
-    position: relative;
-
-    .how-many-years{
-        position: absolute;
-        bottom: -40px;
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        background-color: #ffffff;
-        padding: 25px 20px;
-        border-radius: 10px;
-        box-shadow: 0 18px 40px -12px rgba(19, 26, 48, .28);
-    }
-
-    .how-many-years .years-icon{
-        width: 48px;
-        height: 48px;
-        border-radius: 7px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--blue-mist);
-    }
-
-    .how-many-years .years-icon .fa{
-        font-size: 20px;
-        color: var(--blue);
-    }
-
-    .how-many-years .years-text p{
-        margin: 0;
-        font-size: 26px;
-        font-weight: 600;
-        color: var(--teal);
-        font-family: Georgia, "Times New Roman", serif;
-    }
-
-    .how-many-years .years-text span{
-        font-size: 12.5px;
-        color: var(--muted);
-    }
 }
-
 
 #section3 .section-image .border {
     width: 550px;
     height: 532px;
-    /* border: 1px solid black; */
+    border: 1px solid black;
 }
 
 #section3 .section-image img {
