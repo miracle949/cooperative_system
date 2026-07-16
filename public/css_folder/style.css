@@ -296,16 +296,16 @@ line-height: 25px;
 
 .main-text .slide h2 {
     font-size: 65px;
-    /* font-family: "Playfair Display", serif; */
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Playfair Display", serif;
+    /* font-family: Georgia, "Times New Roman", serif; */
     font-weight: 600;
     color: var(--teal);
-    width: 550px;
+    width: 450px;
 }
 
 .main-text .slide h2 em {
-    /* font-family: "Playfair Display", serif; */
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Playfair Display", serif;
+    /* font-family: Georgia, "Times New Roman", serif; */
     color: var(--accent);
     font-weight: 600;
 }
@@ -383,7 +383,7 @@ line-height: 25px;
 /* image side */
 .main-img {
     position: relative;
-    flex: 0 0 620px;
+    flex: 0 0 650px;
     height: 550px;
 }
 
@@ -2210,6 +2210,7 @@ footer {
     .carousel-track {
         width: 1200px;
         justify-content: space-evenly;
+        /* flex-direction: column-reverse; */
     }
 
     #section1 {
@@ -2228,6 +2229,12 @@ footer {
     .carousel-item img {
         width: 100%;
         height: 400px;
+    }
+}
+
+@media only screen and (max-width: 1214px){
+    .carousel-track{
+        /* flex-direction: column-reverse; */
     }
 }
 
