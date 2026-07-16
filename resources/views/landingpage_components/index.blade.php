@@ -192,16 +192,28 @@
 
                             <div class="button-group">
                                 <a href="#">
-                                    Learn More
+                                    Apply Now
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
 
                                 <a href="#">
-                                    Abous Us
+                                    See How it Works
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
+                            </div>
+
+                            <div class="member-parent">
+                                <div class="profile-parent">
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                </div>
+                                <div class="profile-text">
+                                    <p><b>12,000+</b> loans approved this year</p>
+                                </div>
                             </div>
                         </div>
 
@@ -213,16 +225,28 @@
 
                             <div class="button-group">
                                 <a href="#">
-                                    Learn More
+                                    Apply Now
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
 
                                 <a href="#">
-                                    Abous Us
+                                    See How it Works
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
+                            </div>
+
+                            <div class="member-parent">
+                                <div class="profile-parent">
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                </div>
+                                <div class="profile-text">
+                                    <p><b>12,000+</b> loans approved this year</p>
+                                </div>
                             </div>
                         </div>
 
@@ -234,38 +258,62 @@
 
                             <div class="button-group">
                                 <a href="#">
-                                    Learn More
+                                    Apply Now
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
 
                                 <a href="#">
-                                    Abous Us
+                                    See How it Works
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
+                            </div>
+
+                            <div class="member-parent">
+                                <div class="profile-parent">
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                </div>
+                                <div class="profile-text">
+                                    <p><b>12,000+</b> loans approved this year</p>
+                                </div>
                             </div>
                         </div>
 
                         <div class="slide fourth-slide">
                             <div class="slide-eye">Compliance & Governance</div>
-                            <h2>Stay <em>Compliant</em> Stay Trusted.</h2>
+                            <!-- <h2>Trusted <em>Financing</em> for Your Future.</h2> -->
+                            <h2>Making Loans <em>Simple</em> and Accessible.</h2>
                             <p>Built-in CDA compliance tools, tamper-proof audit trails, and digital
-                                member governance features ensure your cooperative operates with full transparency and
-                                accountability.</p>
+                                member governance features ensure your cooperative operates with full transparency.</p>
 
                             <div class="button-group">
                                 <a href="#">
-                                    Learn More
+                                    Apply Now
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
 
                                 <a href="#">
-                                    Abous Us
+                                    See How it Works
 
                                     <i class="fa fa-arrow-right"></i>
                                 </a>
+                            </div>
+
+                            <div class="member-parent">
+                                <div class="profile-parent">
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                </div>
+                                <div class="profile-text">
+                                    <p><b>12,000+</b> loans approved this year</p>
+                                </div>
                             </div>
                         </div>
 
@@ -282,6 +330,43 @@
                         <img src="../images/hero-4.png" class="slide-img" alt="">
                         <img src="../images/hero-5.png" class="slide-img" alt="">
                         <img src="../images/hero-6.png" class="slide-img" alt="">
+
+                        <div class="badge-parent badge-1">
+                            <div class="badge-icon">
+                                <i class="fa fa-tag"></i>
+                            </div>
+                            <div class="badge-text">
+                                <span>Loan Offer</span>
+                                <small>Pre-approved rate</small>
+                            </div>
+                        </div>
+                        <div class="badge-parent badge-2">
+                            <div class="badge-icon">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div class="badge-text">
+                                <span>Approved</span>
+                                <small>Funds released</small>
+                            </div>
+                        </div>
+                        <div class="badge-parent badge-3">
+                            <div class="badge-icon">
+                                <i class="fa fa-chart-simple"></i>
+                            </div>
+                            <div class="badge-text">
+                                <span>Credit Score</span>
+                                <small>Track your growth</small>
+                            </div>
+                        </div>
+                        <div class="badge-parent badge-4">
+                            <div class="badge-icon">
+                                <i class="fa fa-calendar-days"></i>
+                            </div>
+                            <div class="badge-text">
+                                <span>Repayment</span>
+                                <small>Auto-scheduled</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -375,22 +460,134 @@
             </div>
         </div> -->
 
-        <section class="" id="section1">
+        <section id="section3">
+            <div class="section3-parent">
+                <div class="section-image reveal reveal-delay-1">
+                    <!-- <img src="images/benefits.jpg" alt=""> -->
+                    <img src="images/about-us.jpg" alt="">
+                </div>
+                <div class="section-text reveal reveal-delay-2">
+                    <div class="header">
+                        <div class="header-tag">About us</div>
+                    </div>
+                    <!-- <h2 class="text-left">Rooted in Community, <b>Driven by Trust.</b></h2> -->
+                    <h2 class="text-left">Empowering Members. <b>Building Stronger</b> Communities.</h2>
+
+                    <div class="">
+                        <p class="text-left">For years, KPMPCATS has been committed to helping its members achieve
+                            financial
+                            stability through cooperative values, responsible lending, and community-focused services.
+                            As a
+                            trusted multipurpose cooperative, we work together to create opportunities, promote growth,
+                            and
+                            improve the lives of every member.
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 20px">
+                        <div class="card-box">
+                            <div class="card-box-body tw:p-[8px]">
+                                <div class="card-box-header">
+                                    <h3>Members Benefits</h3>
+
+                                    <p class="mw-100">As a cooperative member, you enjoy exclusive
+                                        benefits and privileges designed to support
+                                        your financial journey.</p>
+                                </div>
+                            </div>
+
+                            <div class="benefits-group">
+
+                                <div class="benefit-1">
+                                    <div class="benefit">
+                                        <div class="icon">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                        <span>Affordable and member-friendly loan services</span>
+                                    </div>
+
+                                    <div class="benefit">
+                                        <div class="icon">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                        <span>Savings and financial assistance programs</span>
+                                    </div>
+
+                                    <div class="benefit">
+                                        <div class="icon">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                        <span>Transparent and accountable cooperative management</span>
+                                    </div>
+                                </div>
+
+                                <div class="benefit-2">
+                                    <div class="benefit">
+                                        <div class="icon">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                        <span>Community-centered initiatives and member support</span>
+                                    </div>
+
+                                    <div class="benefit">
+                                        <div class="icon">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                        <span>A trusted partner for long-term financial growth</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="how-it-works-parent">
+            <div class="how-it-works">
+                <div class="how-it-works-header">
+                    <div class="how-it-card-tag">How it Works</div>
+
+                    <h2>How to <b>Simulate</b> Loans with KPMPCATS?</h2>
+                </div>
+                <div class="how-it-works-body">
+                    <div class="work-card">
+                        <div class="border">
+                            <img src="images/loanproduct.jpg" alt="">
+                        </div>
+                        <h3>Choose a Loan Product</h3>
+                        <p>Select the loan that best fits your financial needs and review its features, terms, and repayment options before applying with confidence.</p>
+                    </div>
+
+                    <div class="work-card">
+                        <div class="border">
+                            <img src="images/submit.jpg" alt="">
+                        </div>
+                        <h3>Submit Your Application</h3>
+                        <p>Complete the application form and submit the required information and documents for review, verification, and approval by the cooperative.</p>
+                    </div>
+
+                    <div class="work-card">
+                        <div class="border">
+                            <img src="images/approve.jpg" alt="">
+                        </div>
+                        <h3>Receive Approval & Funds</h3>
+                        <p>After approval, your loan will be processed and the funds will be released according to the cooperative's procedures and loan policies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <section class="" id="section1">
 
             <div class="parent-tutorial">
                 <div class="card-side">
                     <div class="card-tag">
                         What We Offer
                     </div>
-
-                    <!-- <h2 class="text-left mt-3">Tools Built for <b>Modern</b> Cooperatives</h2> -->
                     <h2 class="text-left mt-3">Get Your Loan In <b>4 Easy Steps</b></h2>
-
-                    <!-- <p class="text-left">We offer more than
-                    just financial services
-                    - we
-                    provide a supportive community
-                    dedicated to your financial well-being.</p> -->
 
                     <p class="text-left">We've simplified the loan process so you spend less time on paperwork and more
                         time
@@ -448,7 +645,7 @@
                     <video autoplay muted loop playsinline>
                         <source src="videos/mobile-steps.mp4" type="video/mp4">
                     </video>
-                    <!-- <div class="phone-frame">
+                    <div class="phone-frame">
                     <div class="phone-notch">
 
                     </div>
@@ -499,11 +696,11 @@
                             <div class="app-progress-fill"></div>
                         </div>
                     </div>
-                </div> -->
                 </div>
-            </div>
+                </div>
+            </div> -->
 
-            <!-- <div class="card-box-parent">
+        <!-- <div class="card-box-parent">
                 <div class="card-box reveal reveal-delay-1">
                     <div class="card-icon">
                         <p>01</p>
@@ -555,57 +752,57 @@
                 </div>
             </div> -->
 
-            {{-- <div class="d-flex justify-content-center align-items-center column-gap-5 flex-wrap">
+        {{-- <div class="d-flex justify-content-center align-items-center column-gap-5 flex-wrap">
 
-                <div class="card reveal reveal-delay-1 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
-                    <div class="card-body tw:pb-[1.5rem]">
+            <div class="card reveal reveal-delay-1 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
+                <div class="card-body tw:pb-[1.5rem]">
 
-                        <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
-                            style="border-radius: 20px;">
-                            <i class="fa fa-users"></i>
-                        </div>
-
-                        <h3 class="mt-4" style="font-size: 18px">Community Driven</h3>
-
-                        <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Join a community of members
-                            working together towards financial prosperity and mutual support.
-                        </p>
+                    <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
+                        style="border-radius: 20px;">
+                        <i class="fa fa-users"></i>
                     </div>
+
+                    <h3 class="mt-4" style="font-size: 18px">Community Driven</h3>
+
+                    <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Join a community of members
+                        working together towards financial prosperity and mutual support.
+                    </p>
                 </div>
+            </div>
 
-                <div class="card reveal reveal-delay-2 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
-                    <div class="card-body tw:pb-[1.5rem]">
+            <div class="card reveal reveal-delay-2 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
+                <div class="card-body tw:pb-[1.5rem]">
 
-                        <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
-                            style="border-radius: 20px;">
-                            <i class="fa fa-chart-line"></i>
-                        </div>
-
-                        <h3 class="mt-4" style="font-size: 18px">Flexible Loans</h3>
-
-                        <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Access various loan types with
-                            competitive rates designed to meet your personal and business
-                            needs.
-                        </p>
+                    <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
+                        style="border-radius: 20px;">
+                        <i class="fa fa-chart-line"></i>
                     </div>
+
+                    <h3 class="mt-4" style="font-size: 18px">Flexible Loans</h3>
+
+                    <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Access various loan types with
+                        competitive rates designed to meet your personal and business
+                        needs.
+                    </p>
                 </div>
+            </div>
 
-                <div class="card reveal reveal-delay-1 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
-                    <div class="card-body tw:pb-[1.5rem]">
+            <div class="card reveal reveal-delay-1 tw:p-[1rem] tw:mt-[2rem]" style="border-radius: 20px">
+                <div class="card-body tw:pb-[1.5rem]">
 
-                        <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
-                            style="border-radius: 20px;">
-                            <i class="fa fa-shield"></i>
-                        </div>
-
-                        <h3 class="mt-4" style="font-size: 18px">Secure Savings</h3>
-
-                        <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Build your savings with confidence
-                            through our secure and transparent cooperative system.
-                        </p>
+                    <div class="card-icon d-flex justify-content-center align-items-center p-0 border-0"
+                        style="border-radius: 20px;">
+                        <i class="fa fa-shield"></i>
                     </div>
+
+                    <h3 class="mt-4" style="font-size: 18px">Secure Savings</h3>
+
+                    <p class="tw:w-[250px] tw:text-base/8  tw:text-[14.5px] mt-3">Build your savings with confidence
+                        through our secure and transparent cooperative system.
+                    </p>
                 </div>
-            </div> --}}
+            </div>
+        </div> --}}
         </section>
 
         <section class="d-flex justify-left align-items-left flex-column pe-5 ps-5" id="products_services">
@@ -672,7 +869,8 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            <p>&nbsp;→</p>
+                            <!-- <p>&nbsp;→</p> -->
+                            <i class="fa fa-arrow-right"></i>
                         </a>
 
                     </div>
@@ -721,7 +919,8 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            <p>&nbsp;→</p>
+                            <!-- <p>&nbsp;→</p> -->
+                            <i class="fa fa-arrow-right"></i>
                         </a>
 
                     </div>
@@ -770,7 +969,8 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            <p>&nbsp;→</p>
+                            <!-- <p>&nbsp;→</p> -->
+                            <i class="fa fa-arrow-right"></i>
                         </a>
 
                     </div>
@@ -819,7 +1019,8 @@
                     <div class="apply">
                         <a href="{{ route("LoginPage") }}">
                             <p>Apply Now</p>
-                            <p>&nbsp;→</p>
+                            <!-- <p>&nbsp;→</p> -->
+                            <i class="fa fa-arrow-right"></i>
                         </a>
 
                     </div>
@@ -957,77 +1158,6 @@
 
                     <p>Comprehensive member registry with share capital tracking, membership tiers, contribution
                         history, and automated status notifications for every member lifecycle event.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="section3">
-            <div class="section-image reveal reveal-delay-1">
-                <img src="images/benefits.jpg" alt="">
-            </div>
-            <div class="section-text reveal reveal-delay-2">
-                <div class="header">
-                    <div class="header-tag">About us</div>
-                </div>
-                <h2 class="text-left">Rooted in Community, <b>Driven by Trust.</b></h2>
-
-                <div class="">
-                    <p class="text-left">For over two decades, KPMPCATS has been the financial backbone of its members —
-                        offering not just services, but a genuine partnership built on shared values and mutual growth.
-                    </p>
-                </div>
-
-                <div style="margin-top: 20px">
-                    <div class="card-box">
-                        <div class="card-box-body tw:p-[8px]">
-                            <div class="card-box-header">
-                                <h3>Members Benefits</h3>
-
-                                <p class="mw-100">As a cooperative member, you enjoy exclusive
-                                    benefits and privileges designed to support
-                                    your financial journey.</p>
-                            </div>
-                        </div>
-
-                        <div class="benefits-group">
-
-                            <div class="d-flex align-items-center column-gap-3">
-                                <div class="icon">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                                <span>Low interest rates on loans</span>
-                            </div>
-
-                            <div class="d-flex align-items-center column-gap-3">
-                                <div class="icon">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                                <span>Financial education programs</span>
-                            </div>
-
-                            <div class="d-flex align-items-center column-gap-3">
-                                <div class="icon">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                                <span>Easy online application process</span>
-                            </div>
-
-                            <div class="d-flex align-items-center column-gap-3">
-                                <div class="icon">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                                <span>Emergency loan assistance</span>
-                            </div>
-
-                            <div class="d-flex align-items-center column-gap-3">
-                                <div class="icon">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                                <span>Transparent operations</span>
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

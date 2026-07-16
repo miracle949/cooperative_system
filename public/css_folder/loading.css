@@ -750,7 +750,8 @@
     color: var(--teal);
     /* color: rgba(255, 255, 255, 0.75); */
     /* color: #ffffff; */
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
+    font-family: Georgia, "Times New Roman", serif;
     letter-spacing: .16em;
 }
 
@@ -788,6 +789,7 @@
     /* text-transform: uppercase; */
     font-weight: 600;
 }
+
 /* 
 .container-fluid nav .nav-list ul li:nth-child(1) a {
     color: var(--blue);
