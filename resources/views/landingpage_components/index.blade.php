@@ -465,6 +465,16 @@
                 <div class="section-image reveal reveal-delay-1">
                     <!-- <img src="images/benefits.jpg" alt=""> -->
                     <img src="images/about-us.jpg" alt="">
+
+                    <div class="how-many-years">
+                        <div class="years-icon">
+                            <i class="fa fa-chart-simple"></i>
+                        </div>
+                        <div class="years-text">
+                            <p>20+ yrs</p>
+                            <span>Serving members & drivers</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="section-text reveal reveal-delay-2">
                     <div class="header">
@@ -552,28 +562,29 @@
                     <h2>How to <b>Simulate</b> Loans with KPMPCATS?</h2>
                 </div>
                 <div class="how-it-works-body">
+                    <div class="how-it-line"></div>
                     <div class="work-card">
-                        <div class="border">
-                            <img src="images/loanproduct.jpg" alt="">
+                        <div class="word-card-icon">
+                            <img src="images/choose-product.jpg" alt="">
                         </div>
                         <h3>Choose a Loan Product</h3>
-                        <p>Select the loan that best fits your financial needs and review its features, terms, and repayment options before applying with confidence.</p>
+                        <p>Select the loan that best fits your financial needs and review its terms and repayment options. Compare interest rates and eligibility requirements carefully. Apply with confidence.</p>
                     </div>
 
                     <div class="work-card">
-                        <div class="border">
+                        <div class="word-card-icon">
                             <img src="images/submit.jpg" alt="">
                         </div>
                         <h3>Submit Your Application</h3>
-                        <p>Complete the application form and submit the required information and documents for review, verification, and approval by the cooperative.</p>
+                        <p>Complete the application form and submit the required documents for review. Ensure all details provided are accurate and up to date. Our team will verify your submission promptly.</p>
                     </div>
 
                     <div class="work-card">
-                        <div class="border">
-                            <img src="images/approve.jpg" alt="">
+                        <div class="word-card-icon">
+                            <img src="images/receive.jpg" alt="">
                         </div>
                         <h3>Receive Approval & Funds</h3>
-                        <p>After approval, your loan will be processed and the funds will be released according to the cooperative's procedures and loan policies.</p>
+                        <p>After approval, your loan will be processed without delay. Funds will be released through your chosen disbursement method, following the cooperative's established loan policies.</p>
                     </div>
                 </div>
             </div>
