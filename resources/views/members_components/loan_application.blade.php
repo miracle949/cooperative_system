@@ -1432,6 +1432,7 @@
             padding: 16px 18px;
             cursor: pointer;
             background: #fff;
+            /* border: 1px solid var(--border); */
         }
 
         .loan-ref-block {
@@ -1822,7 +1823,9 @@
                             <div class="card-box">
                                 <div class="card-header">
                                     <h5>All Loans</h5>
-                                    <i class="fa fa-circle-exclamation"></i>
+                                    <div class="card-icon">
+                                        <i class="fa fa-file"></i>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <p>{{ $allLoansCount ?? 0 }}</p>
@@ -1833,7 +1836,10 @@
                             <div class="card-box">
                                 <div class="card-header">
                                     <h5>Due Today</h5>
-                                    <i class="fa fa-circle-exclamation"></i>
+                                    <div class="card-icon">
+                                        {{-- <i class="fa fa-circle-exclamation"></i> --}}
+                                        <i class="fa fa-triangle-exclamation"></i>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <p>{{ $dueTodayCount }}</p>
@@ -1844,7 +1850,9 @@
                             <div class="card-box">
                                 <div class="card-header">
                                     <h5>Due This Week</h5>
-                                    <i class="fa fa-calendar"></i>
+                                    <div class="card-icon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <p>{{ $dueThisWeekCount }}</p>
@@ -1855,7 +1863,9 @@
                             <div class="card-box">
                                 <div class="card-header">
                                     <h5>Overdue</h5>
-                                    <i class="fa fa-triangle-exclamation"></i>
+                                    <div class="card-icon">
+                                        <i class="fa fa-clock"></i>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <p>{{ $overdueCount }}</p>
