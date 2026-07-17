@@ -224,7 +224,7 @@
     /* background-color: #1A1E21; */
     background-color: #ffffff;
     /* background-color: var(--white); */
-    box-shadow: var(--shadow);
+    /* box-shadow: var(--shadow); */
     scrollbar-width: none;
 }
 
@@ -1307,7 +1307,7 @@
         width: 80px;
     }
 
-    .container-fluid .sidebar .sidebar-menu .menu {
+    .container-fluid .sidebar .sidebar-menu ul .menu {
         display: none;
     }
 
@@ -1324,6 +1324,10 @@
     .container-fluid .sidebar .sidebar-logo .side-text {
         overflow: hidden;
         opacity: 0;
+        display: none;
+    }
+
+    .container-fluid .sidebar .account .first-name{
         display: none;
     }
 

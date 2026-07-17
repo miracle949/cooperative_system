@@ -43,7 +43,9 @@
 
                     <h4>Filter transaction:</h4> --}}
 
-                    <h3>Loan Repayments <span>- history & status</span></h3>
+                    <div class="header-main">
+                        <h3>Loan Repayments</h3>
+                    </div>
 
                     <div class="parent-header">
                         <div class="filter-parent">
@@ -89,30 +91,12 @@
                             <div class="loan-hero loan-record" data-reference="{{ $loan->reference_no }}"
                                 data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
                                 <div class="left-hero">
-                                    <span>Active Loan</span>
+                                    <div class="status">Active Loan</div>
                                     <h3>{{ $loan->display_type }}</h3>
-                                    <p style="color: #808080; font-weight: 500; margin-top: 0.3rem;">
-                                        {{ $loan->reference_no }} · Active
+                                    <p>
+                                        <b>{{ $loan->reference_no }}</b> · Active
                                         {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}
                                     </p>
-
-                                    <div class="parent-progress">
-                                        <div class="progress-header">
-                                            <p>Repayment Progress</p>
-                                            <span>{{ $lendingStatus->payments_made ?? 0 }} of
-                                                {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="progress-sub">
-                                                <div class="progress" style="width: {{ $progressPercent }}%;"></div>
-                                            </div>
-                                        </div>
-                                        <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
-                                            ₱{{ number_format($loan->lending_amount, 0) }} principal</p>
-                                    </div>
-                                </div>
-
-                                <div class="right-hero">
                                     <div class="alh-parent">
                                         <div class="alh-stat">
                                             <span>Monthly Due</span>
@@ -140,30 +124,62 @@
                                             <p>Remaining</p>
                                         </div>
                                     </div>
+
+                                    <div class="payment-button">
+                                        <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
+                                            <i class="fa fa-peso-sign"></i>
+
+                                            <span>Make a Payment</span>
+                                        </button>
+                                        <a href="#">View Full Schedule</a>
+                                    </div>
+                                </div>
+
+                                <div class="right-hero">
+                                    <div class="parent-progress">
+                                        <div class="progress-header">
+                                            <p>Repayment Progress</p>
+                                            <span>{{ $lendingStatus->payments_made ?? 0 }} of
+                                                {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
+                                        </div>
+                                        <div class="progress-body">
+                                            <div class="progress-sub">
+                                                <div class="progress" style="width: {{ $progressPercent }}%;"></div>
+                                            </div>
+                                        </div>
+                                        <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
+                                            ₱{{ number_format($loan->lending_amount, 0) }} principal</p>
+                                    </div>
+
                                 </div>
                             </div>
 
                             {{-- LOAN SETTLEMENT --}}
-                            <div class="payment-parent loan-record" data-reference="{{ $loan->reference_no }}"
-                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
-                                <div class="payment-text">
-                                    <h5>Loan Settlement</h5>
-                                    <p>Pay the entire remaining balance</p>
-                                    <span>Remaining: <b>₱{{ number_format($fullBalanceRemaining, 2) }}</b> ·
-                                        {{ $monthsRemaining }} months remaining</span>
-                                </div>
-                                <div class="payment-button">
-                                    <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
-                                        Make a Payment
-                                    </button>
-                                </div>
-                            </div>
+                            <!-- <div class="payment-parent loan-record" data-reference="{{ $loan->reference_no }}"
+                                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
+                                                <div class="payment-text">
+                                                    <h5>Loan Settlement</h5>
+                                                    <p>Pay the entire remaining balance</p>
+                                                    <span>Remaining: <b>₱{{ number_format($fullBalanceRemaining, 2) }}</b> ·
+                                                        {{ $monthsRemaining }} months remaining</span>
+                                                </div>
+                                                <div class="payment-button">
+                                                    <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
+                                                        Make a Payment
+                                                    </button>
+                                                </div>
+                                            </div> -->
 
                             {{-- 3 SUMMARY BOXES --}}
                             <div class="loan-parent-box loan-record" data-reference="{{ $loan->reference_no }}"
                                 data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
                                 <div class="loan-box">
-                                    <h5>Principal Amount</h5>
+                                    <div class="loan-header">
+                                        <h5>Principal Amount</h5>
+                                        <div class="loan-icon">
+
+                                        </div>
+                                    </div>
                                     <p>₱{{ number_format($loan->lending_amount, 2) }}</p>
                                     <span>Applied {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</span>
                                 </div>
@@ -178,6 +194,10 @@
                                     <h5>Total Payable</h5>
                                     <p>₱{{ number_format($loan->total_payment ?? 0, 2) }}</p>
                                     <span>Applied {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</span>
+                                </div>
+
+                                <div class="loan-box">
+                                    <h5>Remaining Balance</h5>
                                 </div>
                             </div>
 

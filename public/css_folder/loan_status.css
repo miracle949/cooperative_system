@@ -208,22 +208,24 @@ button {
     padding: 2rem 1.5rem;
     height: calc(100vh - 70px);
     overflow: auto;
-    background-color: var(--bg);
+    background-color: var(--lavender-tint);
     /* background-color: #ffffff; */
 }
 
-.container-fluid main .parent-main h3 {
-    margin: 0;
-    font-size: 20px;
-    color: var(--ink);
+.container-fluid main .parent-main .header-main h3 {
+    /* margin: 15px 0 0; */
+    font-size: 26px;
+    /* color: var(--ink); */
+    /* color: #ffffff; */
+    color: var(--teal);
     font-weight: 600;
+    font-family: Georgia, "Times New Roman", serif;
 }
 
-.container-fluid main .parent-main h3 span {
+/* .container-fluid main .parent-main h3 span {
     font-size: 13.5px;
     font-weight: normal;
-    color: #808080;
-}
+} */
 
 .container-fluid main .parent-main p {
     margin: 0;
@@ -321,7 +323,7 @@ button {
 
 .container-fluid main .parent-main .loan-hero {
     /* padding: 2rem; */
-    padding: 28px 30px;
+    padding: 30px 32px;
     background-color: var(--teal);
     /* background-color: #fafafa; */
     /* background-color: #ffffff; */
@@ -529,8 +531,10 @@ div.status-alert-text {
 }
 
 .container-fluid main .parent-main .schedule-charges .schedule-parent .schedule-body .pay-item .item-amount p:nth-child(2) {
-    background: rgba(30, 122, 78, .1);
-    color: #0f6e56;
+    /* background: rgba(30, 122, 78, .1); */
+    background-color: var(--blue-mist);
+    /* color: #0f6e56; */
+    color: var(--blue);
     padding: 6px 10px;
     border-radius: 28px;
 }
@@ -569,7 +573,7 @@ div.status-alert-text {
 }
 
 .container-fluid main .parent-main .loan-history .loan-body {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .container-fluid main .parent-main .loan-history .loan-body .parent-table table {
@@ -579,23 +583,23 @@ div.status-alert-text {
 .container-fluid main .parent-main .loan-history .loan-body .parent-table table thead tr th {
     font-size: 13.5px;
     color: var(--teal);
-    text-align: center;
+    text-align: left;
 }
 
 .container-fluid main .parent-main .loan-history .loan-body .parent-table table tbody tr td {
     font-size: 13.5px;
     color: var(--teal);
-    text-align: center;
+    text-align: left;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body{
+.container-fluid main .parent-main .charges-parent .charges-body {
     margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .pay-item{
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -604,13 +608,13 @@ div.status-alert-text {
     padding: 0 0 10px;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item{
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon{
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon {
     width: 30px;
     height: 30px;
     background-color: var(--blue);
@@ -620,11 +624,11 @@ div.status-alert-text {
     align-items: center;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon .fa{
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item .icon .fa {
     color: #ffffff;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .total-charges{
+.container-fluid main .parent-main .charges-parent .charges-body .total-charges {
     font-size: 13.5px;
     display: flex;
     justify-content: space-between;
@@ -632,11 +636,11 @@ div.status-alert-text {
     font-weight: 500;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .total-charges p{
+.container-fluid main .parent-main .charges-parent .charges-body .total-charges p {
     font-weight: 500;
 }
 
-.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item p{
+.container-fluid main .parent-main .charges-parent .charges-body .pay-item .item p {
     color: var(--muted);
 }
 
@@ -677,16 +681,48 @@ div.status-alert-text {
     width: 100%;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero span:nth-child(1) {
+.container-fluid main .parent-main .loan-hero .left-hero .status {
     /* color: var(--blue); */
-    color: #ffffff;
+    color: var(--blue-light);
     text-transform: uppercase;
     font-weight: 600;
-    letter-spacing: 2.5px;
-    font-size: 10px;
+    background: rgba(79, 127, 250, .18);
+    border: 1px solid rgba(149, 179, 252, .35);
+    /* letter-spacing: 2.5px; */
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    letter-spacing: .4px;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero h3 {
+.container-fluid main .parent-main .loan-hero .left-hero .status::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--blue-light);
+    box-shadow: 0 8px 22px rgba(79, 127, 250, .4);
+}
+
+.container-fluid main .parent-main .loan-hero .left-hero p {
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 5px 0 0;
+}
+
+.container-fluid main .parent-main .loan-hero .left-hero p b {
+    color: var(--blue-light);
+    font-weight: 500;
+}
+
+.container-fluid main .parent-main .loan-hero .right-hero {
+    width: 100%;
+}
+
+.container-fluid main .parent-main .loan-hero .right-hero h3 {
     color: #ffffff;
     /* margin-top: 0.8rem; */
     margin-top: 0.5rem;
@@ -695,49 +731,49 @@ div.status-alert-text {
     font-size: 20px;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero p {
+.container-fluid main .parent-main .loan-hero .right-hero p {
     font-size: 13.5px;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress {
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-header {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-header p {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-header p {
     color: #ffffff99;
-    font-size: 11px;
+    font-size: 13.5px;
     font-weight: 600;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-header span {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-header span {
     color: #ffffff;
-    font-size: 11px;
+    font-size: 13.5px;
     font-weight: 600;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress p {
-    font-size: 10.5px;
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress p {
+    font-size: 12.5px;
     color: #ffffff66;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-body .progress-sub {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-body .progress-sub {
     /* padding: 0.3rem; */
     position: relative;
-    padding: 0.3rem;
+    padding: 0.5rem;
     background-color: #ffffff;
     border-radius: 28px;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .parent-progress .progress-body .progress-sub .progress {
+.container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-body .progress-sub .progress {
     position: absolute;
     /* padding: 0.3rem; */
     width: 20%;
@@ -749,7 +785,7 @@ div.status-alert-text {
     z-index: 1;
 }
 
-.container-fluid main .parent-main .loan-hero .right-hero {
+.container-fluid main .parent-main .loan-hero .left-hero {
     /* width: 90%; */
     width: 100%;
     /* display: flex;
@@ -757,13 +793,22 @@ div.status-alert-text {
     gap: 1rem; */
 }
 
-.container-fluid main .parent-main .loan-hero .right-hero .alh-parent {
-    display: flex;
-    justify-content: end;
-    gap: 1rem;
+.container-fluid main .parent-main .loan-hero .left-hero h3 {
+    margin: 20px 0 0;
+    font-size: 30px;
+    font-weight: 600;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #ffffff;
 }
 
-.container-fluid main .parent-main .payment-parent{
+.container-fluid main .parent-main .loan-hero .left-hero .alh-parent {
+    display: flex;
+    justify-content: start;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.container-fluid main .parent-main .payment-parent {
     margin-top: 2rem;
     background-color: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -775,64 +820,89 @@ div.status-alert-text {
     align-items: center;
 }
 
-.container-fluid main .parent-main .payment-parent .payment-text{
+.container-fluid main .parent-main .payment-parent .payment-text {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.container-fluid main .parent-main .payment-parent .payment-text h5{
+.container-fluid main .parent-main .payment-parent .payment-text h5 {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 12px;
     /* color: var(--teal); */
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text h5::before {
+    content: '';
+    width: 10px;
+    height: 1px;
+    border-radius: 50%;
+    background: var(--blue);
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text p {
+    font-size: 16.5px;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text span {
+    font-size: 13.5px;
     color: var(--muted);
+}
+
+.container-fluid main .parent-main .payment-parent .payment-text span b {
+    color: var(--teal);
+}
+
+.container-fluid main .payment-button {
+    margin: 20px 0 0;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.container-fluid main .parent-main .payment-parent .payment-text h5::before{
-    content: '';
-    width: 10px;
-    height: 1px;
-    border-radius: 50%;
-    background: var(--muted);
-}
-
-.container-fluid main .parent-main .payment-parent .payment-text p{
-    font-size: 16.5px;
-    font-weight: 600;
-}
-
-.container-fluid main .parent-main .payment-parent .payment-text span{
+.container-fluid main .payment-button button {
     font-size: 13.5px;
-    color: var(--muted);
-}
-
-.container-fluid main .parent-main .payment-parent .payment-text span b{
-    color: var(--teal);
-}
-
-.container-fluid main .parent-main .payment-parent .payment-button button{
-    font-size: 14.5px;
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: 10px;
     background-color: var(--blue);
     color: #ffffff;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.container-fluid main .payment-button a {
+    font-size: 13.5px;
+    text-decoration: none;
+    /* border: 1px solid #ffffff; */
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: rgba(255, 255, 255, .08);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
 .alh-stat {
-    background: rgba(255, 255, 255, .07);
+    /* background: rgba(255, 255, 255, .07);
     border: 1px solid rgba(255, 255, 255, .1);
     border-radius: 12px;
     height: 100%;
-    padding: 14px 18px;
-    text-align: center;
+    padding: 14px 18px; */
+    text-align: start;
     /* padding: 0.5rem; */
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    /* gap: 0.4rem; */
     /* min-width: 100px; */
     /* width: calc(100% / 2); */
 }
@@ -851,8 +921,8 @@ div.status-alert-text {
 }
 
 .alh-stat h5 {
-    font-size: 16px;
-    margin: 0;
+    font-size: 20px;
+    margin: 5px 0 0;
     color: #ffffff;
     font-weight: 600;
 }

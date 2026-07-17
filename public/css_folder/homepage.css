@@ -2122,9 +2122,9 @@
 
 @media only screen and (max-width: 1170px) {
     .container-fluid main .card-parent {
-        padding: 2rem 3rem 3rem 3rem;
+        /* padding: 2rem 3rem 3rem 3rem;
         margin-top: 0;
-        gap: 3rem;
+        gap: 3rem; */
     }
 
     .container-fluid main .card-box {

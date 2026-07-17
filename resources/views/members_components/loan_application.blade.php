@@ -2055,9 +2055,11 @@
                                     </div>
 
                                     <div class="parent-pagination">
-                                        <p>Showing <span>{{ count($allLoans ?? []) }}</span> of
+                                        <p>Showing <span id="all-loans-list-shown">{{ count($allLoans ?? []) }}</span>
+                                            of
                                             <span>{{ $allLoansCount ?? 0 }}</span> applications
                                         </p>
+                                        <div class="pg-controls" id="all-loans-list-pg"></div>
                                     </div>
                                 </div>
                             </div>
@@ -3659,6 +3661,101 @@
                 }
             }
         }
+    </script>
+
+    <script>
+        const PAGE_SIZE = 10;
+        const pgState = {}; // { listId: currentPage }
+
+        function toggleLoanCard(rowEl) {
+            const card = rowEl.closest('.loan-card');
+            if (!card) return;
+            card.classList.toggle('open');
+        }
+
+        function getFilteredCards(listId) {
+            const list = document.getElementById(listId);
+            if (!list) return [];
+            return Array.from(list.querySelectorAll('.loan-card'))
+                .filter(card => card.dataset.filteredOut !== 'true');
+        }
+
+        function paginateList(listId) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+            const cards = getFilteredCards(listId);
+            const totalPages = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+            let page = pgState[listId] || 1;
+            if (page > totalPages) page = totalPages;
+            pgState[listId] = page;
+
+            cards.forEach((card, i) => {
+                const onPage = Math.floor(i / PAGE_SIZE) + 1 === page;
+                card.style.display = onPage ? '' : 'none';
+            });
+
+            renderPaginationControls(listId, page, totalPages, cards.length);
+        }
+
+        function renderPaginationControls(listId, page, totalPages, total) {
+            const container = document.getElementById(listId + '-pg');
+            const shownEl = document.getElementById(listId + '-shown');
+            if (shownEl) {
+                const shownCount = total === 0 ? 0 : Math.min(PAGE_SIZE, total - (page - 1) * PAGE_SIZE);
+                shownEl.textContent = shownCount;
+            }
+            if (!container) return;
+            container.innerHTML = '';
+            if (totalPages <= 1) return; // no controls needed for a single page
+
+            const makeBtn = (label, targetPage, opts = {}) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pg-btn' + (opts.active ? ' active' : '');
+                btn.textContent = label;
+                btn.disabled = !!opts.disabled;
+                btn.onclick = () => { pgState[listId] = targetPage; paginateList(listId); };
+                return btn;
+            };
+
+            container.appendChild(makeBtn('‹', page - 1, { disabled: page === 1 }));
+
+            const addEllipsis = () => {
+                const span = document.createElement('span');
+                span.className = 'pg-ellipsis';
+                span.textContent = '…';
+                container.appendChild(span);
+            };
+
+            const pages = new Set([1, totalPages, page, page - 1, page + 1]);
+            let prev = 0;
+            Array.from(pages).filter(p => p >= 1 && p <= totalPages).sort((a, b) => a - b).forEach(p => {
+                if (prev && p - prev > 1) addEllipsis();
+                container.appendChild(makeBtn(String(p), p, { active: p === page }));
+                prev = p;
+            });
+
+            container.appendChild(makeBtn('›', page + 1, { disabled: page === totalPages }));
+        }
+
+        function filterCards(listId, query) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+            const q = query.toLowerCase().trim();
+            list.querySelectorAll('.loan-card').forEach(card => {
+                const matches = (q === '' || card.textContent.toLowerCase().includes(q));
+                card.dataset.filteredOut = matches ? 'false' : 'true';
+            });
+            pgState[listId] = 1; // reset to first page on new search
+            paginateList(listId);
+        }
+
+        // Initialize pagination for all four lists once the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            ['all-loans-list', 'due-today-list', 'due-week-list', 'overdue-list'].forEach(id => {
+                if (document.getElementById(id)) paginateList(id);
+            });
+        });
     </script>
 
 </body>
