@@ -204,6 +204,14 @@ button {
     padding-bottom: 7rem; */
 }
 
+.container-fluid .rightbar.expanded {
+    /* width: calc(100% - 100px);
+    margin-left: 100px;  */
+    width: calc(100% - 80px);
+    margin-left: 80px;
+    z-index: 1;
+}
+
 .container-fluid main .parent-main {
     padding: 2rem 1.5rem;
     height: calc(100vh - 70px);
@@ -214,12 +222,12 @@ button {
 
 .container-fluid main .parent-main .header-main h3 {
     /* margin: 15px 0 0; */
-    font-size: 26px;
+    font-size: 20px;
     /* color: var(--ink); */
     /* color: #ffffff; */
     color: var(--teal);
     font-weight: 600;
-    font-family: Georgia, "Times New Roman", serif;
+    /* font-family: Georgia, "Times New Roman", serif; */
 }
 
 /* .container-fluid main .parent-main h3 span {
@@ -324,6 +332,7 @@ button {
 .container-fluid main .parent-main .loan-hero {
     /* padding: 2rem; */
     padding: 30px 32px;
+    /* padding: 25px 25px; */
     background-color: var(--teal);
     /* background-color: #fafafa; */
     /* background-color: #ffffff; */
@@ -391,43 +400,118 @@ div.status-alert-text {
 
 .container-fluid main .parent-main .loan-parent-box {
     margin-top: 2rem;
-    display: flex;
+    /* display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 1rem; */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
 }
 
 .container-fluid main .parent-main .loan-parent-box .loan-box {
     background-color: #ffffff;
     padding: 18px 20px;
-    width: calc(100% / 3);
+    /* width: calc(100% / 3); */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--border);
+    border-radius: 10px;
+    /* display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    gap: 0.6rem; */
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box .loan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box .loan-header h5 {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+    /* text-transform: uppercase; */
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box .loan-header .loan-icon {
+    width: 32px;
+    height: 32px;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    gap: 0.6rem;
 }
 
-.container-fluid main .parent-main .loan-parent-box .loan-box h5 {
-    margin: 0;
-    font-size: 13.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    font-weight: 600;
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(1) .loan-header .loan-icon {
+    background-color: var(--blue-mist);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(1) .loan-header .loan-icon .fa {
+    color: var(--blue);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(2) .loan-header .loan-icon {
+    background-color: var(--gold-pale);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(2) .loan-header .loan-icon .fa {
+    color: var(--gold);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(3) .loan-header .loan-icon {
+    background: var(--mint-pale);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(3) .loan-header .loan-icon .fa {
+    color: var(--mint);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(4) .loan-header .loan-icon {
+    background: var(--coral-pale);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(4) .loan-header .loan-icon .fa {
+    color: var(--coral);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box .loan-header .loan-icon .fa {
+    font-size: 15px;
 }
 
 .container-fluid main .parent-main .loan-parent-box .loan-box p {
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 600;
     color: var(--teal);
+    margin: 10px 0 0;
 }
 
+
 .container-fluid main .parent-main .loan-parent-box .loan-box span {
-    font-size: 13.5px;
+    font-size: 12.5px;
     color: var(--muted);
+    margin: 4px 0 0;
+    font-weight: 600;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(1) span{
+    color: var(--blue);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(2) span{
+    color: #a5710f;
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(3) span{
+    color: var(--mint);
+}
+
+.container-fluid main .parent-main .loan-parent-box .loan-box:nth-child(4) span{
+    color: var(--coral);
 }
 
 .container-fluid main .parent-main .schedule-charges {
@@ -678,7 +762,11 @@ div.status-alert-text {
 } */
 
 .container-fluid main .parent-main .loan-hero .left-hero {
-    width: 100%;
+    /* width: 100%; */
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .container-fluid main .parent-main .loan-hero .left-hero .status {
@@ -733,10 +821,11 @@ div.status-alert-text {
 
 .container-fluid main .parent-main .loan-hero .right-hero p {
     font-size: 13.5px;
+    margin: 3px 0 0;
 }
 
 .container-fluid main .parent-main .loan-hero .right-hero .parent-progress {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -750,25 +839,27 @@ div.status-alert-text {
 
 .container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-header p {
     color: #ffffff99;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 600;
 }
 
 .container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-header span {
     color: #ffffff;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 600;
 }
 
 .container-fluid main .parent-main .loan-hero .right-hero .parent-progress p {
     font-size: 12.5px;
     color: #ffffff66;
+    text-align: end;
 }
 
 .container-fluid main .parent-main .loan-hero .right-hero .parent-progress .progress-body .progress-sub {
     /* padding: 0.3rem; */
     position: relative;
-    padding: 0.5rem;
+    height: 14px;
+    /* padding: 0.5rem; */
     background-color: #ffffff;
     border-radius: 28px;
 }
@@ -785,27 +876,30 @@ div.status-alert-text {
     z-index: 1;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero {
+.container-fluid main .parent-main .loan-hero .right-hero {
     /* width: 90%; */
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     /* display: flex;
     justify-content: end;
     gap: 1rem; */
 }
 
 .container-fluid main .parent-main .loan-hero .left-hero h3 {
-    margin: 20px 0 0;
+    margin: 15px 0 0;
     font-size: 30px;
     font-weight: 600;
     font-family: Georgia, "Times New Roman", serif;
     color: #ffffff;
 }
 
-.container-fluid main .parent-main .loan-hero .left-hero .alh-parent {
+.container-fluid main .parent-main .loan-hero .right-hero .alh-parent {
     display: flex;
-    justify-content: start;
+    justify-content: end;
     gap: 1rem;
-    margin-top: 1.5rem;
+    /* margin-top: 1.5rem; */
 }
 
 .container-fluid main .parent-main .payment-parent {
@@ -862,8 +956,9 @@ div.status-alert-text {
 }
 
 .container-fluid main .payment-button {
-    margin: 20px 0 0;
+    /* margin: 20px 0 0; */
     display: flex;
+    justify-content: start;
     align-items: center;
     gap: 12px;
 }
@@ -893,11 +988,11 @@ div.status-alert-text {
 }
 
 .alh-stat {
-    /* background: rgba(255, 255, 255, .07);
+    background: rgba(255, 255, 255, .07);
     border: 1px solid rgba(255, 255, 255, .1);
     border-radius: 12px;
     height: 100%;
-    padding: 14px 18px; */
+    padding: 14px 18px;
     text-align: start;
     /* padding: 0.5rem; */
     display: flex;
@@ -921,8 +1016,8 @@ div.status-alert-text {
 }
 
 .alh-stat h5 {
-    font-size: 20px;
-    margin: 5px 0 0;
+    font-size: 18px;
+    margin: 6px 0 0;
     color: #ffffff;
     font-weight: 600;
 }
@@ -1419,4 +1514,11 @@ div.status-alert-text {
 /* ----- Content slide up inside success modal ----- */
 .success-content-animate {
     animation: successSlideUp 0.4s ease 0.3s both;
+}
+
+@media only screen and (max-width: 1200px) {
+    .container-fluid .rightbar {
+        width: calc(100% - 80px);
+        margin-left: 80px;
+    }
 }

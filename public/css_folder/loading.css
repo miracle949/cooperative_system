@@ -326,7 +326,8 @@
     /* color: #1A1A1A; */
     color: var(--deep2);
     /* color: #ffffff; */
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
+    font-family: Georgia, "Times New Roman", serif;
     letter-spacing: .16em;
     width: 100%;
 }
@@ -1281,7 +1282,7 @@
 
     }
 
-    .container-fluid nav {
+    .container-fluid #main-nav {
         display: flex;
         justify-content: center;
         align-items: center;
