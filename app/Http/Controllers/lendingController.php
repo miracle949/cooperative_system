@@ -72,11 +72,20 @@ class lendingController extends Controller
         )->count();
 
         // All loans (any status) for the table
-        $allLoans = DB::table('lending_program_tbls')
-            ->where('user_id', $memberId)
-            ->orderBy('created_at', 'desc')
+        $allLoans = DB::table('lending_program_tbls as l')
+            ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'l.id')
+            ->where('l.user_id', $memberId)
+            ->orderBy('l.created_at', 'desc')
+            ->select(
+                'l.*',
+                's.due_date',
+                's.remaining_balance',
+                's.total_paid',
+                's.payments_made',
+                's.total_payments'
+            )
             ->get()
-            ->map(function ($loan) {
+            ->map(function ($loan) use ($today, $weekEnd) {
                 $typeMap = [
                     'Personal Lending' => 'Personal Loan',
                     'Emergency Lending' => 'Emergency Loan',
@@ -84,6 +93,33 @@ class lendingController extends Controller
                     'Education Lending' => 'Education Loan',
                 ];
                 $loan->lending_type = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+
+                $totalPayments = (int) ($loan->total_payments ?? 0);
+                $paymentsMade = (int) ($loan->payments_made ?? 0);
+
+                $loan->total_payments = $totalPayments;
+                $loan->payments_made = $paymentsMade;
+                $loan->progress_percent = $totalPayments > 0
+                    ? min(100, round(($paymentsMade / $totalPayments) * 100))
+                    : 0;
+
+                // Per-installment amount
+                $loan->monthly_payment = $totalPayments > 0
+                    ? round((float) ($loan->total_payment ?? $loan->lending_amount) / $totalPayments, 2)
+                    : 0;
+
+                // Due tag (today / week / overdue) — only for active balances
+                $loan->due_category = null;
+                if ($loan->status === 'Approved' && $loan->due_date && ($loan->remaining_balance ?? 0) > 0) {
+                    if ($loan->due_date === $today) {
+                        $loan->due_category = 'today';
+                    } elseif ($loan->due_date > $today && $loan->due_date <= $weekEnd) {
+                        $loan->due_category = 'week';
+                    } elseif ($loan->due_date < $today) {
+                        $loan->due_category = 'overdue';
+                    }
+                }
+
                 return $loan;
             });
 
@@ -433,6 +469,7 @@ class lendingController extends Controller
             'lending_id' => 'required|exists:lending_program_tbls,id',
             'amount_paid' => 'required|numeric|min:1',
             'payment_method' => 'required|string',
+            'payment_type' => 'nullable|in:monthly,full',
         ]);
 
         lending_repayments_tbl::create([
@@ -442,6 +479,7 @@ class lendingController extends Controller
             'amount_paid' => $request->amount_paid,
             'payment_date' => now()->format('Y-m-d'),
             'payment_method' => $request->payment_method,
+            'payment_type' => $request->payment_type ?? 'monthly',   // ← add this
             'reference_no' => $request->reference_no ?: 'RCP-' . now()->format('YmdHis'),
             'notes' => $request->notes,
             'recorded_by' => null,

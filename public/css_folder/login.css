@@ -150,7 +150,7 @@ div.container-fluid {
    LEFT PANEL — form-image (fixed, no scroll)
 ══════════════════════════════════════ */
 .container-fluid .form-image {
-    z-index: 999;
+    /* z-index: 999; */
     display: flex;
     justify-content: start;
     align-items: center;
@@ -166,21 +166,22 @@ div.container-fluid {
     /* width: 440px;
     min-width: 440px; */
     height: 100vh;
+    padding: 1.5rem;
     /* padding: 2rem 3.5rem; */
     /* flex-shrink: 0; */
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
+    background-color: #ffffff;
 }
 
-.container-fluid .form-image::before {
+/* .container-fluid .form-image::before {
     content: '';
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
-    /* adjust darkness: 0.3 = light, 0.6 = very dark */
     z-index: 1;
     pointer-events: none;
-}
+} */
 
 .container-fluid .form-image video {
     position: absolute;
@@ -218,9 +219,9 @@ div.container-fluid {
     /* background:
         linear-gradient(135deg, rgba(30, 42, 74, 0.45) 0%, rgba(30, 42, 74, 0.30) 100%),
         rgba(12, 17, 30, 0.6); */
-    background:
+    /* background:
         linear-gradient(135deg, rgba(30, 42, 74, 0.25) 0%, rgba(30, 42, 74, 0.15) 100%),
-        rgba(12, 17, 30, 0.6);
+        rgba(12, 17, 30, 0.6); */
     /* background:
         linear-gradient(135deg, rgba(30, 42, 74, 0.05) 0%, rgba(30, 42, 74, 0.02) 100%),
         rgba(12, 17, 30, 0.6); */
@@ -312,7 +313,7 @@ div.container-fluid {
     color: #fff;
 } */
 
-.form-sub-image {
+/* .form-sub-image {
     position: absolute;
     inset: 0;
     z-index: 2;
@@ -321,6 +322,13 @@ div.container-fluid {
     justify-content: flex-end;
     padding: 2.5rem 2.5rem 3rem;
     color: #fff;
+} */
+
+.form-sub-image{
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
 }
 
 .form-sub-tag {
@@ -383,7 +391,8 @@ div.container-fluid {
     font-size: 16px;
     font-weight: 700;
     letter-spacing: .16em;
-    font-family: "Playfair Display", serif;
+    /* font-family: "Playfair Display", serif; */
+    font-family: Georgia, "Times New Roman", serif;
 }
 
 .form-image-logo-text .logo-sub {
@@ -408,12 +417,14 @@ div.container-fluid {
     color: #ffffff;
     margin: 0 0 0.75rem 0;
     line-height: 1.1;
-    width: 400px;
-    font-family: "Playfair Display", serif;
+    width: 500px;
+    /* font-family: "Playfair Display", serif; */
+    font-family: Georgia, "Times New Roman", serif;
 }
 
 .form-image-body h2 b {
-    font-family: "Playfair Display", serif;
+    /* font-family: "Playfair Display", serif; */
+    font-family: Georgia, "Times New Roman", serif;
     font-style: italic;
     color: var(--blue);
     font-weight: 600;
@@ -528,13 +539,17 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 16rem 2rem 2rem;
-    background-color: #F5F6FA;
+    /* padding: 10rem 1rem 2rem; */
+    padding: 3rem 0rem 1rem;
+    /* padding: 2rem 1rem; */
+    /* background-color: #F5F6FA; */
+    /* background-color: var(--lavender-tint); */
+    background-color: #ffffff;
     /* background-color: var(--ice); */
     /* background-color: var(--ice); */
     /* background-color: var(--cyan); */
     /* padding: 11rem 2rem 2rem; */
-    scrollbar-width: none;
+    /* scrollbar-width: none; */
     /* background-color: #F7F9F8; */
     /* background: #f0f6f8; */
     /* background-color: var(--bg); */
@@ -546,27 +561,27 @@ div.container-fluid {
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
 }
 
-.container-fluid .form-box-parent::-webkit-scrollbar {
+/* .container-fluid .form-box-parent::-webkit-scrollbar {
     width: 5px;
 }
 
 .container-fluid .form-box-parent::-webkit-scrollbar-track {
     background: transparent;
-}
-
+} */
+/* 
 .container-fluid .form-box-parent::-webkit-scrollbar-thumb {
     background: rgba(245, 166, 35, .3);
     border-radius: 10px;
-}
+} */
 
 
 .container-fluid .form-parent {
     border-radius: 24px;
     z-index: 10;
-    width: 490px;
+    width: 550px;
     /* width: 530px; */
     /* padding: 52px 48px 48px; */
-    padding: 48px 48px;
+    /* padding: 48px 48px; */
     position: relative;
     overflow: hidden;
     animation: slideIn 0.4s ease both;
@@ -574,10 +589,10 @@ div.container-fluid {
     /* background: rgba(255, 255, 255, .07);
     border: 1px solid rgba(255, 255, 255, .14); */
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
-    border: 1.5px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* border: 1.5px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     /* box-shadow: var(--shadow); */
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
     /* backdrop-filter: blur(28px) saturate(160%);
     -webkit-backdrop-filter: blur(28px) saturate(160%); */
     /* background-color: var(--teal); */
@@ -622,7 +637,7 @@ div.container-fluid {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
 }
 
 .container-fluid .form-parent .nav-form .nav-tag {
@@ -718,11 +733,13 @@ div.container-fluid {
     font-weight: 600;
     width: 350px;
     margin: 10px 0 0;
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
+    font-family: Georgia, "Times New Roman", serif;
 }
 
 .container-fluid h1 b {
-    font-family: "Playfair Display";
+    /* font-family: "Playfair Display"; */
+    font-family: Georgia, "Times New Roman", serif;
     font-style: italic;
     color: var(--blue);
     font-weight: 600;
@@ -759,6 +776,7 @@ div.container-fluid {
     /* color: #fff; */
     color: var(--teal);
     padding: 13px 16px 13px 50px;
+    background-color: #ffffff;
     width: 100%;
     border-radius: 8px;
     outline: none;
@@ -922,6 +940,12 @@ div.container-fluid {
     }
 }  */
 
+@media only screen and (min-width: 1450px){
+    .container-fluid .form-box-parent{
+        padding: 2rem;
+    }
+}
+
 @media only screen and (min-width: 1300px) {
     .container-fluid .form-image {
         /* justify-content: end; */
@@ -929,7 +953,8 @@ div.container-fluid {
 
     .container-fluid .form-box-parent {
         /* padding: 0rem 0rem 0rem; */
-        padding: 13rem 2rem 2rem;
+        /* padding: 13rem 2rem 2rem; */
+        padding: 2rem 2rem;
         /* padding: 25rem 2rem 2rem; */
         /* padding: 19rem 2rem 2rem; */
         /* justify-content: start; */

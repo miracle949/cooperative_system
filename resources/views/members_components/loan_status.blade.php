@@ -68,7 +68,8 @@
                                 <select id="loan-reference-filter" class="form-select">
                                     <option value="" selected>All references</option>
                                     @foreach($loans as $loan)
-                                        <option value="{{ $loan->reference_no }}" {{ $selectedLoan && $selectedLoan->id === $loan->id ? 'selected' : '' }}>
+                                        <option value="{{ $loan->reference_no }}" data-id="{{ $loan->id }}"
+                                            data-type="{{ $loan->display_type }}" {{ $selectedLoan && $selectedLoan->id === $loan->id ? 'selected' : '' }}>
                                             {{ $loan->reference_no }}
                                         </option>
                                     @endforeach
@@ -81,284 +82,224 @@
                         <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
                             <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
                         </div>
+                    @elseif(!$selectedLoan)<div class="loan-hero"
+                            style="display:flex;align-items:center;justify-content:center;padding:40px;">
+                            <p style="color:var(--teal);margin:0;">Loan not found.</p>
+                        </div>
                     @else
-                        @foreach($loans as $loan)
-                            @php
-                                $isSelected = $selectedLoan && $selectedLoan->id === $loan->id;
-                            @endphp
-
-                            {{-- HERO --}}
-                            <div class="loan-hero loan-record" data-reference="{{ $loan->reference_no }}"
-                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
-                                <div class="left-hero">
-                                    <div class="left-text">
-                                        <div class="status">Active Loan</div>
-                                        <h3>{{ $loan->display_type }}</h3>
+                        {{-- HERO --}}
+                        <div class="loan-hero">
+                            <div class="left-hero">
+                                <div class="left-text">
+                                    <div class="status">Active Loan</div>
+                                    <h3>{{ $selectedLoan->display_type }}</h3>
+                                    <p><b>{{ $selectedLoan->reference_no }}</b> · Active
+                                        {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}
+                                    </p>
+                                </div>
+                                <div class="payment-button">
+                                    <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
+                                        <i class="fa fa-peso-sign"></i>
+                                        <span>Make a Payment</span>
+                                    </button>
+                                    <a href="#">View Full Schedule</a>
+                                </div>
+                            </div>
+                            <div class="right-hero">
+                                <div class="alh-parent">
+                                    <div class="alh-stat">
+                                        <span>Monthly Due</span>
+                                        <h5>₱{{ number_format($monthlyDue, 2) }}</h5>
+                                        <p>Every {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('jS') }}</p>
+                                    </div>
+                                    <div class="alh-stat">
+                                        <span>Next Due</span>
+                                        <h5>{{ $nextDueDate ? $nextDueDate->format('F d') : '—' }}</h5>
                                         <p>
-                                            <b>{{ $loan->reference_no }}</b> · Active
-                                            {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}
+                                            @if($daysAway === null) Fully paid
+                                            @elseif($daysAway < 0) {{ abs($daysAway) }} days overdue
+                                            @elseif($daysAway === 0) Due today
+                                            @else {{ $daysAway }} days away
+                                            @endif
                                         </p>
                                     </div>
-                                    <div class="payment-button">
-                                        <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
-                                            <i class="fa fa-peso-sign"></i>
-
-                                            <span>Make a Payment</span>
-                                        </button>
-                                        <a href="#">View Full Schedule</a>
+                                    <div class="alh-stat">
+                                        <span>Balance</span>
+                                        <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
+                                        <p>Remaining</p>
                                     </div>
                                 </div>
-
-                                <div class="right-hero">
-                                    <div class="alh-parent">
-                                        <div class="alh-stat">
-                                            <span>Monthly Due</span>
-                                            <h5>₱{{ number_format($monthlyDue, 2) }}</h5>
-                                            <p>Every {{ \Carbon\Carbon::parse($loan->created_at)->format('jS') }}</p>
-                                        </div>
-                                        <div class="alh-stat">
-                                            <span>Next Due</span>
-                                            <h5>{{ $nextDueDate ? $nextDueDate->format('F d') : '—' }}</h5>
-                                            <p>
-                                                @if($daysAway === null)
-                                                    Fully paid
-                                                @elseif($daysAway < 0)
-                                                    {{ abs($daysAway) }} days overdue
-                                                @elseif($daysAway === 0)
-                                                    Due today
-                                                @else
-                                                    {{ $daysAway }} days away
-                                                @endif
-                                            </p>
-                                        </div>
-                                        <div class="alh-stat">
-                                            <span>Balance</span>
-                                            <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
-                                            <p>Remaining</p>
-                                        </div>
-                                    </div>
-                                    <div class="parent-progress">
-                                        <div class="progress-header">
-                                            <p>Repayment Progress</p>
-                                            <span>{{ $lendingStatus->payments_made ?? 0 }} of
-                                                {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="progress-sub">
-                                                <div class="progress" style="width: {{ $progressPercent }}%;"></div>
-                                            </div>
-                                        </div>
-                                        <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
-                                            ₱{{ number_format($loan->lending_amount, 0) }} principal</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- LOAN SETTLEMENT --}}
-                            <!-- <div class="payment-parent loan-record" data-reference="{{ $loan->reference_no }}"
-                                                                                        data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
-                                                                                        <div class="payment-text">
-                                                                                            <h5>Loan Settlement</h5>
-                                                                                            <p>Pay the entire remaining balance</p>
-                                                                                            <span>Remaining: <b>₱{{ number_format($fullBalanceRemaining, 2) }}</b> ·
-                                                                                                {{ $monthsRemaining }} months remaining</span>
-                                                                                        </div>
-                                                                                        <div class="payment-button">
-                                                                                            <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
-                                                                                                Make a Payment
-                                                                                            </button>
-                                                                                        </div>
-                                                                                    </div> -->
-
-                            {{-- 3 SUMMARY BOXES --}}
-                            <div class="loan-parent-box loan-record" data-reference="{{ $loan->reference_no }}"
-                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
-                                <div class="loan-box">
-                                    <div class="loan-header">
-                                        <h5>Principal Amount</h5>
-                                        <div class="loan-icon">
-                                            <i class="fa fa-file-lines"></i>
-                                        </div>
-                                    </div>
-                                    <p>₱{{ number_format($loan->lending_amount, 2) }}</p>
-                                    <span>Applied {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</span>
-                                </div>
-
-                                <div class="loan-box">
-                                    <div class="loan-header">
-                                        <h5>Total Interest</h5>
-                                        <div class="loan-icon">
-                                            <i class="fa fa-clock"></i>
-                                        </div>
-                                    </div>
-                                    <p>₱{{ number_format($totalInterest, 2) }}</p>
-                                    <!-- <span>Applied {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</span> -->
-                                    <!-- <span>12.00% rate · cost of borrowing</span> -->
-                                    <span>12.00% rate · cost</span>
-                                </div>
-
-                                <div class="loan-box">
-                                    <div class="loan-header">
-                                        <h5>Total Payable</h5>
-                                        <div class="loan-icon">
-                                            <i class="fa fa-check"></i>
-                                        </div>
-                                    </div>
-                                    <p>₱{{ number_format($loan->total_payment ?? 0, 2) }}</p>
-                                    <!-- <span>Applied {{ \Carbon\Carbon::parse($loan->created_at)->format('F d, Y') }}</span> -->
-                                    <span>Principal + interest</span>
-                                </div>
-
-                                <div class="loan-box">
-                                    <div class="loan-header">
-                                        <h5>Remaining Balance</h5>
-                                        <div class="loan-icon">
-                                            <i class="fa fa-triangle-exclamation"></i>
-                                        </div>
-                                    </div>
-                                    <p>₱5,000.00</p>
-                                    <span>4 payments remaining</span>
-                                </div>
-                            </div>
-
-                            {{-- SCHEDULE & CHARGES --}}
-                            <div class="schedule-charges loan-record" data-reference="{{ $loan->reference_no }}"
-                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
-                                <div class="schedule-parent">
-                                    <div class="schedule-header">
-                                        <div class="header-tag">Payment Schedule</div>
+                                <div class="parent-progress">
+                                    <div class="progress-header">
+                                        <p>Repayment Progress</p>
                                         <span>{{ $lendingStatus->payments_made ?? 0 }} of
-                                            {{ $lendingStatus->total_payments ?? 0 }} paid</span>
+                                            {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
                                     </div>
-                                    <div class="schedule-body">
-                                        @forelse($paymentSchedule as $row)
-                                            <div class="pay-item">
-                                                <div class="item">
-                                                    <span>#{{ $row['number'] }}</span>
-                                                    <p>{{ $row['date'] }}</p>
-                                                </div>
-                                                <div class="item-amount">
-                                                    <p>₱{{ number_format($row['amount'], 2) }}</p>
-                                                    @if($row['paid'])
-                                                        <p>
-                                                            <i class="fa fa-check"></i>
-                                                            Paid
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <p style="color:#999;padding:1rem;">No schedule available.</p>
-                                        @endforelse
-                                    </div>
-                                </div>
-
-                                <div class="charges-parent">
-                                    <div class="charges-header">
-                                        <div class="header-tag">Loan Charges</div>
-                                    </div>
-                                    <div class="charges-body">
-                                        <div class="pay-item">
-                                            <div class="parent-item">
-                                                <div class="item">
-                                                    <div class="icon">
-                                                        <i class="fa fa-coins"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span>Interest Rate</span>
-                                                        <p>Total interest applied</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-amount">
-                                                <p>{{ number_format($interestRate, 2) }}%</p>
-                                            </div>
-                                        </div>
-                                        <div class="pay-item">
-                                            <div class="parent-item">
-                                                <div class="item">
-                                                    <div class="icon">
-                                                        <i class="fa fa-receipt"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span>Total Interest</span>
-                                                        <p>Cost of borrowing</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-amount">
-                                                <p>₱{{ number_format($totalInterest, 2) }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="pay-item">
-                                            <div class="parent-item">
-                                                <div class="item">
-                                                    <div class="icon">
-                                                        <i class="fa fa-calculator"></i>
-                                                    </div>
-                                                    <div>
-                                                        <span>Service Fee</span>
-                                                        <p>1% one-time fee</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-amount">
-                                                <p>₱{{ number_format($serviceFee, 2) }}</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="total-charges">
-                                            <span>Total Charges</span>
-
-                                            <p>₱1,950.00</p>
+                                    <div class="progress-body">
+                                        <div class="progress-sub">
+                                            <div class="progress" style="width: {{ $progressPercent }}%;"></div>
                                         </div>
                                     </div>
+                                    <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
+                                        ₱{{ number_format($selectedLoan->lending_amount, 0) }} principal</p>
                                 </div>
                             </div>
+                        </div>
 
-                            {{-- PAYMENT HISTORY --}}
-                            <div class="loan-history loan-record" data-reference="{{ $loan->reference_no }}"
-                                data-type="{{ $loan->display_type }}" style="{{ $isSelected ? '' : 'display:none;' }}">
+                        {{-- 3 SUMMARY BOXES --}}
+                        <div class="loan-parent-box">
+                            <div class="loan-box">
                                 <div class="loan-header">
-                                    <div class="header-tag">Payment History</div>
+                                    <h5>Principal Amount</h5>
+                                    <div class="loan-icon"><i class="fa fa-file-lines"></i></div>
                                 </div>
-                                <div class="loan-body">
-                                    <div class="parent-table">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Reference No.</th>
-                                                    <th>Payment Date</th>
-                                                    <th>Time</th>
-                                                    <th>Amount</th>
-                                                    <th>Method</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($isSelected ? $paymentHistory : [] as $payment)
-                                                    <tr>
-                                                        <td>{{ $payment->reference_no }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}
-                                                        </td>
-                                                        <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('h:i A') }}</td>
-                                                        <td>₱{{ number_format($payment->amount_paid, 2) }}</td>
-                                                        <td>{{ $payment->payment_method }}</td>
-                                                        <td>Paid</td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="6" style="text-align:center;color:#999;padding:1.5rem;">No
-                                                            payment history yet.</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
+                                <p>₱{{ number_format($selectedLoan->lending_amount, 2) }}</p>
+                                <span>Applied
+                                    {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}</span>
+                            </div>
+                            <div class="loan-box">
+                                <div class="loan-header">
+                                    <h5>Total Interest</h5>
+                                    <div class="loan-icon"><i class="fa fa-clock"></i></div>
+                                </div>
+                                <p>₱{{ number_format($totalInterest, 2) }}</p>
+                                <span>{{ number_format($interestRate, 2) }}% rate · cost</span>
+                            </div>
+                            <div class="loan-box">
+                                <div class="loan-header">
+                                    <h5>Total Payable</h5>
+                                    <div class="loan-icon"><i class="fa fa-check"></i></div>
+                                </div>
+                                <p>₱{{ number_format($selectedLoan->total_payment ?? 0, 2) }}</p>
+                                <span>Principal + interest</span>
+                            </div>
+                            <div class="loan-box">
+                                <div class="loan-header">
+                                    <h5>Remaining Balance</h5>
+                                    <div class="loan-icon"><i class="fa fa-triangle-exclamation"></i></div>
+                                </div>
+                                <p>₱{{ number_format($fullBalanceRemaining, 2) }}</p>
+                                <span>{{ $monthsRemaining }} payment{{ $monthsRemaining == 1 ? '' : 's' }} remaining</span>
+                            </div>
+                        </div>
+
+                        {{-- SCHEDULE & CHARGES --}}
+                        <div class="schedule-charges">
+                            <div class="schedule-parent">
+                                <div class="schedule-header">
+                                    <div class="header-tag">Payment Schedule</div>
+                                    <span>{{ $lendingStatus->payments_made ?? 0 }} of
+                                        {{ $lendingStatus->total_payments ?? 0 }} paid</span>
+                                </div>
+                                <div class="schedule-body">
+                                    @forelse($paymentSchedule as $row)
+                                        <div class="pay-item">
+                                            <div class="item"><span>#{{ $row['number'] }}</span>
+                                                <p>{{ $row['date'] }}</p>
+                                            </div>
+                                            <div class="item-amount">
+                                                <p>₱{{ number_format($row['amount'], 2) }}</p>
+                                                @if($row['paid'])
+                                                <p><i class="fa fa-check"></i> Paid</p>@endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p style="color:#999;padding:1rem;">No schedule available.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                            <div class="charges-parent">
+                                <div class="charges-header">
+                                    <div class="header-tag">Loan Charges</div>
+                                </div>
+                                <div class="charges-body">
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-coins"></i></div>
+                                                <div><span>Interest Rate</span>
+                                                    <p>Total interest applied</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>{{ number_format($interestRate, 2) }}%</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-receipt"></i></div>
+                                                <div><span>Total Interest</span>
+                                                    <p>Cost of borrowing</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($totalInterest, 2) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-calculator"></i></div>
+                                                <div><span>Service Fee</span>
+                                                    <p>1% one-time fee</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($serviceFee, 2) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="total-charges">
+                                        <span>Total Charges</span>
+                                        <p>₱{{ number_format($totalInterest + $serviceFee, 2) }}</p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                        @endforeach
+                        {{-- PAYMENT HISTORY --}}
+                        <div class="loan-history">
+                            <div class="loan-header">
+                                <div class="header-tag">Payment History</div>
+                            </div>
+                            <div class="loan-body">
+                                <div class="parent-table">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference No.</th>
+                                                <th>Payment Date</th>
+                                                <th>Time</th>
+                                                <th>Amount</th>
+                                                <th>Method</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($paymentHistory as $payment)
+                                                <tr>
+                                                    <td>{{ $payment->reference_no }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}
+                                                    </td>
+                                                    <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('h:i A') }}</td>
+                                                    <td>₱{{ number_format($payment->amount_paid, 2) }}</td>
+                                                    <td>{{ $payment->payment_method }}</td>
+                                                    <td>Paid</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" style="text-align:center;color:#999;padding:1.5rem;">No
+                                                        payment history yet.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     @endif
 
                     {{-- <div class="status-alert">
@@ -537,6 +478,7 @@
             <input type="hidden" name="payment_number" value="{{ ($lendingStatus->payments_made ?? 0) + 1 }}">
             <input type="hidden" name="amount_paid" id="form-amount-paid">
             <input type="hidden" name="payment_method" id="form-payment-method">
+            <input type="hidden" name="payment_type" id="form-payment-type"> {{-- ← add this --}}
             <input type="hidden" name="reference_no" id="form-reference-no">
             <input type="hidden" name="notes" id="form-notes">
         </form>
@@ -552,6 +494,7 @@
     {{-- AOS animation link js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
+    {{--
     <script>
         // ── Client-side filter for loan type / reference / search ──────────────
         function applyLoanFilters() {
@@ -593,6 +536,47 @@
         document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
         document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
         document.getElementById('loan-reference-filter').addEventListener('change', applyLoanFilters);
+    </script> --}}
+
+    <script>
+        function navigateToLoan(loanId) {
+            if (!loanId) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set('loan_id', loanId);
+            window.location.href = url.toString();
+        }
+
+        function applyLoanFilters() {
+            const search = document.getElementById('loan-search').value.toLowerCase().trim();
+            const type = document.getElementById('loan-type-filter').value;
+            const refSelect = document.getElementById('loan-reference-filter');
+
+            let firstVisibleId = null;
+            let currentStillVisible = false;
+
+            Array.from(refSelect.options).forEach(opt => {
+                if (!opt.value) return; // "All references"
+                const optType = opt.dataset.type || '';
+                const haystack = (opt.value + ' ' + optType).toLowerCase();
+                const visible = (!type || optType === type) && (!search || haystack.includes(search));
+                opt.hidden = !visible;
+                if (visible) {
+                    if (!firstVisibleId) firstVisibleId = opt.dataset.id;
+                    if (opt.selected) currentStillVisible = true;
+                }
+            });
+
+            if (!currentStillVisible && firstVisibleId) {
+                navigateToLoan(firstVisibleId);
+            }
+        }
+
+        document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
+        document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
+        document.getElementById('loan-reference-filter').addEventListener('change', function () {
+            const opt = this.options[this.selectedIndex];
+            if (opt && opt.dataset.id) navigateToLoan(opt.dataset.id);
+        });
     </script>
 
     <script>
@@ -649,11 +633,13 @@
         document.getElementById('confirm-pay-btn').addEventListener('click', function () {
             const amount = document.getElementById('repay-amount-input').value;
             const method = document.getElementById('repay-method').value;
+            const type = document.getElementById('payment-type-select').value; // 'monthly' or 'full'
             const ref = document.querySelector('#ref-no-section input').value;
             const notes = document.querySelector('#notes-section textarea').value;
 
             document.getElementById('form-amount-paid').value = amount;
             document.getElementById('form-payment-method').value = method;
+            document.getElementById('form-payment-type').value = type;   // ← add this
             document.getElementById('form-reference-no').value = ref;
             document.getElementById('form-notes').value = notes;
 

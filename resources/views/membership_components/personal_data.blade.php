@@ -147,9 +147,9 @@
     <div class="form-step-sub-parents">
         <div class="form-step-header">
             <div class="form-step-nav">
-                <div class="header-badge">
+                {{-- <div class="header-badge">
                     <span>Step 1 of 4</span>
-                </div>
+                </div> --}}
                 <h2>Personal <b>Data</b></h2>
                 <p>Please fill out all required fields marked with *</p>
             </div>

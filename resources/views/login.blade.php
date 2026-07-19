@@ -38,7 +38,7 @@
         {{-- LEFT PANEL --}}
         <div class="form-image">
 
-            <video src="videos/video1.mp4" autoplay muted playsinline class="active"></video>
+            {{-- <video src="videos/video1.mp4" autoplay muted playsinline class="active"></video>
             <video src="videos/video2.mp4" autoplay muted playsinline></video>
             <video src="videos/video3.mp4" autoplay muted playsinline></video>
             <video src="videos/video4.mp4" autoplay muted playsinline></video>
@@ -48,7 +48,7 @@
                 <div class="vid-dot" id="dot1"></div>
                 <div class="vid-dot" id="dot2"></div>
                 <div class="vid-dot" id="dot3"></div>
-            </div>
+            </div> --}}
 
             <div class="form-sub-image">
                 <!-- <div class="form-sub-tag">— MEMBER PORTAL</div>
@@ -59,7 +59,7 @@
                         thousands of members across the Philippines.</p>
                 </div> -->
 
-                <div class="form-image-logo">
+                {{-- <div class="form-image-logo">
                     <a href="{{ route("index") }}">
                         <img src="images/logo5.jpg" alt="BrgySphere Logo">
                     </a>
@@ -118,7 +118,7 @@
 
                 <div class="form-image-footer">
                     <p>© 2026 Cooperative Management System ♥</p>
-                </div>
+                </div> --}}
             </div>
 
         </div>
@@ -259,9 +259,9 @@
                                         class="fa fa-arrow-right"></i></a></label>
                         </div>
 
-                        <div class="form-divider"></div>
+                        {{-- <div class="form-divider"></div> --}}
 
-                        <div class="other-spec">
+                        {{-- <div class="other-spec">
                             <div class="spec">
                                 <span>12k+</span>
                                 <p>Members</p>
@@ -274,7 +274,7 @@
                                 <span>256-bit</span>
                                 <p>Encryption</p>
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
                 </form>
@@ -282,28 +282,27 @@
         </div>
 
         <script>
-            const vids = document.querySelectorAll('.form-image video');
-            const dots = document.querySelectorAll('.vid-dot');
-            let current = 0;
+            // const vids = document.querySelectorAll('.form-image video');
+            // const dots = document.querySelectorAll('.vid-dot');
+            // let current = 0;
 
-            function switchTo(index) {
-                vids[current].classList.remove('active');
-                dots[current].classList.remove('active');
-                current = index;
-                vids[current].classList.add('active');
-                dots[current].classList.add('active');
-                vids[current].currentTime = 0; // rewind before playing
-                vids[current].play();
-            }
+            // function switchTo(index) {
+            //     vids[current].classList.remove('active');
+            //     dots[current].classList.remove('active');
+            //     current = index;
+            //     vids[current].classList.add('active');
+            //     dots[current].classList.add('active');
+            //     vids[current].currentTime = 0; // rewind before playing
+            //     vids[current].play();
+            // }
 
-            vids.forEach((v, i) => {
-                v.addEventListener('ended', () => {
-                    switchTo((i + 1) % vids.length); // loops back to 0 after video 4
-                });
-            });
+            // vids.forEach((v, i) => {
+            //     v.addEventListener('ended', () => {
+            //         switchTo((i + 1) % vids.length); // loops back to 0 after video 4
+            //     });
+            // });
 
-            // Start first video
-            vids[0].play();
+            // vids[0].play();
 
             function togglePw() {
                 const pw = document.getElementById('pw');

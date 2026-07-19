@@ -133,9 +133,9 @@
                             <div class="form-step active">
 
                                 <div class="form-step-nav">
-                                    <div class="header-track">
+                                    {{-- <div class="header-track">
                                         <span>Step 1 of 4</span>
-                                    </div>
+                                    </div> --}}
 
                                     <h2>Terms & <b>Agreement</b></h2>
 

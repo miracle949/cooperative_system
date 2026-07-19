@@ -972,9 +972,9 @@
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: var(--gold);
+            color: var(--blue);
             margin-bottom: 8px;
-            display: none;
+            display: flex;
             align-items: center;
             gap: 6px;
         }
@@ -984,7 +984,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--gold);
+            background: var(--blue);
             display: block;
         }
 
@@ -992,7 +992,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
-            display: none;
+            display: block;
         }
 
         .amort-scroll-m {
@@ -1642,7 +1642,7 @@
         }
 
         .progress-track {
-            height: 9px;
+            height: 16px;
             background: var(--border);
             border-radius: 6px;
             overflow: hidden;
@@ -1989,7 +1989,7 @@
                                                                 <div class="cell-value">{{ $loan->lending_type_term }}</div>
                                                             </div>
                                                             <div class="detail-box">
-                                                                <div class="cell-label">Monthly Payment</div>
+                                                                <div class="cell-label">Per Installment</div>
                                                                 <div class="cell-value">
                                                                     ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
                                                                 </div>
@@ -1997,23 +1997,31 @@
                                                             <div class="detail-box">
                                                                 <div class="cell-label">Next Due</div>
                                                                 <div class="cell-value">
-                                                                    {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
+                                                                    {{ ($loan->due_date && ($loan->remaining_balance ?? 0) > 0) ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        @if(in_array($loan->status, ['Approved']) && ($loan->total_payments ?? 0) > 0)
+                                                        @if(($loan->total_payments ?? 0) > 0)
                                                             <div class="progress-block">
                                                                 <div class="progress-head">
                                                                     <span>Repayment Progress</span>
                                                                     <span>{{ $loan->payments_made ?? 0 }} of
                                                                         {{ $loan->total_payments ?? 0 }} installments ·
-                                                                        {{ $progress }}%</span>
+                                                                        {{ $loan->progress_percent ?? 0 }}%</span>
                                                                 </div>
                                                                 <div class="progress-track">
-                                                                    <div class="progress-fill" style="width:{{ $progress }}%">
+                                                                    <div class="progress-fill"
+                                                                        style="width:{{ $loan->progress_percent ?? 0 }}%">
                                                                     </div>
                                                                 </div>
+                                                                @if($loan->status === 'Completed')
+                                                                    <div
+                                                                        style="margin-top:8px;font-size:11.5px;color:var(--green);font-weight:600;">
+                                                                        <i class="fa fa-circle-check"></i>
+                                                                        This loan has been fully paid off. Great job!
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         @else
                                                             <div class="detail-box" style="text-align:center; padding: 14px;">
@@ -2023,8 +2031,6 @@
                                                                         Your application is awaiting review by the credit committee.
                                                                     @elseif($loan->status === 'Rejected')
                                                                         This application was not approved.
-                                                                    @elseif($loan->status === 'Completed')
-                                                                        This loan has been fully paid off. Great job!
                                                                     @else
                                                                         A repayment schedule will be generated once funds are
                                                                         released.

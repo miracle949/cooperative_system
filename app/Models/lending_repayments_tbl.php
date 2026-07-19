@@ -20,6 +20,7 @@ class lending_repayments_tbl extends Model
         "late_fee",
         "penalty_applied_at",
         "payment_method",
+        "payment_type",
         "reference_no",
         "notes",
         "recorded_by",

@@ -15,14 +15,29 @@ return new class extends Migration {
             $table->foreignId("user_id")
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
+
             $table->string("reference_no", 191)->nullable()->unique();
             $table->string("lending_type")->nullable();
+
+            // Loan Details
             $table->decimal("lending_amount", 10, 2)->nullable();
             $table->string("lending_type_term")->nullable();
+
+            // Loan Charges (Computed Amounts)
+            $table->decimal("processing_fee", 10, 2)->default(0);
+            $table->decimal("service_fee", 10, 2)->default(0);
+            $table->decimal("loan_protection_fee", 10, 2)->default(0);
+            $table->decimal("retention_amount", 10, 2)->default(0);
+
+            // Amount Received by Borrower
+            $table->decimal("net_proceeds", 10, 2)->default(0);
+
+            // Payment Information
             $table->decimal("monthly_income", 10, 2)->nullable();
             $table->decimal("monthly_payment", 10, 2)->nullable();
             $table->decimal("total_payment", 10, 2)->nullable();
             $table->decimal("total_interest", 10, 2)->nullable();
+
             $table->text("purpose_loan")->nullable();
 
             // Shared documents
@@ -41,7 +56,9 @@ return new class extends Migration {
             $table->string("cor")->nullable();
             $table->string("cog")->nullable();
 
-            $table->enum("status", ["Pending", "Approved", "Declined","Completed"])->default("Pending");
+            $table->enum("status", ["Pending", "Approved", "Declined", "Completed"])
+                ->default("Pending");
+
             $table->timestamps();
         });
     }

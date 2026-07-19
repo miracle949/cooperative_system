@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
         Schema::create('lending_repayments_tbls', function (Blueprint $table) {
             $table->id();
             $table->foreignId("lending_id")
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->decimal("late_fee", 10, 2)->nullable()->change();
             $table->date("penalty_applied_at")->nullable()->change();
             $table->string("payment_method");
+            $table->string("payment_type");
             $table->string("reference_no")->nullable();
             $table->text("notes")->nullable();
             $table->foreignId("recorded_by")
