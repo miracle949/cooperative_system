@@ -12,7 +12,120 @@
     let otpAlreadySentEmail = null;
     const actionsDiv = document.querySelector(".actions");
 
+    /* ══════════════════════════════════════
+       STEP PERSISTENCE — survive page reloads
+       (sessionStorage: cleared when the tab/browser closes,
+        but keeps the step across F5 / accidental reloads)
+    ══════════════════════════════════════ */
+    const STEP_STORAGE_KEY = 'kpmpcats_register_step';
+
+    function saveCurrentStep() {
+        try {
+            sessionStorage.setItem(STEP_STORAGE_KEY, String(currentStep_form));
+        } catch (e) {
+            // sessionStorage unavailable (e.g. private mode) — fail silently
+        }
+    }
+
+    function restoreCurrentStep() {
+        try {
+            const saved = sessionStorage.getItem(STEP_STORAGE_KEY);
+            if (saved === null) return;
+            const savedIndex = parseInt(saved, 10);
+            if (!isNaN(savedIndex) && savedIndex >= 0 && savedIndex < steps_form.length) {
+                currentStep_form = savedIndex;
+            }
+        } catch (e) {
+            // sessionStorage unavailable — just start at step 0
+        }
+    }
+
+    function clearSavedStep() {
+        try {
+            sessionStorage.removeItem(STEP_STORAGE_KEY);
+        } catch (e) { /* no-op */ }
+    }
+
+    restoreCurrentStep();
+
+    /* ══════════════════════════════════════
+       ONE-TIME: inject spinner CSS
+    ══════════════════════════════════════ */
+    (function injectSpinnerStyles() {
+        if (document.getElementById('otp-loading-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'otp-loading-styles';
+        style.textContent = `
+            .btn-spinner {
+                display: inline-block;
+                width: 14px;
+                height: 14px;
+                border: 2px solid rgba(255, 255, 255, 0.4);
+                border-top-color: #fff;
+                border-radius: 50%;
+                animation: otp-spin 0.7s linear infinite;
+                margin-right: 8px;
+                vertical-align: middle;
+            }
+            .btn-spinner.dark {
+                border: 2px solid rgba(0, 0, 0, 0.2);
+                border-top-color: #333;
+            }
+            @keyframes otp-spin {
+                to { transform: rotate(360deg); }
+            }
+            .btn-next.is-loading,
+            #otp-resend-btn.is-loading {
+                opacity: 0.85;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+        `;
+        document.head.appendChild(style);
+    })();
+
+    /* ══════════════════════════════════════
+       Button loading-state helpers
+    ══════════════════════════════════════ */
+    function setNextButtonLoading(isLoading, text) {
+        if (!nextBtn) return;
+        if (isLoading) {
+            if (!nextBtn.dataset.originalHtml) {
+                nextBtn.dataset.originalHtml = nextBtn.innerHTML;
+            }
+            nextBtn.disabled = true;
+            nextBtn.classList.add('is-loading');
+            nextBtn.innerHTML = `<span class="btn-spinner"></span><span>${text || 'Sending code…'}</span>`;
+        } else {
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('is-loading');
+            if (nextBtn.dataset.originalHtml) {
+                nextBtn.innerHTML = nextBtn.dataset.originalHtml;
+            }
+        }
+    }
+
+    function setResendButtonLoading(btn, isLoading) {
+        if (!btn) return;
+        if (isLoading) {
+            if (!btn.dataset.originalHtml) {
+                btn.dataset.originalHtml = btn.innerHTML;
+            }
+            btn.disabled = true;
+            btn.classList.add('is-loading');
+            btn.innerHTML = `<span class="btn-spinner dark"></span><span>Sending…</span>`;
+        } else {
+            btn.disabled = false;
+            btn.classList.remove('is-loading');
+            if (btn.dataset.originalHtml) {
+                btn.innerHTML = btn.dataset.originalHtml;
+            }
+        }
+    }
+
     function updateSteps() {
+        saveCurrentStep();
+
         steps_form.forEach((step, index) => {
             step.classList.toggle("active", index === currentStep_form);
         });
@@ -96,6 +209,9 @@
         }
 
         if (otpAlreadySentEmail !== email) {
+            // 🔄 Show loading state on Next Step button while the OTP is sent
+            setNextButtonLoading(true, 'Sending code…');
+
             try {
                 const sendRes = await fetch(OTP_SEND_URL, {
                     method: 'POST',
@@ -111,6 +227,7 @@
                     const errText = await sendRes.text().catch(() => '');
                     console.error('OTP send failed — status:', sendRes.status, errText);
                     alert('Failed to send verification code (' + sendRes.status + '). Please try again or contact support.');
+                    setNextButtonLoading(false);
                     return false;
                 }
 
@@ -118,8 +235,12 @@
             } catch (err) {
                 console.error('Network error sending OTP:', err);
                 alert('Network error while sending verification code. Please check your connection.');
+                setNextButtonLoading(false);
                 return false;
             }
+
+            // ✅ Send finished — restore button before showing the modal
+            setNextButtonLoading(false);
         }
 
         return new Promise((resolve) => {
@@ -179,6 +300,10 @@
                 currentResendBtn.onclick = async function () {
                     if (error) { error.style.color = ''; error.textContent = ''; }
                     input.value = '';
+
+                    // 🔄 Show loading state on the Resend button itself
+                    setResendButtonLoading(currentResendBtn, true);
+
                     try {
                         const resendRes = await fetch(OTP_SEND_URL, {
                             method: 'POST',
@@ -203,6 +328,8 @@
                         }
                     } catch (e) {
                         if (error) error.textContent = 'Failed to resend. Please try again.';
+                    } finally {
+                        setResendButtonLoading(currentResendBtn, false);
                     }
                 };
             }
@@ -304,7 +431,7 @@
             if (score < 4) {
                 const errorMsg = document.createElement('small');
                 errorMsg.id = 'password-strength-error';
-                errorMsg.style.cssText = 'color: #dc2626; font-size: 12.5px; margin-top: 4px; display: block;';
+                errorMsg.style.cssText = 'color: #dc2626; font-size: 12.5px; margin-top: 0px; display: block;';
                 errorMsg.textContent = 'Password is too weak. Please use a Strong or Very Strong password.';
                 passwordInput.classList.add('is-invalid');
                 const strengthLabel = currentFormStep.querySelector('#strength-label');
@@ -415,6 +542,10 @@
             }
             return false;
         }
+
+        // ✅ Form is actually going through — clear the saved step
+        // so the next visit to this page starts fresh at Step 1.
+        clearSavedStep();
     });
 
     /* ══════════════════════════════════════

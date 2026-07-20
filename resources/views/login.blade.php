@@ -60,7 +60,7 @@
                 </div> -->
 
                 {{-- <div class="form-image-logo">
-                    <a href="{{ route("index") }}">
+                    <a href="{{ route(" index") }}">
                         <img src="images/logo5.jpg" alt="BrgySphere Logo">
                     </a>
                     <div class="form-image-logo-text">
@@ -196,7 +196,13 @@
                 </div> -->
 
                 <div class="nav-form">
-                    <div class="nav-tag">Member Access</div>
+                    <!-- <div class="nav-tag">Member Access</div> -->
+                    <div class="nav-tag">
+                        <a href="{{ route("index") }}">
+                            <img src="images/logo2.png" alt="">
+                            <h3>KPMPCATS</h3>
+                        </a>
+                    </div>
                     <h1 class="text-left">Sign in to your <b>account</b></h1>
                     <p class="text-left">Enter your credentials to access the member portal.</p>
                     <div class="form-nav-divider"></div>

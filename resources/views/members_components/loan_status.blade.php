@@ -57,19 +57,25 @@
 
                             <div class="loan-type">
                                 <select id="loan-type-filter" class="form-select">
-                                    <option value="" selected>All loan types</option>
+                                    <option value="" disabled {{ !$selectedLoan ? 'selected' : '' }}>-- Select Loan Type --</option>
                                     @foreach($loans->pluck('display_type')->unique() as $type)
-                                        <option value="{{ $type }}">{{ $type }}</option>
+                                        <option value="{{ $type }}"
+                                            {{ $selectedLoan && $selectedLoan->display_type === $type ? 'selected' : '' }}>
+                                            {{ $type }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="reference">
-                                <select id="loan-reference-filter" class="form-select">
-                                    <option value="" selected>All references</option>
+                                <select id="loan-reference-filter" class="form-select" {{ !$selectedLoan ? 'disabled' : '' }}>
+                                    <option value="" disabled {{ !$selectedLoan ? 'selected' : '' }}>-- Select Reference --</option>
                                     @foreach($loans as $loan)
-                                        <option value="{{ $loan->reference_no }}" data-id="{{ $loan->id }}"
-                                            data-type="{{ $loan->display_type }}" {{ $selectedLoan && $selectedLoan->id === $loan->id ? 'selected' : '' }}>
+                                        <option value="{{ $loan->reference_no }}"
+                                            data-id="{{ $loan->id }}"
+                                            data-type="{{ $loan->display_type }}"
+                                            {{ $selectedLoan && $selectedLoan->id === $loan->id ? 'selected' : '' }}
+                                            {{ (!$selectedLoan || $selectedLoan->display_type !== $loan->display_type) ? 'hidden' : '' }}>
                                             {{ $loan->reference_no }}
                                         </option>
                                     @endforeach
@@ -546,36 +552,60 @@
             window.location.href = url.toString();
         }
 
-        function applyLoanFilters() {
+        function applyLoanFilters(triggeredByType = false) {
             const search = document.getElementById('loan-search').value.toLowerCase().trim();
             const type = document.getElementById('loan-type-filter').value;
             const refSelect = document.getElementById('loan-reference-filter');
+
+            // No type chosen yet → keep reference filter locked and empty
+            if (!type) {
+                refSelect.disabled = true;
+                refSelect.value = '';
+                return;
+            }
+
+            refSelect.disabled = false;
 
             let firstVisibleId = null;
             let currentStillVisible = false;
 
             Array.from(refSelect.options).forEach(opt => {
-                if (!opt.value) return; // "All references"
+                if (!opt.value) return; // skip the placeholder option
                 const optType = opt.dataset.type || '';
-                const haystack = (opt.value + ' ' + optType).toLowerCase();
-                const visible = (!type || optType === type) && (!search || haystack.includes(search));
+                const matchesType = optType === type;
+                const matchesSearch = !search || opt.value.toLowerCase().includes(search);
+                const visible = matchesType && matchesSearch;
+
                 opt.hidden = !visible;
+
                 if (visible) {
                     if (!firstVisibleId) firstVisibleId = opt.dataset.id;
                     if (opt.selected) currentStillVisible = true;
                 }
             });
 
-            if (!currentStillVisible && firstVisibleId) {
+            // If the type was just changed, or the current selection no longer fits,
+            // jump to the first matching reference automatically.
+            if ((triggeredByType || !currentStillVisible) && firstVisibleId) {
                 navigateToLoan(firstVisibleId);
             }
         }
 
-        document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
-        document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
+        document.getElementById('loan-search').addEventListener('input', () => applyLoanFilters(false));
+
+        document.getElementById('loan-type-filter').addEventListener('change', function () {
+            applyLoanFilters(true);
+        });
+
         document.getElementById('loan-reference-filter').addEventListener('change', function () {
             const opt = this.options[this.selectedIndex];
             if (opt && opt.dataset.id) navigateToLoan(opt.dataset.id);
+        });
+
+        // Keep the reference list correctly filtered on initial page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const type = document.getElementById('loan-type-filter').value;
+            if (type) applyLoanFilters(false);
         });
     </script>
 

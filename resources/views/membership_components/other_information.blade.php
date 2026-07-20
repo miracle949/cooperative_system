@@ -12,9 +12,9 @@
     <div class="form-step-header">
         <!-- <h3>Other Information</h3> -->
         <div class="form-step-nav">
-            <div class="header-track">
+            <!-- <div class="header-track">
                 <span>Step 1 of 4</span>
-            </div>
+            </div> -->
             <h2>Other <b>Information</b></h2>
             <p>Employment, beneficiary, and membership details.</p>
         </div>
@@ -27,7 +27,7 @@
         <div class="form-step-body">
             <div class="row">
                 <div class="col-lg-12 mt-4">
-                    <label class="fw-semibold">Number of Dependents:</label>
+                    <label>Number of Dependents:</label>
                     <div class="row">
                         <div class="col-lg-4 mt-4">
                             <label>Son</label>
@@ -78,7 +78,7 @@
             <div class="row driver-operator">
                 <div class="col-lg-12 mt-5">
                     <div class="d-flex align-items-center gap-2">
-                        <label class="fw-semibold">Number of Public Vehicle Owned:</label>
+                        <label>Number of Public Vehicle Owned:</label>
                         <label id="members_category"></label>
                     </div>
 

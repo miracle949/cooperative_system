@@ -12,14 +12,15 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 8px;
-        padding: 6px 0;
-        border-bottom: 1px solid #f3f4f6;
+        gap: 2px;
+        padding: 6px 0 15px;
+        /* border-bottom: 1px solid #f3f4f6; */
+        border-bottom: 1px solid var(--line);
     }
 
-    .review-vehicle-row:last-child {
+    /* .review-vehicle-row:last-child {
         border-bottom: none;
-    }
+    } */
 
     .review-vehicle-label {
         font-weight: 600;
@@ -37,13 +38,22 @@
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        padding-left: 108px;
+        padding-left: 100px;
+    }
+
+    #vehicles_review_display{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
 
     .review-plate-badge {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        color: #166534;
+        /* background: #f0fdf4; */
+        background-color: var(--blue);
+        /* border: 1px solid #bbf7d0; */
+        border: 1px solid var(--line);
+        /* color: #166534; */
+        color: #ffffff;
         font-size: 12px;
         font-weight: 600;
         padding: 2px 10px;
@@ -57,9 +67,9 @@
         <div class="col-lg-12">
             <div class="form-step-header">
                 <div class="form-step-nav">
-                    <div class="header-track">
+                    <!-- <div class="header-track">
                         <span>Step 1 of 4</span>
-                    </div>
+                    </div> -->
                     <h2 class="fw-semibold">Review & <b>Submit</b></h2>
                     <p>Please review your information before submitting. You can go back to previous steps to make
                         changes.
@@ -69,14 +79,14 @@
         </div>
     </div>
 
-    <div class="form-step-body">
+    <div class="form-step-body form-step-body-2">
 
         {{-- ══════════════════════════════════════ --}}
         {{-- SECTION 1: PERSONAL DATA --}}
         {{-- ══════════════════════════════════════ --}}
         <div class="row">
-            <div class="col-lg-12 mt-4">
-                <div class="card card-body-box">
+            <div class="col-lg-12">
+                <div class="card-body-box">
                     <h5 class="fw-semibold">Personal Data</h5>
 
                     <div class="review-parent">
@@ -103,7 +113,7 @@
                             </div>
                             <div class="review mt-3">
                                 <p>Email:</p>
-                                <p id="email_display" style="width: 220px;"></p>
+                                <p id="email_display"></p>
                             </div>
                         </div>
 
@@ -137,9 +147,9 @@
         {{-- ══════════════════════════════════════ --}}
         {{-- SECTION 2: FAMILY BACKGROUND --}}
         {{-- ══════════════════════════════════════ --}}
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-lg-12 mt-4">
-                <div class="card card-body-box">
+                <div class="card-body-box">
                     <h5 class="fw-semibold">Family Background</h5>
 
                     <div class="review-parent">
@@ -180,12 +190,12 @@
         {{-- ══════════════════════════════════════ --}}
         {{-- SECTION 3: VEHICLE INFORMATION --}}
         {{-- ══════════════════════════════════════ --}}
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-lg-12 mt-4">
-                <div class="card card-body-box">
+                <div class="card-body-box">
                     <h5 class="fw-semibold">Vehicle Information</h5>
                     <div id="vehicles_review_display" class="mt-3">
-                        <span style="color:#aaa; font-size:15.5px;">No vehicles entered.</span>
+                        <span>No vehicles entered.</span>
                     </div>
                 </div>
             </div>
@@ -196,7 +206,7 @@
         {{-- ══════════════════════════════════════ --}}
         <div class="row">
             <div class="col-lg-12 mt-4">
-                <div class="card card-body-box">
+                <div class="card-body-box">
                     <label class="mt-2"><b>I HEREBY CERTIFY</b> that the foregoing statements are <b>True and
                             Correct:</b></label>
                     <label class="mt-4">Applicant's Signature</label>
