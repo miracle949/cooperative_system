@@ -1354,7 +1354,7 @@ div.card-header {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    height: 100vh;
+    max-height: 400px;   /* cap it instead of forcing full height */
     overflow-y: auto;
     background-color: #ffffff;
 }

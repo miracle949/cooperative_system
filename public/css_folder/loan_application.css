@@ -93,7 +93,7 @@
 }
 
 .container-fluid main .main-parent .table-header .main-text p {
-    font-size: 13.5px;
+    font-size: 14.5px;
     font-weight: normal;
     color: var(--muted);
     margin: 10px 0 0;
@@ -510,7 +510,7 @@ select.form-select{
 }
 
 .container-fluid main .card-box .card-body {
-    margin-top: 1rem;
+    margin-top: 10px;
 }
 
 .container-fluid main .card-box .card-body p {
@@ -1136,7 +1136,9 @@ select.form-select{
 
 .sm-head {
     /* background: #1E4035; */
-    background-color: var(--blue);
+    background-color: var(--teal);
+    /* background: rgba(79,127,250,0.25); */
+    /* border: 2px solid var(--blue); */
     padding: 2rem;
     display: flex;
     align-items: center;
@@ -1147,7 +1149,8 @@ select.form-select{
     width: 64px;
     height: 64px;
     /* background: rgba(255, 255, 255, 0.12); */
-    background-color: var(--blue-mist);
+    /* background-color: var(--blue-mist); */
+    border: 2px solid var(--blue);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1157,8 +1160,8 @@ select.form-select{
 
 .sm-icon .fa {
     font-size: 28.8px;
-    /* color: #ffffff; */
-    color: var(--blue);
+    color: #ffffff;
+    /* color: var(--blue); */
 }
 
 .sm-body {

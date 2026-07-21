@@ -566,17 +566,23 @@
                     PAGE ACTION BUTTONS
                     ═══════════════════════════════════════ --}}
                     <div class="parent-main">
-                        <div class="download">
-                            <button>
-                                <i class="fa fa-arrow-down"></i>
-                                <span>Download Statement</span>
-                            </button>
+                        <div class="parent-text">
+                            <h3>Loan Application</h3>
+                            <p>View your loan applications and track upcoming, due, and overdue payments</p>
                         </div>
-                        <div class="share">
-                            <button data-bs-toggle="modal" data-bs-target="#shareCapital">
-                                <i class="fa fa-coins"></i>
-                                <span>Manage Share Capital</span>
-                            </button>
+                        <div class="parent-download">
+                            <div class="download">
+                                <button>
+                                    <i class="fa fa-arrow-down"></i>
+                                    <span>Download Statement</span>
+                                </button>
+                            </div>
+                            <div class="share">
+                                <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                                    <i class="fa fa-coins"></i>
+                                    <span>Manage Share Capital</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -766,11 +772,11 @@
         ═══════════════════════════════════════ --}}
         @if(session('error'))
             <div style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                                padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                                        background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                        display: flex; align-items: center; gap: 12px; max-width: 360px;">
                 <div style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                                    display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>

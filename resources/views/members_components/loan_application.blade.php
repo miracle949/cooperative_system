@@ -1552,10 +1552,14 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             padding: 3px 9px;
             border-radius: 20px;
+        }
+
+        .due-tag .fa{
+            color: var(--blue);
         }
 
         .due-tag.today {
@@ -1964,6 +1968,14 @@
                                                     </div>
                                                     <div class="col-status">
                                                         <span class="badge {{ $badgeClass }}">{{ $loan->status }}</span>
+                                                        @if($loan->status === 'Approved')
+                                                            <span class="due-tag"
+                                                                style="background:var(--blue-mist);color:var(--blue);">
+                                                                <i class="fa fa-circle" style="font-size:6px;"></i>
+                                                                Active
+                                                                <!-- {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }} -->
+                                                            </span>
+                                                        @endif
                                                         @if($dueCat === 'today')<span class="due-tag today">Due
                                                         Today</span>@endif
                                                         @if($dueCat === 'week')<span class="due-tag week">Due This
@@ -2898,7 +2910,7 @@
                                                     <span>Limit: ₱25,000.00</span>
                                                 </div>
                                                 <div
-                                                    style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:7px 12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#1a4a3a;">
+                                                    style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:7px 12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color: var(--teal);">
                                                     <i class="fa fa-coins"></i>
                                                     Available: ₱{{ number_format($remainingLoanable, 2) }}
                                                 </div>

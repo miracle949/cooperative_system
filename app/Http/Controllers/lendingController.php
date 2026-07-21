@@ -75,7 +75,7 @@ class lendingController extends Controller
         $allLoans = DB::table('lending_program_tbls as l')
             ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'l.id')
             ->where('l.user_id', $memberId)
-            ->orderBy('l.created_at', 'desc')
+            ->orderBy('l.created_at', 'asc')   // ← was 'desc'
             ->select(
                 'l.*',
                 's.due_date',
@@ -362,9 +362,13 @@ class lendingController extends Controller
         // ── Loan term validation per lending type ────────────────────────────────
         // Personal, Emergency, Education → 6 months only
         // Business → 6 months or 12 months
+        //
+        // NOTE: the modal's <select name="lending_type"> sends values like
+        // "Business Loan", "Personal Loan", etc. (see loan_application.blade.php).
+        // These match() blocks must use the SAME strings, not "Business Lending".
         $lendingType = $request->lending_type;
         $allowedTerms = match ($lendingType) {
-            'Business Lending' => ['6 months', '12 months'],
+            'Business Loan' => ['6 months', '12 months'],
             default => ['6 months'],   // Personal, Emergency, Education
         };
 
@@ -411,18 +415,19 @@ class lendingController extends Controller
             };
 
             // Map valid_id and proof_of_income fields per lending type
+            // (matches the "Loan" suffix the frontend actually sends — see note above)
             $validIdField = match ($lendingType) {
-                'Personal Lending' => 'personal_valid_id',
-                'Emergency Lending' => 'emergency_valid_id',
-                'Business Lending' => 'business_valid_id',
-                'Education Lending' => 'education_valid_id',
+                'Personal Loan' => 'personal_valid_id',
+                'Emergency Loan' => 'emergency_valid_id',
+                'Business Loan' => 'business_valid_id',
+                'Education Loan' => 'education_valid_id',
                 default => null,
             };
 
             $proofOfIncomeField = match ($lendingType) {
-                'Personal Lending' => 'personal_proof_of_income',
-                'Emergency Lending' => 'emergency_proof_of_income',
-                'Business Lending' => 'business_proof_of_income',
+                'Personal Loan' => 'personal_proof_of_income',
+                'Emergency Loan' => 'emergency_proof_of_income',
+                'Business Loan' => 'business_proof_of_income',
                 default => null,
             };
 
@@ -508,7 +513,6 @@ class lendingController extends Controller
     }
 
     // ─── Loan Status page ─────────────────────────────────────────────────────────
-    // ─── Loan Status page ─────────────────────────────────────────────────────────
     public function loanStatus(Request $request)
     {
         $memberId = auth()->id();
@@ -536,7 +540,7 @@ class lendingController extends Controller
         $selectedId = $request->get('loan_id');
         $selectedLoan = $selectedId
             ? lending_program_tbl::where('id', $selectedId)->where('user_id', $memberId)->first()
-            : $loans->first();
+            : null;
 
         if ($selectedLoan) {
             $selectedLoan->display_type = $typeMap[$selectedLoan->lending_type] ?? $selectedLoan->lending_type;

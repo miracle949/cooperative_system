@@ -111,7 +111,7 @@
 <body>
 
     <div class="container-fluid p-0 m-0">
-    
+
         @include("components.offcanvas")
         @include("components.sidebar")
 
@@ -119,22 +119,27 @@
             @include("components.navbar2")
             <div class="main-sub-parent">
                 <div class="main-parent">
+                    <div class="main-header">
+                        <h3>Savings</h3>
+                        <p>A cushion for the unexpected, and a habit that quietly compounds. Deposit, withdraw, and
+                            watch it build.</p>
+                    </div>
                     <main>
                         @if(!$hasShareCapital)
                             {{-- Lock overlay banner --}}
                             <div style="
-                                width: 100%;
-                                background: #fff8e1;
-                                border: 1.5px solid #ffe082;
-                                border-radius: 12px;
-                                padding: 1rem 1.25rem 1rem;
-                                margin-bottom: 1rem;
-                                display: flex;
-                                align-items: center;
-                                gap: 12px;
-                                font-size: 0.88rem;
-                                color: #856404;
-                                        ">
+                                                        width: 100%;
+                                                        background: #fff8e1;
+                                                        border: 1.5px solid #ffe082;
+                                                        border-radius: 12px;
+                                                        padding: 1rem 1.25rem 1rem;
+                                                        margin-bottom: 1rem;
+                                                        display: flex;
+                                                        align-items: center;
+                                                        gap: 12px;
+                                                        font-size: 0.88rem;
+                                                        color: #856404;
+                                                                ">
                                 <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
                                 <span>
                                     Your savings features are <strong>locked</strong>.
@@ -147,22 +152,22 @@
                         <div class="card-box-parent">
                             <div class="card-box-text">
                                 <h3>Total Savings Balance</h3>
-                                <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
+                                <h2>₱ <b>{{ number_format($savingsAccount->balance, 2) }}</b></h2>
                                 <span>Last updated {{ $lastUpdated }} ·
                                     {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
                                     active
                                 </span>
                             </div>
 
-                            <div
-                                class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
+                            <div class="card-box-buttons">
 
                                 {{-- Deposit --}}
                                 @if($hasShareCapital)
                                     <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal"
                                         style="cursor:pointer;">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                            <!-- <i class="fa fa-arrow-right"></i> -->
+                                            <img src="images/arrow-deposit.png" alt="">
                                         </div>
                                         <div>
                                             <p>Deposit</p>
@@ -172,7 +177,7 @@
                                     <div class="card-box" disabled style="opacity:0.45; cursor:not-allowed;"
                                         title="You must have active share capital to use savings.">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                            <img src="images/arrow-deposit.png" alt="">
                                         </div>
                                         <div>
                                             <p>Deposit</p>
@@ -185,7 +190,7 @@
                                     <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal"
                                         style="cursor:pointer;">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                            <img src="images/arrow-deposit.png" alt="">
                                         </div>
                                         <div>
                                             <p>Withdraw</p>
@@ -195,7 +200,7 @@
                                     <div class="card-box" disabled style="cursor:not-allowed; opacity:0.45;"
                                         title="You must have active share capital to use savings.">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                            <img src="images/arrow-deposit.png" alt="">
                                         </div>
                                         <div>
                                             <p>Withdraw</p>
@@ -207,37 +212,43 @@
                         </div>
                     </main>
 
-                    <section>
-                        <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
+                    <section id="section1">
+                        <div class="main-card-box">
 
                             @if($hasShareCapital)
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-peso-sign"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Savings</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-peso-sign"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Savings</p>
                                     <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
                                     <span>All time contributions</span>
                                 </div>
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Monthly Average</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        </div>
                                     </div>
-                                    <p>Monthly Average</p>
                                     <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
                                     <span>Per month average</span>
                                 </div>
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-calendar-days"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Months</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Months</p>
                                     <h4>{{ $totalMonths }} Months</h4>
                                     <span>Months saving</span>
                                 </div>
@@ -246,33 +257,39 @@
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-peso-sign"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Savings</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-peso-sign"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Savings</p>
                                     <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
                                     <span>All time contributions</span>
                                 </div>
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Monthly Average</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        </div>
                                     </div>
-                                    <p>Monthly Average</p>
                                     <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
                                     <span>Per month average</span>
                                 </div>
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-calendar-days"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Months</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Months</p>
                                     <h4>{{ $totalMonths }} Months</h4>
                                     <span>Months saving</span>
                                 </div>

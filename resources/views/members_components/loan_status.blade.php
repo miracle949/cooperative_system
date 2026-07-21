@@ -17,6 +17,33 @@
 
     {{-- font awesome cdn link --}}
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
+
+    {{-- Modal open/close animation --}}
+    <style>
+        #repayModal {
+            display: none;
+        }
+
+        #repayModal .modal-dialog {
+            opacity: 0;
+            transform: translateY(-24px) scale(0.96);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        #repayModal.show .modal-dialog {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        #repay-backdrop {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        #repay-backdrop.show {
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,20 +58,9 @@
 
             <main>
                 <div class="parent-main">
-                    {{-- <div class="main-header">
-                        <div class="main-badge">
-                            <a href="#">Home</a>
-                            <span>></span>
-                            <span>Loan Status</span>
-                        </div>
-                        <h2>Loan Status & History</h2>
-                        <p>Track your active loan, view payment history, and manage documents.</p>
-                    </div>
-
-                    <h4>Filter transaction:</h4> --}}
-
                     <div class="header-main">
                         <h3>Loan Repayments</h3>
+                        <p>Manage your loan repayments by tracking payment history, upcoming due dates, and outstanding balances.</p>
                     </div>
 
                     <div class="parent-header">
@@ -68,7 +84,7 @@
                             </div>
 
                             <div class="reference">
-                                <select id="loan-reference-filter" class="form-select" {{ !$selectedLoan ? 'disabled' : '' }}>
+                                <select id="loan-reference-filter" class="form-select">
                                     <option value="" disabled {{ !$selectedLoan ? 'selected' : '' }}>-- Select Reference --</option>
                                     @foreach($loans as $loan)
                                         <option value="{{ $loan->reference_no }}"
@@ -85,12 +101,25 @@
                     </div>
 
                     @if($loans->isEmpty())
-                        <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
+                        <!-- <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
                             <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
+                        </div> -->
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;background:#f8f9fb;border:1.5px dashed #d8dde5;border-radius:16px; margin: 2rem 0 0; background-color: #ffffff;">
+                            <div style="width:56px;height:56px;border-radius:50%;background:#eef2fa;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                                <i class="fa fa-hourglass-half" style="color:var(--blue,#2b3a67);font-size:22px;"></i>
+                            </div>
+                            <p style="color:var(--muted);margin:0; font-size: 14px;">You have no approved loans yet.</p>
                         </div>
-                    @elseif(!$selectedLoan)<div class="loan-hero"
-                            style="display:flex;align-items:center;justify-content:center;padding:40px;">
-                            <p style="color:var(--teal);margin:0;">Loan not found.</p>
+                    @elseif(!$selectedLoan)
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;background:#f8f9fb;border:1.5px dashed #d8dde5;border-radius:16px; margin: 2rem 0 0; background-color: #ffffff;">
+                            <div style="width:56px;height:56px;border-radius:50%;background:#eef2fa;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                                <i class="fa fa-hand-pointer" style="color:var(--blue,#2b3a67);font-size:22px;"></i>
+                            </div>
+                            <h5 style="color:#333;margin:0 0 10px;font-weight:600;">No loan selected</h5>
+                            <p style="color:#8a8f98;margin:0;max-width:360px;font-size:14px;line-height:1.5;">
+                                Choose a <strong>Loan Type</strong> above first, then pick the matching
+                                <strong>Reference</strong> number to view its repayment details.
+                            </p>
                         </div>
                     @else
                         {{-- HERO --}}
@@ -307,32 +336,6 @@
                             </div>
                         </div>
                     @endif
-
-                    {{-- <div class="status-alert">
-                        <i class="fa fa-check-circle"></i>
-                        <div class="status-alert-text">
-                            Your first payment of <strong>₱2,083.33</strong> was received on <strong>May 15,
-                                2026</strong>. Your account is in good standing. Next payment due <strong>June 15,
-                                2026</strong>.
-                        </div>
-                    </div> --}}
-
-                    {{-- <div class="payment-breakdown">
-                        <div class="payment">
-                            <div class="payment-header">
-                                <h3>Payment Schedule</h3>
-
-                                <span>1 of 12 paid</span>
-                            </div>
-
-                            <table>
-
-                            </table>
-                        </div>
-                        <div class="loan">
-
-                        </div>
-                    </div> --}}
                 </div>
             </main>
         </div>
@@ -484,7 +487,7 @@
             <input type="hidden" name="payment_number" value="{{ ($lendingStatus->payments_made ?? 0) + 1 }}">
             <input type="hidden" name="amount_paid" id="form-amount-paid">
             <input type="hidden" name="payment_method" id="form-payment-method">
-            <input type="hidden" name="payment_type" id="form-payment-type"> {{-- ← add this --}}
+            <input type="hidden" name="payment_type" id="form-payment-type">
             <input type="hidden" name="reference_no" id="form-reference-no">
             <input type="hidden" name="notes" id="form-notes">
         </form>
@@ -500,50 +503,6 @@
     {{-- AOS animation link js --}}
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    {{--
-    <script>
-        // ── Client-side filter for loan type / reference / search ──────────────
-        function applyLoanFilters() {
-            const search = document.getElementById('loan-search').value.toLowerCase().trim();
-            const type = document.getElementById('loan-type-filter').value;
-            const reference = document.getElementById('loan-reference-filter').value;
-
-            // Pick which reference to show: explicit dropdown choice wins,
-            // otherwise fall back to the first record matching type+search.
-            const groups = {};
-            document.querySelectorAll('.loan-record').forEach(el => {
-                const ref = el.dataset.reference;
-                (groups[ref] = groups[ref] || []).push(el);
-            });
-
-            let matchedRef = null;
-
-            Object.keys(groups).forEach(ref => {
-                const sampleEl = groups[ref][0];
-                const elType = sampleEl.dataset.type;
-                const haystack = (ref + ' ' + elType).toLowerCase();
-
-                const matchesType = !type || elType === type;
-                const matchesRef = !reference || ref === reference;
-                const matchesSearch = !search || haystack.includes(search);
-
-                if (matchesType && matchesRef && matchesSearch && !matchedRef) {
-                    matchedRef = ref;
-                }
-            });
-
-            Object.keys(groups).forEach(ref => {
-                groups[ref].forEach(el => {
-                    el.style.display = (ref === matchedRef) ? '' : 'none';
-                });
-            });
-        }
-
-        document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
-        document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
-        document.getElementById('loan-reference-filter').addEventListener('change', applyLoanFilters);
-    </script> --}}
-
     <script>
         function navigateToLoan(loanId) {
             if (!loanId) return;
@@ -552,61 +511,46 @@
             window.location.href = url.toString();
         }
 
-        function applyLoanFilters(triggeredByType = false) {
+        function applyLoanFilters() {
             const search = document.getElementById('loan-search').value.toLowerCase().trim();
             const type = document.getElementById('loan-type-filter').value;
             const refSelect = document.getElementById('loan-reference-filter');
 
-            // No type chosen yet → keep reference filter locked and empty
-            if (!type) {
-                refSelect.disabled = true;
-                refSelect.value = '';
-                return;
-            }
-
-            refSelect.disabled = false;
-
-            let firstVisibleId = null;
-            let currentStillVisible = false;
-
+            // Only filter which references are shown — never auto-select or navigate.
             Array.from(refSelect.options).forEach(opt => {
                 if (!opt.value) return; // skip the placeholder option
+
+                if (!type) {
+                    // No loan type chosen yet — no reference should be visible.
+                    opt.hidden = true;
+                    return;
+                }
+
                 const optType = opt.dataset.type || '';
                 const matchesType = optType === type;
                 const matchesSearch = !search || opt.value.toLowerCase().includes(search);
-                const visible = matchesType && matchesSearch;
-
-                opt.hidden = !visible;
-
-                if (visible) {
-                    if (!firstVisibleId) firstVisibleId = opt.dataset.id;
-                    if (opt.selected) currentStillVisible = true;
-                }
+                opt.hidden = !(matchesType && matchesSearch);
             });
 
-            // If the type was just changed, or the current selection no longer fits,
-            // jump to the first matching reference automatically.
-            if ((triggeredByType || !currentStillVisible) && firstVisibleId) {
-                navigateToLoan(firstVisibleId);
+            // If the currently selected reference no longer matches the type/search,
+            // reset the dropdown back to the placeholder rather than showing a stale pick.
+            const selectedOption = refSelect.options[refSelect.selectedIndex];
+            if (selectedOption && selectedOption.hidden) {
+                refSelect.value = '';
             }
         }
 
-        document.getElementById('loan-search').addEventListener('input', () => applyLoanFilters(false));
+        document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
+        document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
 
-        document.getElementById('loan-type-filter').addEventListener('change', function () {
-            applyLoanFilters(true);
-        });
-
+        // Loan only loads once the person explicitly picks a reference.
         document.getElementById('loan-reference-filter').addEventListener('change', function () {
             const opt = this.options[this.selectedIndex];
             if (opt && opt.dataset.id) navigateToLoan(opt.dataset.id);
         });
 
         // Keep the reference list correctly filtered on initial page load
-        document.addEventListener('DOMContentLoaded', function () {
-            const type = document.getElementById('loan-type-filter').value;
-            if (type) applyLoanFilters(false);
-        });
+        document.addEventListener('DOMContentLoaded', applyLoanFilters);
     </script>
 
     <script>
@@ -643,21 +587,45 @@
             document.querySelector('#ref-no-section input').value = '';
             document.querySelector('#notes-section textarea').value = '';
 
-            document.getElementById('repayModal').style.display = 'block';
-            document.getElementById('repayModal').classList.add('show');
-            document.getElementById('repay-backdrop').style.display = 'block';
+            const modal = document.getElementById('repayModal');
+            const backdrop = document.getElementById('repay-backdrop');
+
+            modal.style.display = 'block';
+            backdrop.style.display = 'block';
             document.body.classList.add('modal-open');
+
+            // Force a reflow so the transition actually plays instead of
+            // jumping straight to the "show" state.
+            void modal.offsetWidth;
+
+            modal.classList.add('show');
+            backdrop.classList.add('show');
         }
 
         function closeRepayModal() {
-            document.getElementById('repayModal').style.display = 'none';
-            document.getElementById('repayModal').classList.remove('show');
-            document.getElementById('repay-backdrop').style.display = 'none';
-            document.body.classList.remove('modal-open');
+            const modal = document.getElementById('repayModal');
+            const backdrop = document.getElementById('repay-backdrop');
+
+            modal.classList.remove('show');
+            backdrop.classList.remove('show');
+
+            // Wait for the fade/scale-out transition to finish before hiding
+            setTimeout(() => {
+                modal.style.display = 'none';
+                backdrop.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }, 250);
         }
 
-        // Close on backdrop click
+        // Close when clicking the dimmed backdrop
         document.getElementById('repay-backdrop').addEventListener('click', closeRepayModal);
+
+        // Close when clicking outside the dialog card (the modal wrapper itself
+        // sits on top of the backdrop and was swallowing the click before —
+        // this listener catches it directly).
+        document.getElementById('repayModal').addEventListener('click', function (e) {
+            if (e.target === this) closeRepayModal();
+        });
 
         // Submit payment to controller
         document.getElementById('confirm-pay-btn').addEventListener('click', function () {
@@ -669,7 +637,7 @@
 
             document.getElementById('form-amount-paid').value = amount;
             document.getElementById('form-payment-method').value = method;
-            document.getElementById('form-payment-type').value = type;   // ← add this
+            document.getElementById('form-payment-type').value = type;
             document.getElementById('form-reference-no').value = ref;
             document.getElementById('form-notes').value = notes;
 
