@@ -175,6 +175,21 @@ div.container-fluid {
     border: 1px solid var(--line);
 }
 
+.container-fluid input,
+.container-fluid select {
+    /* width: 100%; */
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    font-size: 15.5px;
+}
+
+.container-fluid select {
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    /* color: #6F7174; */
+    font-size: 15.5px;
+}
+
 /* .container-fluid button {
     padding: 6px 12px;
     font-size: 15px;
@@ -893,18 +908,15 @@ label {
 
 .container-fluid input {
     /* width: 100%; */
-    border-radius: 7px;
-    border: 1.5px solid var(--line);
-    font-size: 15.5px;
-    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14.5px;
 }
 
 .container-fluid select {
     border-radius: 7px;
-    /* color: #6F7174; */
-    font-size: 15.5px;
-    background-color: #ffffff;
-    border: 1.5px solid var(--line);
+    color: #6F7174;
+    font-size: 14.5px;
 }
 
 .container-fluid select:valid {

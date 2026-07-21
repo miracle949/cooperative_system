@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
 use App\Models\lending_repayments_tbl;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -29,6 +30,7 @@ class PaymentController extends Controller
             }
 
             $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
+                ->withOptions(['verify' => false])
                 ->post('https://api.paymongo.com/v1/sources', [
                     'data' => [
                         'attributes' => [
@@ -131,6 +133,14 @@ class PaymentController extends Controller
                 $status->save();
             }
         }
+
+        $paymentTypeLabel = $paymentType === 'full' ? 'Full balance repayment' : 'Monthly payment';
+        AuditLog::log(
+            'GCash Loan Repayment',
+            "{$paymentTypeLabel} via GCash for loan #{$lendingId}" . ($paymentType === 'full' ? ' (loan completed)' : ''),
+            'loan_repayment',
+            $lendingId
+        );
 
         return redirect()->route('LoanStatus', ['loan_id' => $lendingId])
             ->with('success', 'GCash payment successful!');

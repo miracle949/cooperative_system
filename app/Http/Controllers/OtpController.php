@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -35,6 +36,13 @@ class OtpController extends Controller
             ], 500);
         }
 
+        AuditLog::log(
+            'Sent OTP',
+            "Sent OTP verification email to {$email}",
+            'otp',
+            null
+        );
+
         return response()->json(['sent' => true]);
     }
 
@@ -59,6 +67,13 @@ class OtpController extends Controller
 
         Session::forget(['email_otp', 'email_otp_email', 'email_otp_expires']);
         Session::put('email_otp_verified_email', $request->email);
+
+        AuditLog::log(
+            'Verified OTP',
+            "OTP verified for email {$request->email}",
+            'otp',
+            null
+        );
 
         return response()->json(['valid' => true]);
     }
