@@ -179,7 +179,7 @@
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
                         <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                        <input type="text" name="middle_name" id="middle_name" class="form-control"
+                        <input type="text" name="middle_name" id="middle_name" placeholder="Optional" class="form-control"
                             oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
@@ -236,6 +236,74 @@
         <div class="form-step-body">
             <div class="row">
                 <div class="col-lg-4 mt-4">
+                    <label>Sex</label>
+                    <select name="sex" class="form-select" id="sex" required>
+                        <option value="">Choose sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                {{-- ── Citizenship — standard <select>, options populated by JS ── --}}
+                <div class="col-lg-4 mt-4">
+                    <label>Citizenship</label>
+                    <select name="citizenship" id="citizenship" class="form-select" required>
+                        <option value="">Select citizenship</option>
+                        {{-- JS will inject all options below --}}
+                    </select>
+                </div>
+
+                <div class="col-lg-4 mt-4">
+                    <label>Skills/Expertise</label>
+                    <input type="text" name="skills_expertise" class="form-control" placeholder="Optional" id="skills_expertise">
+                    <!-- <div class="reminder">
+                        <span>(Optional)</span>
+                    </div> -->
+                </div>
+
+                <div class="col-lg-6 col-md-12 mt-4">
+                <label>Username *</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+
+            <div class="col-lg-6 mt-4">
+                <label class="text-start">Membership category?</label>
+                <select name="membership_category" id="select_type" class="form-select" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option value="Operator">Operator - (Manages transport operations.)</option>
+                    <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
+                    <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
+                    <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
+                    </option>
+                    <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
+                        helper).)</option>
+                    <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple transport
+                        units.)</option>
+                    <option value="Investor Associate">Investor Associate - (Provides capital but not involved in daily
+                        operations.)</option>
+                </select>
+            </div>
+
+            </div>
+        </div>
+
+        <div class="logo-image">
+            <div class="tw:bg-white tw:flex tw:justify-center tw:items-center tw:flex-col picture"
+                style="border: 1px solid rgba(0,0,0,0.3); border-radius: 10px;">
+                <img src="" alt="" class="" id="inputImage">
+                <p class="fw-semibold" id="text">Photo</p>
+                <p class="tw:text-[#808080]" id="text2">Click here!</p>
+                <input type="file" name="profile_picture" id="inputBox" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="line-body"></div>
+
+    <div class="form-step-body">
+
+        <div class="row">
+                <div class="col-lg-4 mt-4">
                     <label>Email *</label>
                     <input type="email" name="email" id="email" class="form-control"
                         pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
@@ -277,11 +345,11 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 mt-4">
                     <label>Username *</label>
-                    <input type="text" name="username" id="username" class="form-control">
+                    <input type="text" name="username" id="username" class="form-control" required>
                 </div>
                 <div class="col-lg-6 mt-4">
                     <label class="text-start">Membership category?</label>
-                    <select name="membership_category" id="select_type" class="form-select">
+                    <select name="membership_category" id="select_type" class="form-select" required>
                         <option value="" disabled selected>Select category</option>
                         <option value="Operator">Operator - (Manages transport operations.)</option>
                         <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>

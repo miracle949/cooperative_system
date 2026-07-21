@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
 use App\Models\lending_repayments_tbl;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -21,7 +22,7 @@ class lendingController extends Controller
 
         $deposits = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
-            ->where('type', 'Deposit')
+            ->whereIn('type', ['Deposit', 'Subscription'])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
 
@@ -260,7 +261,7 @@ class lendingController extends Controller
 
         $deposits = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
-            ->where('type', 'Deposit')
+            ->whereIn('type', ['Deposit', 'Subscription'])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
 
@@ -451,6 +452,13 @@ class lendingController extends Controller
                 'cor' => $storeFile('cor', 'cor'),
             ]);
 
+            AuditLog::log(
+                'Member Loan Application',
+                "Applied for {$lendingType} loan of ₱{$request->lending_amount} (Ref: {$referenceNo})",
+                'loan',
+                lending_program_tbl::where('reference_no', $referenceNo)->first()?->id
+            );
+
             return redirect()->route('LoanApplication')
                 ->with('ApplySuccess', true)
                 ->with('ReferenceNo', $referenceNo)
@@ -472,36 +480,77 @@ class lendingController extends Controller
             'payment_type' => 'nullable|in:monthly,full',
         ]);
 
-        lending_repayments_tbl::create([
-            'lending_id' => $request->lending_id,
-            'user_id' => auth()->id(),
-            'payment_number' => $request->payment_number,
-            'amount_paid' => $request->amount_paid,
-            'payment_date' => now()->format('Y-m-d'),
-            'payment_method' => $request->payment_method,
-            'payment_type' => $request->payment_type ?? 'monthly',   // ← add this
-            'reference_no' => $request->reference_no ?: 'RCP-' . now()->format('YmdHis'),
-            'notes' => $request->notes,
-            'recorded_by' => null,
-        ]);
-
+        $loan = lending_program_tbl::findOrFail($request->lending_id);
         $status = lending_status_tbl::where('lending_id', $request->lending_id)->first();
+        $paymentType = $request->get('payment_type', 'monthly');
 
-        if ($status) {
-            $status->total_paid += $request->amount_paid;
-            $status->remaining_balance = max(0, $status->remaining_balance - $request->amount_paid);
-            $status->payments_made += 1;
+        if ($paymentType === 'full' && $status) {
+            // ── FULL REPAYMENT (Cash) ────────────────────────────────────────
+            $remainingPayments = $status->total_payments - $status->payments_made;
 
-            if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
-                $status->status = 'Completed';
-                $status->payments_made = $status->total_payments; // 
-
-                lending_program_tbl::where('id', $request->lending_id)
-                    ->update(['status' => 'Completed']);
+            for ($i = 1; $i <= $remainingPayments; $i++) {
+                $paymentsMade = lending_repayments_tbl::where('lending_id', $request->lending_id)->count();
+                lending_repayments_tbl::create([
+                    'lending_id' => $request->lending_id,
+                    'user_id' => auth()->id(),
+                    'payment_number' => $paymentsMade + 1,
+                    'amount_paid' => $loan->monthly_payment,
+                    'payment_date' => now()->format('Y-m-d'),
+                    'payment_method' => $request->payment_method,
+                    'reference_no' => $request->reference_no ?: 'RCP-FULL-' . now()->format('YmdHis') . '-' . $i,
+                    'notes' => 'Full balance repayment',
+                    'recorded_by' => null,
+                ]);
             }
 
+            // Mark loan as fully paid
+            $status->total_paid += $request->amount_paid;
+            $status->remaining_balance = 0;
+            $status->payments_made = $status->total_payments;
+            $status->status = 'Completed';
             $status->save();
+
+            lending_program_tbl::where('id', $request->lending_id)
+                ->update(['status' => 'Completed']);
+
+        } else {
+            // ── SINGLE MONTHLY PAYMENT ───────────────────────────────────────
+            lending_repayments_tbl::create([
+                'lending_id' => $request->lending_id,
+                'user_id' => auth()->id(),
+                'payment_number' => $request->payment_number,
+                'amount_paid' => $request->amount_paid,
+                'payment_date' => now()->format('Y-m-d'),
+                'payment_method' => $request->payment_method,
+                'reference_no' => $request->reference_no ?: 'RCP-' . now()->format('YmdHis'),
+                'notes' => $request->notes,
+                'recorded_by' => null,
+            ]);
+
+            if ($status) {
+                $status->total_paid += $request->amount_paid;
+                $status->remaining_balance = max(0, $status->remaining_balance - $request->amount_paid);
+                $status->payments_made += 1;
+
+                if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
+                    $status->status = 'Completed';
+                    $status->payments_made = $status->total_payments;
+
+                    lending_program_tbl::where('id', $request->lending_id)
+                        ->update(['status' => 'Completed']);
+                }
+
+                $status->save();
+            }
         }
+
+        $paymentTypeLabel = $paymentType === 'full' ? 'Full repayment' : 'Monthly payment';
+        AuditLog::log(
+            'Loan Repayment',
+            "{$paymentTypeLabel} of ₱{$request->amount_paid} on loan (ID: {$request->lending_id})",
+            'loan',
+            $request->lending_id
+        );
 
         return redirect()->route('LoanStatus', ['loan_id' => $request->lending_id])
             ->with('success', 'Payment recorded successfully!');
@@ -563,6 +612,13 @@ class lendingController extends Controller
                 'due_date' => now()->addMonths($termMonths)->format('Y-m-d'),
                 'status' => 'Active',
             ]);
+
+            AuditLog::log(
+                'Loan Status Initialized',
+                "Initialized lending status for loan #{$selectedLoan->id} (auto-created on status view)",
+                'loan_status',
+                $lendingStatus->id
+            );
         }
 
         $paymentHistory = $selectedLoan

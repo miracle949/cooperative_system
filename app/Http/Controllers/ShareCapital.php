@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Models\share_capital_transaction_tbl;
 use App\Models\share_capital_account_tbl;
+use App\Models\Users_tbl;
+use App\Models\ResignationRequest_tbl;
+use App\Models\AuditLog;
 use Carbon\Carbon;
 
 class ShareCapital extends Controller
@@ -26,7 +29,7 @@ class ShareCapital extends Controller
         if ($account) {
             $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
@@ -40,7 +43,7 @@ class ShareCapital extends Controller
 
             $deposits = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
 
@@ -51,6 +54,12 @@ class ShareCapital extends Controller
                 ->sum('shares') ?? 0;
 
             $currentShares = $deposits - $withdrawals;
+
+            // Redirect users who already have share capital to the member page
+            // But allow the success modal to show first
+            if ($currentShares >= 10 && !session('success')) {
+                return redirect()->route('ShareCapitalMember');
+            }
         } else {
             $currentBalance = 0;
             $currentShares = 0;
@@ -175,7 +184,7 @@ class ShareCapital extends Controller
         if ($account) {
             $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
@@ -189,7 +198,7 @@ class ShareCapital extends Controller
 
             $deposits = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
 
@@ -360,6 +369,40 @@ class ShareCapital extends Controller
                 ->withInput();
         }
 
+        // ── FIX 3: Full withdrawal → auto-resignation ───────────────────
+        if ($type === 'Withdrawal' && $totalAmount >= $currentBalance) {
+            $existing = ResignationRequest_tbl::where('user_id', $memberId)
+                ->whereIn('status', ['pending'])
+                ->first();
+
+            if ($existing) {
+                return redirect()->back()
+                    ->with('error', 'You already have a pending resignation request.')
+                    ->withInput();
+            }
+
+            DB::beginTransaction();
+            try {
+                ResignationRequest_tbl::create([
+                    'user_id' => $memberId,
+                    'withdraw_share_capital' => true,
+                    'status' => 'pending',
+                ]);
+
+                Users_tbl::where('id', $memberId)->update(['status' => 'resignation_pending']);
+
+                DB::commit();
+
+                return redirect()->route('ShareCapitalMember')
+                    ->with('warning', 'Fully withdrawing your share capital requires resigning from the cooperative. Your resignation request has been automatically submitted for approval, subject to the 60-day release rule.');
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return redirect()->back()
+                    ->with('error', 'Failed to process resignation: ' . $e->getMessage())
+                    ->withInput();
+            }
+        }
+
         DB::beginTransaction();
 
         try {
@@ -421,6 +464,13 @@ class ShareCapital extends Controller
 
             DB::commit();
 
+            AuditLog::log(
+                'Member ' . ($type === 'Withdrawal' ? 'Share Capital Withdrawal Request' : 'Share Capital ' . $type),
+                ($type === 'Withdrawal' ? 'Requested withdrawal of ' : 'Subscribed ') . $shares . ' shares (₱' . number_format($totalAmount, 2) . ') (Ref: ' . $referenceNo . ')',
+                'share_capital',
+                $accountId
+            );
+
             $memberName = $this->resolveMemberName();
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
@@ -476,6 +526,40 @@ class ShareCapital extends Controller
                     ->with('error', 'Withdrawal amount (₱' . number_format($totalAmount, 0) . ') exceeds your current balance (₱' . number_format($currentBalance, 0) . ').')
                     ->withInput();
             }
+
+            // Full withdrawal via GCash → auto-resignation
+            if ($totalAmount >= $currentBalance) {
+                $existing = ResignationRequest_tbl::where('user_id', $memberId)
+                    ->whereIn('status', ['pending'])
+                    ->first();
+
+                if ($existing) {
+                    return redirect()->back()
+                        ->with('error', 'You already have a pending resignation request.')
+                        ->withInput();
+                }
+
+                DB::beginTransaction();
+                try {
+                    ResignationRequest_tbl::create([
+                        'user_id' => $memberId,
+                        'withdraw_share_capital' => true,
+                        'status' => 'pending',
+                    ]);
+
+                    Users_tbl::where('id', $memberId)->update(['status' => 'resignation_pending']);
+
+                    DB::commit();
+
+                    return redirect()->route('ShareCapitalMember')
+                        ->with('warning', 'Fully withdrawing your share capital requires resigning from the cooperative. Your resignation request has been automatically submitted for approval, subject to the 60-day release rule.');
+                } catch (\Throwable $e) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->with('error', 'Failed to process resignation: ' . $e->getMessage())
+                        ->withInput();
+                }
+            }
         }
 
         session([
@@ -487,6 +571,7 @@ class ShareCapital extends Controller
         ]);
 
         $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
+            ->withOptions(['verify' => false])
             ->post('https://api.paymongo.com/v1/sources', [
                 'data' => [
                     'attributes' => [
@@ -590,6 +675,13 @@ class ShareCapital extends Controller
 
             DB::commit();
 
+            AuditLog::log(
+                'GCash Share Capital ' . $type,
+                "GCash payment of {$shares} shares (₱{$totalAmount}) for share capital {$type} (Ref: {$referenceNo})",
+                'share_capital',
+                $accountId
+            );
+
             $memberName = $this->resolveMemberName();
             // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
@@ -634,13 +726,13 @@ class ShareCapital extends Controller
         $user = \App\Models\Users_tbl::findOrFail($id);
 
         $account = DB::table('share_capital_account_tbls')
-            ->where('user_id', $user)
+            ->where('user_id', $id)
             ->first();
 
         if ($account) {
             $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
@@ -654,7 +746,7 @@ class ShareCapital extends Controller
 
             $deposits = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
 
@@ -689,6 +781,131 @@ class ShareCapital extends Controller
             'dividendRate',
             'user'
         ));
+    }
+
+    /**
+     * Sell/transfer shares from one member to another (admin only).
+     */
+    public function sellShares(Request $request)
+    {
+        $request->validate([
+            'seller_id' => 'required|exists:users_tbls,id',
+            'buyer_id' => 'required|exists:users_tbls,id|different:seller_id',
+            'shares' => 'required|numeric|min:0.5',
+            'amount' => 'required|numeric|min:1000',
+        ], [
+            'amount.min' => 'The transfer amount must be at least ₱1,000.',
+        ]);
+
+        $sellerId = (int) $request->seller_id;
+        $buyerId = (int) $request->buyer_id;
+        $shares = (float) $request->shares;
+        $totalAmount = (float) $request->amount;
+        $amountPerShare = 1000;
+        $now = Carbon::now();
+
+        DB::beginTransaction();
+        try {
+            $sellerAccount = DB::table('share_capital_account_tbls')
+                ->where('user_id', $sellerId)
+                ->first();
+
+            if (!$sellerAccount || (float) $sellerAccount->total_shares < $shares) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient shares. Seller has ' . ($sellerAccount->total_shares ?? 0) . ' shares.'
+                ], 422);
+            }
+
+            DB::table('share_capital_account_tbls')
+                ->where('user_id', $sellerId)
+                ->update([
+                    'total_shares' => (float) $sellerAccount->total_shares - $shares,
+                    'total_amount' => (float) $sellerAccount->total_amount - $totalAmount,
+                    'updated_at' => $now,
+                ]);
+
+            $buyerAccount = DB::table('share_capital_account_tbls')
+                ->where('user_id', $buyerId)
+                ->first();
+
+            if ($buyerAccount) {
+                DB::table('share_capital_account_tbls')
+                    ->where('user_id', $buyerId)
+                    ->update([
+                        'total_shares' => (float) $buyerAccount->total_shares + $shares,
+                        'total_amount' => (float) $buyerAccount->total_amount + $totalAmount,
+                        'status' => 'Active',
+                        'updated_at' => $now,
+                    ]);
+                $buyerAccountId = $buyerAccount->id;
+            } else {
+                $buyerAccountId = DB::table('share_capital_account_tbls')->insertGetId([
+                    'user_id' => $buyerId,
+                    'total_shares' => $shares,
+                    'total_amount' => $totalAmount,
+                    'status' => 'Active',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            }
+
+            $refNo = 'TRF-' . strtoupper(uniqid()) . '-' . now()->format('Ymd');
+
+            DB::table('share_capital_transaction_tbls')->insert([
+                'share_capital_account_id' => $sellerAccount->id,
+                'type' => 'Withdrawal',
+                'shares' => $shares,
+                'amount_per_share' => $amountPerShare,
+                'total_amount' => $totalAmount,
+                'payment_method' => 'transfer',
+                'reference_no' => $refNo,
+                'note' => 'Transferred to member #' . $buyerId . ' (share transfer)',
+                'status' => 'Completed',
+                'transaction_date' => $now->toDateString(),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            DB::table('share_capital_transaction_tbls')->insert([
+                'share_capital_account_id' => $buyerAccountId,
+                'type' => 'Deposit',
+                'shares' => $shares,
+                'amount_per_share' => $amountPerShare,
+                'total_amount' => $totalAmount,
+                'payment_method' => 'transfer',
+                'reference_no' => $refNo,
+                'note' => 'Transferred from member #' . $sellerId . ' (share transfer)',
+                'status' => 'Completed',
+                'transaction_date' => $now->toDateString(),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+
+            DB::commit();
+
+            $seller = DB::table('users_tbls')->where('id', $sellerId)->first();
+            $buyer = DB::table('users_tbls')->where('id', $buyerId)->first();
+            AuditLog::log(
+                'Transferred Share Capital',
+                "Transferred {$shares} shares (₱{$totalAmount}) from {$seller?->first_name} {$seller?->last_name} (#{$sellerId}) to {$buyer?->first_name} {$buyer?->last_name} (#{$buyerId}) (Ref: {$refNo})",
+                'share_capital_transfer',
+                $sellerId
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => number_format($shares, 0) . ' shares (₱' . number_format($totalAmount, 2) . ') transferred successfully!',
+                'reference_no' => $refNo,
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Transfer failed: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

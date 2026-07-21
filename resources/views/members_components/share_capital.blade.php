@@ -485,6 +485,13 @@
                                         <strong>not</strong> be reduced until the request is approved.
                                     </div>
 
+                                    {{-- Full withdrawal → auto-resignation warning --}}
+                                    <div id="modal-full-withdrawal-warning"
+                                        style="display:none; background:#fef2f2; border:1.5px solid #fecaca; border-radius:10px; padding:0.65rem 1rem; margin-bottom:0.9rem; font-size:12px; color:#991b1b; line-height:1.5;">
+                                        <i class="fa fa-circle-exclamation" style="margin-right:6px;"></i>
+                                        <strong>Notice:</strong> Fully withdrawing your share capital is equivalent to resigning. This action will submit a resignation request and is subject to a 60-day holding period upon approval.
+                                    </div>
+
                                     <div style="margin-bottom: 0.9rem;">
                                         <label
                                             style="font-size: 13px; color: #666; display: block; margin-bottom: 6px;">Payment
@@ -1007,6 +1014,17 @@
                 inlineErrorText.textContent = '';
             }
 
+            /* ── Show/hide full-withdrawal resignation warning ── */
+            var fullWithdrawalWarning = document.getElementById('modal-full-withdrawal-warning');
+
+            function toggleFullWithdrawalWarning(cost) {
+                if (CURRENT_BALANCE > 0 && cost >= CURRENT_BALANCE) {
+                    fullWithdrawalWarning.style.display = 'block';
+                } else {
+                    fullWithdrawalWarning.style.display = 'none';
+                }
+            }
+
             /* ── Validate withdrawal amount, returns true if OK ── */
             function validateWithdrawal(cost) {
                 if (CURRENT_BALANCE <= 0) {
@@ -1021,6 +1039,7 @@
                     return false;
                 }
                 clearInlineError();
+                toggleFullWithdrawalWarning(cost);
                 return true;
             }
 
@@ -1037,6 +1056,8 @@
                 });
                 if (typeEl.value === 'Withdrawal') {
                     validateWithdrawal(v * PRICE);
+                } else {
+                    toggleFullWithdrawalWarning(0);
                 }
             }
 
@@ -1047,6 +1068,7 @@
             /* ── Type select — show notice + immediately validate on Withdrawal ── */
             typeEl.onchange = function () {
                 clearInlineError();
+                fullWithdrawalWarning.style.display = 'none';
                 withdrawalNotice.style.display = (this.value === 'Withdrawal') ? 'block' : 'none';
                 if (this.value === 'Withdrawal') {
                     validateWithdrawal(+inp.value * PRICE);
@@ -1072,6 +1094,7 @@
                 gcashBox.style.display = 'none';
                 submitBtn.style.display = 'flex';
                 withdrawalNotice.style.display = 'none';
+                fullWithdrawalWarning.style.display = 'none';
                 document.getElementById('modal-note').value = '';
                 clearInlineError();
             });

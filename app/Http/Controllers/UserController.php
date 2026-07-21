@@ -7,14 +7,20 @@ use App\Models\Otherinfo_tbl;
 use App\Models\Spouse_tbl;
 use App\Models\Users_tbl;
 use App\Models\Membervehi_tbl;
+use App\Models\Family_tbl;
+use App\Models\Membergovern_ids_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
 use App\Models\share_capital_account_tbl;
 use App\Models\share_capital_transaction_tbl;
 use App\Models\lending_program_tbl;
 use App\Models\lending_status_tbl;
+use App\Models\lending_repayments_tbl;
 use App\Models\Loan_settings_tbl;
+use App\Models\Dividend;
+use App\Models\CooperativeTransaction;
 use App\Models\system_settings_tbl;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
@@ -69,7 +75,7 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'Member';
+        $user->role = 'member';
         $user->save();
 
         $otherInfo = DB::table('otherinfo_tbls')->where('user_id', $id)->first();
@@ -90,6 +96,13 @@ class UserController extends Controller
                 'approval_status' => 'Approved',
             ]);
         }
+
+        AuditLog::log(
+            'Approved Member',
+            "Approved member {$user->first_name} {$user->last_name} (ID: {$id})",
+            'user',
+            $id
+        );
 
         Mail::to($user->email)->send(new ApprovedMail($user));
 
@@ -117,6 +130,13 @@ class UserController extends Controller
             ]);
         }
 
+        AuditLog::log(
+            'Sent Share Capital Invitation',
+            "Sent share capital invitation email to {$user->first_name} {$user->last_name} (ID: {$id})",
+            'user',
+            $id
+        );
+
         Mail::to($user->email)->sendNow(new ShareCapital($user));
 
         return redirect()->back()->with('success', 'Share capital invitation sent!');
@@ -125,6 +145,13 @@ class UserController extends Controller
     public function declineUser($id)
     {
         $user = Users_tbl::findOrFail($id);
+
+        AuditLog::log(
+            'Declined Member',
+            "Declined and removed member {$user->first_name} {$user->last_name} (ID: {$id})",
+            'user',
+            $id
+        );
 
         Mail::to($user->email)->send(new DeclinedMail($user));
 
@@ -143,6 +170,10 @@ class UserController extends Controller
             $user = Users_tbl::findOrFail($request->id);
             $previousRole = $user->role;
 
+            if ($request->has('role') && in_array($request->role, ['admin', 'officer']) && !auth()->user()->isMainAdmin()) {
+                return response()->json(['success' => false, 'message' => 'Only the main admin can assign admin or officer roles.'], 403);
+            }
+
             $fillable = ['first_name', 'middle_name', 'last_name', 'email', 'contact_no', 'date_of_birth', 'present_address', 'permanent_address', 'sex', 'civil_status', 'citizenship', 'place_of_birth', 'blood_type', 'height', 'weight', 'role'];
             
             $data = $request->only($fillable);
@@ -160,12 +191,12 @@ class UserController extends Controller
                             ->update([
                                 'membership_status' => 'Active',
                                 'approval_status' => 'Approved',
+                                'signature' => null,
                             ]);
                     } else {
                         DB::table('otherinfo_tbls')->insert([
                             'user_id' => $request->id,
                             'membership_category' => 'Investor Associate',
-                            'signature' => '',
                             'membership_status' => 'Active',
                             'approval_status' => 'Approved',
                         ]);
@@ -179,15 +210,93 @@ class UserController extends Controller
                 }
             }
 
+            AuditLog::log(
+                'Updated Member',
+                "Updated member {$user->first_name} {$user->last_name} (ID: {$request->id})",
+                'user',
+                $request->id
+            );
+
             return response()->json(['success' => true, 'message' => 'Member updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
+    public function storeMember(Request $request)
+    {
+        try {
+            $request->validate([
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'email' => 'required|email|unique:users_tbls,email',
+                'username' => 'required|unique:users_tbls,username',
+                'password' => 'required|min:6',
+                'membership_category' => 'required',
+                'date_of_birth' => 'required|date',
+                'civil_status' => 'required',
+            ]);
+
+            $user = Users_tbl::create([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'role' => 'member',
+            ]);
+
+            Otherinfo_tbl::create([
+                'user_id' => $user->id,
+                'membership_category' => $request->membership_category,
+                'date_of_birth' => $request->date_of_birth,
+                'place_of_birth' => $request->place_of_birth,
+                'sex' => $request->sex,
+                'civil_status' => $request->civil_status,
+                'citizenship' => $request->citizenship,
+                'contact_no' => $request->contact_no,
+                'present_address' => $request->present_address,
+                'skills' => $request->skills,
+                'approval_status' => 'Approved',
+                'membership_status' => 'Active',
+            ]);
+
+            Family_tbl::create([
+                'user_id' => $user->id,
+                'spouse_name' => $request->spouse_name,
+                'spouse_date_birth' => $request->spouse_date_birth,
+                'spouse_place_birth' => $request->spouse_place_birth,
+                'number_son' => $request->number_son ?? 0,
+                'number_daughter' => $request->number_daughter ?? 0,
+            ]);
+
+            Membergovern_ids_tbl::create([
+                'user_id' => $user->id,
+            ]);
+
+            AuditLog::log(
+                'Added Member',
+                "Added new member {$request->first_name} {$request->last_name} (ID: {$user->id})",
+                'user',
+                $user->id
+            );
+
+            return redirect()->back()->with('success', 'Member added successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error adding member: ' . $e->getMessage());
+        }
+    }
+
     public function sendShareCapitalEmail($id)
     {
         $user = Users_tbl::findOrFail($id);
+        AuditLog::log(
+            'Sent Share Capital Email',
+            "Sent share capital email to {$user->first_name} {$user->last_name} (ID: {$id})",
+            'user',
+            $id
+        );
         Mail::to($user->email)->sendNow(new ShareCapital($user));
         return redirect()->back()->with('success', 'Share capital email sent to member!');
     }
@@ -286,12 +395,52 @@ class UserController extends Controller
         // Stats Cards
         $totalMembers = Users_tbl::where('role', 'member')->count();
         $totalSavings = savings_account_tbl::sum('balance') ?? 0;
+        $totalShareCapital = \App\Models\share_capital_account_tbl::sum('total_amount') ?? 0;
         $activeLoans = lending_program_tbl::where('status', 'Approved')->sum('lending_amount') ?? 0;
         $earnedInterests = lending_program_tbl::where('status', 'Completed')->sum('total_interest') ?? 0;
 
         // Savings Activity counts
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->count();
         $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')->count();
+
+        // Pending counts
+        $pendingMembersCount = Users_tbl::where('role', 'pending')->count();
+        $pendingLoansCount = lending_program_tbl::where('status', 'Pending')->count();
+        $pendingWithdrawalsCount = share_capital_transaction_tbl::where('type', 'Withdrawal')
+            ->whereIn('status', ['Pending', 'pending'])->count();
+
+        // Pending Resignations
+        $pendingResignationsCount = \App\Models\ResignationRequest_tbl::where('status', 'pending')->count();
+        $pendingResignationsList = \App\Models\ResignationRequest_tbl::with('user')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get()
+            ->map(function ($req) {
+                return [
+                    'id' => $req->id,
+                    'name' => $req->user ? $req->user->first_name . ' ' . $req->user->last_name : 'Unknown',
+                    'withdraw' => $req->withdraw_share_capital,
+                    'time' => $req->created_at ? $req->created_at->diffForHumans() : 'N/A',
+                    'created_at' => $req->created_at,
+                ];
+            });
+
+        // Upcoming Seminars
+        $upcomingSeminars = \App\Models\Seminars_tbl::where('schedule_datetime', '>=', now())
+            ->orderBy('schedule_datetime')
+            ->take(5)
+            ->get()
+            ->map(function ($seminar) {
+                return [
+                    'id' => $seminar->id,
+                    'type' => $seminar->seminar_type,
+                    'schedule' => $seminar->schedule_datetime ? $seminar->schedule_datetime->format('M d, Y g:i A') : 'N/A',
+                    'delivery' => $seminar->delivery_type,
+                    'venue' => $seminar->delivery_type === 'online' ? $seminar->online_link : ($seminar->exact_venue ?? $seminar->meetup_place ?? 'N/A'),
+                ];
+            });
+        $upcomingSeminarsCount = $upcomingSeminars->count();
 
         // === TO-DO LISTS ===
 
@@ -354,10 +503,6 @@ class UserController extends Controller
             });
 
         // Counts for tab badges
-        $pendingMembersCount = $pendingMembersList->count();
-        $pendingLoansCount = lending_program_tbl::where('status', 'Pending')->count();
-        $pendingWithdrawalsCount = share_capital_transaction_tbl::where('type', 'Withdrawal')
-            ->whereIn('status', ['Pending', 'pending'])->count();
 
         // === RECENT ACTIVITY - SEPARATE BY TYPE ===
 
@@ -484,6 +629,12 @@ class UserController extends Controller
             $loansByTypeDetails[$normalizedType][] = $loan;
         }
 
+        // Audit Logs
+        $auditLogs = AuditLog::with('user')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
         // Recent Savings Transactions (for modal)
         $recentSavingsTransactions = savings_transaction_tbl::with('savingsAccount.user')
             ->orderByDesc('created_at')
@@ -504,6 +655,7 @@ class UserController extends Controller
         return view("admin_components.dashboard", compact(
             'totalMembers',
             'totalSavings',
+            'totalShareCapital',
             'activeLoans',
             'earnedInterests',
             'totalDeposits',
@@ -514,13 +666,17 @@ class UserController extends Controller
             'pendingMembersCount',
             'pendingLoansCount',
             'pendingWithdrawalsCount',
+            'pendingResignationsCount',
+            'pendingResignationsList',
+            'upcomingSeminars',
+            'upcomingSeminarsCount',
             'recentTransactions',
             'recentMemberApprovals',
             'savingsByMonth',
             'memberActivity',
             'loanTypeCounts',
             'loansByTypeDetails',
-            'recentSavingsTransactions'
+            'auditLogs'
         ));
     }
 
@@ -537,9 +693,32 @@ class UserController extends Controller
             $query->where('role', 'inactive');
         }
 
-        $members = $query->paginate(10);
-        $pendingRequests = Users_tbl::where('role', 'pending')->get();
+        $members = $query->orderBy('id', 'asc')->paginate(10);
+        $pendingRequests = Users_tbl::where('role', 'pending')->orderBy('id', 'asc')->get();
         $admins = Users_tbl::where('role', 'admin')->get();
+
+        $resignationRequests = \App\Models\ResignationRequest_tbl::with('user')
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $inProcessResignations = \App\Models\ResignationRequest_tbl::with('user')
+            ->where('status', 'approved')
+            ->where('is_released', false)
+            ->where('withdraw_share_capital', true)
+            ->orderBy('release_date', 'asc')
+            ->get();
+
+        $resignees = \App\Models\ResignationRequest_tbl::with('user')
+            ->where(function ($q) {
+                $q->where('is_released', true)
+                  ->orWhere(function ($q2) {
+                      $q2->where('status', 'approved')
+                         ->where('withdraw_share_capital', false);
+                  });
+            })
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         $memberCategoryCounts = DB::table('otherinfo_tbls')
             ->join('users_tbls', 'otherinfo_tbls.user_id', '=', 'users_tbls.id')
@@ -554,6 +733,12 @@ class UserController extends Controller
             ->select('otherinfo_tbls.membership_category', DB::raw('COUNT(*) as count'))
             ->groupBy('otherinfo_tbls.membership_category')
             ->pluck('count', 'membership_category');
+
+        $roles = \App\Models\Role::orderBy('name')->get();
+        $roleCounts = [];
+        foreach ($roles as $role) {
+            $roleCounts[$role->slug] = Users_tbl::where('role', $role->slug)->count();
+        }
 
         $memberIds = $members->pluck('id')->toArray();
 
@@ -618,7 +803,7 @@ class UserController extends Controller
             return $member;
         });
 
-        return view("admin_components.members", compact('members', 'pendingRequests', 'admins', 'memberCategoryCounts', 'adminCategoryCounts'));
+        return view("admin_components.members", compact('members', 'pendingRequests', 'admins', 'memberCategoryCounts', 'adminCategoryCounts', 'resignationRequests', 'inProcessResignations', 'resignees', 'roles', 'roleCounts'));
     }
 
     public function dashboard_savings(Request $request)
@@ -814,6 +999,13 @@ class UserController extends Controller
         $transaction->archived = 1;
         $transaction->save();
 
+        AuditLog::log(
+            'Archived Savings Transaction',
+            "Archived savings transaction (ID: {$id}, Ref: {$transaction->reference_no})",
+            'savings',
+            $id
+        );
+
         return redirect()->back()->with('success', 'Transaction archived successfully.');
     }
 
@@ -823,12 +1015,20 @@ class UserController extends Controller
         $transaction->archived = 0;
         $transaction->save();
 
+        AuditLog::log(
+            'Unarchived Savings Transaction',
+            "Unarchived savings transaction (ID: {$id}, Ref: {$transaction->reference_no})",
+            'savings',
+            $id
+        );
+
         return redirect()->back()->with('success', 'Transaction restored successfully.');
     }
 
     public function dashboard_lendings(Request $request)
     {
         $statusFilter = $request->get('status', 'all');
+        $search = $request->get('search', '');
 
         $query = lending_program_tbl::with(['user', 'repayments' => function($q) { $q->select('id', 'lending_id', 'payment_number'); }])
             ->where('status', '!=', 'Archived');
@@ -837,10 +1037,20 @@ class UserController extends Controller
             $query->where('status', ucfirst($statusFilter));
         }
 
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('reference_no', 'like', "%{$search}%")
+                  ->orWhere('lending_type', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('first_name', 'like', "%{$search}%")
+                         ->orWhere('last_name', 'like', "%{$search}%")
+                         ->orWhereRaw("CONCAT(first_name, ' ', last_name) like ?", ["%{$search}%"]);
+                  });
+            });
+        }
+
         $loans = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        return view("admin_components.lending", compact('loans', 'statusFilter'));
-        
         $allMembers = Users_tbl::where('role', 'Member')
             ->orderBy('first_name')
             ->get();
@@ -853,7 +1063,7 @@ class UserController extends Controller
         
         $penalizedLoans = $this->calculatePenalties($lateFeePercentage, $gracePeriodMonths);
         
-        return view("admin_components.lending", compact('loans', 'statusFilter', 'allMembers', 'loanSettings', 'lateFeePercentage', 'gracePeriodMonths', 'penalizedLoans'));
+        return view("admin_components.lending", compact('loans', 'statusFilter', 'search', 'allMembers', 'loanSettings', 'lateFeePercentage', 'gracePeriodMonths', 'penalizedLoans'));
     }
 
     private function calculatePenalties($lateFeePercentage, $gracePeriodMonths)
@@ -892,6 +1102,13 @@ class UserController extends Controller
                     $loan->penalty_applied_at = now();
                     $loan->save();
                     
+                    AuditLog::log(
+                        'Applied Late Penalty',
+                        "Applied ₱{$lateFee} late fee to loan #{$loan->id} ({$monthsOverdue} month(s) overdue)",
+                        'loan_penalty',
+                        $loan->id
+                    );
+                    
                     $penalizedLoans[] = [
                         'id' => $loan->id,
                         'member_name' => ($loan->user->first_name ?? 'Unknown') . ' ' . ($loan->user->last_name ?? ''),
@@ -919,6 +1136,13 @@ class UserController extends Controller
             'late_fee_percentage' => $request->late_fee_percentage,
             'grace_period_months' => $request->grace_period_months
         ]);
+
+        AuditLog::log(
+            'Updated Loan Settings',
+            "Updated loan penalty settings: late fee {$request->late_fee_percentage}%, grace period {$request->grace_period_months} month(s)",
+            'settings',
+            null
+        );
         
         return redirect()->back()->with('success', 'Loan penalty settings updated successfully.');
     }
@@ -966,6 +1190,13 @@ class UserController extends Controller
         }
         $loan->save();
 
+        AuditLog::log(
+            'Admin Created Loan',
+            "Created {$request->lending_type} loan of ₱{$request->lending_amount} for {$member->first_name} {$member->last_name} (Ref: {$referenceNo})",
+            'loan',
+            $loan->id
+        );
+
         return redirect()->back()->with('success', 'Loan created successfully for ' . $member->first_name . ' ' . $member->last_name);
     }
 
@@ -974,6 +1205,14 @@ class UserController extends Controller
         $loan = lending_program_tbl::findOrFail($id);
         $loan->status = 'Approved';
         $loan->save();
+
+        $user = $loan->user;
+        AuditLog::log(
+            'Approved Loan',
+            "Approved loan (Ref: {$loan->reference_no}) for {$user->first_name} {$user->last_name} - ₱" . number_format($loan->lending_amount, 2),
+            'loan',
+            $id
+        );
 
         return redirect()->back()->with('success', 'Loan application approved successfully.');
     }
@@ -989,6 +1228,14 @@ class UserController extends Controller
         $loan->decline_reason = $request->decline_reason;
         $loan->save();
 
+        $user = $loan->user;
+        AuditLog::log(
+            'Declined Loan',
+            "Declined loan (Ref: {$loan->reference_no}) for {$user->first_name} {$user->last_name} - Reason: {$request->decline_reason}",
+            'loan',
+            $id
+        );
+
         return redirect()->back()->with('error', 'Loan application declined.');
     }
 
@@ -998,6 +1245,13 @@ class UserController extends Controller
         $loan->status = 'Archived';
         $loan->save();
 
+        AuditLog::log(
+            'Archived Loan',
+            "Archived loan (ID: {$id}, Ref: {$loan->reference_no})",
+            'loan',
+            $id
+        );
+
         return redirect()->back()->with('success', 'Loan archived successfully.');
     }
 
@@ -1006,6 +1260,13 @@ class UserController extends Controller
         $loan = lending_program_tbl::findOrFail($id);
         $loan->status = 'Approved';
         $loan->save();
+
+        AuditLog::log(
+            'Unarchived Loan',
+            "Unarchived loan (ID: {$id}, Ref: {$loan->reference_no})",
+            'loan',
+            $id
+        );
 
         return redirect()->back()->with('success', 'Loan restored successfully.');
     }
@@ -1037,7 +1298,7 @@ class UserController extends Controller
 
         $transactions = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        $totalContributions = share_capital_transaction_tbl::where('type', 'Deposit')
+        $totalContributions = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
             ->where('status', 'Completed')
             ->sum('total_amount') ?? 0;
 
@@ -1049,7 +1310,7 @@ class UserController extends Controller
 
         $perShareValue = 1000;
         
-        $deposits = share_capital_transaction_tbl::where('type', 'Deposit')
+        $deposits = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
         
@@ -1067,13 +1328,21 @@ class UserController extends Controller
             ->orderBy('first_name')
             ->get();
 
+        $pendingReleases = \App\Models\ResignationRequest_tbl::with('user.shareCapitalAccount')
+            ->where('status', 'approved')
+            ->where('withdraw_share_capital', true)
+            ->where('is_released', false)
+            ->orderBy('release_date', 'asc')
+            ->get();
+
         return view("admin_components.sharecapitals", compact(
             'transactions',
             'totalContributions',
             'currentValue',
             'perShareValue',
             'lastContribution',
-            'allMembers'
+            'allMembers',
+            'pendingReleases'
         ));
     }
 
@@ -1082,6 +1351,13 @@ class UserController extends Controller
         $transaction = share_capital_transaction_tbl::findOrFail($id);
         $transaction->archived = 1;
         $transaction->save();
+
+        AuditLog::log(
+            'Archived Share Capital Transaction',
+            "Archived share capital transaction (ID: {$id}, Ref: {$transaction->reference_no})",
+            'share_capital',
+            $id
+        );
 
         return redirect()->back()->with('success', 'Share capital transaction archived successfully.');
     }
@@ -1092,6 +1368,13 @@ class UserController extends Controller
         $transaction->archived = 0;
         $transaction->save();
 
+        AuditLog::log(
+            'Unarchived Share Capital Transaction',
+            "Unarchived share capital transaction (ID: {$id}, Ref: {$transaction->reference_no})",
+            'share_capital',
+            $id
+        );
+
         return redirect()->back()->with('success', 'Share capital transaction restored successfully.');
     }
 
@@ -1099,14 +1382,14 @@ class UserController extends Controller
     {
         $request->validate([
             'member_id' => 'required|exists:users_tbls,id',
-            'shares' => 'required|numeric|min:1',
+            'shares' => 'required|numeric|min:0.5',
             'type' => 'required|string|in:Deposit,Withdrawal',
             'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
             'note' => 'nullable|string|max:255',
         ]);
 
         $memberId = $request->member_id;
-        $shares = (int) $request->shares;
+        $shares = (float) $request->shares;
         $amountPerShare = 1000;
         $totalAmount = $shares * $amountPerShare;
         $type = $request->type;
@@ -1131,8 +1414,42 @@ class UserController extends Controller
                     'message' => 'Insufficient shares. Available: ' . $account->total_shares . ' shares'
                 ], 422);
             }
+
             $newShares = $account->total_shares - $shares;
             $newAmount = $account->total_amount - $totalAmount;
+
+            // Full withdrawal via admin → auto-resignation
+            if ($newShares <= 0) {
+                $existing = \App\Models\ResignationRequest_tbl::where('user_id', $memberId)
+                    ->whereIn('status', ['pending'])
+                    ->first();
+
+                if (!$existing) {
+                    \App\Models\ResignationRequest_tbl::create([
+                        'user_id' => $memberId,
+                        'withdraw_share_capital' => true,
+                        'status' => 'pending',
+                    ]);
+
+                    Users_tbl::where('id', $memberId)->update(['status' => 'resignation_pending']);
+                }
+
+                AuditLog::log(
+                    'Admin Withdrew All Share Capital',
+                    "Full withdrawal of {$account->total_shares} shares for member (ID: {$memberId}) triggered auto-resignation",
+                    'share_capital',
+                    $account->id
+                );
+
+                return response()->json([
+                    'success' => true,
+                    'warning' => true,
+                    'message' => 'Full withdrawal processed. An auto-resignation request has been created for this member, subject to the 60-day release rule.',
+                    'reference_no' => 'N/A',
+                    'new_shares' => 0,
+                    'new_amount' => 0,
+                ]);
+            }
         } else {
             $newShares = $account->total_shares + $shares;
             $newAmount = $account->total_amount + $totalAmount;
@@ -1158,6 +1475,14 @@ class UserController extends Controller
             'status' => 'Completed',
             'note' => $request->note,
         ]);
+
+        $member = Users_tbl::find($memberId);
+        AuditLog::log(
+            'Admin ' . ucfirst($type) . ' Share Capital',
+            ucfirst($type) . " of {$shares} shares (₱{$totalAmount}) for {$member?->first_name} {$member?->last_name} (Ref: {$referenceNo})",
+            'share_capital',
+            $account->id
+        );
 
         return response()->json([
             'success' => true,
@@ -1225,6 +1550,13 @@ class UserController extends Controller
             $transaction->status = 'Approved';
             $transaction->save();
 
+            AuditLog::log(
+                'Approved Share Capital Withdrawal',
+                "Approved withdrawal of {$transaction->shares} shares (Transaction ID: {$id})",
+                'share_capital',
+                $id
+            );
+
             return response()->json([
                 'success' => true,
                 'message' => 'Withdrawal request accepted successfully.',
@@ -1232,6 +1564,13 @@ class UserController extends Controller
         } else {
             $transaction->status = 'Rejected';
             $transaction->save();
+
+            AuditLog::log(
+                'Rejected Share Capital Withdrawal',
+                "Rejected withdrawal of {$transaction->shares} shares (Transaction ID: {$id})",
+                'share_capital',
+                $id
+            );
 
             return response()->json([
                 'success' => true,
@@ -1286,7 +1625,7 @@ class UserController extends Controller
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
 
-            $depositCap = share_capital_transaction_tbl::where('type', 'Deposit')
+            $depositCap = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
                 ->where('status', 'Completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
@@ -1442,7 +1781,305 @@ class UserController extends Controller
             'company_email' => system_settings_tbl::getValue('company_email', ''),
         ];
 
+        // Show ALL non-member users (admin, officer, secretary, treasurer, etc.)
+        $adminList = Users_tbl::whereNotIn('role', ['member', 'pending', 'inactive'])
+            ->orderBy('id')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email,
+                    'username' => $user->username,
+                    'role' => $user->role,
+                    'status' => $user->status,
+                    'sidebar_permissions' => $user->sidebar_permissions,
+                    'is_main' => $user->isMainAdmin(),
+                ];
+            });
+
+        $roles = \App\Models\Role::orderBy('name')->get();
+
+        $paymentMethods = \App\Models\PaymentMethod::orderBy('id')->get();
+
+        // Count users per role for dynamic admin categories
+        $roleCounts = [];
+        foreach ($roles as $role) {
+            $roleCounts[$role->slug] = Users_tbl::where('role', $role->slug)->count();
+        }
+
+        return view("admin_components.settings", compact('adminUser', 'companySettings', 'adminList', 'roles', 'roleCounts', 'paymentMethods'));
+    }
+
+    public function updateAdmin(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Only the main admin can update admin accounts.'], 403);
+        }
+
+        $validated = $request->validate([
+            'id'                   => 'required|exists:users_tbls,id',
+            'first_name'           => 'required|string|max:255',
+            'last_name'            => 'required|string|max:255',
+            'email'                => 'required|email|unique:users_tbls,email,' . $request->id,
+            'role'                 => 'required|string|exists:roles,slug',
+            'sidebar_permissions'  => 'nullable|array',
+            'sidebar_permissions.*' => 'string',
+        ]);
+
+        $user = Users_tbl::findOrFail($validated['id']);
+
+        if ($user->isMainAdmin() && auth()->id() !== $user->id) {
+            return response()->json(['success' => false, 'message' => 'Cannot modify the main admin account.'], 403);
+        }
+
+        $user->update([
+            'first_name'          => $validated['first_name'],
+            'last_name'           => $validated['last_name'],
+            'email'               => $validated['email'],
+            'role'                => $validated['role'],
+            'sidebar_permissions' => $validated['sidebar_permissions'] ?? [],
+        ]);
+
+        AuditLog::log(
+            'Updated Admin',
+            "Updated admin {$validated['first_name']} {$validated['last_name']} (ID: {$validated['id']})",
+            'user',
+            $validated['id']
+        );
+
+        return response()->json(['success' => true, 'message' => 'Admin account updated successfully.']);
+    }
+
+    public function deleteAdmin(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Only the main admin can delete admin accounts.'], 403);
+        }
+
+        $request->validate(['id' => 'required|exists:users_tbls,id']);
+
+        $user = Users_tbl::findOrFail($request->id);
+
+        if ($user->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Cannot delete the main admin account.'], 403);
+        }
+
+        AuditLog::log(
+            'Deactivated Admin',
+            "Deactivated admin {$user->first_name} {$user->last_name} (ID: {$request->id})",
+            'user',
+            $request->id
+        );
+
+        $user->update(['role' => 'inactive', 'status' => 'inactive']);
+
+        return response()->json(['success' => true, 'message' => 'Admin account deactivated successfully.']);
+    }
+
+    public function toggleAdminStatus(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Only the main admin can change admin status.'], 403);
+        }
+
+        $validated = $request->validate([
+            'id'     => 'required|exists:users_tbls,id',
+            'status' => 'required|in:active,inactive,pending',
+        ]);
+
+        $user = Users_tbl::findOrFail($validated['id']);
+
+        if ($user->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Cannot modify the main admin status.'], 403);
+        }
+
+        $user->update(['status' => $validated['status']]);
+
+        AuditLog::log(
+            'Changed Admin Status',
+            "Changed admin {$user->first_name} {$user->last_name} (ID: {$validated['id']}) status to {$validated['status']}",
+            'user',
+            $validated['id']
+        );
+
+        return response()->json(['success' => true, 'message' => 'Admin status updated to ' . ucfirst($validated['status']) . '.']);
+    }
+
+    public function storeAdmin(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            abort(403, 'Only the main admin can create admin or officer accounts.');
+        }
+
+        $validated = $request->validate([
+            'first_name'           => 'required|string|max:255',
+            'last_name'            => 'required|string|max:255',
+            'email'                => 'required|email|unique:users_tbls,email',
+            'password'             => 'required|string|min:8',
+            'role'                 => 'required|string|exists:roles,slug',
+            'sidebar_permissions'  => 'nullable|array',
+            'sidebar_permissions.*' => 'string',
+        ]);
+
+        $base = strtolower(preg_replace('/[^a-z0-9]/', '', $validated['first_name'] . '.' . $validated['last_name']));
+        $username = $base;
+        $counter = 1;
+        while (Users_tbl::where('username', $username)->exists()) {
+            $username = $base . $counter;
+            $counter++;
+        }
+
+        $user = Users_tbl::create([
+            'first_name'          => $validated['first_name'],
+            'last_name'           => $validated['last_name'],
+            'email'               => $validated['email'],
+            'password'            => bcrypt($validated['password']),
+            'role'                => $validated['role'],
+            'username'            => $username,
+            'status'              => 'active',
+            'sidebar_permissions' => $validated['sidebar_permissions'] ?? [],
+        ]);
+
+        DB::table('otherinfo_tbls')->insert([
+            'user_id'            => $user->id,
+            'membership_category' => 'Admin',
+            'signature'          => null,
+            'approval_status'    => 'Approved',
+            'created_at'         => now(),
+            'updated_at'         => now(),
+        ]);
+
+        AuditLog::log(
+            'Created Admin',
+            "Created admin account for {$validated['first_name']} {$validated['last_name']} (ID: {$user->id}) with role {$validated['role']}",
+            'user',
+            $user->id
+        );
+
+        return redirect()->route('settings', ['#admin-management'])
+            ->with('admin_created', true);
+    }
+
+    public function storeRole(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Only the main admin can create roles.'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+            'slug' => 'required|string|max:100|unique:roles,slug',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $role = \App\Models\Role::create([
+            'name' => $validated['name'],
+            'slug' => $validated['slug'],
+            'description' => $validated['description'] ?? null,
+            'is_system' => false,
+        ]);
+
+        AuditLog::log(
+            'Created Role',
+            "Created role '{$role->name}' ({$role->slug})",
+            'role',
+            $role->id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => "Role '{$role->name}' created successfully.",
+            'role' => $role,
+        ]);
+    }
+
+    public function deleteRole(Request $request)
+    {
+        if (!auth()->user()->isMainAdmin()) {
+            return response()->json(['success' => false, 'message' => 'Only the main admin can delete roles.'], 403);
+        }
+
+        $validated = $request->validate([
+            'id' => 'required|exists:roles,id',
+        ]);
+
+        $role = \App\Models\Role::findOrFail($validated['id']);
+
+        if ($role->is_system) {
+            return response()->json(['success' => false, 'message' => 'System roles cannot be deleted.'], 403);
+        }
+
+        $usersCount = Users_tbl::where('role', $role->slug)->count();
+        if ($usersCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "Cannot delete '{$role->name}' — {$usersCount} user(s) are assigned this role."
+            ], 409);
+        }
+
+        AuditLog::log(
+            'Deleted Role',
+            "Deleted role '{$role->name}' ({$role->slug})",
+            'role',
+            $validated['id']
+        );
+
+        $role->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Role '{$role->name}' deleted successfully."
+        ]);
+    }
+
+    public function storeCooperativeTransaction(Request $request)
+    {
+        $request->validate([
+            'description' => 'required|string|max:500',
+            'category' => 'required|string|in:Vehicle Purchase,Bank Investment,Office Equipment,Utilities,Maintenance,Other',
+            'transaction_type' => 'required|string|in:expense,investment',
+            'amount' => 'required|numeric|min:0.01',
+            'transaction_date' => 'required|date',
+        ]);
+
+        try {
+            $transaction = CooperativeTransaction::create([
+                'description' => $request->description,
+                'category' => $request->category,
+                'transaction_type' => $request->transaction_type,
+                'amount' => $request->amount,
+                'transaction_date' => $request->transaction_date,
+            ]);
+
+            AuditLog::log(
+                'Recorded Cooperative Transaction',
+                "Recorded {$request->transaction_type} of ₱{$request->amount} ({$request->category}: {$request->description})",
+                'cooperative_transaction',
+                $transaction->id
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transaction recorded successfully!',
+                'transaction' => $transaction,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to record transaction: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function dashboard_financial_activity(Request $request)
+    {
         $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+
+        $lateFeeSettings = Loan_settings_tbl::first();
+        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
+        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
 
         if ($request->isMethod('POST')) {
             $request->validate([
@@ -1466,14 +2103,170 @@ class UserController extends Controller
             }
 
             $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+
+            AuditLog::log(
+                'Updated Interest Rates',
+                "Updated loan interest rates: Personal={$request->interest_personal}%, Emergency={$request->interest_emergency}%, Business={$request->interest_business}%, Education={$request->interest_education}%",
+                'settings',
+                null
+            );
         }
 
-        return view("admin_components.settings", compact('adminUser', 'companySettings', 'loanSettings'));
+        // Dividend data
+        $year = $request->get('year', now()->year);
+        $distribution = DB::table('dividend_distributions')
+            ->where('year', $year)
+            ->first();
+
+        $dividends = collect();
+        $approvedCount = 0;
+        $disbursedCount = 0;
+        $totalSumShareCapital = 0;
+        $totalSumRecommended = 0;
+        $totalSumApproved = 0;
+        $currentYear = now()->year;
+        $years = DB::table('dividend_distributions')
+            ->orderByDesc('year')
+            ->pluck('year');
+
+        $dividendSetting = \App\Models\DividendSetting::where('year', $year)->first();
+        $dividendFundPercentage = $dividendSetting ? $dividendSetting->dividend_fund_percentage : 60.00;
+
+        if ($distribution) {
+            $dividends = Dividend::with('user')
+                ->where('year', $year)
+                ->orderBy('id')
+                ->paginate(10)
+                ->appends(['year' => $year]);
+
+            $approvedCount = Dividend::where('year', $year)->where('status', 'approved')->count();
+            $disbursedCount = Dividend::where('year', $year)->where('status', 'disbursed')->count();
+            $totalSumShareCapital = Dividend::where('year', $year)->sum('share_capital_amount');
+            $totalSumRecommended = Dividend::where('year', $year)->sum('recommended_amount');
+            $totalSumApproved = Dividend::where('year', $year)->sum('approved_amount');
+        }
+
+        $cooperativeTransactions = CooperativeTransaction::orderBy('created_at', 'desc')->take(10)->get();
+        $cooperativeStats = [
+            'total_expenses' => CooperativeTransaction::where('transaction_type', 'expense')->sum('amount'),
+            'total_investments' => CooperativeTransaction::where('transaction_type', 'investment')->sum('amount'),
+        ];
+
+        return view("admin_components.financial_activity", compact(
+            'loanSettings', 'lateFeePercentage', 'gracePeriodMonths',
+            'distribution', 'dividends', 'year', 'years', 'currentYear',
+            'approvedCount', 'disbursedCount',
+            'totalSumShareCapital', 'totalSumRecommended', 'totalSumApproved',
+            'cooperativeTransactions', 'cooperativeStats',
+            'dividendFundPercentage'
+        ));
     }
 
-    public function dashboard_financial_activity()
+    public function dashboard_payments(Request $request)
     {
-        return view("admin_components.financial_activity");
+        $method = $request->get('method', 'all');
+
+        $query = lending_repayments_tbl::with(['lending.user', 'user']);
+
+        if ($method !== 'all') {
+            $query->where('payment_method', $method);
+        }
+
+        $payments = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
+            ->orderBy('first_name')
+            ->get(['id', 'first_name', 'last_name']);
+
+        $paymentMethods = \App\Models\PaymentMethod::where('is_active', true)->orderBy('id')->get();
+
+        return view("admin_components.payments", compact('payments', 'method', 'allMembers', 'paymentMethods'));
+    }
+
+    public function adminStoreRepayment(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|exists:users_tbls,id',
+            'lending_id' => 'required|exists:lending_program_tbls,id',
+            'amount_paid' => 'required|numeric|min:1',
+            'payment_method' => 'required|string',
+            'reference_no' => 'nullable|string|max:255',
+            'payment_date' => 'required|date',
+        ]);
+
+        $loan = lending_program_tbl::findOrFail($request->lending_id);
+        $status = lending_status_tbl::firstOrCreate(
+            ['lending_id' => $request->lending_id],
+            [
+                'user_id' => $request->member_id,
+                'remaining_balance' => $loan->total_payment,
+                'total_paid' => 0,
+                'payments_made' => 0,
+                'total_payments' => max(1, (int) filter_var($loan->lending_type_term ?? '6', FILTER_SANITIZE_NUMBER_INT)),
+                'interest_rate' => $loan->total_interest > 0 && $loan->lending_amount > 0
+                    ? round(($loan->total_interest / $loan->lending_amount) * 100, 2) : 0,
+                'due_date' => now()->addMonth()->format('Y-m-d'),
+                'status' => 'Active',
+            ]
+        );
+
+        DB::beginTransaction();
+        try {
+            $paymentsMade = lending_repayments_tbl::where('lending_id', $request->lending_id)->count();
+
+            $repayment = lending_repayments_tbl::create([
+                'lending_id' => $request->lending_id,
+                'user_id' => $request->member_id,
+                'payment_number' => $paymentsMade + 1,
+                'amount_paid' => $request->amount_paid,
+                'payment_date' => $request->payment_date,
+                'payment_method' => $request->payment_method,
+                'reference_no' => $request->reference_no ?: 'ADMIN-' . now()->format('YmdHis'),
+                'notes' => 'Recorded by admin',
+                'recorded_by' => auth()->id(),
+            ]);
+
+            if ($status) {
+                $status->total_paid += $request->amount_paid;
+                $status->remaining_balance = max(0, $status->remaining_balance - $request->amount_paid);
+                $status->payments_made += 1;
+
+                if ($status->remaining_balance <= 0 || $status->payments_made >= $status->total_payments) {
+                    $status->status = 'Completed';
+                    $status->payments_made = $status->total_payments;
+                    $loan->update(['status' => 'Completed']);
+                }
+
+                $status->save();
+            }
+
+            DB::commit();
+
+            $member = Users_tbl::find($request->member_id);
+            AuditLog::log(
+                'Admin Recorded Loan Repayment',
+                "Recorded loan repayment of ₱{$request->amount_paid} for {$member?->first_name} {$member?->last_name} (Loan ID: {$request->lending_id})",
+                'loan',
+                $request->lending_id
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment recorded successfully! Ref: ' . ($repayment->reference_no ?? 'N/A'),
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to record payment: ' . $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    public function dashboard_officers_committees()
+    {
+        return view("admin_components.officers_committees");
     }
 
     public function dashboard_archives(Request $request)

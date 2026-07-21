@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use App\Models\Otherinfo_tbl;
 use App\Models\Family_tbl;
 use App\Models\Users_tbl;
+use App\Models\AuditLog;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -200,14 +201,13 @@ class UsersHandle extends Controller
             $education = educational_tbl::where('user_id', $id)->get();
             $governmentIds = Membergovern_ids_tbl::where('user_id', $id)->first();
 
-            // return view('members_components.application_form', compact(
-            //     'user',
-            //     'vehicles',
-            //     'spouse',
-            //     'other',
-            //     'education',
-            //     'governmentIds'
-            // ));
+            AuditLog::log(
+                'Updated Application Form',
+                "Updated profile/application form for user #{$id}",
+                'user',
+                $id
+            );
+
             return redirect()->route('applicationForm', $id)
                 ->with('success', 'Application form submitted successfully!');
 
@@ -437,7 +437,7 @@ class UsersHandle extends Controller
         if ($account) {
             $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
@@ -451,7 +451,7 @@ class UsersHandle extends Controller
 
             $deposits = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Deposit')
+                ->whereIn('type', ['Deposit', 'Subscription'])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
 
@@ -775,6 +775,11 @@ class UsersHandle extends Controller
 
     public function logout()
     {
+        $user = Auth::user();
+        AuditLog::log(
+            'Logged Out',
+            "{$user?->first_name} {$user?->last_name} ({$user?->role}) logged out"
+        );
         Auth::logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
@@ -785,12 +790,13 @@ class UsersHandle extends Controller
     {
         $user = Auth::user();
 
-        if (strtolower($user->role) === "admin") {
+        // All admin/staff roles go to dashboard; only regular members go to MemberPortal
+        if (!in_array(strtolower($user->role), ['member', 'pending', 'inactive'])) {
             return redirect()->route("dashboard")->with("message", "Login successfully!");
         } else {
             return redirect()->route("MemberPortal")
                 ->with("message", "Login successfully!")
-                ->with("just_logged_in", true); // ← add this
+                ->with("just_logged_in", true);
         }
     }
 
@@ -819,8 +825,29 @@ class UsersHandle extends Controller
         ];
 
         if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+
+            // All admin/staff roles (not regular members) bypass membership approval checks
+            if (!in_array($user->role, ['member', 'pending', 'inactive'])) {
+                if ($user->status === 'inactive') {
+                    auth()->logout();
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+                    return redirect()->back()
+                        ->withErrors(['login' => 'Your account has been deactivated. Contact the main administrator.'])
+                        ->withInput($request->only('login'));
+                }
+                AuditLog::log(
+                    'Logged In',
+                    "{$user->first_name} {$user->last_name} ({$user->role}) logged in"
+                );
+                $request->session()->regenerate();
+                $request->session()->flash('just_logged_in', true);
+                return redirect()->route('UserHandle');
+            }
+
             $otherInfo = DB::table('otherinfo_tbls')
-                ->where('user_id', auth()->id())
+                ->where('user_id', $user->id)
                 ->first();
 
             if (!$otherInfo || $otherInfo->approval_status === 'Pending') {
@@ -843,6 +870,10 @@ class UsersHandle extends Controller
                     ->withInput($request->only('login'));
             } else {
 
+                AuditLog::log(
+                    'Logged In',
+                    "{$user->first_name} {$user->last_name} ({$user->role}) logged in"
+                );
                 $request->session()->regenerate();
                 $request->session()->flash('just_logged_in', true);
                 return redirect()->route('UserHandle');
@@ -962,7 +993,7 @@ class UsersHandle extends Controller
                 "username" => $request->username,
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
-                "role" => "Member",
+                "role" => "pending",
             ]);
 
             // Spouse
@@ -1042,6 +1073,13 @@ class UsersHandle extends Controller
                     ]);
                 }
             }
+
+            AuditLog::log(
+                'User Registered',
+                "New user registered: {$request->first_name} {$request->last_name} ({$request->email})",
+                'user',
+                $users->id
+            );
 
             return redirect()->route("RegisterPage")->with("success", "Create account successfully!");
 

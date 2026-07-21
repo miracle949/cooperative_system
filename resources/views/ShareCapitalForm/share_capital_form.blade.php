@@ -361,13 +361,20 @@
                         <i class="fa fa-coins"></i>
                     </div>
                     <p>KMPCATS</p>
-                </div>
+</div> 
 
+                @if(($currentShares ?? 0) >= 10)
+                <div class="card-share-sub-header">
+                    <h2>My Share Capital</h2>
+                    <p>Your share capital account summary</p>
+                </div>
+                @else
                 <div class="card-share-sub-header">
                     <h2>Share Capital Request Form</h2>
                     <p>You're almost there! To fully activate your account, please complete your share capital
                         contribution.</p>
                 </div>
+                @endif
 
                 <hr>
 
@@ -380,9 +387,9 @@
                 @endif
 
                 {{-- CASH form --}}
-                @if(($currentShares ?? 0) > 0 && !session('success'))
+                @if(($currentShares ?? 0) >= 10)
 
-                    {{-- ── Already has share capital: show done state ── --}}
+                    {{-- ── Already has share capital: show summary ── --}}
                     <div style="text-align:center; padding: 1.5rem 1rem 0.5rem; share-capital-success">
 
                         <div
@@ -390,11 +397,10 @@
                             <i class="fa-solid fa-circle-check" style="color:#1a4a3a;font-size:2rem;"></i>
                         </div>
 
-                        <h3 style="font-size:1.1rem;font-weight:700;color:#1a1a1a;margin:0 0 0.4rem;">Share Capital Already
-                            Contributed</h3>
+                        <h3 style="font-size:1.1rem;font-weight:700;color:#1a1a1a;margin:0 0 0.4rem;">Share Capital Active</h3>
                         <p style="font-size:0.85rem;color:#888;margin:0 0 1.5rem;line-height:1.5;">
-                            You have already submitted your share capital.<br>
-                            Your account is being processed please wait until it approved.
+                            Your share capital contribution is complete.<br>
+                            You can now login to access your account.
                         </p>
 
                         <div

@@ -374,6 +374,13 @@
                             </select>
                         </div>
 
+                        <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form">
+                            @csrf
+                            <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                            <input type="hidden" name="member_id" value="{{ auth()->id() }}">
+                            <input type="hidden" name="payment_number" value="{{ $lendingStatus->payments_made + 1 }}">
+                            <input type="hidden" name="payment_type" id="cash-payment-type" value="monthly">
+
                         {{-- Amount --}}
                         <div style="margin-bottom: 1.1rem;">
                             <label

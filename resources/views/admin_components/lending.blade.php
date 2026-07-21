@@ -20,6 +20,8 @@
         </nav>
     </div>
 
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
@@ -56,8 +58,30 @@
         </div>
     @endif
 
-    <!-- Loans Table -->
+    <!-- Loan Applications Table -->
     <div class="card">
+        <div class="p-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h3 class="text-lg font-semibold text-gray-900">Loan Applications</h3>
+                <p class="text-sm text-gray-500">All member assistance requests and their status</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <form method="GET" action="{{ route('lendings') }}" class="flex items-center gap-2">
+                    @if(request('status') && request('status') !== 'all')
+                        <input type="hidden" name="status" value="{{ request('status') }}">
+                    @endif
+                    <div class="relative">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by member, reference, or type..." class="input pl-9 pr-3 py-1.5 text-sm w-64" style="padding-left: 2.25rem;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm px-3 py-1.5 text-sm">Search</button>
+                    @if($search)
+                        <a href="{{ route('lendings', ['status' => request('status', 'all')]) }}" class="btn btn-outline btn-sm px-3 py-1.5 text-sm">Clear</a>
+                    @endif
+                </form>
+                <span class="badge badge-primary whitespace-nowrap">{{ $loans->total() }} Total</span>
+            </div>
+        </div>
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -92,7 +116,7 @@
                             <td class="text-sm font-semibold text-gray-900">₱{{ number_format($loan->lending_amount, 0) }}</td>
                             <td class="text-sm text-gray-600">{{ Str::limit($loan->purpose_loan, 30) }}</td>
                             <td class="text-sm text-gray-600">{{ $loan->lending_type_term }}</td>
-                            <td class="text-sm text-gray-600">{{ $loan->created_at->addHours(8)->format('M d, Y') }}<br><span class="text-xs text-gray-400">{{ $loan->created_at->addHours(8)->format('g:i A') }}</span></td>
+                            <td class="text-sm text-gray-600">{{ $loan->created_at->format('M d, Y') }}</td>
                             <td>
                                 @if($loan->status === 'Pending')
                                     <span class="badge badge-warning">Pending</span>
@@ -108,7 +132,7 @@
                                         onclick="event.stopPropagation(); openLoanModal({{ $loop->index }})">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </button>
-                                    @if($loan->status === 'Declined')
+                                    @if($loan->status === 'Approved' || $loan->status === 'Declined')
                                     <form method="POST" action="{{ route('loan.archive', $loan->id) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-outline text-sm px-2 py-1" title="Archive">
@@ -134,42 +158,51 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-100 flex items-center justify-between">
+        @php
+            $paginator = $loans->appends([
+                'status' => $statusFilter ?? 'all',
+                'search' => $search ?? '',
+            ]);
+            $currentPage = $loans->currentPage();
+            $lastPage = $loans->lastPage();
+        @endphp
+        <div class="px-5 py-4 border-t border-gray-200 flex items-center justify-between rounded-b-xl bg-white">
             <p class="text-sm text-gray-500">
-                Showing {{ $loans->firstItem() ?? 0 }}-{{ $loans->lastItem() ?? 0 }} of {{ $loans->total() }} loan requests
+                Showing <span class="font-medium text-gray-700">{{ $loans->firstItem() ?? 0 }}</span>
+                to <span class="font-medium text-gray-700">{{ $loans->lastItem() ?? 0 }}</span>
+                of <span class="font-medium text-gray-700">{{ $loans->total() }}</span> members
             </p>
-            <div>
-                {{ $loans->appends(['status' => $statusFilter ?? 'all'])->links() }}
+            <div class="flex items-center gap-1.5">
+                @if($loans->onFirstPage())
+                    <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-300 border border-gray-200 rounded-lg cursor-not-allowed select-none">&lt;</span>
+                @else
+                    <a href="{{ $paginator->previousPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">&lt;</a>
+                @endif
+
+                @for($i = 1; $i <= $lastPage; $i++)
+                    @if($i == $currentPage)
+                        <span class="w-9 h-9 flex items-center justify-center text-sm font-bold text-white rounded-lg select-none" style="background-color: #1E2A4A;">{{ $i }}</span>
+                    @else
+                        <a href="{{ $paginator->url($i) }}"
+                           class="w-9 h-9 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                @if($loans->hasMorePages())
+                    <a href="{{ $paginator->nextPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">&gt;</a>
+                @else
+                    <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-300 border border-gray-200 rounded-lg cursor-not-allowed select-none">&gt;</span>
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Late Fee Settings & Penalty Table -->
-    <div class="card mt-6">
-        <div class="p-4 border-b border-gray-100">
-            <h3 class="text-lg font-semibold text-gray-900">Late Fee Penalty Settings</h3>
-            <p class="text-sm text-gray-500">Configure penalty for overdue loans</p>
-        </div>
-        <div class="p-4">
-            <form method="POST" action="{{ route('loan.settings.update') }}" class="flex flex-wrap items-end gap-4">
-                @csrf
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Late Fee (%)</label>
-                    <input type="number" name="late_fee_percentage" step="0.01" min="0" max="100" 
-                        value="{{ $lateFeePercentage ?? 2.00 }}" 
-                        class="input" style="width: 120px;" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Grace Period (months)</label>
-                    <input type="number" name="grace_period_months" step="1" min="0" max="12" 
-                        value="{{ $gracePeriodMonths ?? 1 }}" 
-                        class="input" style="width: 120px;" required>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i data-lucide="save" class="w-4 h-4"></i>
-                    Update
-                </button>
-            </form>
+    <!-- Section Divider -->
+    <div class="relative my-8">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
         </div>
     </div>
 
@@ -235,14 +268,14 @@
     <!-- Loan Detail Modal -->
     <div id="loanDetailModal" class="modal-overlay hidden">
         <div class="modal max-w-2xl">
-            <div class="p-6 border-b border-gray-100">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-900">Loan Application Details</h2>
-                        <p class="text-sm text-gray-500" id="modalReferenceNo">LN-XXXX</p>
+                        <h2 class="text-xl font-semibold" style="color: #fff; margin: 0;">Loan Application Details</h2>
+                        <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 13px;" id="modalReferenceNo">LN-XXXX</p>
                     </div>
-                    <button onclick="closeModal('loanDetailModal')" class="p-1 hover:bg-gray-100 rounded-lg">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    <button onclick="closeModal('loanDetailModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
                     </button>
                 </div>
             </div>
@@ -273,20 +306,6 @@
 
                     <!-- Loan Details -->
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 border border-gray-200 rounded-xl">
-                            <p class="text-sm text-gray-500 mb-1">Total Repayment</p>
-                            <p class="text-2xl font-bold text-primary-600" id="modalTotalRepayment">₱0</p>
-                            <p class="text-xs text-gray-400">Loan + Interest</p>
-                        </div>
-                        <div class="p-4 border border-gray-200 rounded-xl">
-                            <p class="text-sm text-gray-500 mb-1">Payment Progress</p>
-                            <div id="modalPaymentProgress" class="flex flex-wrap gap-1 mt-1">
-                                <!-- Payment circles will be populated by JS -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mt-4">
                         <div class="p-4 border border-gray-200 rounded-xl">
                             <p class="text-sm text-gray-500 mb-1">Loan Amount</p>
                             <p class="text-2xl font-bold text-gray-900" id="modalLoanAmount">₱0</p>
@@ -373,8 +392,8 @@
     <!-- New Loan Modal -->
     <div id="newLoanModal" class="modal-overlay hidden">
         <div class="modal max-w-4xl" style="border-radius: 16px; max-height: 90vh;">
-            <!-- Header -->
-            <div style="background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%); padding: 1.25rem 1.5rem;">
+            <!-- modal-header: decorative navy bar (sticky) -->
+            <div class="modal-header" style="position: sticky; top: 0; z-index: 100; background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -391,14 +410,15 @@
                 </div>
             </div>
 
-            <div style="padding: 1.25rem;">
+            <!-- modal-body: scrollable form area -->
+            <div class="modal-body" style="padding: 1.5rem;">
                 <form action="{{ route('loan.create-admin') }}" method="POST" enctype="multipart/form-data" id="adminLoanForm">
                     @csrf
-                    
-                    <!-- Member Selection -->
-                    <div style="margin-bottom: 1.25rem;">
-                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Select Member *</label>
-                        <select name="member_id" class="select" style="width: 100%;" required>
+
+                    <!-- Member Selection — top of body, well-spaced from header -->
+                    <div class="mb-6 mt-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Select Member <span class="text-red-500">*</span></label>
+                        <select name="member_id" id="member-select-el" class="select w-full" required>
                             <option value="">Select a member...</option>
                             @foreach($allMembers as $member)
                             <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }} (MEM-{{ sprintf('%03d', $member->id) }})</option>
@@ -406,11 +426,11 @@
                         </select>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
                         <!-- Loan Type -->
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Loan Type *</label>
-                            <select name="lending_type" class="select" style="width: 100%;" onchange="updateTermOptions()" required>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Loan Type <span class="text-red-500">*</span></label>
+                            <select name="lending_type" class="input w-full" onchange="updateTermOptions()" required>
                                 <option value="">Select loan type</option>
                                 <option value="Personal Loan">Personal Loan</option>
                                 <option value="Emergency Loan">Emergency Loan</option>
@@ -421,22 +441,22 @@
 
                         <!-- Loan Amount -->
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Loan Amount (₱) *</label>
-                            <input type="number" name="lending_amount" placeholder="Enter amount (max ₱25,000)" class="input" style="width: 100%;" oninput="this.value = Math.min(this.value, 25000); adminRecalculate()" required>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Loan Amount (₱) <span class="text-red-500">*</span></label>
+                            <input type="number" name="lending_amount" placeholder="Enter amount (max ₱25,000)" class="input w-full" oninput="this.value = Math.min(this.value, 25000); adminRecalculate()" required>
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
                         <!-- Loan Term -->
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Loan Term *</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Loan Term <span class="text-red-500">*</span></label>
                             <!-- Non-Business Term (default) -->
-                            <select id="termNonBusiness" class="select" style="width: 100%;" onchange="adminRecalculate()">
+                            <select id="termNonBusiness" class="input w-full" onchange="adminRecalculate()">
                                 <option value="">Select loan term</option>
                                 <option value="6 months">6 months</option>
                             </select>
                             <!-- Business Term (hidden by default) -->
-                            <select id="termBusiness" class="select" style="width: 100%; display: none;" onchange="adminRecalculate()">
+                            <select id="termBusiness" class="input w-full" style="display: none;" onchange="adminRecalculate()">
                                 <option value="">Select loan term</option>
                                 <option value="6 months">6 months</option>
                                 <option value="12 months">12 months</option>
@@ -447,26 +467,26 @@
 
                         <!-- Monthly Income -->
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Monthly Income (₱) *</label>
-                            <input type="number" name="monthly_income" placeholder="Enter monthly income" class="input" style="width: 100%;" required>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Monthly Income (₱) <span class="text-red-500">*</span></label>
+                            <input type="number" name="monthly_income" placeholder="Enter monthly income" class="input w-full" required>
                         </div>
                     </div>
 
                     <!-- Purpose -->
-                    <div style="margin-bottom: 1rem;">
-                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Purpose of Loan *</label>
-                        <textarea name="purpose_loan" class="input" rows="2" placeholder="Describe the purpose of your loan..." style="width: 100%;" required></textarea>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Purpose of Loan <span class="text-red-500">*</span></label>
+                        <textarea name="purpose_loan" class="input w-full" rows="3" placeholder="Describe the purpose of your loan..." required></textarea>
                     </div>
 
                     <!-- Documents -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Valid ID</label>
-                            <input type="file" name="valid_id" class="input" style="width: 100%;" accept=".jpg,.jpeg,.png,.pdf">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Valid ID</label>
+                            <input type="file" name="valid_id" class="input w-full" accept=".jpg,.jpeg,.png,.pdf">
                         </div>
                         <div>
-                            <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px;">Proof of Income</label>
-                            <input type="file" name="proof_of_income" class="input" style="width: 100%;" accept=".jpg,.jpeg,.png,.pdf">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Proof of Income</label>
+                            <input type="file" name="proof_of_income" class="input w-full" accept=".jpg,.jpeg,.png,.pdf">
                         </div>
                     </div>
 
@@ -476,42 +496,45 @@
                     <input type="hidden" name="total_interest" id="adminHiddenInterest">
 
                     <!-- Loan Calculation -->
-                    <div style="background: #f8f9f8; border: 1px dashed #1a4a3a; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
-                        <h4 style="font-size: 14px; font-weight: 700; color: #1a4a3a; margin: 0 0 0.75rem 0;">Loan Summary</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 13px;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: #666;">Loan Type:</span>
-                                <span id="adminCalcType" style="color: #1a1a1a; font-weight: 600;">-</span>
+                    <div class="bg-gray-50 border-2 border-dashed border-primary-600/30 rounded-xl p-5 mb-4">
+                        <h4 class="text-sm font-bold text-primary-600 mb-3 flex items-center gap-2">
+                            <i data-lucide="calculator" class="w-4 h-4"></i>
+                            Loan Summary
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Loan Type:</span>
+                                <span id="adminCalcType" class="font-semibold text-gray-900">-</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: #666;">Interest Rate:</span>
-                                <span id="adminCalcRate" style="color: #1a1a1a; font-weight: 600;">-</span>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Interest Rate:</span>
+                                <span id="adminCalcRate" class="font-semibold text-gray-900">-</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: #666;">Loan Term:</span>
-                                <span id="adminCalcTerm" style="color: #1a1a1a; font-weight: 600;">-</span>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Loan Term:</span>
+                                <span id="adminCalcTerm" class="font-semibold text-gray-900">-</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="color: #666;">Total Interest:</span>
-                                <span id="adminCalcInterest" style="color: #1a1a1a; font-weight: 600;">-</span>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Interest:</span>
+                                <span id="adminCalcInterest" class="font-semibold text-gray-900">-</span>
                             </div>
                         </div>
-                        <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed #ddd; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 14px; font-weight: 600; color: #1a1a1a;">Estimated Monthly Payment:</span>
-                            <span id="adminCalcMonthly" style="font-size: 18px; font-weight: 700; color: #1a4a3a;">₱0.00</span>
+                        <div class="mt-3 pt-3 border-t border-dashed border-gray-200 flex justify-between items-center">
+                            <span class="text-sm font-semibold text-gray-700">Estimated Monthly Payment:</span>
+                            <span id="adminCalcMonthly" class="text-lg font-bold text-primary-600">₱0.00</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                            <span style="font-size: 13px; color: #666;">Total Payment:</span>
-                            <span id="adminCalcTotal" style="font-size: 14px; font-weight: 600; color: #1a1a1a;">₱0.00</span>
+                        <div class="flex justify-between mt-1">
+                            <span class="text-xs text-gray-400">Total Payment:</span>
+                            <span id="adminCalcTotal" class="text-sm font-semibold text-gray-700">₱0.00</span>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" onclick="closeModal('newLoanModal')" style="flex: 1; padding: 0.7rem; background: #fff; color: #666; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; cursor: pointer;">
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="closeModal('newLoanModal')" class="flex-1 px-5 py-2.5 text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
                             Cancel
                         </button>
-                        <button type="submit" style="flex: 1; padding: 0.7rem; background: #1a4a3a; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <button type="submit" class="flex-1 px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center gap-2">
                             <i data-lucide="check-circle" class="w-4 h-4"></i> Create & Approve Loan
                         </button>
                     </div>
@@ -520,23 +543,44 @@
         </div>
     </div>
 
+    <style>
+        /* Keep Tom Select dropdown below the sticky modal header */
+        .ts-wrapper .ts-dropdown {
+            z-index: 2 !important;
+        }
+        .modal > .modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+        }
+    </style>
+
     <!-- Hidden data for JavaScript -->
-    <script>
-        var loansData = {!! json_encode($loans->items()) !!};
-        // Strip sensitive user data
-        loansData.forEach(function(loan) {
-            if (loan.user) {
-                loan.user = {id: loan.user.id, first_name: loan.user.first_name, last_name: loan.user.last_name, contact_no: loan.user.contact_no, email: loan.user.email};
-            }
-        });
+    <script type="application/json" id="loansData">
+        @json($loans->toArray()['data'])
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
     <script>
-    // loansData is already defined globally from the JSON above
-    console.log('Script loaded, loansData:', loansData);
+    (function() {
+    let loansData = [];
+    
+    try {
+        const loansDataEl = document.getElementById('loansData');
+        if (loansDataEl) {
+            loansData = JSON.parse(loansDataEl.textContent || '[]');
+            console.log('Loans data loaded:', loansData.length, 'loans');
+        }
+    } catch (e) {
+        console.error('Error parsing loans data:', e);
+    }
 
     window.filterByStatus = function(status) {
-        window.location.href = '{{ route("lendings") }}?status=' + status;
+        let url = '{{ route("lendings") }}?status=' + status;
+        const search = new URLSearchParams(window.location.search).get('search');
+        if (search) url += '&search=' + encodeURIComponent(search);
+        window.location.href = url;
     };
 
     // Debug: make openLoanModal globally accessible
@@ -549,29 +593,11 @@
     };
 
     window.openLoanModal = function(index) {
-        console.log('openLoanModal called with index:', index);
-        console.log('loansData:', loansData);
-        
         const loan = loansData[index];
         if (!loan) {
             console.error('Loan not found at index:', index);
-            alert('Loan not found at index: ' + index);
             return;
         }
-        console.log('Found loan:', loan);
-
-        // Ensure modal is visible
-        const modal = document.getElementById('loanDetailModal');
-        console.log('Modal element:', modal);
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-            console.log('Modal should now be visible');
-        } else {
-            console.error('Modal element not found!');
-            alert('Modal element not found!');
-        }
-        document.body.style.overflow = 'hidden';
 
         // Populate modal fields
         document.getElementById('modalReferenceNo').textContent = loan.reference_no || 'N/A';
@@ -594,49 +620,6 @@
             'Education Loan': {{ $loanSettings['Education Loan'] ?? 2 }} + '%'
         };
         document.getElementById('modalInterestRate').textContent = interestRates[loan.lending_type] || 'N/A';
-
-        // Calculate Total Repayment
-        const interestAmount = parseFloat(loan.total_interest || 0);
-        const lendingAmount = parseFloat(loan.lending_amount || 0);
-        const totalRepayment = lendingAmount + interestAmount;
-        const totalDisplay = isNaN(totalRepayment) ? 0 : totalRepayment;
-        document.getElementById('modalTotalRepayment').textContent = '₱' + totalDisplay.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        
-        // Payment Progress - get term and display months
-        const termMatch = (loan.lending_type_term || '6 months').match(/(\d+)/);
-        const termMonths = termMatch ? parseInt(termMatch[1]) : 6;
-        const maxDisplayMonths = Math.min(termMonths, 6);
-
-        // Init progress as loading, then fetch from API
-        document.getElementById('modalPaymentProgress').innerHTML = '<span class="text-xs text-gray-400">Loading...</span>';
-        
-        fetch('/loan/' + loan.id + '/payments-count')
-            .then(res => res.json())
-            .then(data => {
-                console.log('Payments for loan', loan.id, ':', data);
-                const paymentsMade = data.payments_made || 0;
-                
-                let progressHTML = '';
-                if (paymentsMade >= termMonths) {
-                    progressHTML = '<span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">Fully Paid</span>';
-                } else {
-                    for (let i = 1; i <= maxDisplayMonths; i++) {
-                        if (i <= paymentsMade) {
-                            progressHTML += '<span class="w-6 h-6 rounded-full bg-green-500 text-white text-xs flex items-center justify-center">' + i + '</span>';
-                        } else {
-                            progressHTML += '<span class="w-6 h-6 rounded-full border-2 border-gray-300 text-gray-400 text-xs flex items-center justify-center">' + i + '</span>';
-                        }
-                    }
-                    if (termMonths > 6) {
-                        progressHTML += '<span class="text-xs text-gray-500 ml-1">+' + (termMonths - 6) + ' more</span>';
-                    }
-                }
-                document.getElementById('modalPaymentProgress').innerHTML = progressHTML;
-            })
-            .catch(err => {
-                console.error('Error fetching payments:', err);
-                document.getElementById('modalPaymentProgress').innerHTML = '<span class="text-xs text-red-500">Error loading</span>';
-            });
 
         // Documents
         const docsContainer = document.getElementById('modalDocuments');
@@ -682,8 +665,9 @@
         }
 
         // Show modal
-        const loanDetailModal = document.getElementById('loanDetailModal');
-        loanDetailModal.classList.remove('hidden');
+        const modal = document.getElementById('loanDetailModal');
+        modal.classList.remove('hidden');
+        modal.style.display = '';
         document.body.style.overflow = 'hidden';
         
         // Re-init lucide icons
@@ -834,17 +818,17 @@
         const termNonBusiness = document.getElementById('termNonBusiness');
         const termBusiness = document.getElementById('termBusiness');
         const hiddenTerm = document.getElementById('hiddenTerm');
-        const term = (termBusiness.style.display !== 'none' && termBusiness.style.display !== '') ? termBusiness.value : termNonBusiness.value;
+        const term = termBusiness.style.display === 'block' ? termBusiness.value : termNonBusiness.value;
         // Sync hidden input only if term has value
         if (term) {
             hiddenTerm.value = term;
         }
 
         const interestRates = {
-            'Personal Loan': {{ $loanSettings['Personal Loan'] ?? 2.00 }},
-            'Emergency Loan': {{ $loanSettings['Emergency Loan'] ?? 2.00 }},
-            'Business Loan': {{ $loanSettings['Business Loan'] ?? 2.00 }},
-            'Education Loan': {{ $loanSettings['Education Loan'] ?? 2.00 }}
+            'Personal Loan': {{ $loanSettings['Personal Loan'] ?? 2 }},
+            'Emergency Loan': {{ $loanSettings['Emergency Loan'] ?? 2 }},
+            'Business Loan': {{ $loanSettings['Business Loan'] ?? 2 }},
+            'Education Loan': {{ $loanSettings['Education Loan'] ?? 2 }}
         };
 
         const termMonths = {
@@ -891,8 +875,8 @@
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
-                    const targetModal = mutation.target;
-                    if (!targetModal.classList.contains('hidden')) {
+                    const modal = mutation.target;
+                    if (!modal.classList.contains('hidden')) {
                         // Modal opened - only reset term dropdowns, not entire form
                         console.log('Modal opened - initializing...');
                         if (typeof lucide !== 'undefined') {
@@ -929,6 +913,15 @@
     // Initialize on page load
     initModalOnOpen();
 
+    // Tom Select integration
+    if (document.querySelector('#member-select-el')) {
+        new TomSelect('#member-select-el', {
+            create: false,
+            sortField: { field: "text", direction: "asc" },
+            placeholder: 'Search for a member...',
+        });
+    }
+
     // Ensure hidden fields are populated on form submit
     const adminLoanForm = document.getElementById('adminLoanForm');
     if (adminLoanForm) {
@@ -955,5 +948,6 @@
             }, 200);
         });
     }
+    })();
     </script>
 @endsection

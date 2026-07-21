@@ -20,6 +20,20 @@
         </nav>
     </div>
 
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+            <span class="text-green-800">{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
+            <i data-lucide="x-circle" class="w-5 h-5 text-red-600"></i>
+            <span class="text-red-800">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
@@ -74,7 +88,7 @@
         <div class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group" onclick="var m=document.getElementById('memberCategoryModal');m.classList.remove('hidden');m.style.display='flex'">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Members</p>
+                    <p class="text-sm text-gray-500 mb-1">Members</p>
                     <p class="text-2xl font-bold text-gray-900">{{ $memberCategoryCounts->sum() }}</p>
                     <p class="text-xs text-primary-500 mt-1 flex items-center">
                         <i data-lucide="users" class="w-3 h-3 mr-1"></i>
@@ -87,11 +101,11 @@
             </div>
         </div>
 
-        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-blue-200 transition-all group" onclick="var m=document.getElementById('adminCategoryModal');m.classList.remove('hidden');m.style.display='flex'">
+        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-blue-200 transition-all group" onclick="openAdminCategoryModal()">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Admins</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $admins->count() }}</p>
+                    <p class="text-sm text-gray-500 mb-1">Admins</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ $roleCounts ? array_sum($roleCounts) : $admins->count() }}</p>
                     <p class="text-xs text-blue-500 mt-1 flex items-center">
                         <i data-lucide="shield" class="w-3 h-3 mr-1"></i>
                         Click to view breakdown
@@ -137,7 +151,11 @@
                         <td class="text-sm text-gray-600">{{ $member->email }}</td>
                         <td class="text-sm text-gray-600">{{ $member->membership_category ?? 'Investor Associate' }}</td>
                         <td>
-                            @if($member->role === 'Member' || $member->role === 'member' || $member->role === 'active')
+                            @if($member->status === 'resignation_pending')
+                                <span class="badge badge-warning">Resignation Pending</span>
+                            @elseif($member->status === 'resigned')
+                                <span class="badge badge-gray">Resigned</span>
+                            @elseif($member->role === 'Member' || $member->role === 'member' || $member->role === 'active')
                                 <span class="badge badge-success">Active</span>
                             @elseif($member->role === 'pending' || $member->role === 'Pending')
                                 <span class="badge badge-warning">Pending</span>
@@ -281,6 +299,196 @@
         </div>
     </div>
 
+    <!-- Resignation Requests -->
+    @if($resignationRequests->count() > 0)
+    <div class="mt-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i data-lucide="log-out" class="w-5 h-5 text-orange-500"></i>
+            Resignation Requests
+            <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">{{ $resignationRequests->count() }}</span>
+        </h2>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Requested</th>
+                            <th>Withdraw Share Capital</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($resignationRequests as $rr)
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">{{ strtoupper(substr($rr->user->first_name ?? '', 0, 1)) }}{{ strtoupper(substr($rr->user->last_name ?? '', 0, 1)) }}</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ $rr->user->first_name ?? '' }} {{ $rr->user->last_name ?? '' }}</span>
+                                </div>
+                            </td>
+                            <td class="text-sm text-gray-600">{{ $rr->created_at->format('M d, Y g:i A') }}</td>
+                            <td>
+                                @if($rr->withdraw_share_capital)
+                                    <span class="badge badge-warning">Yes (withdraw)</span>
+                                @else
+                                    <span class="badge badge-info">No (leave Share Capital)</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <form method="POST" action="{{ route('resignation.approve', $rr->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-xs px-2 py-1">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('resignation.reject', $rr->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-xs px-2 py-1" onclick="return confirm('Reject this resignation request?')">
+                                            <i data-lucide="x" class="w-3 h-3"></i>
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- In-Process Resignations -->
+    @if($inProcessResignations->count() > 0)
+    <div class="mt-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i data-lucide="clock" class="w-5 h-5 text-blue-500"></i>
+            In-Process Resignations
+            <span class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">{{ $inProcessResignations->count() }}</span>
+        </h2>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Approved</th>
+                            <th>Release Date</th>
+                            <th>Days Remaining</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($inProcessResignations as $rr)
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-400 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">{{ strtoupper(substr($rr->user->first_name ?? '', 0, 1)) }}{{ strtoupper(substr($rr->user->last_name ?? '', 0, 1)) }}</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ $rr->user->first_name ?? '' }} {{ $rr->user->last_name ?? '' }}</span>
+                                </div>
+                            </td>
+                            <td class="text-sm text-gray-600">{{ $rr->approved_at ? $rr->approved_at->format('M d, Y') : 'N/A' }}</td>
+                            <td class="text-sm text-gray-600">{{ $rr->release_date ? $rr->release_date->format('M d, Y') : 'N/A' }}</td>
+                            <td>
+                                @php
+                                    $daysLeft = $rr->release_date ? now()->startOfDay()->diffInDays($rr->release_date, false) : 0;
+                                @endphp
+                                @if($daysLeft > 0)
+                                    <span class="badge badge-warning">{{ $daysLeft }} days</span>
+                                @elseif($daysLeft === 0)
+                                    <span class="badge badge-success">Ready for release</span>
+                                @else
+                                    <span class="badge badge-success">Overdue</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    @if($rr->withdraw_share_capital && !$rr->is_released && $daysLeft <= 0)
+                                    <form method="POST" action="{{ route('resignation.release', $rr->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-xs px-2 py-1">
+                                            <i data-lucide="check" class="w-3 h-3"></i>
+                                            Release SC
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Resignees -->
+    @if($resignees->count() > 0)
+    <div class="mt-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <i data-lucide="user-x" class="w-5 h-5 text-gray-500"></i>
+            Resignees
+            <span class="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full">{{ $resignees->count() }}</span>
+        </h2>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Processed</th>
+                            <th>Share Capital</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($resignees as $rr)
+                        <tr>
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center">
+                                        <span class="text-white font-bold text-sm">{{ strtoupper(substr($rr->user->first_name ?? '', 0, 1)) }}{{ strtoupper(substr($rr->user->last_name ?? '', 0, 1)) }}</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ $rr->user->first_name ?? '' }} {{ $rr->user->last_name ?? '' }}</span>
+                                </div>
+                            </td>
+                            <td class="text-sm text-gray-600">{{ $rr->updated_at ? $rr->updated_at->format('M d, Y') : 'N/A' }}</td>
+                            <td>
+                                @if($rr->withdraw_share_capital)
+                                    @if($rr->is_released)
+                                        <span class="badge badge-gray">Released</span>
+                                    @else
+                                        <span class="badge badge-warning">Pending Release</span>
+                                    @endif
+                                @else
+                                    <span class="badge badge-info">Retained</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($rr->is_released || ($rr->status === 'approved' && !$rr->withdraw_share_capital))
+                                    <span class="badge badge-gray">Resigned</span>
+                                @else
+                                    <span class="badge badge-warning">{{ ucfirst($rr->status) }}</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Member Category Modal -->
     <div id="memberCategoryModal" class="modal-overlay hidden" style="display:none">
         <div class="modal max-w-md">
@@ -336,95 +544,165 @@
         </div>
     </div>
 
-    <!-- Admin Category Modal -->
-    <div id="adminCategoryModal" class="modal-overlay hidden" style="display:none">
-        <div class="modal max-w-md">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                            <i data-lucide="shield" class="w-5 h-5 text-blue-600"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">Admin Categories</h2>
-                            <p class="text-xs text-gray-500">Category breakdown</p>
-                        </div>
-                    </div>
-                    <button onclick="document.getElementById('adminCategoryModal').style.display='none';" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 space-y-3">
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span class="text-sm font-medium text-gray-900">General Manager</span>
-                    <span class="text-sm font-bold text-blue-600">{{ $adminCategoryCounts['General Manager'] ?? 0 }}</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span class="text-sm font-medium text-gray-900">Office Manager</span>
-                    <span class="text-sm font-bold text-blue-600">{{ $adminCategoryCounts['Office Manager'] ?? 0 }}</span>
-                </div>
-            </div>
-            <div class="p-6 border-t border-gray-100 flex justify-end">
-                <button onclick="document.getElementById('adminCategoryModal').style.display='none';" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
-            </div>
-        </div>
-    </div>
+    @include('admin_components._admin_category_breakdown_modal')
 
     <!-- Add Member Modal -->
     <div id="addMemberModal" class="modal-overlay hidden">
-        <div class="modal max-w-lg">
-            <div class="p-6 border-b border-gray-100">
+        <div class="modal max-w-4xl">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                            <i data-lucide="user-plus" class="w-5 h-5 text-primary-600"></i>
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="user-plus" class="w-5 h-5" style="color: #fff;"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900">Add New Member</h2>
-                            <p class="text-xs text-gray-500">Create a new cooperative member</p>
+                            <h2 class="text-xl font-bold" style="color: #fff; margin: 0;">Add New Member</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Create a new cooperative member</p>
                         </div>
                     </div>
-                    <button onclick="closeModal('addMemberModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    <button onclick="closeModal('addMemberModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
                     </button>
                 </div>
             </div>
-            <form class="p-6 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">First Name</label>
-                        <input type="text" class="input" placeholder="Enter first name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Last Name</label>
-                        <input type="text" class="input" placeholder="Enter last name">
-                    </div>
-                </div>
+            <form method="POST" action="{{ route('member.store') }}" class="p-6 space-y-6">
+                @csrf
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
-                    <input type="email" class="input" placeholder="Enter email address">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
-                        <input type="tel" class="input" placeholder="Enter phone number">
+                    <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                        <i data-lucide="user" class="w-4 h-4 text-primary-500"></i>
+                        Personal Information
+                    </h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="first_name" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Middle Name</label>
+                            <input type="text" name="middle_name" class="input">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="last_name" class="input" required>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Date of Birth</label>
-                        <input type="date" class="input">
+                    <div class="grid grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Username <span class="text-red-500">*</span></label>
+                            <input type="text" name="username" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                            <input type="email" name="email" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+                            <input type="password" name="password" class="input" required>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
-                    <textarea class="input" rows="2" placeholder="Enter address"></textarea>
+
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                        <i data-lucide="info" class="w-4 h-4 text-primary-500"></i>
+                        Additional Details
+                    </h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Membership Category <span class="text-red-500">*</span></label>
+                            <select name="membership_category" class="input" required>
+                                <option value="">Select...</option>
+                                <option value="Operator">Operator</option>
+                                <option value="Driver">Driver</option>
+                                <option value="Dispatcher">Dispatcher</option>
+                                <option value="Driver-Operator">Driver-Operator</option>
+                                <option value="Allied Workers">Allied Workers</option>
+                                <option value="Transport Entrepreneur">Transport Entrepreneur</option>
+                                <option value="Investor Associate">Investor Associate</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                            <input type="date" name="date_of_birth" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Place of Birth</label>
+                            <input type="text" name="place_of_birth" class="input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sex</label>
+                            <select name="sex" class="input">
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Civil Status <span class="text-red-500">*</span></label>
+                            <select name="civil_status" class="input" required>
+                                <option value="">Select...</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Separated">Separated</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Citizenship</label>
+                            <input type="text" name="citizenship" class="input" value="Filipino">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Contact No.</label>
+                            <input type="text" name="contact_no" class="input">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <textarea name="present_address" class="input" rows="2"></textarea>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                        <i data-lucide="heart" class="w-4 h-4 text-pink-500"></i>
+                        Family Information
+                    </h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Spouse Name</label>
+                            <input type="text" name="spouse_name" class="input">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Spouse Date of Birth</label>
+                            <input type="date" name="spouse_date_birth" class="input">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Spouse Place of Birth</label>
+                            <input type="text" name="spouse_place_birth" class="input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Number of Sons</label>
+                            <input type="number" name="number_son" class="input" min="0" value="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Number of Daughters</label>
+                            <input type="number" name="number_daughter" class="input" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-6 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('addMemberModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        Add Member
+                    </button>
                 </div>
             </form>
-            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
-                <button onclick="closeModal('addMemberModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
-                <button onclick="closeModal('addMemberModal'); showToast('Success', 'Member added successfully')"
-                    class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors">Add Member</button>
-            </div>
         </div>
     </div>
 
@@ -676,11 +954,11 @@
                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-100">
                         <div class="grid grid-cols-3 gap-4 mb-4">
                             <div class="text-center">
-                                <p class="text-xs text-gray-500 mb-1">Total Amount</p>
+                                <p class="text-xs text-gray-500 mb-1">Amount</p>
                                 <p id="detail-sc-amount" class="text-lg font-bold text-gray-900">₱0.00</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs text-gray-500 mb-1">Total Shares</p>
+                                <p class="text-xs text-gray-500 mb-1">Shares</p>
                                 <p id="detail-sc-shares" class="text-lg font-bold text-gray-900">0</p>
                             </div>
                             <div class="text-center">

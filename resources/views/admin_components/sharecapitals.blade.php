@@ -3,6 +3,8 @@
 @section('title', 'Share Capitals - CoopAdmin')
 
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+
     <!-- Breadcrumb -->
     <div class="mb-6">
         <nav class="text-sm text-gray-500">
@@ -31,6 +33,10 @@
                 <i data-lucide="plus" class="w-4 h-4"></i>
 Manage Share-capital
             </button>
+            <button onclick="openModal('sellSharesModal')" class="btn btn-primary" style="background: #1E2A4A; border-color: #1E2A4A;">
+                <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+Sell Shares
+            </button>
         </div>
     </div>
 
@@ -39,11 +45,11 @@ Manage Share-capital
         <a href="{{ route('sharecapitals') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Contributions</p>
+                    <p class="text-sm text-gray-500 mb-1">Contributions</p>
                     <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalContributions, 2) }}</p>
                     <p class="text-xs text-success-500 mt-1 flex items-center">
                         <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        Total subscriptions
+                        subscriptions
                     </p>
                 </div>
                 <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
@@ -238,11 +244,76 @@ Manage Share-capital
         @endif
     </div>
 
+    <!-- Share Capital Releases (Resigned Members) -->
+    @if(isset($pendingReleases) && $pendingReleases->count() > 0)
+    <div class="card mb-6">
+        <div class="p-4 border-b border-gray-100">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i data-lucide="log-out" class="w-5 h-5 text-orange-500"></i>
+                Share Capital Releases
+                <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">{{ $pendingReleases->count() }}</span>
+            </h2>
+            <p class="text-sm text-gray-500">Approved resignations waiting for 60-day holding period to end</p>
+        </div>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Shares</th>
+                        <th>Amount</th>
+                        <th>Release Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($pendingReleases as $pr)
+                    @php
+                        $scAccount = $pr->user->shareCapitalAccount ?? null;
+                        $canRelease = now()->gte($pr->release_date);
+                    @endphp
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">{{ strtoupper(substr($pr->user->first_name ?? '', 0, 1)) }}{{ strtoupper(substr($pr->user->last_name ?? '', 0, 1)) }}</span>
+                                </div>
+                                <span class="text-sm font-medium text-gray-900">{{ $pr->user->first_name ?? '' }} {{ $pr->user->last_name ?? '' }}</span>
+                            </div>
+                        </td>
+                        <td class="text-sm font-medium text-gray-900">{{ $scAccount->total_shares ?? 0 }}</td>
+                        <td class="text-sm font-semibold text-gray-900">₱{{ number_format($scAccount->total_amount ?? 0, 2) }}</td>
+                        <td class="text-sm text-gray-600">{{ $pr->release_date ? $pr->release_date->format('M d, Y') : 'N/A' }}</td>
+                        <td>
+                            @if($canRelease)
+                                <span class="badge badge-success">Ready</span>
+                            @else
+                                <span class="badge badge-warning">{{ now()->diffInDays($pr->release_date) }} days left</span>
+                            @endif
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ route('resignation.release', $pr->id) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-xs px-2 py-1" {{ $canRelease ? '' : 'disabled' }} style="{{ $canRelease ? '' : 'opacity:0.5;cursor:not-allowed;' }}">
+                                    <i data-lucide="coins" class="w-3 h-3"></i>
+                                    Disburse
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
     <!-- Add Contribution Modal -->
     <div id="addContributionModal" class="modal-overlay hidden">
         <div class="modal max-w-lg" style="border-radius: 16px;">
             <!-- Header -->
-            <div style="background: linear-gradient(135deg, #1a4a3a 0%, #2d6a4f 100%); padding: 1.25rem 1.5rem;">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -264,7 +335,7 @@ Manage Share-capital
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
-                        <select name="member_id" id="shareMemberSelect" class="select" style="width: 100%;" onchange="updateMemberShares()" required>
+                        <select name="member_id" id="manage-share-member-select" class="select" style="width: 100%;" required>
                             <option value="">Select member</option>
                             @foreach($allMembers as $member)
                             <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
@@ -273,40 +344,35 @@ Manage Share-capital
                     </div>
 
                     <!-- Balance Pill -->
-                    <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1a4a3a;">
+                    <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1E2A4A;">
                         <span style="font-size: 13px; color: #666;">Current Shares</span>
-                        <span id="currentSharesDisplay" style="font-size: 14px; font-weight: 700; color: #1a4a3a;">0 shares · ₱0.00</span>
+                        <span id="currentSharesDisplay" style="font-size: 14px; font-weight: 700; color: #1E2A4A;">0 shares · ₱0.00</span>
                     </div>
 
-                    <!-- Shares counter -->
+                    <!-- Full Withdrawal Warning (auto-resignation) -->
+                    <div id="adminFullWithdrawalWarning" style="display:none; background:#fef2f2; border:1.5px solid #fecaca; border-radius:10px; padding:0.65rem 1rem; font-size:12px; color:#991b1b; line-height:1.5;">
+                        <i data-lucide="alert-triangle" class="w-4 h-4" style="margin-right:6px;"></i>
+                        <strong>Notice:</strong> Fully withdrawing this member's share capital is equivalent to resigning. This will auto-submit a resignation request subject to the 60-day holding period.
+                    </div>
+
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Number of shares</label>
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <button type="button" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1); updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">−</button>
-                            <input type="number" name="shares" id="adminSharesInput" value="1" min="1" readonly style="width: 50px; text-align: center; font-size: 14px; font-weight: 600; color: #1a4a3a; border: 1px solid #ddd; border-radius: 8px; padding: 4px;">
-                            <button type="button" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateShareCost()" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; background: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #333;">+</button>
-                        </div>
-                        <!-- Quick select -->
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
-                            <button type="button" onclick="document.getElementById('adminSharesInput').value = 1; updateShareCost()" style="padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #1a4a3a; color: #fff; border: 1px solid #1a4a3a;">1</button>
-                            <button type="button" onclick="document.getElementById('adminSharesInput').value = 5; updateShareCost()" style="padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">5</button>
-                            <button type="button" onclick="document.getElementById('adminSharesInput').value = 10; updateShareCost()" style="padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">10</button>
-                            <button type="button" onclick="document.getElementById('adminSharesInput').value = 25; updateShareCost()" style="padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">25</button>
-                        </div>
-                        <p style="font-size: 12px; color: #888; margin: 0;">Cost: <strong id="adminShareCost" style="color: #1a4a3a;">₱{{ number_format($perShareValue, 0) }}</strong> · ₱{{ number_format($perShareValue, 0) }}/share</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
+                        <input type="number" name="amount_input" id="adminAmountInput" value="{{ $perShareValue }}" min="500" step="100" style="width: 100%; text-align: center; font-size: 14px; font-weight: 600; color: #1E2A4A; border: 1px solid #ddd; border-radius: 8px; padding: 8px;" oninput="updateFromAmount()">
+                        <p style="font-size: 12px; color: #888; margin: 4px 0 0;">Equivalent to <strong id="adminSharesDisplay">1</strong> {{ Str::plural('share', 1) }} · ₱{{ number_format($perShareValue, 0) }}/share</p>
                     </div>
 
-                    <!-- Amount (calculated) -->
+                    <!-- Calculated fields -->
+                    <input type="hidden" name="shares" id="adminSharesInput">
                     <input type="hidden" name="amount" id="adminTotalAmount">
 
                     <!-- Type -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required>
-                            <option value="">Select type...</option>
-                            <option value="Deposit">Deposit</option>
-                            <option value="Withdrawal">Withdrawal</option>
-                        </select>
+                                    <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required onchange="toggleAdminFullWithdrawalWarning()">
+                                <option value="">Select type...</option>
+                                <option value="Deposit">Deposit</option>
+                                <option value="Withdrawal">Withdrawal</option>
+                            </select>
                     </div>
 
                     <!-- Payment Method -->
@@ -330,15 +396,16 @@ Manage Share-capital
 
                 <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
                     <button onclick="submitAdminShareCapital()" 
-                        style="width: 100%; padding: 0.7rem; background: #1a4a3a; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        style="width: 100%; padding: 0.7rem; background: #1E2A4A; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Transaction
                     </button>
                     <button onclick="closeModal('addContributionModal')" 
                         style="width: 100%; padding: 0.65rem; background: #fff; color: #666; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; cursor: pointer;">
                         Cancel
                     </button>
-                </div>
             </div>
+        </div>
+    </div>
     </div>
 
     <!-- Last Contribution Detail Modal -->
@@ -415,6 +482,81 @@ Manage Share-capital
         </div>
     </div>
 
+    <!-- Sell Shares Modal -->
+    <div id="sellSharesModal" class="modal-overlay hidden">
+        <div class="modal max-w-lg" style="border-radius: 16px;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="arrow-left-right" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold" style="color: #fff; margin: 0;">Sell Shares</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Transfer shares between members</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('sellSharesModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div style="padding: 1.25rem;">
+                <form id="sellSharesForm">
+                    @csrf
+                    <div style="margin-bottom: 1rem;">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Seller (from)</label>
+                        <select name="seller_id" id="sell-shares-seller-select" class="select" style="width: 100%;" required>
+                            <option value="">Select seller...</option>
+                            @foreach($allMembers as $member)
+                            <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border: 1px dashed #1E2A4A; margin-bottom: 1rem;">
+                        <span style="font-size: 13px; color: #666;">Seller's Current Shares</span>
+                        <span id="sellerSharesDisplay" style="font-size: 14px; font-weight: 700; color: #1E2A4A;">Select a seller</span>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Buyer (to)</label>
+                        <select name="buyer_id" id="sell-shares-buyer-select" class="select" style="width: 100%;" required>
+                            <option value="">Select buyer...</option>
+                            @foreach($allMembers as $member)
+                            <option value="{{ $member->id }}">{{ $member->first_name }} {{ $member->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
+                        <input type="number" name="amount_input" id="sellAmountInput" placeholder="Enter amount (minimum ₱1,000)" min="1000" step="100" style="width: 100%; text-align: center; font-size: 14px; font-weight: 600; color: #1E2A4A; border: 1px solid #ddd; border-radius: 8px; padding: 8px;" oninput="updateSellSharesFromAmount()" required>
+                        <p style="font-size: 12px; color: #888; margin: 4px 0 0;">Equivalent to <strong id="sellSharesDisplay">1</strong> {{ Str::plural('share', 1) }} · ₱{{ number_format($perShareValue, 0) }}/share</p>
+                        <p style="font-size: 12px; color: #d32f2f; margin: 4px 0 0;">Minimum transfer amount is ₱1,000.</p>
+                    </div>
+
+                    <input type="hidden" name="shares" id="sellSharesInput">
+                    <input type="hidden" name="amount" id="sellTotalAmount">
+                </form>
+
+                <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
+                    <button onclick="submitSellShares()" 
+                        style="width: 100%; padding: 0.7rem; background: #1E2A4A; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i data-lucide="arrow-left-right" class="w-4 h-4"></i> Transfer Shares
+                    </button>
+                    <button onclick="closeModal('sellSharesModal')" 
+                        style="width: 100%; padding: 0.65rem; background: #fff; color: #666; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
         function openLastContributionModal() {
             if (typeof lucide !== 'undefined') {
@@ -432,21 +574,41 @@ Manage Share-capital
             }
         });
 
-        // Update cost when shares change
-        function updateShareCost() {
-            const shares = parseInt(document.getElementById('adminSharesInput')?.value) || 1;
+        // Show/hide full-withdrawal warning
+        function toggleAdminFullWithdrawalWarning() {
+            const amount = parseFloat(document.getElementById('adminAmountInput')?.value) || 0;
+            const shares = parseFloat(document.getElementById('adminSharesInput')?.value) || 0;
+            const type = document.getElementById('shareTypeSelect')?.value;
+            const display = document.getElementById('currentSharesDisplay');
+            const currentShares = parseFloat(display?.textContent?.split(' ')[0]) || 0;
+
+            const warning = document.getElementById('adminFullWithdrawalWarning');
+            if (type === 'Withdrawal' && currentShares > 0 && shares >= currentShares) {
+                warning.style.display = 'block';
+            } else {
+                warning.style.display = 'none';
+            }
+        }
+
+        // Update shares display when amount changes
+        function updateFromAmount() {
+            const amount = parseFloat(document.getElementById('adminAmountInput')?.value) || 0;
             const perShare = {{ $perShareValue }};
-            document.getElementById('adminShareCost').textContent = '₱' + (shares * perShare).toLocaleString();
-            document.getElementById('adminTotalAmount').value = shares * perShare;
+            const shares = Math.round((amount / perShare) * 100) / 100;
+            document.getElementById('adminSharesInput').value = shares;
+            document.getElementById('adminTotalAmount').value = amount;
+            document.getElementById('adminSharesDisplay').textContent = shares;
+            toggleAdminFullWithdrawalWarning();
         }
 
         // Update member shares display
         window.updateMemberShares = function() {
-            const memberId = document.getElementById('shareMemberSelect').value;
+            const memberId = document.getElementById('manage-share-member-select').value;
             const display = document.getElementById('currentSharesDisplay');
             
             if (!memberId) {
                 display.textContent = '0 shares · ₱0.00';
+                document.getElementById('adminFullWithdrawalWarning').style.display = 'none';
                 return;
             }
 
@@ -456,10 +618,12 @@ Manage Share-capital
                     const shares = data.total_shares || 0;
                     const amount = data.total_amount || 0;
                     display.textContent = shares + ' shares · ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    toggleAdminFullWithdrawalWarning();
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     display.textContent = '0 shares · ₱0.00';
+                    document.getElementById('adminFullWithdrawalWarning').style.display = 'none';
                 });
         };
 
@@ -472,8 +636,8 @@ Manage Share-capital
                 showToast('Error', 'Please select a member');
                 return;
             }
-            if (!formData.get('shares') || parseInt(formData.get('shares')) <= 0) {
-                showToast('Error', 'Please enter valid shares');
+            if (!formData.get('amount_input') || parseFloat(formData.get('amount_input')) <= 0) {
+                showToast('Error', 'Please enter a valid amount');
                 return;
             }
             if (!formData.get('type')) {
@@ -496,11 +660,13 @@ Manage Share-capital
             .then(data => {
                 if (data.success) {
                     closeModal('addContributionModal');
-                    showToast('Success', data.message);
+                    showToast(data.warning ? 'Warning' : 'Success', data.message);
                     form.reset();
                     document.getElementById('currentSharesDisplay').textContent = '0 shares · ₱0.00';
+                    document.getElementById('adminAmountInput').value = {{ $perShareValue }};
+                    document.getElementById('adminTotalAmount').value = {{ $perShareValue }};
                     document.getElementById('adminSharesInput').value = 1;
-                    updateShareCost();
+                    document.getElementById('adminSharesDisplay').textContent = 1;
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     showToast('Error', data.message || 'Transaction failed');
@@ -544,7 +710,7 @@ Manage Share-capital
             
             modal.innerHTML = `
                 <div style="background:white; border-radius:12px; max-width:450px; width:90%; max-height:90vh; overflow:auto; box-shadow:0 25px 50px rgba(0,0,0,0.25);">
-                    <div style="padding:16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#1a4a3a,#2d6a4f); border-radius:12px 12px 0 0;">
+                    <div style="padding:16px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg,#1E2A4A,#25335A); border-radius:12px 12px 0 0;">
                         <h3 style="margin:0; font-size:18px; font-weight:600; color:white;">Transaction Details</h3>
                         <button onclick="document.getElementById('scTransactionModal').remove();document.body.style.overflow='auto';" style="background:rgba(255,255,255,0.1); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; color:white; font-size:18px;">&times;</button>
                     </div>
@@ -619,5 +785,117 @@ Manage Share-capital
                 showToast('Error', 'An error occurred. Please try again.');
             });
         };
+        // ── Sell Shares ────────────────────────────────────────────────
+        window.updateSellSharesFromAmount = function() {
+            const amount = parseFloat(document.getElementById('sellAmountInput')?.value) || 0;
+            const perShare = {{ $perShareValue }};
+            const shares = Math.round((amount / perShare) * 100) / 100;
+            document.getElementById('sellSharesInput').value = shares;
+            document.getElementById('sellTotalAmount').value = amount;
+            document.getElementById('sellSharesDisplay').textContent = shares;
+        };
+
+        window.fetchSellerBalance = function(sellerId) {
+            const display = document.getElementById('sellerSharesDisplay');
+            if (!sellerId) {
+                display.textContent = 'Select a seller';
+                return;
+            }
+            fetch('/sharecapital/member/' + sellerId + '/balance')
+                .then(response => response.json())
+                .then(data => {
+                    const shares = data.total_shares || 0;
+                    const amount = data.total_amount || 0;
+                    display.textContent = shares + ' shares · ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    display.textContent = '0 shares · ₱0.00';
+                });
+        };
+
+        window.submitSellShares = function() {
+            const form = document.getElementById('sellSharesForm');
+            const formData = new FormData(form);
+
+            const sellerId = formData.get('seller_id');
+            const buyerId = formData.get('buyer_id');
+            const amountInput = parseFloat(formData.get('amount_input')) || 0;
+            const shares = parseFloat(formData.get('shares')) || 0;
+
+            if (!sellerId) {
+                showToast('Error', 'Please select a seller');
+                return;
+            }
+            if (!buyerId) {
+                showToast('Error', 'Please select a buyer');
+                return;
+            }
+            if (sellerId === buyerId) {
+                showToast('Error', 'Seller and buyer must be different');
+                return;
+            }
+            if (amountInput < 1000 || shares <= 0) {
+                showToast('Error', 'Please enter a valid amount (minimum ₱1,000)');
+                return;
+            }
+
+            fetch('/sharecapital/sell', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal('sellSharesModal');
+                    showToast('Success', data.message);
+                    form.reset();
+                    document.getElementById('sellerSharesDisplay').textContent = 'Select a seller';
+                    document.getElementById('sellAmountInput').value = 1000;
+                    document.getElementById('sellTotalAmount').value = 1000;
+                    document.getElementById('sellSharesInput').value = 1;
+                    document.getElementById('sellSharesDisplay').textContent = 1;
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    showToast('Error', data.message || 'Transfer failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error', 'An error occurred. Please try again.');
+            });
+        };
+
+        // ── Tom Select Initialization ────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof TomSelect !== 'undefined') {
+                // Manage Share Capital member select
+                new TomSelect('#manage-share-member-select', {
+                    maxOptions: 200,
+                    placeholder: 'Search for a member...',
+                    onChange: function(value) {
+                        updateMemberShares();
+                    }
+                });
+
+                // Sell Shares seller select
+                new TomSelect('#sell-shares-seller-select', {
+                    maxOptions: 200,
+                    placeholder: 'Search for a seller...',
+                    onChange: function(value) {
+                        fetchSellerBalance(value);
+                    }
+                });
+
+                // Sell Shares buyer select
+                new TomSelect('#sell-shares-buyer-select', {
+                    maxOptions: 200,
+                    placeholder: 'Search for a buyer...',
+                });
+            }
+        });
     </script>
 @endsection
