@@ -104,18 +104,18 @@
                         <!-- <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
                             <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
                         </div> -->
-                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;background:#f8f9fb;border:1.5px dashed #d8dde5;border-radius:16px; margin: 2rem 0 0; background-color: #ffffff;">
+                        <div class="no-approved-loans" style=" ">
                             <div style="width:56px;height:56px;border-radius:50%;background:#eef2fa;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
                                 <i class="fa fa-hourglass-half" style="color:var(--blue,#2b3a67);font-size:22px;"></i>
                             </div>
                             <p style="color:var(--muted);margin:0; font-size: 14px;">You have no approved loans yet.</p>
                         </div>
                     @elseif(!$selectedLoan)
-                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;background:#f8f9fb;border:1.5px dashed #d8dde5;border-radius:16px; margin: 2rem 0 0; background-color: #ffffff;">
+                        <div class="no-selected-loans" style=" ">
                             <div style="width:56px;height:56px;border-radius:50%;background:#eef2fa;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
                                 <i class="fa fa-hand-pointer" style="color:var(--blue,#2b3a67);font-size:22px;"></i>
                             </div>
-                            <h5 style="color:#333;margin:0 0 10px;font-weight:600;">No loan selected</h5>
+                            <h5 style="color:#ffffff;margin:0 0 10px;font-weight:600;">No loan selected</h5>
                             <p style="color:#8a8f98;margin:0;max-width:360px;font-size:14px;line-height:1.5;">
                                 Choose a <strong>Loan Type</strong> above first, then pick the matching
                                 <strong>Reference</strong> number to view its repayment details.
@@ -124,60 +124,63 @@
                     @else
                         {{-- HERO --}}
                         <div class="loan-hero">
-                            <div class="left-hero">
-                                <div class="left-text">
-                                    <div class="status">Active Loan</div>
-                                    <h3>{{ $selectedLoan->display_type }}</h3>
-                                    <p><b>{{ $selectedLoan->reference_no }}</b> · Active
-                                        {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}
-                                    </p>
-                                </div>
-                                <div class="payment-button">
-                                    <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
-                                        <i class="fa fa-peso-sign"></i>
-                                        <span>Make a Payment</span>
-                                    </button>
-                                    <a href="#">View Full Schedule</a>
-                                </div>
-                            </div>
-                            <div class="right-hero">
-                                <div class="alh-parent">
-                                    <div class="alh-stat">
-                                        <span>Monthly Due</span>
-                                        <h5>₱{{ number_format($monthlyDue, 2) }}</h5>
-                                        <p>Every {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('jS') }}</p>
-                                    </div>
-                                    <div class="alh-stat">
-                                        <span>Next Due</span>
-                                        <h5>{{ $nextDueDate ? $nextDueDate->format('F d') : '—' }}</h5>
-                                        <p>
-                                            @if($daysAway === null) Fully paid
-                                            @elseif($daysAway < 0) {{ abs($daysAway) }} days overdue
-                                            @elseif($daysAway === 0) Due today
-                                            @else {{ $daysAway }} days away
-                                            @endif
+                            <div class="loan-hero-parent">
+                                <div class="left-hero">
+                                    <div class="left-text">
+                                        <div class="status">Active Loan</div>
+                                        <h3>{{ $selectedLoan->display_type }}</h3>
+                                        <p><b>{{ $selectedLoan->reference_no }}</b> · Active
+                                            {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}
                                         </p>
                                     </div>
-                                    <div class="alh-stat">
-                                        <span>Balance</span>
-                                        <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
-                                        <p>Remaining</p>
+                                    <div class="payment-button">
+                                        <button onclick="openRepayModal('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
+                                            <i class="fa fa-peso-sign"></i>
+                                            <span>Make a Payment</span>
+                                        </button>
+                                        <a href="#">View Full Schedule</a>
                                     </div>
                                 </div>
-                                <div class="parent-progress">
-                                    <div class="progress-header">
-                                        <p>Repayment Progress</p>
-                                        <span>{{ $lendingStatus->payments_made ?? 0 }} of
-                                            {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
-                                    </div>
-                                    <div class="progress-body">
-                                        <div class="progress-sub">
-                                            <div class="progress" style="width: {{ $progressPercent }}%;"></div>
+                                <div class="right-hero">
+                                    <div class="alh-parent">
+                                        <div class="alh-stat">
+                                            <span>Monthly Due</span>
+                                            <h5>₱{{ number_format($monthlyDue, 2) }}</h5>
+                                            <p>Every {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('jS') }}</p>
+                                        </div>
+                                        <div class="alh-stat">
+                                            <span>Next Due</span>
+                                            <h5>{{ $nextDueDate ? $nextDueDate->format('F d') : '—' }}</h5>
+                                            <p>
+                                                @if($daysAway === null) Fully paid
+                                                @elseif($daysAway < 0) {{ abs($daysAway) }} days overdue
+                                                @elseif($daysAway === 0) Due today
+                                                @else {{ $daysAway }} days away
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <div class="alh-stat">
+                                            <span>Balance</span>
+                                            <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
+                                            <p>Remaining</p>
                                         </div>
                                     </div>
-                                    <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
-                                        ₱{{ number_format($selectedLoan->lending_amount, 0) }} principal</p>
                                 </div>
+                            </div>
+
+                            <div class="parent-progress">
+                                <div class="progress-header">
+                                    <p>Repayment Progress</p>
+                                    <span>{{ $lendingStatus->payments_made ?? 0 }} of
+                                        {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
+                                </div>
+                                <div class="progress-body">
+                                    <div class="progress-sub">
+                                        <div class="progress" style="width: {{ $progressPercent }}%;"></div>
+                                    </div>
+                                </div>
+                                <p>₱{{ number_format($remainingPrincipal, 0) }} remaining of
+                                    ₱{{ number_format($selectedLoan->lending_amount, 0) }} principal</p>
                             </div>
                         </div>
 
@@ -278,8 +281,21 @@
                                         <div class="parent-item">
                                             <div class="item">
                                                 <div class="icon"><i class="fa fa-calculator"></i></div>
-                                                <div><span>Service Fee</span>
-                                                    <p>1% one-time fee</p>
+                                                <div><span>Processing Fee</span>
+                                                    <p>Processing & collection</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($processingFee, 2) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-file-contract"></i></div>
+                                                <div><span>Service & Legal Fee</span>
+                                                    <p>One-time fee</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -287,9 +303,48 @@
                                             <p>₱{{ number_format($serviceFee, 2) }}</p>
                                         </div>
                                     </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-shield-halved"></i></div>
+                                                <div><span>Loan Protection Plan</span>
+                                                    <p>Per month of term</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($loanProtectionFee, 2) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-piggy-bank"></i></div>
+                                                <div><span>Retention / CBU</span>
+                                                    <p>Held as capital build-up</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($retentionFee, 2) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-item">
+                                        <div class="parent-item">
+                                            <div class="item">
+                                                <div class="icon"><i class="fa fa-hand-holding-dollar"></i></div>
+                                                <div><span>Net Proceeds</span>
+                                                    <p>Amount released to you</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="item-amount">
+                                            <p>₱{{ number_format($netProceeds, 2) }}</p>
+                                        </div>
+                                    </div>
                                     <div class="total-charges">
                                         <span>Total Charges</span>
-                                        <p>₱{{ number_format($totalInterest + $serviceFee, 2) }}</p>
+                                        <p>₱{{ number_format($totalInterest + $processingFee + $serviceFee + $loanProtectionFee + $retentionFee, 2) }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -379,9 +434,9 @@
 
                         <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form">
                             @csrf
-                            <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                            <input type="hidden" name="lending_id" value="{{ $selectedLoan->id ?? '' }}">
                             <input type="hidden" name="member_id" value="{{ auth()->id() }}">
-                            <input type="hidden" name="payment_number" value="{{ $lendingStatus->payments_made + 1 }}">
+                            <input type="hidden" name="payment_number" value="{{ ($lendingStatus->payments_made ?? 0) + 1 }}">
                             <input type="hidden" name="payment_type" id="cash-payment-type" value="monthly">
 
                         {{-- Amount --}}
@@ -472,7 +527,7 @@
                     {{-- Modal Footer --}}
                     <div class="modal-footer"
                         style="background: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.1); padding: 1rem 1.6rem; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 8px;">
-                        <button type="button" id="confirm-pay-btn" class="btn w-100"
+                        <button type="submit" id="confirm-pay-btn" class="btn w-100"
                             style="background: var(--blue); color: white; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 10px 22px; border: none; display: flex; align-items: center; gap: 6px; justify-content: center;">
                             <i class="fa-solid fa-check" style="font-size: 12px;"></i>
                             Confirm Payment

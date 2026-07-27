@@ -56,7 +56,7 @@
             <div class="row">
                 <div class="col-lg-4 mt-4">
                     <label>Spouse Name</label>
-                    <input type="text" name="spouse_name" id="spouse_name" class="form-control">
+                    <input type="text" name="spouse_name" id="spouse_name" class="form-control" placeholder="Optional">
                     <!-- <div class="reminder">
                     <span>If not applicable, you may enter "None"</span>
                 </div> -->

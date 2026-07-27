@@ -75,7 +75,7 @@ class UserController extends Controller
     public function approveUser($id)
     {
         $user = Users_tbl::findOrFail($id);
-        $user->role = 'member';
+        $user->role = 'Member';
         $user->save();
 
         $otherInfo = DB::table('otherinfo_tbls')->where('user_id', $id)->first();

@@ -166,11 +166,11 @@ div.container-fluid {
     align-items: flex-start; */
     /* border-right: 1px solid var(--border); */
     width: 50%;
-    flex: 0 0 50%;
+    /* flex: 0 0 50%; */
     /* width: 440px;
     min-width: 440px; */
     height: 100%;
-    /* padding: 2rem 3.5rem; */
+    padding: 2rem 1.5rem;
     flex-shrink: 0;
     overflow: hidden;
     position: relative;
@@ -991,7 +991,6 @@ div.container-fluid {
     }
 
     .container-fluid .form-box-parent {
-        /* padding: 0rem 0rem 0rem; */
         padding: 2rem 3rem 2rem;
     }
 

@@ -700,9 +700,7 @@
         });
     }
 
-    /* ══════════════════════════════════════
-       SIGNATURE MODAL — fullscreen
-    ══════════════════════════════════════ */
+
     function openSignatureModal() {
         const overlay = document.getElementById('signature-modal-overlay');
         overlay.style.display = 'flex';

@@ -17,6 +17,12 @@ class lendingController extends Controller
     {
         $memberId = auth()->id();
 
+        $savedMonthlyIncome = DB::table('lending_program_tbls')
+            ->where('user_id', $memberId)
+            ->whereNotNull('monthly_income')
+            ->orderBy('created_at', 'desc')
+            ->value('monthly_income');
+
         $account = DB::table('share_capital_account_tbls')
             ->where('user_id', $memberId)->first();
 
@@ -207,6 +213,7 @@ class lendingController extends Controller
             'remainingLoanable',
             'hasFullyLoaned',
             'totalPaidOnActiveLoans',
+            'savedMonthlyIncome',
             // ── new ──
             'allLoans',
             'allLoansCount',
@@ -225,9 +232,12 @@ class lendingController extends Controller
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
 
-        $dbSettings = DB::table('loan_settings_tbls')->pluck('interest_rate', 'loan_type')->toArray();
+        // Pull the FULL settings row per loan type, not just interest_rate
+        $dbSettings = DB::table('loan_settings_tbls')
+            ->where('is_active', true)
+            ->get()
+            ->keyBy('loan_type'); // keyed by 'Personal Loan', 'Business Loan', etc.
 
-        $loanSettings = [];
         $typeMap = [
             'Personal Lending' => 'Personal Loan',
             'Emergency Lending' => 'Emergency Loan',
@@ -235,9 +245,19 @@ class lendingController extends Controller
             'Education Lending' => 'Education Loan',
         ];
 
+        $loanSettings = [];
         foreach ($typeMap as $formType => $dbType) {
-            $rate = $dbSettings[$dbType] ?? 2;
-            $loanSettings[$formType] = $rate / 100;
+            $s = $dbSettings[$dbType] ?? null;
+
+            // Key by $dbType — this MUST match the <option value="..."> used
+            // in $mOptData() inside the blade (it calls $mOptData('Personal Loan'), etc.)
+            $loanSettings[$dbType] = [
+                'interest_rate' => $s ? ((float) $s->interest_rate / 100) : 0.02,
+                'processing_fee_rate' => $s->processing_fee_rate ?? 0,
+                'service_fee_rate' => $s->service_fee_rate ?? 0,
+                'loan_protection_fee' => $s->loan_protection_fee ?? 0,
+                'retention_unpaid_rate' => $s->retention_unpaid_rate ?? 0,
+            ];
         }
 
         return view(
@@ -249,6 +269,7 @@ class lendingController extends Controller
         );
     }
 
+    // ─── POST: Submit loan application ────────────────────────────────────────────
     // ─── POST: Submit loan application ────────────────────────────────────────────
     public function lendingProgram(Request $request)
     {
@@ -361,12 +382,6 @@ class lendingController extends Controller
         }
 
         // ── Loan term validation per lending type ────────────────────────────────
-        // Personal, Emergency, Education → 6 months only
-        // Business → 6 months or 12 months
-        //
-        // NOTE: the modal's <select name="lending_type"> sends values like
-        // "Business Loan", "Personal Loan", etc. (see loan_application.blade.php).
-        // These match() blocks must use the SAME strings, not "Business Lending".
         $lendingType = $request->lending_type;
         $allowedTerms = match ($lendingType) {
             'Business Loan' => ['6 months', '12 months'],
@@ -383,15 +398,24 @@ class lendingController extends Controller
                 ->withInput();
         }
 
+        // ── Fetch fee settings for this loan type ─────────────────────────────────
+        $settings = DB::table('loan_settings_tbls')
+            ->where('loan_type', $lendingType)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$settings) {
+            return redirect()->back()
+                ->with('loan_blocked', 'Loan settings are not configured for this loan type. Please contact the admin.')
+                ->withInput();
+        }
+
         try {
             $request->validate([
                 'lending_type' => 'nullable|string',
                 'lending_amount' => 'nullable|numeric',
                 'lending_type_term' => 'nullable|string',
                 'monthly_income' => 'nullable|numeric',
-                'monthly_payment' => 'nullable|numeric',
-                'total_payment' => 'nullable|numeric',
-                'total_interest' => 'nullable|numeric',
                 'purpose_loan' => 'nullable|string',
                 'purpose_loan_others' => 'nullable|string|required_if:purpose_loan,Others',
                 'personal_valid_id' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -415,8 +439,6 @@ class lendingController extends Controller
                 return null;
             };
 
-            // Map valid_id and proof_of_income fields per lending type
-            // (matches the "Loan" suffix the frontend actually sends — see note above)
             $validIdField = match ($lendingType) {
                 'Personal Loan' => 'personal_valid_id',
                 'Emergency Loan' => 'emergency_valid_id',
@@ -434,16 +456,62 @@ class lendingController extends Controller
 
             $referenceNo = 'LN-' . date('YmdHis') . rand(10, 99);
 
+            // ── Compute fees from loan_settings_tbls (Section III. Loan Charges) ──
+            $principal = (float) $request->lending_amount;
+            $termMonths = (int) filter_var($request->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+
+            // a. Processing & Collection fee = 2%
+            $processingFee = round($principal * ($settings->processing_fee_rate / 100), 2);
+
+            // b. Service and Legal fee = 2%
+            $serviceFee = round($principal * ($settings->service_fee_rate / 100), 2);
+
+            // c. Loan Protection Plan = ₱2 per month of term
+            $loanProtectionFee = round($settings->loan_protection_fee * $termMonths, 2);
+
+            // e. Retention/CBU = 3% fully paid / 6% not fully paid
+            // TODO: wire up real "fully paid subscription" check.
+            // Defaulting to the unpaid rate (6%) for everyone until that logic exists.
+            $retentionRateApplied = $settings->retention_unpaid_rate;
+            $retentionAmount = round($principal * ($retentionRateApplied / 100), 2);
+
+            // Net proceeds = amount actually released to borrower
+            $netProceeds = round($principal - $processingFee - $serviceFee - $loanProtectionFee - $retentionAmount, 2);
+
+            // d. Interest rate = 2%/mo diminishing balance
+            $monthlyRate = $settings->interest_rate / 100;
+            $principalPerMonth = $termMonths > 0 ? $principal / $termMonths : 0;
+            $totalInterest = 0;
+
+            for ($i = 0; $i < $termMonths; $i++) {
+                $remainingBalance = $principal - ($principalPerMonth * $i);
+                $totalInterest += $remainingBalance * $monthlyRate;
+            }
+            $totalInterest = round($totalInterest, 2);
+
+            $totalPayment = round($principal + $totalInterest, 2);
+            $monthlyPayment = $termMonths > 0 ? round($totalPayment / $termMonths, 2) : 0;
+
             lending_program_tbl::create([
                 'user_id' => $memberId,
                 'reference_no' => $referenceNo,
                 'lending_type' => $lendingType,
-                'lending_amount' => $request->lending_amount,
+                'lending_amount' => $principal,
                 'lending_type_term' => $request->lending_type_term,
+
+                // Computed fees — keys must match the actual columns
+                'processing_fee_rate' => $processingFee,
+                'service_fee_rate' => $serviceFee,
+                'loan_protection_fee' => $loanProtectionFee,
+                'retention_paid_rate' => $retentionRateApplied == $settings->retention_paid_rate ? $retentionAmount : 0,
+                'retention_unpaid_rate' => $retentionRateApplied == $settings->retention_unpaid_rate ? $retentionAmount : 0,
+                'net_proceeds' => $netProceeds,
+
                 'monthly_income' => $request->monthly_income,
-                'monthly_payment' => $request->monthly_payment,
-                'total_payment' => $request->total_payment,
-                'total_interest' => $request->total_interest,
+                'monthly_payment' => $monthlyPayment,
+                'total_payment' => $totalPayment,
+                'total_interest' => $totalInterest,
+
                 'purpose_loan' => $request->purpose_loan === 'Others'
                     ? $request->purpose_loan_others
                     : $request->purpose_loan,
@@ -489,6 +557,12 @@ class lendingController extends Controller
         $status = lending_status_tbl::where('lending_id', $request->lending_id)->first();
         $paymentType = $request->get('payment_type', 'monthly');
 
+        // Compute the per-installment amount directly — $loan has no
+        // monthly_payment column/accessor of its own.
+        $totalPayment = (float) ($loan->total_payment ?? $loan->lending_amount);
+        $totalPayments = (int) ($status->total_payments ?? 0);
+        $monthlyPayment = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : (float) $request->amount_paid;
+
         if ($paymentType === 'full' && $status) {
             // ── FULL REPAYMENT (Cash) ────────────────────────────────────────
             $remainingPayments = $status->total_payments - $status->payments_made;
@@ -499,9 +573,12 @@ class lendingController extends Controller
                     'lending_id' => $request->lending_id,
                     'user_id' => auth()->id(),
                     'payment_number' => $paymentsMade + 1,
-                    'amount_paid' => $loan->monthly_payment,
+                    'amount_due' => $monthlyPayment,
+                    'amount_paid' => $monthlyPayment,
+                    'due_date' => $status->due_date ?? now()->format('Y-m-d'),
                     'payment_date' => now()->format('Y-m-d'),
                     'payment_method' => $request->payment_method,
+                    'payment_type' => $paymentType,
                     'reference_no' => $request->reference_no ?: 'RCP-FULL-' . now()->format('YmdHis') . '-' . $i,
                     'notes' => 'Full balance repayment',
                     'recorded_by' => null,
@@ -524,9 +601,12 @@ class lendingController extends Controller
                 'lending_id' => $request->lending_id,
                 'user_id' => auth()->id(),
                 'payment_number' => $request->payment_number,
+                'amount_due' => $monthlyPayment,
                 'amount_paid' => $request->amount_paid,
+                'due_date' => $status->due_date ?? now()->format('Y-m-d'),
                 'payment_date' => now()->format('Y-m-d'),
                 'payment_method' => $request->payment_method,
+                'payment_type' => $paymentType,
                 'reference_no' => $request->reference_no ?: 'RCP-' . now()->format('YmdHis'),
                 'notes' => $request->notes,
                 'recorded_by' => null,
@@ -642,6 +722,10 @@ class lendingController extends Controller
         $serviceFee = 0;
         $interestRate = 0;
         $totalInterest = 0;
+        $processingFee = 0;
+        $loanProtectionFee = 0;
+        $retentionFee = 0;
+        $netProceeds = 0;
 
         if ($selectedLoan && $lendingStatus) {
             $principal = (float) $selectedLoan->lending_amount;
@@ -656,7 +740,18 @@ class lendingController extends Controller
 
             $totalInterest = (float) ($selectedLoan->total_interest ?? 0);
             $interestRate = (float) ($lendingStatus->interest_rate ?? 0);
-            $serviceFee = round($principal * 0.01, 2);
+
+            // Pull the REAL fees that were computed & saved at application time.
+            // NOTE: despite the column names ending in "_rate", these hold
+            // computed PESO AMOUNTS (see lendingProgram() in this controller),
+            // not percentages.
+            $processingFee = (float) ($selectedLoan->processing_fee_rate ?? 0);
+            $serviceFee = (float) ($selectedLoan->service_fee_rate ?? 0);
+            $loanProtectionFee = (float) ($selectedLoan->loan_protection_fee ?? 0);
+            // Only one of paid/unpaid retention is ever non-zero per loan
+            $retentionFee = (float) ($selectedLoan->retention_paid_rate ?? 0)
+                + (float) ($selectedLoan->retention_unpaid_rate ?? 0);
+            $netProceeds = (float) ($selectedLoan->net_proceeds ?? 0);
 
             // Remaining principal proportional to remaining balance
             $remainingBalance = (float) $lendingStatus->remaining_balance;
@@ -711,7 +806,11 @@ class lendingController extends Controller
                 'monthsRemaining',
                 'serviceFee',
                 'interestRate',
-                'totalInterest'
+                'totalInterest',
+                'processingFee',
+                'loanProtectionFee',
+                'retentionFee',
+                'netProceeds'
             )
         ));
     }

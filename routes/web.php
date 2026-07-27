@@ -81,6 +81,12 @@ Route::get("/edit-profile-member", [UsersHandle::class, "EditProfileMember"])->n
 // Edit Profile Member page POST
 Route::post("/edit-profile-member", [UsersHandle::class, "UpdateProfileMember"])->name("UpdateProfileMember");
 
+Route::get("/settings", [UsersHandle::class, "Settings"])->name("Settings");
+
+Route::get("/notifications", [UsersHandle::class, "Notifications"])->name("Notifications");
+
+Route::get("/transactions", [UsersHandle::class, "Transactions"])->name("Transactions");
+
 // Driver Portal page GET
 Route::get("/driver-portal", [UserController::class, "DriverPortal"])->name("DriverPortal");
 

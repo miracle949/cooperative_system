@@ -16,8 +16,8 @@ return new class extends Migration
 
         Schema::table('lending_program_tbls', function (Blueprint $table) {
             $table->date('due_date')->nullable()->after('total_interest');
-            $table->decimal('late_fee', 10, 2)->default(0)->after('due_date');
-            $table->timestamp('penalty_applied_at')->nullable()->after('late_fee');
+            // $table->decimal('late_fee', 10, 2)->default(0)->after('due_date');
+            // $table->timestamp('penalty_applied_at')->nullable()->after('late_fee');
         });
 
         $lateFeeSetting = DB::table('loan_settings_tbls')->first();

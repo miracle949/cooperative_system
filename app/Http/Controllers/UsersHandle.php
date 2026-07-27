@@ -486,6 +486,51 @@ class UsersHandle extends Controller
         );
     }
 
+    public function Settings(){
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
+
+        $memberId = Auth::id();
+
+        return view(
+            "members_components.settings",
+            [
+                "username" => $username,
+                "email" => $email
+            ]
+        );
+    }
+
+    public function Transactions(){
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
+
+        $memberId = Auth::id();
+
+        return view(
+            "members_components.transactions",
+            [
+                "username" => $username,
+                "email" => $email
+            ]
+        );
+    }
+
+    public function Notifications(){
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
+
+        $memberId = Auth::id();
+
+        return view(
+            "members_components.notifications",
+            [
+                "username" => $username,
+                "email" => $email
+            ]
+        );
+    }
+
     public function ProfileMember()
     {
         $userId = Auth::id();
@@ -993,7 +1038,7 @@ class UsersHandle extends Controller
                 "username" => $request->username,
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
-                "role" => "pending",
+                "role" => "Pending",
             ]);
 
             // Spouse

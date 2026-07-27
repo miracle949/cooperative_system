@@ -97,16 +97,6 @@
             transform: translateY(0) scale(1);
         }
 
-        /* .modal-accent-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--blue) 0%, var(--blue) 50%, var(--blue) 100%);
-            border-radius: 24px 24px 0 0;
-        } */
-
         .modal-layout {
             display: flex;
             flex: 1;
@@ -118,7 +108,6 @@
             width: 250px;
             flex-shrink: 0;
             background: linear-gradient(160deg, var(--teal) 0%, var(--teal) 60%, var(--teal) 100%);
-            /* background-color: #ffffff; */
             border-right: 1px solid var(--border);
             padding: 26px 18px;
             display: flex;
@@ -137,7 +126,6 @@
             height: 160px;
             border-radius: 50%;
             background: rgba(184, 148, 63, .12);
-            /* background-color: var(--blue-mist); */
         }
 
         .modal-invoice-sidebar::after {
@@ -149,7 +137,6 @@
             height: 120px;
             border-radius: 50%;
             background: rgba(184, 148, 63, .07);
-            /* background-color: var(--blue-mist); */
         }
 
         .mis-eyebrow {
@@ -157,7 +144,6 @@
             font-weight: 700;
             letter-spacing: 2.5px;
             text-transform: uppercase;
-            /* color: rgba(184, 148, 63, .8); */
             color: var(--muted);
             position: relative;
             z-index: 1;
@@ -166,17 +152,14 @@
         .mis-title {
             font-size: 16px;
             font-weight: 700;
-            /* color: var(--teal); */
             color: #ffffff;
             position: relative;
             z-index: 1;
             margin-bottom: 1px;
-            /* font-family: "Playfair Display"; */
         }
 
         .mis-sub {
             font-size: 10.5px;
-            /* color: rgba(255, 255, 255, .45); */
             color: var(--muted);
             position: relative;
             z-index: 1;
@@ -184,9 +167,7 @@
 
         .mis-amount-box {
             background: rgba(255, 255, 255, .07);
-            /* background-color: var(--blue-mist); */
             border: 1px solid rgba(255, 255, 255, .12);
-            /* border: 1px solid var(--border); */
             border-radius: 12px;
             padding: 14px;
             text-align: center;
@@ -200,8 +181,6 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: rgba(255, 255, 255, .5);
-            /* color: #ffffff; */
-            /* color: var(--blue); */
             margin-bottom: 6px;
         }
 
@@ -209,14 +188,10 @@
             font-size: 20px;
             font-weight: 700;
             color: #ffffff;
-            /* color: var(--blue); */
             line-height: 1;
         }
 
         .mis-amount-val.dim {
-            /* color: rgba(255, 255, 255, .3); */
-            /* color: #ffffff; */
-            /* color: var(--blue); */
             font-family: 'Space Grotesk', sans-serif;
             font-size: 20px;
         }
@@ -224,8 +199,6 @@
         .mis-amount-hint {
             font-size: 9.5px;
             color: rgba(255, 255, 255, .35);
-            /* color: #ffffff; */
-            /* color: var(--blue); */
             margin-top: 5px;
         }
 
@@ -251,12 +224,10 @@
 
         .mis-lbl {
             color: rgba(255, 255, 255, .5);
-            /* color: var(--muted); */
             font-weight: 600;
         }
 
         .mis-val {
-            /* color: var(--teal); */
             color: #ffffff;
             font-weight: 700;
             font-size: 12px;
@@ -264,7 +235,6 @@
 
         .mis-val.dim {
             color: rgba(255, 255, 255, .3);
-            /* color: var(--teal); */
             font-weight: 400;
         }
 
@@ -289,13 +259,11 @@
             font-size: 12px;
             font-weight: 700;
             color: rgba(255, 255, 255, .5);
-            /* color: var(--muted); */
         }
 
         .mis-total-val {
             font-size: 12px;
             font-weight: 700;
-            /* color: var(--teal); */
             color: #ffffff;
         }
 
@@ -319,7 +287,6 @@
             align-items: center;
             padding: 16px 24px;
             border-bottom: 1px solid var(--border);
-            /* background: #fafafa; */
             background-color: #ffffff;
             flex-shrink: 0;
         }
@@ -346,9 +313,7 @@
 
         .m-step.active .m-step-circle {
             background: var(--blue);
-            /* color: var(--forest); */
             color: #fff;
-            /* box-shadow: 0 0 0 3px rgba(184, 148, 63, .2); */
             box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
         }
 
@@ -406,7 +371,6 @@
             display: none;
             padding: 24px 28px;
             animation: panelIn .3s ease both;
-            /* background-color: var(--bg); */
         }
 
         .modal-panel.active {
@@ -528,7 +492,7 @@
             width: 100%;
             font-family: 'Space Grotesk', sans-serif;
             font-size: 13px;
-            color: var(--ink);
+            color: var(--teal);
             background: #fff;
             border: 1.5px solid var(--border);
             border-radius: 8px;
@@ -551,12 +515,10 @@
         .p-input:focus,
         .p-select:focus,
         .p-textarea:focus {
-            border-color: var(--blue);
-            /* box-shadow: 0 0 0 3px rgba(184, 148, 63, .12); */
+            border-color: var(--teal);
             box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
         }
 
-        /* ── Field error state ── */
         .p-input.field-error,
         .p-select.field-error,
         .p-textarea.field-error {
@@ -564,7 +526,6 @@
             box-shadow: 0 0 0 3px rgba(220, 38, 38, .1) !important;
         }
 
-        /* ── Inline field error message ── */
         .p-field-error {
             display: none;
             font-size: 11px;
@@ -711,17 +672,12 @@
         }
 
         .upload-card-modal:hover {
-            /* border-color: var(--forest);
-            background: var(--forest-pale); */
             border-color: var(--blue);
-            /* background-color: var(--blue-mist); */
             background-color: #ffffff;
         }
 
         .upload-card-modal.has-file {
             border-color: var(--blue);
-            /* background: rgba(30, 122, 78, .04); */
-            /* background-color: var(--blue-mist); */
             background-color: #ffffff;
         }
 
@@ -773,12 +729,10 @@
 
         .uc-badge.required {
             background: rgba(201, 68, 68, .1);
-            /* color: var(--danger); */
             color: #dc2626;
         }
 
         .uc-badge.uploaded {
-            /* background: rgba(34, 201, 147, .12); */
             background-color: var(--blue-mist);
             color: var(--blue);
         }
@@ -942,6 +896,22 @@
             color: #14b8a6;
         }
 
+        .bi-s {
+            background: rgba(236, 72, 153, .1);
+        }
+
+        .bi-s svg {
+            color: #ec4899;
+        }
+
+        .bi-n {
+            background: rgba(34, 197, 94, .1);
+        }
+
+        .bi-n svg {
+            color: #22c55e;
+        }
+
         .b-lbl-m {
             font-size: 9.5px;
             font-weight: 600;
@@ -1099,7 +1069,6 @@
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            /* color: rgba(255, 255, 255, .6); */
             color: #ffffff;
         }
 
@@ -1116,10 +1085,11 @@
         }
 
         .sum-row-m.total {
-            /* background: #f0f4f2; */
-            /* background-color: var(--blue); */
             background-color: #ffffff;
-            /* background-color: #fafafa; */
+        }
+
+        .sum-row-m.subtle {
+            background-color: #fafbfd;
         }
 
         .sum-lbl-m {
@@ -1147,7 +1117,10 @@
         .sum-val-m.bigf {
             font-size: 14.5px;
             color: var(--teal);
-            /* color: #ffffff; */
+        }
+
+        .sum-val-m.deduct {
+            color: #dc2626;
         }
 
         .cb-row-m {
@@ -1189,7 +1162,6 @@
             color: var(--ink);
         }
 
-        /* ── Checkbox required message ── */
         .cb-required-msg {
             display: none;
             font-size: 11px;
@@ -1257,13 +1229,11 @@
         .m-btn-outline {
             background: transparent;
             color: var(--blue);
-            /* border: 1.5px solid var(--blue); */
-            border: 1.5px solid var(--line)
+            border: 1px solid var(--blue)
         }
 
         .m-btn-outline:hover {
-            /* background: var(--blue); */
-            border: 1.5px solid var(--blue)
+            border: 1px solid var(--blue)
         }
 
         .m-btn-primary {
@@ -1279,9 +1249,7 @@
 
         .m-btn-gold {
             background: linear-gradient(135deg, var(--blue), var(--blue));
-            /* color: var(--forest); */
             color: #fff;
-            /* box-shadow: 0 4px 14px rgba(184, 148, 63, .3); */
             box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
 
@@ -1412,7 +1380,7 @@
         }
 
         .loan-card {
-            border: 1px solid var(--border);
+            border: 1px solid var(--line);
             border-radius: 14px;
             overflow: hidden;
             background: #fff;
@@ -1432,13 +1400,12 @@
             padding: 16px 18px;
             cursor: pointer;
             background: #fff;
-            /* border: 1px solid var(--border); */
         }
 
         .loan-ref-block {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             min-width: 0;
         }
 
@@ -1558,7 +1525,7 @@
             border-radius: 20px;
         }
 
-        .due-tag .fa{
+        .due-tag .fa {
             color: var(--blue);
         }
 
@@ -1708,6 +1675,68 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* ============ LOCKED / GATED OVERLAY (Share Capital not met) ============ */
+        .gated {
+            position: relative;
+        }
+
+        .gated .gate-shield {
+            position: absolute;
+            inset: 0;
+            background: rgba(247, 248, 252, .72);
+            backdrop-filter: blur(3px);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .18s ease;
+            z-index: 5;
+            border: 1px solid var(--line);
+        }
+
+        .gated:hover .gate-shield {
+            opacity: 1;
+            pointer-events: auto;
+            border: 1px solid var(--line);
+        }
+
+        .gate-lock {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 15px;
+        }
+
+        .gate-msg {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .gate-sub {
+            font-size: 12px;
+            color: var(--muted);
+            max-width: 260px;
+            line-height: 1.5;
+        }
+
+        .gated>*:not(.gate-shield) {
+            filter: blur(2.5px);
+            user-select: none;
+        }
     </style>
 
     <script>
@@ -1778,39 +1807,9 @@
             <div class="main-sub-parent">
                 <main>
                     <div class="main-parent">
-                        {{-- <div class="main-header">
-                            <div class="main-badge">
-                                <a href="#">Home</a>
-                                <span>></span>
-                                <span>Loan Application</span>
-                            </div>
-                            <h2>Loan Application</h2>
-                            <p>Manage your loan applications and track their status.</p>
-                        </div> --}}
-
-                        @if(!$canApplyLoan)
-                            <div
-                                style="display:flex;align-items:flex-start;gap:12px;background:#fdf9f0;border:1.5px solid #e8d5a3;border-radius:10px;padding:14px 18px; margin-bottom:25px;">
-                                <div
-                                    style="width:36px;height:36px;border-radius:50%;background:rgba(232,213,163,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="fa fa-circle-info" style="color:#b8862a;font-size:15px;"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:13.5px;font-weight:700;color:#7a5010;margin-bottom:3px;">Share
-                                        Capital Requirement</div>
-                                    <p style="font-size:12.5px;color:#8a6020;line-height:1.6;margin:0;">
-                                        You need at least <strong>10 shares</strong> of Share Capital to apply for a loan.
-                                        You currently have <strong>{{ $currentShares }} share(s)</strong> —
-                                        you need <strong>{{ 10 - $currentShares }} more</strong> to become eligible.
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
 
                         <div class="table-header">
                             <div class="main-text">
-                                <!-- <h3>Loans ({{ $allLoansCount ?? 0 }}) <span>- Manage All Loan
-                                        Applications</span></h3> -->
                                 <h3>Loan Application</h3>
                                 <p>View your loan applications and track upcoming, due, and overdue payments</p>
                             </div>
@@ -1823,617 +1822,636 @@
                             </div>
                         </div>
 
-                        <div class="card-box-parent">
-                            <div class="card-box">
-                                <div class="card-header">
-                                    <h5>All Loans</h5>
-                                    <div class="card-icon">
-                                        <i class="fa fa-file"></i>
+                        <div class="{{ !$canApplyLoan ? 'gated' : '' }}">
+                            <div class="card-box-parent">
+                                <div class="card-box">
+                                    <div class="card-header">
+                                        <h5>All Loans</h5>
+                                        <div class="card-icon"><i class="fa fa-file"></i></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ $allLoansCount ?? 0 }}</p>
+                                        <span>Total Application on file</span>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>{{ $allLoansCount ?? 0 }}</p>
-                                    <span>Total Application on file</span>
-                                </div>
-                            </div>
 
-                            <div class="card-box">
-                                <div class="card-header">
-                                    <h5>Due Today</h5>
-                                    <div class="card-icon">
-                                        {{-- <i class="fa fa-circle-exclamation"></i> --}}
-                                        <i class="fa fa-triangle-exclamation"></i>
+                                <div class="card-box">
+                                    <div class="card-header">
+                                        <h5>Due Today</h5>
+                                        <div class="card-icon"><i class="fa fa-triangle-exclamation"></i></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ $dueTodayCount }}</p>
+                                        <span>Payments due today</span>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>{{ $dueTodayCount }}</p>
-                                    <span>Payments due today</span>
-                                </div>
-                            </div>
 
-                            <div class="card-box">
-                                <div class="card-header">
-                                    <h5>Due This Week</h5>
-                                    <div class="card-icon">
-                                        <i class="fa fa-calendar"></i>
+                                <div class="card-box">
+                                    <div class="card-header">
+                                        <h5>Due This Week</h5>
+                                        <div class="card-icon"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ $dueThisWeekCount }}</p>
+                                        <span>Upcoming repayments</span>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>{{ $dueThisWeekCount }}</p>
-                                    <span>Upcoming repayments</span>
-                                </div>
-                            </div>
 
-                            <div class="card-box">
-                                <div class="card-header">
-                                    <h5>Overdue</h5>
-                                    <div class="card-icon">
-                                        <i class="fa fa-clock"></i>
+                                <div class="card-box">
+                                    <div class="card-header">
+                                        <h5>Overdue</h5>
+                                        <div class="card-icon"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ $overdueCount }}</p>
+                                        <span>Missed payments</span>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>{{ $overdueCount }}</p>
-                                    <span>Missed payments</span>
+                            </div>
+
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                        aria-selected="true">
+                                        All Loans
+                                    </button>
+                                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-profile" type="button" role="tab"
+                                        aria-controls="nav-profile" aria-selected="false">
+                                        Due Today
+                                        @if(isset($dueTodayCount) && $dueTodayCount > 0)
+                                            <span
+                                                style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueTodayCount }}</span>
+                                        @endif
+                                    </button>
+                                    <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-contact" type="button" role="tab"
+                                        aria-controls="nav-contact" aria-selected="false">
+                                        Due This Week
+                                        @if(isset($dueThisWeekCount) && $dueThisWeekCount > 0)
+                                            <span
+                                                style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueThisWeekCount }}</span>
+                                        @endif
+                                    </button>
+                                    <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab"
+                                        data-bs-target="#nav-disabled" type="button" role="tab"
+                                        aria-controls="nav-disabled" aria-selected="false">
+                                        Overdue
+                                        @if(isset($overdueCount) && $overdueCount > 0)
+                                            <span
+                                                style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $overdueCount }}</span>
+                                        @endif
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
+                            </nav>
 
-                        <nav>
-                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
-                                    aria-selected="true">
-                                    All Loans
-                                    <!-- @if(isset($allLoansCount) && $allLoansCount > 0)
-                                        <span
-                                            style="background:#e0e7ff;color:#3730a3;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $allLoansCount }}</span>
-                                    @endif -->
-                                </button>
-                                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
-                                    aria-selected="false">
-                                    Due Today
-                                    @if(isset($dueTodayCount) && $dueTodayCount > 0)
-                                        <span
-                                            style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueTodayCount }}</span>
-                                    @endif
-                                </button>
-                                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact"
-                                    aria-selected="false">
-                                    Due This Week
-                                    @if(isset($dueThisWeekCount) && $dueThisWeekCount > 0)
-                                        <span
-                                            style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueThisWeekCount }}</span>
-                                    @endif
-                                </button>
-                                <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab"
-                                    data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled"
-                                    aria-selected="false">
-                                    Overdue
-                                    @if(isset($overdueCount) && $overdueCount > 0)
-                                        <span
-                                            style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $overdueCount }}</span>
-                                    @endif
-                                </button>
-                            </div>
-                        </nav>
+                            <div class="tab-content" id="nav-tabContent">
 
-                        <div class="tab-content" id="nav-tabContent">
+                                {{-- ══ TAB 1: ALL LOANS ══ --}}
+                                <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                    aria-labelledby="nav-home-tab" tabindex="0">
+                                    <div class="table-parent">
+                                        <div class="table-filter">
+                                            <div class="filter search-parent">
+                                                <i class="fa fa-search"></i>
+                                                <input type="search" id="search-all"
+                                                    oninput="filterCards('all-loans-list', this.value)"
+                                                    placeholder="Search by reference, type, purpose">
+                                            </div>
+                                        </div>
 
-                            {{-- ══ TAB 1: ALL LOANS ══ --}}
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                aria-labelledby="nav-home-tab" tabindex="0">
-                                <div class="table-parent">
-                                    <div class="table-filter">
-                                        <div class="filter search-parent">
-                                            <i class="fa fa-search"></i>
-                                            <input type="search" id="search-all"
-                                                oninput="filterCards('all-loans-list', this.value)"
-                                                placeholder="Search by reference, type, purpose">
+                                        <div class="loan-list" id="all-loans-list">
+                                            @forelse($allLoans ?? [] as $loan)
+                                                @php
+                                                    $statusKey = strtolower($loan->status);
+                                                    $badgeClass = in_array($statusKey, ['pending', 'approved', 'completed', 'rejected']) ? $statusKey : 'pending';
+                                                    $progress = $loan->progress_percent ?? 0;
+                                                    $dueCat = $loan->due_category ?? null;
+                                                @endphp
+                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}">
+                                                    <div class="loan-row" onclick="toggleLoanCard(this)">
+                                                        <div class="loan-ref-block">
+                                                            <div class="loan-type-icon"><i class="fa fa-file-lines"></i>
+                                                            </div>
+                                                            <div style="min-width:0;">
+                                                                <div class="loan-ref">{{ $loan->reference_no }}</div>
+                                                                <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-purpose-cell">
+                                                            <div class="cell-label">Date Applied</div>
+                                                            <div class="cell-value">
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-term">
+                                                            <div class="cell-label">Term</div>
+                                                            <div class="cell-value">{{ $loan->lending_type_term }}</div>
+                                                        </div>
+                                                        <div class="col-cell">
+                                                            <div class="cell-label">Amount</div>
+                                                            <div class="loan-amount">
+                                                                ₱{{ number_format($loan->lending_amount, 2) }}</div>
+                                                        </div>
+                                                        <div class="col-status">
+                                                            <span class="badge {{ $badgeClass }}">{{ $loan->status }}</span>
+                                                            @if($loan->status === 'Approved')
+                                                                <span class="due-tag"
+                                                                    style="background:var(--blue-mist);color:var(--blue);">
+                                                                    <i class="fa fa-circle" style="font-size:6px;"></i>
+                                                                    Active
+                                                                </span>
+                                                            @endif
+                                                            @if($dueCat === 'today')<span class="due-tag today">Due
+                                                            Today</span>@endif
+                                                            @if($dueCat === 'week')<span class="due-tag week">Due This
+                                                            Week</span>@endif
+                                                            @if($dueCat === 'overdue')<span
+                                                            class="due-tag late">Overdue</span>@endif
+                                                        </div>
+                                                        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M6 9l6 6 6-6" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <div class="loan-detail">
+                                                        <div class="loan-detail-inner">
+                                                            <div class="detail-grid">
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Loan Type</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type }}</div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Term</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type_term }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Per Installment</div>
+                                                                    <div class="cell-value">
+                                                                        ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Next Due</div>
+                                                                    <div class="cell-value">
+                                                                        {{ ($loan->due_date && ($loan->remaining_balance ?? 0) > 0) ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            @if(($loan->total_payments ?? 0) > 0)
+                                                                <div class="progress-block">
+                                                                    <div class="progress-head">
+                                                                        <span>Repayment Progress</span>
+                                                                        <span>{{ $loan->payments_made ?? 0 }} of
+                                                                            {{ $loan->total_payments ?? 0 }} installments ·
+                                                                            {{ $loan->progress_percent ?? 0 }}%</span>
+                                                                    </div>
+                                                                    <div class="progress-track">
+                                                                        <div class="progress-fill"
+                                                                            style="width:{{ $loan->progress_percent ?? 0 }}%">
+                                                                        </div>
+                                                                    </div>
+                                                                    @if($loan->status === 'Completed')
+                                                                        <div
+                                                                            style="margin-top:8px;font-size:11.5px;color:var(--green);font-weight:600;">
+                                                                            <i class="fa fa-circle-check"></i>
+                                                                            This loan has been fully paid off. Great job!
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            @else
+                                                                <div class="detail-box"
+                                                                    style="text-align:center; padding: 14px;">
+                                                                    <div class="cell-value"
+                                                                        style="font-weight:600; color:var(--muted);">
+                                                                        @if($loan->status === 'Pending')
+                                                                            Your application is awaiting review by the credit
+                                                                            committee.
+                                                                        @elseif($loan->status === 'Rejected')
+                                                                            This application was not approved.
+                                                                        @else
+                                                                            A repayment schedule will be generated once funds are
+                                                                            released.
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="detail-actions">
+                                                                @if(in_array($loan->status, ['Approved', 'Completed']))
+                                                                    <a class="btn-ghost"
+                                                                        href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
+                                                                        onclick="event.stopPropagation();">
+                                                                        <i class="fa fa-calendar-check"></i> View Repayment
+                                                                        Schedule
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <div class="empty-state">
+                                                    <i class="fa fa-folder-open"
+                                                        style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                    No loan applications yet.
+                                                </div>
+                                            @endforelse
+                                        </div>
+
+                                        <div class="parent-pagination">
+                                            <p>Showing <span
+                                                    id="all-loans-list-shown">{{ count($allLoans ?? []) }}</span>
+                                                of
+                                                <span>{{ $allLoansCount ?? 0 }}</span> applications
+                                            </p>
+                                            <div class="pg-controls" id="all-loans-list-pg"></div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="loan-list" id="all-loans-list">
-                                        @forelse($allLoans ?? [] as $loan)
-                                            @php
-                                                $statusKey = strtolower($loan->status);
-                                                $badgeClass = in_array($statusKey, ['pending', 'approved', 'completed', 'rejected']) ? $statusKey : 'pending';
-                                                $progress = $loan->progress_percent ?? 0;
-                                                $dueCat = $loan->due_category ?? null;
-                                            @endphp
-                                            <div class="loan-card" data-ref="{{ $loan->reference_no }}">
-                                                <div class="loan-row" onclick="toggleLoanCard(this)">
-                                                    <div class="loan-ref-block">
-                                                        <div class="loan-type-icon"><i class="fa fa-file-lines"></i></div>
-                                                        <div style="min-width:0;">
-                                                            <div class="loan-ref">{{ $loan->reference_no }}</div>
-                                                            <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-purpose-cell">
-                                                        <div class="cell-label">Date Applied</div>
-                                                        <div class="cell-value">
-                                                            {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-term">
-                                                        <div class="cell-label">Term</div>
-                                                        <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                    </div>
-                                                    <div class="col-cell">
-                                                        <div class="cell-label">Amount</div>
-                                                        <div class="loan-amount">
-                                                            ₱{{ number_format($loan->lending_amount, 2) }}</div>
-                                                    </div>
-                                                    <div class="col-status">
-                                                        <span class="badge {{ $badgeClass }}">{{ $loan->status }}</span>
-                                                        @if($loan->status === 'Approved')
-                                                            <span class="due-tag"
-                                                                style="background:var(--blue-mist);color:var(--blue);">
-                                                                <i class="fa fa-circle" style="font-size:6px;"></i>
-                                                                Active
-                                                                <!-- {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }} -->
-                                                            </span>
-                                                        @endif
-                                                        @if($dueCat === 'today')<span class="due-tag today">Due
-                                                        Today</span>@endif
-                                                        @if($dueCat === 'week')<span class="due-tag week">Due This
-                                                        Week</span>@endif
-                                                        @if($dueCat === 'overdue')<span
-                                                        class="due-tag late">Overdue</span>@endif
-                                                    </div>
-                                                    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
-                                                        fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M6 9l6 6 6-6" />
-                                                    </svg>
-                                                </div>
+                                {{-- ══ TAB 2: DUE TODAY ══ --}}
+                                <div class="tab-pane fade" id="nav-profile" role="tabpanel"
+                                    aria-labelledby="nav-profile-tab" tabindex="0">
+                                    <div class="table-parent">
+                                        <div class="table-filter">
+                                            <div class="filter search-parent">
+                                                <i class="fa fa-search"></i>
+                                                <input type="search" oninput="filterCards('due-today-list', this.value)"
+                                                    placeholder="Search by reference, type, purpose">
+                                            </div>
+                                        </div>
 
-                                                <div class="loan-detail">
-                                                    <div class="loan-detail-inner">
-                                                        <div class="detail-grid">
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Loan Type</div>
-                                                                <div class="cell-value">{{ $loan->lending_type }}</div>
+                                        <div class="loan-list" id="due-today-list">
+                                            @forelse($dueTodayLoans ?? [] as $loan)
+                                                @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
+                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}">
+                                                    <div class="loan-row" onclick="toggleLoanCard(this)">
+                                                        <div class="loan-ref-block">
+                                                            <div class="loan-type-icon"><i class="fa fa-file-lines"></i>
                                                             </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Term</div>
-                                                                <div class="cell-value">{{ $loan->lending_type_term }}</div>
+                                                            <div style="min-width:0;">
+                                                                <div class="loan-ref">{{ $loan->reference_no }}</div>
+                                                                <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
                                                             </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Per Installment</div>
-                                                                <div class="cell-value">
-                                                                    ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
+                                                        </div>
+                                                        <div class="col-cell col-purpose-cell">
+                                                            <div class="cell-label">Date Applied</div>
+                                                            <div class="cell-value">
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-term">
+                                                            <div class="cell-label">Term</div>
+                                                            <div class="cell-value">{{ $loan->lending_type_term }}</div>
+                                                        </div>
+                                                        <div class="col-cell">
+                                                            <div class="cell-label">Amount</div>
+                                                            <div class="loan-amount">
+                                                                ₱{{ number_format($loan->lending_amount, 2) }}</div>
+                                                        </div>
+                                                        <div class="col-status">
+                                                            <span class="badge approved">Active</span>
+                                                            <span class="due-tag today">Due Today</span>
+                                                        </div>
+                                                        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M6 9l6 6 6-6" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="loan-detail">
+                                                        <div class="loan-detail-inner">
+                                                            <div class="detail-grid">
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Loan Type</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type }}</div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Term</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type_term }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Monthly Payment</div>
+                                                                    <div class="cell-value">
+                                                                        ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Due Date</div>
+                                                                    <div class="cell-value">
+                                                                        {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Next Due</div>
-                                                                <div class="cell-value">
-                                                                    {{ ($loan->due_date && ($loan->remaining_balance ?? 0) > 0) ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        @if(($loan->total_payments ?? 0) > 0)
                                                             <div class="progress-block">
                                                                 <div class="progress-head">
                                                                     <span>Repayment Progress</span>
                                                                     <span>{{ $loan->payments_made ?? 0 }} of
                                                                         {{ $loan->total_payments ?? 0 }} installments ·
-                                                                        {{ $loan->progress_percent ?? 0 }}%</span>
+                                                                        {{ $progress }}%</span>
                                                                 </div>
                                                                 <div class="progress-track">
                                                                     <div class="progress-fill"
-                                                                        style="width:{{ $loan->progress_percent ?? 0 }}%">
+                                                                        style="width:{{ $progress }}%">
                                                                     </div>
                                                                 </div>
-                                                                @if($loan->status === 'Completed')
-                                                                    <div
-                                                                        style="margin-top:8px;font-size:11.5px;color:var(--green);font-weight:600;">
-                                                                        <i class="fa fa-circle-check"></i>
-                                                                        This loan has been fully paid off. Great job!
-                                                                    </div>
-                                                                @endif
                                                             </div>
-                                                        @else
-                                                            <div class="detail-box" style="text-align:center; padding: 14px;">
-                                                                <div class="cell-value"
-                                                                    style="font-weight:600; color:var(--muted);">
-                                                                    @if($loan->status === 'Pending')
-                                                                        Your application is awaiting review by the credit committee.
-                                                                    @elseif($loan->status === 'Rejected')
-                                                                        This application was not approved.
-                                                                    @else
-                                                                        A repayment schedule will be generated once funds are
-                                                                        released.
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        @endif
-
-                                                        <div class="detail-actions">
-                                                            @if(in_array($loan->status, ['Approved', 'Completed']))
+                                                            <div class="detail-actions">
                                                                 <a class="btn-ghost"
                                                                     href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
                                                                     onclick="event.stopPropagation();">
-                                                                    <i class="fa fa-calendar-check"></i> View Repayment Schedule
+                                                                    <i class="fa fa-calendar-check"></i> View Repayment
+                                                                    Schedule
                                                                 </a>
-                                                            @endif
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @empty
-                                            <div class="empty-state">
-                                                <i class="fa fa-folder-open"
-                                                    style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
-                                                No loan applications yet.
-                                            </div>
-                                        @endforelse
-                                    </div>
+                                            @empty
+                                                <div class="empty-state">
+                                                    <i class="fa fa-calendar-check"
+                                                        style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                    No payments due today.
+                                                </div>
+                                            @endforelse
+                                        </div>
 
-                                    <div class="parent-pagination">
-                                        <p>Showing <span id="all-loans-list-shown">{{ count($allLoans ?? []) }}</span>
-                                            of
-                                            <span>{{ $allLoansCount ?? 0 }}</span> applications
-                                        </p>
-                                        <div class="pg-controls" id="all-loans-list-pg"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- ══ TAB 2: DUE TODAY ══ --}}
-                            <div class="tab-pane fade" id="nav-profile" role="tabpanel"
-                                aria-labelledby="nav-profile-tab" tabindex="0">
-                                <div class="table-parent">
-                                    <div class="table-filter">
-                                        <div class="filter search-parent">
-                                            <i class="fa fa-search"></i>
-                                            <input type="search" oninput="filterCards('due-today-list', this.value)"
-                                                placeholder="Search by reference, type, purpose">
+                                        <div class="parent-pagination">
+                                            <p>Showing <span>{{ count($dueTodayLoans ?? []) }}</span> of
+                                                <span>{{ $dueTodayCount ?? 0 }}</span> records
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <div class="loan-list" id="due-today-list">
-                                        @forelse($dueTodayLoans ?? [] as $loan)
-                                            @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
-                                            <div class="loan-card" data-ref="{{ $loan->reference_no }}">
-                                                <div class="loan-row" onclick="toggleLoanCard(this)">
-                                                    <div class="loan-ref-block">
-                                                        <div class="loan-type-icon"><i class="fa fa-file-lines"></i></div>
-                                                        <div style="min-width:0;">
-                                                            <div class="loan-ref">{{ $loan->reference_no }}</div>
-                                                            <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-purpose-cell">
-                                                        <div class="cell-label">Date Applied</div>
-                                                        <div class="cell-value">
-                                                            {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-term">
-                                                        <div class="cell-label">Term</div>
-                                                        <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                    </div>
-                                                    <div class="col-cell">
-                                                        <div class="cell-label">Amount</div>
-                                                        <div class="loan-amount">
-                                                            ₱{{ number_format($loan->lending_amount, 2) }}</div>
-                                                    </div>
-                                                    <div class="col-status">
-                                                        <span class="badge approved">Active</span>
-                                                        <span class="due-tag today">Due Today</span>
-                                                    </div>
-                                                    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
-                                                        fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M6 9l6 6 6-6" />
-                                                    </svg>
-                                                </div>
-                                                <div class="loan-detail">
-                                                    <div class="loan-detail-inner">
-                                                        <div class="detail-grid">
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Loan Type</div>
-                                                                <div class="cell-value">{{ $loan->lending_type }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Term</div>
-                                                                <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Monthly Payment</div>
-                                                                <div class="cell-value">
-                                                                    ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Due Date</div>
-                                                                <div class="cell-value">
-                                                                    {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="progress-block">
-                                                            <div class="progress-head">
-                                                                <span>Repayment Progress</span>
-                                                                <span>{{ $loan->payments_made ?? 0 }} of
-                                                                    {{ $loan->total_payments ?? 0 }} installments ·
-                                                                    {{ $progress }}%</span>
-                                                            </div>
-                                                            <div class="progress-track">
-                                                                <div class="progress-fill" style="width:{{ $progress }}%">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="detail-actions">
-                                                            <a class="btn-ghost"
-                                                                href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
-                                                                onclick="event.stopPropagation();">
-                                                                <i class="fa fa-calendar-check"></i> View Repayment Schedule
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div class="empty-state">
-                                                <i class="fa fa-calendar-check"
-                                                    style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
-                                                No payments due today.
-                                            </div>
-                                        @endforelse
-                                    </div>
-
-                                    <div class="parent-pagination">
-                                        <p>Showing <span>{{ count($dueTodayLoans ?? []) }}</span> of
-                                            <span>{{ $dueTodayCount ?? 0 }}</span> records
-                                        </p>
-                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- ══ TAB 3: DUE THIS WEEK ══ --}}
-                            <div class="tab-pane fade" id="nav-contact" role="tabpanel"
-                                aria-labelledby="nav-contact-tab" tabindex="0">
-                                <div class="table-parent">
-                                    <div class="table-filter">
-                                        <div class="filter search-parent">
-                                            <i class="fa fa-search"></i>
-                                            <input type="search" oninput="filterCards('due-week-list', this.value)"
-                                                placeholder="Search by reference, type, purpose">
+                                {{-- ══ TAB 3: DUE THIS WEEK ══ --}}
+                                <div class="tab-pane fade" id="nav-contact" role="tabpanel"
+                                    aria-labelledby="nav-contact-tab" tabindex="0">
+                                    <div class="table-parent">
+                                        <div class="table-filter">
+                                            <div class="filter search-parent">
+                                                <i class="fa fa-search"></i>
+                                                <input type="search" oninput="filterCards('due-week-list', this.value)"
+                                                    placeholder="Search by reference, type, purpose">
+                                            </div>
+                                        </div>
+
+                                        <div class="loan-list" id="due-week-list">
+                                            @forelse($dueThisWeekLoans ?? [] as $loan)
+                                                @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
+                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}">
+                                                    <div class="loan-row" onclick="toggleLoanCard(this)">
+                                                        <div class="loan-ref-block">
+                                                            <div class="loan-type-icon"><i class="fa fa-file-lines"></i>
+                                                            </div>
+                                                            <div style="min-width:0;">
+                                                                <div class="loan-ref">{{ $loan->reference_no }}</div>
+                                                                <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-purpose-cell">
+                                                            <div class="cell-label">Date Applied</div>
+                                                            <div class="cell-value">
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-term">
+                                                            <div class="cell-label">Term</div>
+                                                            <div class="cell-value">{{ $loan->lending_type_term }}</div>
+                                                        </div>
+                                                        <div class="col-cell">
+                                                            <div class="cell-label">Amount</div>
+                                                            <div class="loan-amount">
+                                                                ₱{{ number_format($loan->lending_amount, 2) }}</div>
+                                                        </div>
+                                                        <div class="col-status">
+                                                            <span class="badge approved">Active</span>
+                                                            <span class="due-tag week">Due This Week</span>
+                                                        </div>
+                                                        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M6 9l6 6 6-6" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="loan-detail">
+                                                        <div class="loan-detail-inner">
+                                                            <div class="detail-grid">
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Loan Type</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type }}</div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Term</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type_term }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Monthly Payment</div>
+                                                                    <div class="cell-value">
+                                                                        ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Due Date</div>
+                                                                    <div class="cell-value">
+                                                                        {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="progress-block">
+                                                                <div class="progress-head">
+                                                                    <span>Repayment Progress</span>
+                                                                    <span>{{ $loan->payments_made ?? 0 }} of
+                                                                        {{ $loan->total_payments ?? 0 }} installments ·
+                                                                        {{ $progress }}%</span>
+                                                                </div>
+                                                                <div class="progress-track">
+                                                                    <div class="progress-fill"
+                                                                        style="width:{{ $progress }}%">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="detail-actions">
+                                                                <a class="btn-ghost"
+                                                                    href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
+                                                                    onclick="event.stopPropagation();">
+                                                                    <i class="fa fa-calendar-check"></i> View Repayment
+                                                                    Schedule
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <div class="empty-state">
+                                                    <i class="fa fa-calendar"
+                                                        style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
+                                                    No upcoming payments this week.
+                                                </div>
+                                            @endforelse
+                                        </div>
+
+                                        <div class="parent-pagination">
+                                            <p>Showing <span>{{ count($dueThisWeekLoans ?? []) }}</span> of
+                                                <span>{{ $dueThisWeekCount ?? 0 }}</span> records
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <div class="loan-list" id="due-week-list">
-                                        @forelse($dueThisWeekLoans ?? [] as $loan)
-                                            @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
-                                            <div class="loan-card" data-ref="{{ $loan->reference_no }}">
-                                                <div class="loan-row" onclick="toggleLoanCard(this)">
-                                                    <div class="loan-ref-block">
-                                                        <div class="loan-type-icon"><i class="fa fa-file-lines"></i></div>
-                                                        <div style="min-width:0;">
-                                                            <div class="loan-ref">{{ $loan->reference_no }}</div>
-                                                            <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-purpose-cell">
-                                                        <div class="cell-label">Date Applied</div>
-                                                        <div class="cell-value">
-                                                            {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-term">
-                                                        <div class="cell-label">Term</div>
-                                                        <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                    </div>
-                                                    <div class="col-cell">
-                                                        <div class="cell-label">Amount</div>
-                                                        <div class="loan-amount">
-                                                            ₱{{ number_format($loan->lending_amount, 2) }}</div>
-                                                    </div>
-                                                    <div class="col-status">
-                                                        <span class="badge approved">Active</span>
-                                                        <span class="due-tag week">Due This Week</span>
-                                                    </div>
-                                                    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
-                                                        fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M6 9l6 6 6-6" />
-                                                    </svg>
-                                                </div>
-                                                <div class="loan-detail">
-                                                    <div class="loan-detail-inner">
-                                                        <div class="detail-grid">
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Loan Type</div>
-                                                                <div class="cell-value">{{ $loan->lending_type }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Term</div>
-                                                                <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Monthly Payment</div>
-                                                                <div class="cell-value">
-                                                                    ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Due Date</div>
-                                                                <div class="cell-value">
-                                                                    {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="progress-block">
-                                                            <div class="progress-head">
-                                                                <span>Repayment Progress</span>
-                                                                <span>{{ $loan->payments_made ?? 0 }} of
-                                                                    {{ $loan->total_payments ?? 0 }} installments ·
-                                                                    {{ $progress }}%</span>
-                                                            </div>
-                                                            <div class="progress-track">
-                                                                <div class="progress-fill" style="width:{{ $progress }}%">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="detail-actions">
-                                                            <a class="btn-ghost"
-                                                                href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
-                                                                onclick="event.stopPropagation();">
-                                                                <i class="fa fa-calendar-check"></i> View Repayment Schedule
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div class="empty-state">
-                                                <i class="fa fa-calendar"
-                                                    style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;"></i>
-                                                No upcoming payments this week.
-                                            </div>
-                                        @endforelse
-                                    </div>
-
-                                    <div class="parent-pagination">
-                                        <p>Showing <span>{{ count($dueThisWeekLoans ?? []) }}</span> of
-                                            <span>{{ $dueThisWeekCount ?? 0 }}</span> records
-                                        </p>
-                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- ══ TAB 4: OVERDUE ══ --}}
-                            <div class="tab-pane fade" id="nav-disabled" role="tabpanel"
-                                aria-labelledby="nav-disabled-tab" tabindex="0">
-                                <div class="table-parent">
-                                    <div class="table-filter">
-                                        <div class="filter search-parent">
-                                            <i class="fa fa-search"></i>
-                                            <input type="search" oninput="filterCards('overdue-list', this.value)"
-                                                placeholder="Search by reference, type, purpose">
+                                {{-- ══ TAB 4: OVERDUE ══ --}}
+                                <div class="tab-pane fade" id="nav-disabled" role="tabpanel"
+                                    aria-labelledby="nav-disabled-tab" tabindex="0">
+                                    <div class="table-parent">
+                                        <div class="table-filter">
+                                            <div class="filter search-parent">
+                                                <i class="fa fa-search"></i>
+                                                <input type="search" oninput="filterCards('overdue-list', this.value)"
+                                                    placeholder="Search by reference, type, purpose">
+                                            </div>
+                                        </div>
+
+                                        <div class="loan-list" id="overdue-list">
+                                            @forelse($overdueLoans ?? [] as $loan)
+                                                @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
+                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}">
+                                                    <div class="loan-row" onclick="toggleLoanCard(this)">
+                                                        <div class="loan-ref-block">
+                                                            <div class="loan-type-icon"><i class="fa fa-file-lines"></i>
+                                                            </div>
+                                                            <div style="min-width:0;">
+                                                                <div class="loan-ref">{{ $loan->reference_no }}</div>
+                                                                <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-purpose-cell">
+                                                            <div class="cell-label">Date Applied</div>
+                                                            <div class="cell-value">
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-cell col-term">
+                                                            <div class="cell-label">Term</div>
+                                                            <div class="cell-value">{{ $loan->lending_type_term }}</div>
+                                                        </div>
+                                                        <div class="col-cell">
+                                                            <div class="cell-label">Amount</div>
+                                                            <div class="loan-amount">
+                                                                ₱{{ number_format($loan->lending_amount, 2) }}</div>
+                                                        </div>
+                                                        <div class="col-status">
+                                                            <span class="badge approved">Active</span>
+                                                            <span class="due-tag late">Overdue</span>
+                                                        </div>
+                                                        <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path d="M6 9l6 6 6-6" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="loan-detail">
+                                                        <div class="loan-detail-inner">
+                                                            <div class="detail-grid">
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Loan Type</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type }}</div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Term</div>
+                                                                    <div class="cell-value">{{ $loan->lending_type_term }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Monthly Payment</div>
+                                                                    <div class="cell-value">
+                                                                        ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="detail-box">
+                                                                    <div class="cell-label">Due Date</div>
+                                                                    <div class="cell-value">
+                                                                        {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="progress-block">
+                                                                <div class="progress-head">
+                                                                    <span>Repayment Progress</span>
+                                                                    <span>{{ $loan->payments_made ?? 0 }} of
+                                                                        {{ $loan->total_payments ?? 0 }} installments ·
+                                                                        {{ $progress }}%</span>
+                                                                </div>
+                                                                <div class="progress-track">
+                                                                    <div class="progress-fill"
+                                                                        style="width:{{ $progress }}%">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="detail-actions">
+                                                                <a class="btn-ghost"
+                                                                    href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
+                                                                    onclick="event.stopPropagation();">
+                                                                    <i class="fa fa-calendar-check"></i> View Repayment
+                                                                    Schedule
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <div class="empty-state">
+                                                    <i class="fa fa-circle-check"
+                                                        style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;color:#1e9e6b;"></i>
+                                                    No overdue payments. Great job!
+                                                </div>
+                                            @endforelse
+                                        </div>
+
+                                        <div class="parent-pagination">
+                                            <p>Showing <span>{{ count($overdueLoans ?? []) }}</span> of
+                                                <span>{{ $overdueCount ?? 0 }}</span> records
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <div class="loan-list" id="overdue-list">
-                                        @forelse($overdueLoans ?? [] as $loan)
-                                            @php $progress = ($loan->total_payments ?? 0) > 0 ? min(100, round((($loan->payments_made ?? 0) / $loan->total_payments) * 100)) : 0; @endphp
-                                            <div class="loan-card" data-ref="{{ $loan->reference_no }}">
-                                                <div class="loan-row" onclick="toggleLoanCard(this)">
-                                                    <div class="loan-ref-block">
-                                                        <div class="loan-type-icon"><i class="fa fa-file-lines"></i></div>
-                                                        <div style="min-width:0;">
-                                                            <div class="loan-ref">{{ $loan->reference_no }}</div>
-                                                            <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-purpose-cell">
-                                                        <div class="cell-label">Date Applied</div>
-                                                        <div class="cell-value">
-                                                            {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-cell col-term">
-                                                        <div class="cell-label">Term</div>
-                                                        <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                    </div>
-                                                    <div class="col-cell">
-                                                        <div class="cell-label">Amount</div>
-                                                        <div class="loan-amount">
-                                                            ₱{{ number_format($loan->lending_amount, 2) }}</div>
-                                                    </div>
-                                                    <div class="col-status">
-                                                        <span class="badge approved">Active</span>
-                                                        <span class="due-tag late">Overdue</span>
-                                                    </div>
-                                                    <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
-                                                        fill="none" stroke="currentColor" stroke-width="2">
-                                                        <path d="M6 9l6 6 6-6" />
-                                                    </svg>
-                                                </div>
-                                                <div class="loan-detail">
-                                                    <div class="loan-detail-inner">
-                                                        <div class="detail-grid">
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Loan Type</div>
-                                                                <div class="cell-value">{{ $loan->lending_type }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Term</div>
-                                                                <div class="cell-value">{{ $loan->lending_type_term }}</div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Monthly Payment</div>
-                                                                <div class="cell-value">
-                                                                    ₱{{ number_format($loan->monthly_payment ?? 0, 2) }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="detail-box">
-                                                                <div class="cell-label">Due Date</div>
-                                                                <div class="cell-value">
-                                                                    {{ $loan->due_date ? \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') : '—' }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="progress-block">
-                                                            <div class="progress-head">
-                                                                <span>Repayment Progress</span>
-                                                                <span>{{ $loan->payments_made ?? 0 }} of
-                                                                    {{ $loan->total_payments ?? 0 }} installments ·
-                                                                    {{ $progress }}%</span>
-                                                            </div>
-                                                            <div class="progress-track">
-                                                                <div class="progress-fill" style="width:{{ $progress }}%">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="detail-actions">
-                                                            <a class="btn-ghost"
-                                                                href="{{ route('LoanStatus', ['loan_id' => $loan->id]) }}"
-                                                                onclick="event.stopPropagation();">
-                                                                <i class="fa fa-calendar-check"></i> View Repayment Schedule
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div class="empty-state">
-                                                <i class="fa fa-circle-check"
-                                                    style="font-size:24px;display:block;margin-bottom:8px;opacity:.4;color:#1e9e6b;"></i>
-                                                No overdue payments. Great job!
-                                            </div>
-                                        @endforelse
-                                    </div>
-
-                                    <div class="parent-pagination">
-                                        <p>Showing <span>{{ count($overdueLoans ?? []) }}</span> of
-                                            <span>{{ $overdueCount ?? 0 }}</span> records
-                                        </p>
-                                    </div>
                                 </div>
+
                             </div>
 
+                            {{-- Card expand/collapse + search filter JS --}}
+                            <script>
+                                function toggleLoanCard(rowEl) {
+                                    const card = rowEl.closest('.loan-card');
+                                    if (!card) return;
+                                    card.classList.toggle('open');
+                                }
+
+                                function filterCards(listId, query) {
+                                    const list = document.getElementById(listId);
+                                    if (!list) return;
+                                    const q = query.toLowerCase().trim();
+                                    list.querySelectorAll('.loan-card').forEach(card => {
+                                        card.style.display = (q === '' || card.textContent.toLowerCase().includes(q)) ? '' : 'none';
+                                    });
+                                }
+                            </script>
+
+                            @if(!$canApplyLoan)
+                                <div class="gate-shield">
+                                    <div class="gate-lock"><i class="fa fa-lock"></i></div>
+                                    <div class="gate-msg">Loan stats are locked</div>
+                                    <div class="gate-sub">
+                                        You need at least <strong>10 shares</strong> of Share Capital to unlock this.
+                                        You currently have <strong>{{ $currentShares }} share(s)</strong> —
+                                        <strong>{{ 10 - $currentShares }} more</strong> needed.
+                                    </div>
+                                </div>
+                            @endif
                         </div>
 
-                        {{-- Card expand/collapse + search filter JS --}}
-                        <script>
-                            function toggleLoanCard(rowEl) {
-                                const card = rowEl.closest('.loan-card');
-                                if (!card) return;
-                                card.classList.toggle('open');
-                            }
-
-                            function filterCards(listId, query) {
-                                const list = document.getElementById(listId);
-                                if (!list) return;
-                                const q = query.toLowerCase().trim();
-                                list.querySelectorAll('.loan-card').forEach(card => {
-                                    card.style.display = (q === '' || card.textContent.toLowerCase().includes(q)) ? '' : 'none';
-                                });
-                            }
-                        </script>
                     </div>
                 </main>
             </div>
@@ -2468,6 +2486,8 @@
                                     id="mis-term">—</span></div>
                             <div class="mis-row"><span class="mis-lbl">Interest</span><span class="mis-val dim"
                                     id="mis-int">—</span></div>
+                            <div class="mis-row"><span class="mis-lbl">Net Proceeds</span><span class="mis-val dim"
+                                    id="mis-net">—</span></div>
                         </div>
                         <div class="mis-divider"></div>
                         <div class="mis-total-row">
@@ -2536,20 +2556,33 @@
                                     <div class="p-field">
                                         <label>Loan Type <span class="req">*</span></label>
                                         <div class="p-sel-wrap">
+                                            @php
+                                                $mOptData = function ($loanType) use ($loanSettings) {
+                                                    $s = $loanSettings[$loanType] ?? [];
+                                                    return sprintf(
+                                                        'data-rate="%s" data-processing="%s" data-service="%s" data-protection="%s" data-retention="%s"',
+                                                        $s['interest_rate'] ?? 0.02,
+                                                        $s['processing_fee_rate'] ?? 0,
+                                                        $s['service_fee_rate'] ?? 0,
+                                                        $s['loan_protection_fee'] ?? 0,
+                                                        $s['retention_unpaid_rate'] ?? 0
+                                                    );
+                                                };
+                                            @endphp
                                             <select class="p-select np" name="lending_type" id="lending_type"
                                                 onchange="mUpdateTermOptions(); mCompute(); mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }} required>
                                                 <option value="">Select type</option>
-                                                <option value="Personal Loan"
-                                                    data-rate="{{ $loanSettings['Personal Loan'] ?? 0.02 }}">Personal
+                                                <option value="Personal Loan" {!! $mOptData('Personal Loan') !!}>
+                                                    Personal
                                                     Loan</option>
-                                                <option value="Business Loan"
-                                                    data-rate="{{ $loanSettings['Business Loan'] ?? 0.02 }}">Business
+                                                <option value="Business Loan" {!! $mOptData('Business Loan') !!}>
+                                                    Business
                                                     Loan</option>
-                                                <option value="Emergency Loan"
-                                                    data-rate="{{ $loanSettings['Emergency Loan'] ?? 0.02 }}">Emergency
+                                                <option value="Emergency Loan" {!! $mOptData('Emergency Loan') !!}>
+                                                    Emergency
                                                     Loan</option>
-                                                <option value="Education Loan"
-                                                    data-rate="{{ $loanSettings['Education Loan'] ?? 0.02 }}">Education
+                                                <option value="Education Loan" {!! $mOptData('Education Loan') !!}>
+                                                    Education
                                                     Loan</option>
                                             </select>
                                         </div>
@@ -2610,7 +2643,11 @@
                                         </div>
                                     </div>
                                     <div class="p-field">
-                                        <label>Monthly Income (₱) <span class="req">*</span></label>
+                                        <label>
+                                            Monthly Income (₱) <span class="req">*</span>
+                                            <span class="max-pill" id="income-locked-badge"
+                                                style="display:none;">Saved</span>
+                                        </label>
                                         <div class="p-inp-wrap">
                                             <span class="p-inp-ico"><svg viewBox="0 0 24 24" fill="none"
                                                     stroke="currentColor" stroke-width="2">
@@ -2623,6 +2660,9 @@
                                                 onkeydown="if(['e','E','+','-'].includes(event.key))event.preventDefault();"
                                                 {{ !$canApplyLoan ? 'disabled' : '' }} required>
                                         </div>
+                                        <span class="p-hint" id="income-locked-hint" style="display:none;">
+                                            This was saved from your previous application and can't be changed here.
+                                        </span>
                                         <div class="p-field-error" id="err-mMonthlyIncome">
                                             <i class="fa fa-circle-exclamation"></i> Monthly Income is required.
                                         </div>
@@ -2963,7 +3003,7 @@
                                         </svg></div>
                                     <div class="b-lbl-m">Principal</div>
                                     <div class="b-val-m" id="cb-pri">₱ —</div>
-                                    <div class="b-hint-m">Amount you receive</div>
+                                    <div class="b-hint-m">Amount you're borrowing</div>
                                 </div>
                                 <div class="b-box-m">
                                     <div class="b-ico-m bi-o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2973,7 +3013,7 @@
                                         </svg></div>
                                     <div class="b-lbl-m">Interest Rate</div>
                                     <div class="b-val-m" id="cb-rate">— %</div>
-                                    <div class="b-hint-m">Monthly flat rate</div>
+                                    <div class="b-hint-m">Monthly, diminishing balance</div>
                                 </div>
                                 <div class="b-box-m">
                                     <div class="b-ico-m bi-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3003,9 +3043,49 @@
                                             <line x1="12" y1="8" x2="12" y2="12" />
                                             <line x1="12" y1="16" x2="12.01" y2="16" />
                                         </svg></div>
-                                    <div class="b-lbl-m">Service Fee</div>
+                                    <div class="b-lbl-m">Processing Fee</div>
                                     <div class="b-val-m" id="cb-proc">₱ —</div>
-                                    <div class="b-hint-m">1% one-time fee</div>
+                                    <div class="b-hint-m" id="cb-proc-hint">Processing & collection</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Service & Legal Fee</div>
+                                    <div class="b-val-m" id="cb-svc">₱ —</div>
+                                    <div class="b-hint-m" id="cb-svc-hint">One-time fee</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Loan Protection Plan</div>
+                                    <div class="b-val-m" id="cb-protect">₱ —</div>
+                                    <div class="b-hint-m" id="cb-protect-hint">Per month of term</div>
+                                </div>
+                                <div class="b-box-m">
+                                    <div class="b-ico-m bi-r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <rect x="3" y="11" width="18" height="10" rx="2" />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Retention / CBU</div>
+                                    <div class="b-val-m" id="cb-retention">₱ —</div>
+                                    <div class="b-hint-m" id="cb-retention-hint">Held as capital build-up</div>
+                                </div>
+                                <div class="b-box-m hl">
+                                    <div class="b-ico-m bi-n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path d="M20 12V8H6a2 2 0 0 1 0-4h12v4" />
+                                            <path d="M4 6v12a2 2 0 0 0 2 2h14v-4" />
+                                            <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                                        </svg></div>
+                                    <div class="b-lbl-m">Net Proceeds</div>
+                                    <div class="b-val-m" id="cb-net">₱ —</div>
+                                    <div class="b-hint-m">Amount released to you</div>
                                 </div>
                                 <div class="b-box-m hl">
                                     <div class="b-ico-m bi-t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -3015,7 +3095,7 @@
                                         </svg></div>
                                     <div class="b-lbl-m">Total Payable</div>
                                     <div class="b-val-m" id="cb-total">₱ —</div>
-                                    <div class="b-hint-m">Principal + Interest + Fee</div>
+                                    <div class="b-hint-m">Principal + Interest</div>
                                 </div>
                             </div>
 
@@ -3074,10 +3154,6 @@
                         <div class="modal-panel" id="mp3">
                             <div class="confirm-hero-m">
                                 <div class="confirm-ring-m">
-                                    <!-- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg> -->
                                     <i class="fa fa-shield"></i>
                                 </div>
                                 <div class="confirm-title-m">Review Your Application</div>
@@ -3096,12 +3172,30 @@
                                         class="sum-val-m" id="cf-income">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Interest Rate</span><span
                                         class="sum-val-m" id="cf-rate">—</span></div>
-                                <div class="sum-row-m"><span class="sum-lbl-m">Monthly Payment</span><span
-                                        class="sum-val-m gold" id="cf-monthly">—</span></div>
-                                <div class="sum-row-m"><span class="sum-lbl-m">Total Interest</span><span
-                                        class="sum-val-m" id="cf-int">—</span></div>
                                 <div class="sum-row-m"><span class="sum-lbl-m">Purpose</span><span class="sum-val-m"
                                         id="cf-purpose">—</span></div>
+                            </div>
+
+                            <div class="sum-card-m">
+                                <div class="sum-head-m">Fees & Charges</div>
+                                <div class="sum-row-m subtle"><span class="sum-lbl-m">Processing Fee</span><span
+                                        class="sum-val-m deduct" id="cf-processing">—</span></div>
+                                <div class="sum-row-m subtle"><span class="sum-lbl-m">Service & Legal Fee</span><span
+                                        class="sum-val-m deduct" id="cf-service">—</span></div>
+                                <div class="sum-row-m subtle"><span class="sum-lbl-m">Loan Protection Plan</span><span
+                                        class="sum-val-m deduct" id="cf-protection">—</span></div>
+                                <div class="sum-row-m subtle"><span class="sum-lbl-m">Retention / CBU</span><span
+                                        class="sum-val-m deduct" id="cf-retention">—</span></div>
+                                <div class="sum-row-m total"><span class="sum-lbl-m bold">Net Proceeds (you
+                                        receive)</span><span class="sum-val-m green bigf" id="cf-net">—</span></div>
+                            </div>
+
+                            <div class="sum-card-m">
+                                <div class="sum-head-m">Repayment Summary</div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Total Interest</span><span
+                                        class="sum-val-m" id="cf-int">—</span></div>
+                                <div class="sum-row-m"><span class="sum-lbl-m">Monthly Payment</span><span
+                                        class="sum-val-m gold" id="cf-monthly">—</span></div>
                                 <div class="sum-row-m total"><span class="sum-lbl-m bold">Total Payable</span><span
                                         class="sum-val-m green bigf" id="cf-total">—</span></div>
                             </div>
@@ -3219,15 +3313,55 @@
         //  HELPERS
         // ══════════════════════════════════════════════════════════
         const MAX_REMAINING = {{ $remainingLoanable }};
+        const SAVED_MONTHLY_INCOME = {{ $savedMonthlyIncome ?? 'null' }};
         const fmt = n => '₱' + n.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        // Read rate from selected <option data-rate> — avoids LOAN_RATES key mismatch bug
-        function getSelectedRate() {
+        // Read all fee settings from the selected <option data-*> attributes.
+        // Mirrors what lendingController@lendingProgram actually charges server-side.
+        function getSelectedFees() {
             const typeEl = document.getElementById('lending_type');
-            const selectedOpt = typeEl.options[typeEl.selectedIndex];
-            if (!selectedOpt) return null;
-            const r = parseFloat(selectedOpt.getAttribute('data-rate'));
-            return (!isNaN(r) && r > 0) ? r : null;
+            const opt = typeEl.options[typeEl.selectedIndex];
+            if (!opt || !opt.value) return null;
+            const rate = parseFloat(opt.getAttribute('data-rate'));
+            return {
+                rate: (!isNaN(rate) && rate > 0) ? rate : 0.02,               // monthly interest, e.g. 0.02 = 2%
+                processingRate: parseFloat(opt.getAttribute('data-processing')) || 0,   // %, e.g. 2
+                serviceRate: parseFloat(opt.getAttribute('data-service')) || 0,         // %, e.g. 2
+                protectionPerMonth: parseFloat(opt.getAttribute('data-protection')) || 0, // ₱ per month
+                retentionRate: parseFloat(opt.getAttribute('data-retention')) || 0,     // %, e.g. 6
+            };
+        }
+
+        // Full charge breakdown for a given principal/term — mirrors backend math exactly:
+        //  - interest: diminishing balance (recomputed monthly on the remaining principal)
+        //  - processing / service fees: % of principal, one-time
+        //  - loan protection: flat ₱ amount per month of term
+        //  - retention/CBU: % of principal, withheld
+        //  - net proceeds: principal minus all the above deductions
+        function mCalcBreakdown(principal, fees, termMonths) {
+            const r = fees.rate;
+            const principalPerMonth = termMonths > 0 ? principal / termMonths : 0;
+
+            let totalInterest = 0;
+            for (let i = 0; i < termMonths; i++) {
+                const remaining = principal - (principalPerMonth * i);
+                totalInterest += remaining * r;
+            }
+            totalInterest = Math.round(totalInterest * 100) / 100;
+
+            const processingFee = Math.round(principal * (fees.processingRate / 100) * 100) / 100;
+            const serviceFee = Math.round(principal * (fees.serviceRate / 100) * 100) / 100;
+            const protectionFee = Math.round(fees.protectionPerMonth * termMonths * 100) / 100;
+            const retentionFee = Math.round(principal * (fees.retentionRate / 100) * 100) / 100;
+            const netProceeds = Math.round((principal - processingFee - serviceFee - protectionFee - retentionFee) * 100) / 100;
+
+            const totalPayment = Math.round((principal + totalInterest) * 100) / 100;
+            const monthlyPayment = termMonths > 0 ? Math.round((totalPayment / termMonths) * 100) / 100 : 0;
+
+            return {
+                principalPerMonth, totalInterest, processingFee, serviceFee,
+                protectionFee, retentionFee, netProceeds, totalPayment, monthlyPayment
+            };
         }
 
         // ── Inline validation helpers ──────────────────────────────
@@ -3264,7 +3398,9 @@
         function mReset() {
             document.getElementById('lending_type').value = '';
             document.getElementById('mLoanAmount').value = '';
-            document.getElementById('mMonthlyIncome').value = '';
+            const incomeEl = document.getElementById('mMonthlyIncome');
+            const incomeHint = document.getElementById('income-locked-hint');
+            const incomeBadge = document.getElementById('income-locked-badge');
             document.getElementById('purpose_loan_select').value = '';
             document.getElementById('purpose_loan_textarea').value = '';
             document.getElementById('lending_type_term_nonbusiness').value = '';
@@ -3293,6 +3429,20 @@
             document.getElementById('others-textarea-wrapper').style.display = 'none';
             document.getElementById('lending_type_term_nonbusiness').style.display = 'block';
             document.getElementById('lending_type_term_business').style.display = 'none';
+
+            if (SAVED_MONTHLY_INCOME) {
+                incomeEl.value = SAVED_MONTHLY_INCOME;
+                incomeEl.setAttribute('readonly', 'readonly');
+                incomeEl.classList.add('locked-field');
+                incomeHint.style.display = 'block';
+                incomeBadge.style.display = 'inline-flex';
+            } else {
+                incomeEl.value = '';
+                incomeEl.removeAttribute('readonly');
+                incomeEl.classList.remove('locked-field');
+                incomeHint.style.display = 'none';
+                incomeBadge.style.display = 'none';
+            }
         }
 
         // ══════════════════════════════════════════════════════════
@@ -3403,7 +3553,7 @@
         function mCompute() {
             const typeEl = document.getElementById('lending_type');
             const type = typeEl.value;
-            const r = getSelectedRate();
+            const fees = getSelectedFees();
             const a = parseFloat(document.getElementById('mLoanAmount').value) || 0;
             const termStr = document.getElementById('lending_type_term').value || '';
             const t = termStr ? parseInt(termStr) : 0;
@@ -3417,26 +3567,25 @@
 
             setV('mis-type', type ? type : '—', !!type);
             setV('mis-amount', a > 0 ? fmt(a) : '—', a > 0);
-            setV('mis-rate', r ? (r * 100).toFixed(1) + '% / mo' : '—', !!r);
+            setV('mis-rate', fees ? (fees.rate * 100).toFixed(1) + '% / mo' : '—', !!fees);
             setV('mis-term', t > 0 ? t + ' months' : '—', t > 0);
 
-            if (r && a > 0 && t > 0) {
-                const interest = a * r * t;
-                const proc = a * 0.01;
-                const total = a + interest + proc;
-                const mo = (a + interest) / t;
+            if (fees && a > 0 && t > 0) {
+                const calc = mCalcBreakdown(a, fees, t);
 
-                setV('mis-mo', fmt(mo), true);
-                setV('mis-int', fmt(interest), true);
-                setV('mis-total', fmt(total), true);
+                setV('mis-mo', fmt(calc.monthlyPayment), true);
+                setV('mis-int', fmt(calc.totalInterest), true);
+                setV('mis-net', fmt(calc.netProceeds), true);
+                setV('mis-total', fmt(calc.totalPayment), true);
 
-                document.getElementById('mis-hint').textContent = 'Flat interest method';
-                document.getElementById('hidden-monthly').value = mo.toFixed(2);
-                document.getElementById('hidden-total').value = total.toFixed(2);
-                document.getElementById('hidden-interest').value = interest.toFixed(2);
+                document.getElementById('mis-hint').textContent = 'Diminishing balance method';
+                document.getElementById('hidden-monthly').value = calc.monthlyPayment.toFixed(2);
+                document.getElementById('hidden-total').value = calc.totalPayment.toFixed(2);
+                document.getElementById('hidden-interest').value = calc.totalInterest.toFixed(2);
             } else {
                 setV('mis-mo', '—', false);
                 setV('mis-int', '—', false);
+                setV('mis-net', '—', false);
                 setV('mis-total', '—', false);
                 document.getElementById('mis-hint').textContent = 'Enter details to compute';
             }
@@ -3568,31 +3717,36 @@
                 return;
             }
 
-            // All valid — build breakdown
+            // All valid — build full charges breakdown (matches backend fee computation)
             const t = parseInt(termStr);
-            const r = getSelectedRate() ?? 0.02;
-            const interest = a * r * t;
-            const proc = a * 0.01;
-            const total = a + interest + proc;
-            const mo = (a + interest) / t;
+            const fees = getSelectedFees() ?? { rate: 0.02, processingRate: 0, serviceRate: 0, protectionPerMonth: 0, retentionRate: 0 };
+            const calc = mCalcBreakdown(a, fees, t);
 
             document.getElementById('cb-pri').textContent = fmt(a);
-            document.getElementById('cb-rate').textContent = (r * 100).toFixed(1) + '% / mo';
-            document.getElementById('cb-int').textContent = fmt(interest);
+            document.getElementById('cb-rate').textContent = (fees.rate * 100).toFixed(1) + '% / mo';
+            document.getElementById('cb-int').textContent = fmt(calc.totalInterest);
             document.getElementById('cb-term').textContent = t + ' months';
-            document.getElementById('cb-proc').textContent = fmt(proc);
-            document.getElementById('cb-total').textContent = fmt(total);
+            document.getElementById('cb-proc').textContent = fmt(calc.processingFee);
+            document.getElementById('cb-proc-hint').textContent = fees.processingRate + '% of principal';
+            document.getElementById('cb-svc').textContent = fmt(calc.serviceFee);
+            document.getElementById('cb-svc-hint').textContent = fees.serviceRate + '% of principal';
+            document.getElementById('cb-protect').textContent = fmt(calc.protectionFee);
+            document.getElementById('cb-protect-hint').textContent = '₱' + fees.protectionPerMonth + ' × ' + t + ' months';
+            document.getElementById('cb-retention').textContent = fmt(calc.retentionFee);
+            document.getElementById('cb-retention-hint').textContent = fees.retentionRate + '% of principal (unpaid rate)';
+            document.getElementById('cb-net').textContent = fmt(calc.netProceeds);
+            document.getElementById('cb-total').textContent = fmt(calc.totalPayment);
 
             const tb = document.getElementById('amortBody');
             tb.innerHTML = '';
             const moPrin = a / t;
-            const moInt = a * r;
+            const moInt = calc.totalInterest / t; // even split for display; totals reconcile with actual total interest
             let bal = a;
             for (let m = 1; m <= t; m++) {
                 bal -= moPrin;
                 tb.innerHTML += `<tr>
                     <td><span class="mo-n">${m}</span></td>
-                    <td><strong>${fmt(mo)}</strong></td>
+                    <td><strong>${fmt(calc.monthlyPayment)}</strong></td>
                     <td>${fmt(moPrin)}</td>
                     <td class="int-n">${fmt(moInt)}</td>
                     <td class="bal-n">${fmt(Math.max(bal, 0))}</td>
@@ -3613,20 +3767,25 @@
             const pur = document.getElementById('purpose_loan_select').value;
             const purOth = document.getElementById('purpose_loan_textarea').value.trim();
             const t = parseInt(termStr);
-            const r = getSelectedRate() ?? 0.02;
-            const interest = a * r * t;
-            const total = a + interest + (a * 0.01);
-            const mo = (a + interest) / t;
+            const fees = getSelectedFees() ?? { rate: 0.02, processingRate: 0, serviceRate: 0, protectionPerMonth: 0, retentionRate: 0 };
+            const calc = mCalcBreakdown(a, fees, t);
 
             document.getElementById('cf-type').textContent = type;
             document.getElementById('cf-amount').textContent = fmt(a);
             document.getElementById('cf-term').textContent = termStr;
             document.getElementById('cf-income').textContent = inc > 0 ? fmt(inc) : '—';
             document.getElementById('cf-purpose').textContent = pur === 'Others' ? (purOth || 'Others') : pur;
-            document.getElementById('cf-rate').textContent = (r * 100).toFixed(1) + '% / mo';
-            document.getElementById('cf-monthly').textContent = fmt(mo);
-            document.getElementById('cf-int').textContent = fmt(interest);
-            document.getElementById('cf-total').textContent = fmt(total);
+            document.getElementById('cf-rate').textContent = (fees.rate * 100).toFixed(1) + '% / mo';
+
+            document.getElementById('cf-processing').textContent = '- ' + fmt(calc.processingFee);
+            document.getElementById('cf-service').textContent = '- ' + fmt(calc.serviceFee);
+            document.getElementById('cf-protection').textContent = '- ' + fmt(calc.protectionFee);
+            document.getElementById('cf-retention').textContent = '- ' + fmt(calc.retentionFee);
+            document.getElementById('cf-net').textContent = fmt(calc.netProceeds);
+
+            document.getElementById('cf-monthly').textContent = fmt(calc.monthlyPayment);
+            document.getElementById('cf-int').textContent = fmt(calc.totalInterest);
+            document.getElementById('cf-total').textContent = fmt(calc.totalPayment);
 
             mGoStep(3);
         }
@@ -3764,11 +3923,11 @@
                 const matches = (q === '' || card.textContent.toLowerCase().includes(q));
                 card.dataset.filteredOut = matches ? 'false' : 'true';
             });
-            pgState[listId] = 1; // reset to first page on new search
+            pgState[listId] = 1;
             paginateList(listId);
         }
 
-        // Initialize pagination for all four lists once the page loads
+
         document.addEventListener('DOMContentLoaded', () => {
             ['all-loans-list', 'due-today-list', 'due-week-list', 'overdue-list'].forEach(id => {
                 if (document.getElementById(id)) paginateList(id);
