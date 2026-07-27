@@ -15,71 +15,130 @@
         </nav>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <a href="{{ route('dashboard.members') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Members</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ number_format($totalMembers) }}</p>
-                    <p class="text-xs text-success-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        Active members
-                    </p>
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-sm text-gray-500">Overview of your cooperative's key metrics and pending items</p>
+    </div>
+
+    <!-- Key Metric Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+
+        {{-- Members Card --}}
+        <a href="{{ route('dashboard.members') }}"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                    <i data-lucide="users" class="w-5 h-5 text-primary-600"></i>
                 </div>
-                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                    <i data-lucide="users" class="w-6 h-6 text-primary-600"></i>
-                </div>
+                @if($pendingMembersCount > 0)
+                <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
+                    {{ $pendingMembersCount }} pending
+                </span>
+                @endif
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Members</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">{{ number_format($totalMembers) }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-primary-500"></i>
             </div>
         </a>
 
-        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-success-200 transition-all group" onclick="openSavingsHistoryModal()">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Savings</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalSavings, 2) }}</p>
-                    <p class="text-xs text-success-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        Total balance
-                    </p>
-                </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
-                    <i data-lucide="piggy-bank" class="w-6 h-6 text-success-500"></i>
+        {{-- Savings Card --}}
+        <a href="{{ route('savings') }}"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-success-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-success-50 flex items-center justify-center group-hover:bg-success-100 transition-colors">
+                    <i data-lucide="piggy-bank" class="w-5 h-5 text-success-600"></i>
                 </div>
             </div>
-        </div>
-
-        <a href="{{ route('lendings') }}" class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Total Loan Receivables</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($activeLoans, 2) }}</p>
-                    <p class="text-xs text-warning-500 mt-1 flex items-center">
-                        <i data-lucide="clock" class="w-3 h-3 mr-1"></i>
-                        Approved loans
-                    </p>
-                </div>
-                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center group-hover:bg-warning-200 transition-colors">
-                    <i data-lucide="banknote" class="w-6 h-6 text-warning-600"></i>
-                </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Savings Balance</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">₱{{ number_format($totalSavings, 2) }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-success-500"></i>
             </div>
         </a>
 
-        <div class="stat-card hover:shadow-lg hover:border-success-200 transition-all group">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Earned Interests</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($earnedInterests, 2) }}</p>
-                    <p class="text-xs text-success-500 mt-1 flex items-center">
-                        <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i>
-                        From paid up loans
-                    </p>
+        {{-- Share Capital Card --}}
+        <a href="{{ route('sharecapitals') }}"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-indigo-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
+                    <i data-lucide="coins" class="w-5 h-5 text-indigo-600"></i>
                 </div>
-                <div class="w-12 h-12 bg-success-100 rounded-xl flex items-center justify-center group-hover:bg-success-200 transition-colors">
-                    <i data-lucide="calculator" class="w-6 h-6 text-success-500"></i>
+                @if($pendingWithdrawalsCount > 0)
+                <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
+                    {{ $pendingWithdrawalsCount }} withdrawals
+                </span>
+                @endif
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Share Capital</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">₱{{ number_format($totalShareCapital, 2) }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-indigo-500"></i>
+            </div>
+        </a>
+
+        {{-- Loans Card (modal on pending) --}}
+        <div onclick="{{ $pendingLoansCount > 0 ? "openPendingLoansModal()" : "window.location.href='" . route('lendings') . "'" }}"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-warning-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-warning-50 flex items-center justify-center group-hover:bg-warning-100 transition-colors">
+                    <i data-lucide="banknote" class="w-5 h-5 text-warning-600"></i>
                 </div>
+                @if($pendingLoansCount > 0)
+                <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-semibold rounded-full">
+                    {{ $pendingLoansCount }} pending
+                </span>
+                @endif
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Active Loans</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">₱{{ number_format($activeLoans, 2) }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-warning-500"></i>
             </div>
         </div>
+
+        {{-- Pending Resignations Card (modal) --}}
+        <div onclick="openResignationsModal()"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-danger-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-danger-50 flex items-center justify-center group-hover:bg-danger-100 transition-colors">
+                    <i data-lucide="log-out" class="w-5 h-5 text-danger-600"></i>
+                </div>
+                @if($pendingResignationsCount > 0)
+                <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                    {{ $pendingResignationsCount }} pending
+                </span>
+                @endif
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Pending Resignations</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">{{ $pendingResignationsCount }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-danger-500"></i>
+            </div>
+        </div>
+
+        {{-- Upcoming Seminars Card (modal) --}}
+        <div onclick="{{ $upcomingSeminarsCount > 0 ? "openSeminarsModal()" : "window.location.href='" . route('seminars.index') . "'" }}"
+            class="group relative bg-white rounded-xl border border-gray-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-sky-200 cursor-pointer">
+            <div class="flex items-start justify-between mb-3">
+                <div class="w-11 h-11 rounded-xl bg-sky-50 flex items-center justify-center group-hover:bg-sky-100 transition-colors">
+                    <i data-lucide="graduation-cap" class="w-5 h-5 text-sky-600"></i>
+                </div>
+                @if($upcomingSeminarsCount > 0)
+                <span class="px-2 py-0.5 bg-sky-100 text-sky-700 text-xs font-semibold rounded-full">
+                    {{ $upcomingSeminarsCount }} upcoming
+                </span>
+                @endif
+            </div>
+            <p class="text-sm text-gray-500 font-medium mb-1">Upcoming Seminars</p>
+            <p class="text-2xl font-bold text-gray-900 mb-1">{{ $upcomingSeminarsCount }}</p>
+            <div class="absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <i data-lucide="arrow-right" class="w-4 h-4 text-sky-500"></i>
+            </div>
+        </div>
+
     </div>
 
     <!-- To-Do List & Recent Activity Section -->
@@ -90,7 +149,6 @@
                 <h2 class="text-lg font-semibold text-gray-900">To-Do List</h2>
             </div>
 
-            <!-- Tabs -->
             <div class="flex flex-wrap gap-2 mb-6">
                 <button onclick="switchTodoTab('members')" id="todo-tab-members" class="todo-tab-btn active px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm shadow-md">
                     Member Approvals <span class="ml-1 px-2 py-0.5 bg-white/20 rounded-full">{{ $pendingMembersCount }}</span>
@@ -99,11 +157,10 @@
                     Loan Applications <span class="ml-1 px-2 py-0.5 bg-gray-200 rounded-full">{{ $pendingLoansCount }}</span>
                 </button>
                 <button onclick="switchTodoTab('withdrawals')" id="todo-tab-withdrawals" class="todo-tab-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-lg font-medium text-sm hover:bg-gray-200">
-                    Withdraw SC <span class="ml-1 px-2 py-0.5 bg-gray-200 rounded-full">{{ $pendingWithdrawalsCount }}</span>
+                    Withdraw Share Capital <span class="ml-1 px-2 py-0.5 bg-gray-200 rounded-full">{{ $pendingWithdrawalsCount }}</span>
                 </button>
             </div>
 
-            <!-- Tab Content -->
             <div id="todo-content-members" class="todo-content max-h-[350px] overflow-y-auto scrollbar-hide">
                 @forelse($pendingMembersList as $item)
                 <a href="{{ route('dashboard.members', ['filter' => 'pending']) }}" class="block p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors mb-3">
@@ -180,7 +237,6 @@
                 <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
             </div>
 
-            <!-- Tabs -->
             <div class="flex flex-wrap gap-2 mb-6">
                 <button onclick="switchActivityTab('transactions')" id="activity-tab-transactions" class="activity-tab-btn active px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm shadow-md">
                     Transactions
@@ -190,7 +246,6 @@
                 </button>
             </div>
 
-            <!-- Transactions Tab Content -->
             <div id="activity-content-transactions" class="activity-content max-h-[350px] overflow-y-auto scrollbar-hide">
                 @forelse($recentTransactions as $activity)
                 <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl mb-3">
@@ -230,7 +285,6 @@
                 @endforelse
             </div>
 
-            <!-- Approvals Tab Content -->
             <div id="activity-content-approvals" class="activity-content hidden max-h-[350px] overflow-y-auto scrollbar-hide">
                 @forelse($recentMemberApprovals as $activity)
                 <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl mb-3">
@@ -263,11 +317,6 @@
                     <h2 class="text-lg font-semibold text-gray-900">Savings Growth</h2>
                     <p class="text-sm text-gray-500">Monthly savings trend</p>
                 </div>
-                <select class="select w-32">
-                    <option>Last 6 months</option>
-                    <option>Last 12 months</option>
-                    <option>This year</option>
-                </select>
             </div>
 
             <div class="h-64 flex items-end justify-between gap-2 px-4">
@@ -289,8 +338,7 @@
                     <div class="flex-1 flex flex-col items-center gap-2">
                         <div class="w-full bg-primary-100 rounded-t-lg hover:bg-primary-200 transition-colors cursor-pointer relative group"
                             style="height: 5px">
-                            <div
-                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded hidden group-hover:block whitespace-nowrap">
                                 ₱0
                             </div>
                         </div>
@@ -326,7 +374,7 @@
                     <div class="absolute inset-0 flex items-center justify-center">
                         <div class="text-center">
                             <p class="text-2xl font-bold text-gray-900">{{ number_format($totalSavingsTx) }}</p>
-                            <p class="text-xs text-gray-500">Total</p>
+                            <p class="text-xs text-gray-500">Total Transactions</p>
                         </div>
                     </div>
                 </div>
@@ -360,7 +408,6 @@
                     <h2 class="text-lg font-semibold text-gray-900">Loan Distribution</h2>
                     <p class="text-sm text-gray-500">By loan type</p>
                 </div>
-                
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -410,18 +457,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($recentTransactions->take(5) as $activity)
+                        @forelse($auditLogs as $log)
                         <tr>
                             <td>
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 rounded-full bg-primary-100 flex items-center justify-center">
-                                        <span class="text-xs text-primary-600 font-medium">{{ $activity['initials'] }}</span>
+                                        <span class="text-xs text-primary-600 font-medium">{{ strtoupper(substr($log->admin_name ?? ($log->user->first_name ?? 'S'), 0, 1)) }}</span>
                                     </div>
-                                    <span class="text-sm text-gray-900">{{ $activity['user'] }}</span>
+                                    <span class="text-sm text-gray-900">{{ $log->admin_name ?? ($log->user->first_name ?? 'System') . ' ' . ($log->user->last_name ?? '') }}</span>
                                 </div>
                             </td>
-                            <td><span class="text-sm text-gray-600">{{ $activity['title'] }}</span></td>
-                            <td><span class="text-xs text-gray-500">{{ $activity['time'] }}</span></td>
+                            <td><span class="text-sm text-gray-600">{{ $log->action }}</span></td>
+                            <td><span class="text-xs text-gray-500">{{ $log->created_at?->diffForHumans() }}</span></td>
                         </tr>
                         @empty
                         <tr>
@@ -434,148 +481,18 @@
         </div>
     </div>
 
-    <!-- Savings Transaction History Modal -->
-    <div id="savingsHistoryModal" class="modal-overlay hidden" style="display:none">
-        <div class="modal max-w-4xl">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-success-100 flex items-center justify-center">
-                            <i data-lucide="piggy-bank" class="w-5 h-5 text-success-600"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">Savings Overview</h2>
-                            <p class="text-xs text-gray-500">Recent savings transactions</p>
-                        </div>
-                    </div>
-                    <button onclick="closeModal('savingsHistoryModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 max-h-[60vh] overflow-y-auto">
-                <!-- Summary Stats -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-success-50 rounded-lg p-4 border border-success-100 text-center">
-                        <p class="text-xs text-gray-500 mb-1">Total Savings</p>
-                        <p id="savings-modal-total" class="text-xl font-bold text-gray-900">₱0.00</p>
-                    </div>
-                    <div class="bg-primary-50 rounded-lg p-4 border border-primary-100 text-center">
-                        <p class="text-xs text-gray-500 mb-1">Total Transactions</p>
-                        <p id="savings-modal-count" class="text-xl font-bold text-gray-900">0</p>
-                    </div>
-                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
-                        <p class="text-xs text-gray-500 mb-1">Average</p>
-                        <p id="savings-modal-avg" class="text-xl font-bold text-gray-900">₱0.00</p>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="flex gap-3 mb-6">
-                    <a href="{{ route('savings') }}" class="flex-1 px-4 py-2.5 bg-success-600 text-white text-sm font-medium rounded-lg hover:bg-success-700 transition-colors flex items-center justify-center gap-2">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                        View Full Savings Page
-                    </a>
-                </div>
-
-                <!-- Recent Transactions -->
-                <h4 class="font-semibold text-gray-900 mb-4">Recent Transactions</h4>
-                <div id="savings-modal-transactions" class="space-y-3">
-                    <!-- Transactions will be loaded here -->
-                </div>
-                @if(isset($recentSavingsTransactions) && $recentSavingsTransactions->count() > 0)
-                    <div class="hidden" id="savings-transactions-data">
-                        {!! json_encode($recentSavingsTransactions) !!}
-                    </div>
-                @endif
-            </div>
-            <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
-                <button onclick="closeModal('savingsHistoryModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
-                <a href="{{ route('savings') }}" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    Go to Savings
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Savings Transactions Data -->
-    @php
-        $savingsData = isset($recentSavingsTransactions) ? $recentSavingsTransactions : collect();
-    @endphp
-    <script type="application/json" id="savings-modal-data">
-        {!! json_encode([
-            'total' => $totalSavings,
-            'transactions' => $recentSavingsTransactions ?? collect()
-        ]) !!}
-    </script>
+    @include('admin_components.dashboard_modals')
 
     <script>
-        const savingsModalData = JSON.parse(document.getElementById('savings-modal-data').textContent);
-        
-        function openSavingsHistoryModal() {
-            const transactions = savingsModalData.transactions || [];
-            const total = savingsModalData.total || 0;
-            
-            document.getElementById('savings-modal-total').textContent = '₱' + total.toLocaleString('en-PH', {minimumFractionDigits: 2});
-            document.getElementById('savings-modal-count').textContent = transactions.length || 0;
-            document.getElementById('savings-modal-avg').textContent = transactions.length > 0 ? '₱' + (total / transactions.length).toLocaleString('en-PH', {minimumFractionDigits: 2}) : '₱0.00';
-            
-            const container = document.getElementById('savings-modal-transactions');
-            if (transactions.length > 0) {
-                container.innerHTML = transactions.slice(0, 10).map(tx => {
-                    const isDeposit = tx.type === 'deposit' || tx.type === 'Deposit';
-                    const bgColor = isDeposit ? 'bg-success-50 border-success-100' : 'bg-danger-50 border-danger-100';
-                    const iconBg = isDeposit ? 'bg-success-100' : 'bg-danger-100';
-                    const iconColor = isDeposit ? 'text-success-600' : 'text-danger-600';
-                    const amountColor = isDeposit ? 'text-success-600' : 'text-danger-600';
-                    const amountPrefix = isDeposit ? '+' : '-';
-                    const date = new Date(tx.created_at).toLocaleDateString('en-PH', {month: 'short', day: 'numeric', year: 'numeric'});
-                    return `
-                        <div class="flex items-center gap-4 p-4 ${bgColor} rounded-lg border hover:bg-opacity-70 transition-colors">
-                            <div class="w-10 h-10 ${iconBg} rounded-full flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="${isDeposit ? 'arrow-down-circle' : 'arrow-up-circle'}" class="w-5 h-5 ${iconColor}"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">${tx.user_name || 'Member'}</p>
-                                <p class="text-xs text-gray-500">${date} ${tx.reference_no ? '• ' + tx.reference_no : ''}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold ${amountColor}">${amountPrefix}₱${parseFloat(tx.amount || tx.total_amount || 0).toLocaleString('en-PH', {minimumFractionDigits: 2})}</p>
-                                <p class="text-xs text-gray-500">${tx.type || 'Transaction'}</p>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500">
-                        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-2 text-gray-300"></i>
-                        <p>No savings transactions found</p>
-                    </div>
-                `;
-            }
-            
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-            
-            openModal('savingsHistoryModal');
-        }
-
-        
-
-        <!-- To-Do List Tab Switching
+        // To-Do List Tab Switching
         function switchTodoTab(tab) {
             const contents = document.querySelectorAll('.todo-content');
             const buttons = document.querySelectorAll('.todo-tab-btn');
-            
             contents.forEach(content => content.classList.add('hidden'));
             buttons.forEach(btn => {
                 btn.classList.remove('bg-primary-600', 'text-white', 'shadow-md');
                 btn.classList.add('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
             });
-            
             document.getElementById('todo-content-' + tab).classList.remove('hidden');
             document.getElementById('todo-tab-' + tab).classList.remove('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
             document.getElementById('todo-tab-' + tab).classList.add('bg-primary-600', 'text-white', 'shadow-md');
@@ -585,28 +502,19 @@
         function switchActivityTab(tab) {
             const contents = document.querySelectorAll('.activity-content');
             const buttons = document.querySelectorAll('.activity-tab-btn');
-            
             contents.forEach(content => content.classList.add('hidden'));
             buttons.forEach(btn => {
                 btn.classList.remove('bg-primary-600', 'text-white', 'shadow-md');
                 btn.classList.add('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
             });
-            
             document.getElementById('activity-content-' + tab).classList.remove('hidden');
             document.getElementById('activity-tab-' + tab).classList.remove('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
             document.getElementById('activity-tab-' + tab).classList.add('bg-primary-600', 'text-white', 'shadow-md');
         }
-
-        
     </script>
 
     <style>
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 @endsection

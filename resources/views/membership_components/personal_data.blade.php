@@ -179,7 +179,8 @@
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
                         <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                        <input type="text" name="middle_name" id="middle_name" class="form-control"
+                        <input type="text" name="middle_name" id="middle_name"
+                            class="form-control"
                             oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
@@ -211,6 +212,14 @@
                     </div>
                     <div class="col-lg-6 mt-4">
                         <label>Sex</label>
+                        <select name="sex" class="form-select" id="sex" required>
+                            <option value="">Choose sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <!-- <div class="col-lg-6 mt-4">
+                        <label>Sex</label>
                         <select name="sex" class="form-select" id="sex">
                             <option value="">Choose sex</option>
                             <option value="Male">Male</option>
@@ -226,7 +235,7 @@
                     <div class="col-lg-6 mt-4">
                         <label>Skills/Expertise <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
                         <input type="text" name="skills_expertise" class="form-control" id="skills_expertise">
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -235,72 +244,146 @@
 
         <div class="form-step-body">
             <div class="row">
-                <div class="col-lg-4 mt-4">
-                    <label>Email *</label>
-                    <input type="email" name="email" id="email" class="form-control"
-                        pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
-                        title="Only Gmail addresses are allowed (e.g. example@gmail.com)">
-                    <div class="reminder">
-                        <span>Enter existing email address</span>
-                    </div>
-                </div>
 
-                {{-- ── Password with strength indicator ── --}}
-                <div class="col-lg-4 mt-4">
-                    <label>Password *</label>
-                    <div class="password-wrapper">
-                        <input type="password" name="password" id="password" class="form-control"
-                            style="padding-right: 40px;" autocomplete="new-password"
-                            oninput="checkPasswordStrength(this.value); checkPasswordMatch();">
+                {{-- ── Citizenship — standard <select>, options populated by JS ── --}}
+                    <!-- <div class="col-lg-6 mt-4">
+                        <label>Citizenship</label>
+                        <select name="citizenship" id="citizenship" class="form-select" required>
+                            <option value="">Select citizenship</option>
+                            {{-- JS will inject all options below --}}
+                        </select>
+                    </div> -->
+                    <!-- <div class="col-lg-6 mt-4 autocomplete-wrapper">
+                        <label>Citizenship</label>
+                        <input type="text" name="citizenship" id="citizenship" class="form-control"
+                            placeholder="Type to search citizenship..." autocomplete="off" required>
+                        <input type="hidden" id="citizenship_value" name="citizenship_confirmed">
+                        <div class="autocomplete-list" id="citizenship-list"></div>
+                    </div> -->
+                    <div class="col-lg-6 mt-4">
+                        <label>Citizenship</label>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" name="citizenship" id="citizenship" class="form-control"
+                                placeholder="Type to search citizenship..." autocomplete="off" required>
+                            <input type="hidden" id="citizenship_value" name="citizenship_confirmed">
+                            <div class="autocomplete-list" id="citizenship-list"></div>
+                        </div>
                     </div>
-                    <div class="strength-bar-wrap strength-0" id="strength-bars">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                    </div>
-                    <div class="strength-label label-0" id="strength-label"></div>
-                </div>
 
-                <div class="col-lg-4 mt-4">
-                    <label>Confirm Password *</label>
-                    <div class="password-wrapper">
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                            class="form-control" style="padding-right: 40px;" autocomplete="new-password"
-                            oninput="checkPasswordMatch();">
+                    <div class="col-lg-6 mt-4">
+                        <label>Skills/Expertise <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
+                        <input type="text" name="skills_expertise" class="form-control"
+                            id="skills_expertise">
+                        <!-- <div class="reminder">
+                        <span>(Optional)</span>
+                    </div> -->
                     </div>
-                    <div class="match-hint" id="match-hint"></div>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-lg-6 col-md-12 mt-4">
-                    <label>Username *</label>
-                    <input type="text" name="username" id="username" class="form-control">
-                </div>
-                <div class="col-lg-6 mt-4">
-                    <label class="text-start">Membership category?</label>
-                    <select name="membership_category" id="select_type" class="form-select">
-                        <option value="" disabled selected>Select category</option>
-                        <option value="Operator">Operator - (Manages transport operations.)</option>
-                        <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
-                        <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
-                        <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
-                        </option>
-                        <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
-                            helper).)</option>
-                        <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple
-                            transport
-                            units.)</option>
-                        <option value="Investor Associate">Investor Associate - (Provides capital but not involved in
-                            daily
-                            operations.)</option>
-                    </select>
-                </div>
+                    <!-- <div class="col-lg-6 col-md-12 mt-4">
+                        <label>Username *</label>
+                        <input type="text" name="username" id="username" class="form-control" required>
+                    </div>
+
+                    <div class="col-lg-6 mt-4">
+                        <label class="text-start">Membership category?</label>
+                        <select name="membership_category" id="select_type" class="form-select" required>
+                            <option value="" disabled selected>Select category</option>
+                            <option value="Operator">Operator - (Manages transport operations.)</option>
+                            <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
+                            <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
+                            <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
+                            </option>
+                            <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
+                                helper).)</option>
+                            <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple
+                                transport
+                                units.)</option>
+                            <option value="Investor Associate">Investor Associate - (Provides capital but not involved
+                                in daily
+                                operations.)</option>
+                        </select>
+                    </div> -->
+
             </div>
         </div>
     </div>
+
+    <div class="form-step-body">
+
+        <div class="row">
+            <div class="col-lg-4 mt-4">
+                <label>Email *</label>
+                <input type="email" name="email" id="email" class="form-control"
+                    pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
+                    title="Only Gmail addresses are allowed (e.g. example@gmail.com)">
+                <div class="reminder">
+                    <span>Enter existing email address</span>
+                </div>
+            </div>
+
+            {{-- ── Password with strength indicator ── --}}
+            <div class="col-lg-4 mt-4">
+                <label>Password *</label>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="login-password" class="form-control"
+                        style="padding-right: 40px;" autocomplete="new-password"
+                        oninput="checkPasswordStrength(this.value); checkPasswordMatch();">
+                    <span onclick="toggleLoginPassword()"
+                        style="position: absolute; right: 12px; top: 55%; transform: translateY(-50%); cursor: pointer; color: #888;">
+                        <i class="fa fa-eye" id="eye-login"></i>
+                    </span>
+                </div>
+                <div class="strength-bar-wrap strength-0" id="strength-bars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="strength-label label-0" id="strength-label"></div>
+            </div>
+
+            <div class="col-lg-4 mt-4">
+                <label>Confirm Password *</label>
+                <div class="password-wrapper">
+                    <input type="password" name="password_confirmation" id="login-password-2" class="form-control"
+                        style="padding-right: 40px;" autocomplete="new-password" oninput="checkPasswordMatch();">
+                    <span onclick="toggleLoginPassword2()"
+                        style="position: absolute; right: 12px; top: 55%; transform: translateY(-50%); cursor: pointer; color: #888;">
+                        <i class="fa fa-eye" id="eye-login-2"></i>
+                    </span>
+                </div>
+                <div class="match-hint" id="match-hint"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mt-4">
+                <label>Username *</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+            <div class="col-lg-6 mt-4">
+                <label class="text-start">Membership category?</label>
+                <select name="membership_category" id="select_type" class="form-select" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option value="Operator">Operator - (Manages transport operations.)</option>
+                    <option value="Driver">Driver - (Drives vehicles and transports passengers)</option>
+                    <option value="Dispatcher">Dispatcher - (Assigns trips and coordinates drivers.)</option>
+                    <option value="Driver-Operator">Driver-Operator - (Drives and manages their own operations.)
+                    </option>
+                    <option value="Allied Workers">Allied Workers - (Supports operations (e.g., mechanic, staff,
+                        helper).)</option>
+                    <option value="Transport Entrepreneur">Transport Entrepreneur - (Owns or manages multiple
+                        transport
+                        units.)</option>
+                    <option value="Investor Associate">Investor Associate - (Provides capital but not involved in
+                        daily
+                        operations.)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>{{-- END .form-step --}}
 
@@ -312,6 +395,12 @@ Rendered here but immediately moved to
 <body> via JS
     so position:fixed always covers the full viewport,
     regardless of any transform/overflow on parent elements.
+
+    NOTE: All confirm/cancel/resend/send logic for this modal
+    lives ONLY in card_form.js (sendOtpAndVerify()). Do NOT add
+    a second set of click handlers here — that previously caused
+    two independent /otp/send + /otp/verify flows to run at once,
+    which is what broke verification.
     ════════════════════════════════════════════════════ --}}
     <div id="otp-modal-overlay">
         <div
@@ -352,8 +441,11 @@ Rendered here but immediately moved to
             <hr style="margin:1.25rem 0; border-color:#f3f4f6;">
             <p style="font-size:12px; color:#9ca3af; text-align:center; margin:0;">
                 Didn't receive the code?
-                <span id="otp-resend-link"
-                    style="color:#111; font-weight:500; cursor:pointer; text-decoration:underline;">Send again</span>
+                {{-- id renamed to match card_form.js (setResendButtonLoading / currentResendBtn) --}}
+                <button type="button" id="otp-resend-btn"
+                    style="background:none; border:none; padding:0; color:#111; font-weight:500; cursor:pointer; text-decoration:underline; font-size:12px;">
+                    Send again
+                </button>
             </p>
         </div>
     </div>
@@ -373,73 +465,11 @@ Rendered here but immediately moved to
             }
         })();
 
-
-        // ═══════════════════════════════════════════════════
-        //  HELPER — show / hide modal
-        // ═══════════════════════════════════════════════════
-        function showOtpModal() {
-            const overlay = document.getElementById('otp-modal-overlay');
-            overlay.style.display = 'flex';
-        }
-
-        function hideOtpModal() {
-            const overlay = document.getElementById('otp-modal-overlay');
-            overlay.style.display = 'none';
-        }
-
-
-        // ═══════════════════════════════════════════════════
-        //  OTP — Confirm
-        // ═══════════════════════════════════════════════════
-        let emailOtpVerified = false;
-
-        document.getElementById('otp-confirm-btn')?.addEventListener('click', function () {
-            const otp = document.getElementById('otp-input').value.trim();
-            const email = document.getElementById('email').value.trim();
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
-                || document.querySelector('input[name="_token"]')?.value
-                || '';
-
-            fetch('{{ url("/otp/verify") }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ otp, email })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.valid) {
-                        emailOtpVerified = true;
-                        hideOtpModal();
-                    } else {
-                        document.getElementById('otp-error').textContent = data.message;
-                    }
-                })
-                .catch(err => console.error('OTP verify failed:', err));
-        });
-
-
-        // ═══════════════════════════════════════════════════
-        //  OTP — Cancel
-        // ═══════════════════════════════════════════════════
-        document.getElementById('otp-cancel-btn')?.addEventListener('click', hideOtpModal);
-
-
-        // ═══════════════════════════════════════════════════
-        //  OTP — Resend (text link)
-        // ═══════════════════════════════════════════════════
-        document.getElementById('otp-resend-link')?.addEventListener('click', function () {
-            const email = document.getElementById('email').value.trim();
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
-                || document.querySelector('input[name="_token"]')?.value
-                || '';
-
-            fetch('{{ url("/otp/send") }}', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ email })
-            }).catch(err => console.error('OTP resend failed:', err));
-        });
+        // NOTE: showOtpModal/hideOtpModal and all confirm/cancel/resend
+        // click handlers used to be defined here as a second, competing
+        // implementation. They have been removed — card_form.js's
+        // sendOtpAndVerify() function is now the single source of truth
+        // for showing/hiding the modal and sending/verifying the OTP.
     </script>
 
 
@@ -488,8 +518,8 @@ Rendered here but immediately moved to
         //  PASSWORD MATCH
         // ═══════════════════════════════════════════════════
         function checkPasswordMatch() {
-            const pw = document.getElementById('password');
-            const confirm = document.getElementById('password_confirmation');
+            const pw = document.getElementById('login-password');
+            const confirm = document.getElementById('login-password-2');
             const hint = document.getElementById('match-hint');
             if (!pw || !confirm || !hint) return;
 
@@ -507,9 +537,9 @@ Rendered here but immediately moved to
 
 
         // ═══════════════════════════════════════════════════
-        //  CITIZENSHIP — populate <select> via JS
+        //  CITIZENSHIP — searchable autocomplete input
         // ═══════════════════════════════════════════════════
-        (function populateCitizenship() {
+        (function citizenshipAutocomplete() {
             const citizenships = [
                 'Afghan', 'Albanian', 'Algerian', 'American', 'Andorran', 'Angolan', 'Antiguan', 'Argentine',
                 'Armenian', 'Australian', 'Austrian', 'Azerbaijani', 'Bahamian', 'Bahraini', 'Bangladeshi',
@@ -519,7 +549,7 @@ Rendered here but immediately moved to
                 'Chilean', 'Chinese', 'Colombian', 'Comorian', 'Congolese', 'Costa Rican', 'Croatian',
                 'Cuban', 'Cypriot', 'Czech', 'Danish', 'Djiboutian', 'Dominican', 'Dutch', 'East Timorese',
                 'Ecuadorian', 'Egyptian', 'Emirati', 'Equatorial Guinean', 'Eritrean', 'Estonian',
-                'Eswatini', 'Ethiopian', 'Fijian', 'Finnish', 'French', 'Gabonese', 'Gambian', 'Georgian',
+                'Eswatini', 'Ethiopian', 'Fijian', 'Filipino', 'Finnish', 'French', 'Gabonese', 'Gambian', 'Georgian',
                 'German', 'Ghanaian', 'Greek', 'Grenadian', 'Guatemalan', 'Guinean', 'Guinea-Bissauan',
                 'Guyanese', 'Haitian', 'Honduran', 'Hungarian', 'I-Kiribati', 'Icelandic', 'Indian',
                 'Indonesian', 'Iranian', 'Iraqi', 'Irish', 'Israeli', 'Italian', 'Ivorian', 'Jamaican',
@@ -531,7 +561,7 @@ Rendered here but immediately moved to
                 'Monégasque', 'Mongolian', 'Montenegrin', 'Moroccan', 'Mozambican', 'Myanmarese',
                 'Namibian', 'Nauruan', 'Nepalese', 'New Zealander', 'Nicaraguan', 'Nigerien', 'Nigerian',
                 'Norwegian', 'Omani', 'Pakistani', 'Palauan', 'Palestinian', 'Panamanian', 'Papua New Guinean',
-                'Paraguayan', 'Peruvian', 'Philippine', 'Polish', 'Portuguese', 'Qatari', 'Romanian',
+                'Paraguayan', 'Peruvian', 'Polish', 'Portuguese', 'Qatari', 'Romanian',
                 'Russian', 'Rwandan', 'Saint Lucian', 'Salvadoran', 'Samoan', 'San Marinese', 'São Toméan',
                 'Saudi', 'Senegalese', 'Serbian', 'Seychellois', 'Sierra Leonean', 'Singaporean', 'Slovak',
                 'Slovenian', 'Solomon Islander', 'Somali', 'South African', 'South Sudanese', 'Spanish',
@@ -541,14 +571,152 @@ Rendered here but immediately moved to
                 'Vietnamese', 'Vincentian', 'Yemeni', 'Zambian', 'Zimbabwean'
             ];
 
-            const select = document.getElementById('citizenship');
-            if (!select) return;
+            const input = document.getElementById('citizenship');
+            const hidden = document.getElementById('citizenship_value');
+            const list = document.getElementById('citizenship-list');
+            if (!input || !list) return;
 
-            citizenships.forEach(function (c) {
-                const opt = document.createElement('option');
-                opt.value = c;
-                opt.textContent = c;
-                select.appendChild(opt);
+            let activeIndex = -1;
+
+            function highlight(text, query) {
+                if (!query) return text;
+                const idx = text.toLowerCase().indexOf(query.toLowerCase());
+                if (idx === -1) return text;
+                return (
+                    text.slice(0, idx) +
+                    '<mark>' + text.slice(idx, idx + query.length) + '</mark>' +
+                    text.slice(idx + query.length)
+                );
+            }
+
+            function renderList(query) {
+                const q = query.trim().toLowerCase();
+                const matches = q === ''
+                    ? citizenships
+                    : citizenships.filter(c => c.toLowerCase().includes(q));
+
+                list.innerHTML = '';
+                activeIndex = -1;
+
+                if (matches.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'autocomplete-empty';
+                    empty.textContent = 'No matching citizenship found';
+                    list.appendChild(empty);
+                } else {
+                    matches.forEach(function (c) {
+                        const item = document.createElement('div');
+                        item.className = 'autocomplete-item';
+                        item.innerHTML = highlight(c, query);
+                        item.dataset.value = c;
+                        item.addEventListener('click', function () {
+                            selectValue(c);
+                        });
+                        list.appendChild(item);
+                    });
+                }
+
+                list.style.display = 'block';
+            }
+
+            function selectValue(value) {
+                input.value = value;
+                if (hidden) hidden.value = value;
+                list.style.display = 'none';
+                input.classList.remove('is-invalid');
+            }
+
+            function closeList() {
+                list.style.display = 'none';
+            }
+
+            input.addEventListener('focus', function () {
+                renderList(input.value);
+            });
+
+            input.addEventListener('input', function () {
+                if (hidden) hidden.value = '';
+                renderList(input.value);
+            });
+
+            input.addEventListener('keydown', function (e) {
+                const items = list.querySelectorAll('.autocomplete-item');
+                if (list.style.display !== 'block' || items.length === 0) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex + 1) % items.length;
+                    updateActive(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = (activeIndex - 1 + items.length) % items.length;
+                    updateActive(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (activeIndex >= 0) {
+                        selectValue(items[activeIndex].dataset.value);
+                    }
+                } else if (e.key === 'Escape') {
+                    closeList();
+                }
+            });
+
+            function updateActive(items) {
+                items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+                if (activeIndex >= 0) {
+                    items[activeIndex].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            // Validate on blur — must match an exact option from the list
+            input.addEventListener('blur', function () {
+                setTimeout(function () {
+                    closeList();
+                    const match = citizenships.find(
+                        c => c.toLowerCase() === input.value.trim().toLowerCase()
+                    );
+                    if (match) {
+                        input.value = match;
+                        if (hidden) hidden.value = match;
+                        input.classList.remove('is-invalid');
+                    } else if (input.value.trim() !== '') {
+                        input.classList.add('is-invalid');
+                        if (hidden) hidden.value = '';
+                    }
+                }, 150); // delay so click on item registers before blur closes list
+            });
+
+            // Close list when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!input.contains(e.target) && !list.contains(e.target)) {
+                    closeList();
+                }
             });
         })();
+    </script>
+
+    <script>
+        function toggleLoginPassword() {
+            const input = document.getElementById('login-password');
+            const icon = document.getElementById('eye-login');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function toggleLoginPassword2() {
+            const input = document.getElementById('login-password-2');
+            const icon = document.getElementById('eye-login-2'); // was 'eye-login' — the bug
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
     </script>

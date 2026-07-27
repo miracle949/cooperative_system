@@ -84,7 +84,7 @@ date_birth.addEventListener("input", () => {
 
     const ConvertDate = new Date(date_birth.value);
 
-    let readableDate =  ConvertDate.toLocaleDateString('en-US', {
+    let readableDate = ConvertDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -128,7 +128,7 @@ spouse_date_birth.addEventListener("input", () => {
 
     const ConvertDate = new Date(spouse_date_birth.value);
 
-    let readableDate =  ConvertDate.toLocaleDateString('en-US', {
+    let readableDate = ConvertDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -197,3 +197,63 @@ document.addEventListener('input', function (e) {
         updateVehicleReview();
     }
 });
+
+/* ============================================================
+   FORM PERSISTENCE — keep entered data across page reloads
+   ============================================================ */
+(function () {
+    const STORAGE_KEY = 'kpmpcats_register_formdata';
+
+    function getStore() {
+        try { return JSON.parse(sessionStorage.getItem(STORAGE_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+
+    function setStore(data) {
+        try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+        catch (e) { }
+    }
+
+    function saveField(el) {
+        if (!el || !el.id) return;
+        // don't persist sensitive/binary fields
+        if (el.type === 'password' || el.id === 'signature') return;
+        const data = getStore();
+        data[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value;
+        setStore(data);
+    }
+
+    // Save on every input/change anywhere in the form (delegated, no need to touch every field)
+    document.addEventListener('input', (e) => saveField(e.target));
+    document.addEventListener('change', (e) => saveField(e.target));
+
+    function restoreFields() {
+        const data = getStore();
+        Object.keys(data).forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.type === 'checkbox' || el.type === 'radio') {
+                el.checked = data[id];
+            } else {
+                el.value = data[id];
+            }
+            // Re-fire events so your existing review-display listeners
+            // (firstname_display, membership_type_display, etc.) update too
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        if (typeof updateVehicleReview === 'function') updateVehicleReview();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', restoreFields);
+    } else {
+        restoreFields();
+    }
+
+    // Once the form is actually submitted, clear saved data so the next visit starts fresh
+    document.querySelector('form')?.addEventListener('submit', () => {
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { }
+    });
+})();

@@ -60,7 +60,17 @@
         <ul class="m-0 p-0">
             <i class="fa fa-bell" style="font-size: 17px; color: #5a7a85;;"></i>
             <li>
-                @if ($username)
+                <a href="#" onclick="toggleDropdown(event)"
+                    class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem] position-relative">
+                    <div class="first-last">
+                        <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</p>
+                    </div>
+                    <p style="margin: 0">
+                        {{ auth()->user()->first_name ?? '' }}
+                    </p>
+                    
+                </a>
+                <!-- @if ($username)
                     @php
                         $userId = Auth::id();
                         $navOtherinfo = \App\Models\Otherinfo_tbl::where('user_id', $userId)->first();
@@ -113,7 +123,7 @@
                         @endif
                         <i class="fa fa-chevron-down"></i>
                     </a>
-                @endif
+                @endif -->
 
                 <ul>
                     @if($email)

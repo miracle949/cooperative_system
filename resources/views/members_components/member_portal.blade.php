@@ -535,6 +535,53 @@
                         </div> -->
                         {{-- end Financial Trends Chart --}}
 
+                    <!-- Resign from Cooperative -->
+                    <div class="ask-box" style="margin-top: 2rem; border: 1px solid #fecaca; background: #fef2f2;">
+                        <div class="text-box">
+                            <h4 style="color: #dc2626;">Leave the Cooperative?</h4>
+                            <p>If you wish to resign from the cooperative, you may submit a resignation request. A 60-day holding period applies for share capital withdrawal.</p>
+                        </div>
+                        <div class="link-box">
+                            <button onclick="document.getElementById('resignModal').style.display='flex'" style="background: #dc2626; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa fa-sign-out-alt"></i>
+                                <span>Request Resignation</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resignation Modal -->
+                    <div id="resignModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+                        <div style="background:#fff; border-radius:12px; max-width:450px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+                            <div style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#111827;">Request Resignation</h3>
+                                <button onclick="document.getElementById('resignModal').style.display='none'" style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+                            </div>
+                            <form method="POST" action="{{ route('resignation.request') }}" style="padding:24px;">
+                                @csrf
+                                <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">Please select your preference for your share capital:</p>
+                                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
+                                    <label class="resign-option" style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
+                                        <input type="radio" name="withdraw_share_capital" value="1" style="accent-color:#1E2A4A;" required onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
+                                        <div>
+                                            <strong style="display:block; color:#111827; font-size:15px;">Withdraw Share Capital</strong>
+                                            <span style="font-size:13px; color:#6b7280;">I want my share capital paid out after 60 days</span>
+                                        </div>
+                                    </label>
+                                    <label class="resign-option" style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
+                                        <input type="radio" name="withdraw_share_capital" value="0" style="accent-color:#1E2A4A;" required onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
+                                        <div>
+                                            <strong style="display:block; color:#111827; font-size:15px;">Leave Share Capital</strong>
+                                            <span style="font-size:13px; color:#6b7280;">I leave my share capital with the cooperative</span>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div style="display:flex; gap:12px;">
+                                    <button type="button" onclick="document.getElementById('resignModal').style.display='none'" style="flex:1; padding:12px; background:#f3f4f6; color:#374151; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
+                                    <button type="submit" style="flex:1; padding:12px; background:#dc2626; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;" onclick="return confirm('Are you sure you want to submit a resignation request? This action will be reviewed by admin.')">Submit Request</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     </section>
                 </div>
             </div>

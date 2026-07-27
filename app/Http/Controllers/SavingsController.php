@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
+use App\Models\share_capital_account_tbl;
+use App\Models\share_capital_transaction_tbl;
 use App\Models\Users_tbl;
+use App\Models\AuditLog;
 use Carbon\Carbon;
 
 class SavingsController extends Controller
@@ -31,7 +35,7 @@ class SavingsController extends Controller
     /**
      * Show the savings page.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $username = Auth::check() ? Auth::user()->username : null;
@@ -55,13 +59,19 @@ class SavingsController extends Controller
             ]);
         }
 
-        // Grouped transactions by Month Year
-        $groupedTransactions = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+        // ★ NEW: type filter — all / deposit / withdrawal
+        $type = $request->query('type', 'all');
+
+        $transactionsQuery = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
             ->orderBy('transaction_date', 'desc')
-            ->get()
-            ->groupBy(function ($tx) {
-                return Carbon::parse($tx->transaction_date)->format('F Y');
-            });
+            ->orderBy('created_at', 'desc');
+
+        if (in_array($type, ['deposit', 'withdrawal'])) {
+            $transactionsQuery->where('type', $type);
+        }
+
+        // ★ NEW: 10 per page, keeps ?type= on every pagination link automatically
+        $transactions = $transactionsQuery->paginate(10)->withQueryString();
 
         $totalMonths = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
             ->groupByRaw("DATE_FORMAT(transaction_date, '%Y-%m')")
@@ -91,7 +101,8 @@ class SavingsController extends Controller
             ],
             compact(
                 'savingsAccount',
-                'groupedTransactions',
+                'transactions',
+                'type',
                 'totalMonths',
                 'monthlyAverage',
                 'lastUpdated',
@@ -117,8 +128,6 @@ class SavingsController extends Controller
         $newBalance = $savingsAccount->balance + $request->amount;
         $referenceNo = $this->generateReferenceNo('deposit');
 
-        $savingsAccount->update(['balance' => $newBalance]);
-
         $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
             ->where('user_id', $user->id)
             ->where('status', 'Active')
@@ -130,6 +139,8 @@ class SavingsController extends Controller
                 ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
         }
 
+        $savingsAccount->update(['balance' => $newBalance]);
+
         savings_transaction_tbl::create([
             'savings_account_id' => $savingsAccount->id,
             'type' => 'deposit',
@@ -140,6 +151,13 @@ class SavingsController extends Controller
             'reference_no' => $referenceNo,
             'transaction_date' => Carbon::today(),
         ]);
+
+        AuditLog::log(
+            'Member Savings Deposit',
+            "Deposited ₱{$request->amount} to savings (Ref: {$referenceNo})",
+            'savings',
+            $savingsAccount->id
+        );
 
         return redirect()->route('savings.index')
             ->with('deposit_success', true)
@@ -195,6 +213,13 @@ class SavingsController extends Controller
             'transaction_date' => Carbon::today(),
         ]);
 
+        AuditLog::log(
+            'Member Savings Withdrawal',
+            "Withdrew ₱{$request->amount} from savings (Ref: {$referenceNo})",
+            'savings',
+            $savingsAccount->id
+        );
+
         return redirect()->route('savings.index')
             ->with('withdraw_success', true)
             ->with('withdraw_amount', $request->amount)
@@ -223,6 +248,7 @@ class SavingsController extends Controller
         ]);
 
         $response = \Illuminate\Support\Facades\Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
+            ->withOptions(['verify' => false])
             ->post('https://api.paymongo.com/v1/sources', [
                 'data' => [
                     'attributes' => [
@@ -246,77 +272,17 @@ class SavingsController extends Controller
         return redirect()->back()->with('error', 'GCash payment failed. Please try again.');
     }
 
-    // GCash success callback:
-    public function gcashSuccess(Request $request)
-    {
-        $user = Auth::user();
-        $amount = (float) session('sav_pending_amount', 0);
-        $note = session('sav_pending_note');
-        $type = session('sav_pending_type', 'deposit');  // 'deposit' or 'withdrawal'
-        $referenceNo = 'GCASH-' . now()->format('YmdHis');
-
-        session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
-
-        $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
-
-        if ($type === 'deposit') {
-            $newBalance = $savingsAccount->balance + $amount;
-            $txType = 'deposit';
-        } else {
-            if ($amount > $savingsAccount->balance) {
-                return redirect()->route('savings.index')
-                    ->with('error', 'Insufficient balance for GCash withdrawal.');
-            }
-            $newBalance = $savingsAccount->balance - $amount;
-            $txType = 'withdrawal';
-        }
-
-        $savingsAccount->update(['balance' => $newBalance]);
-
-        savings_transaction_tbl::create([
-            'savings_account_id' => $savingsAccount->id,
-            'type' => $txType,
-            'amount' => $amount,
-            'payment_method' => 'gcash',
-            'balance_after' => $newBalance,
-            'note' => $note,
-            'reference_no' => $referenceNo,
-            'transaction_date' => Carbon::today(),
-        ]);
-
-        $successKey = $type === 'deposit' ? 'deposit_success' : 'withdraw_success';
-        $amountKey = $type === 'deposit' ? 'deposit_amount' : 'withdraw_amount';
-        $referenceKey = $type === 'deposit' ? 'deposit_reference' : 'withdraw_reference';
-        $balanceKey = $type === 'deposit' ? 'deposit_balance' : 'withdraw_balance';
-
-        return redirect()->route('savings.index')
-            ->with($successKey, true)
-            ->with($amountKey, $amount)
-            ->with($referenceKey, $referenceNo)
-            ->with($balanceKey, $newBalance);
-    }
-
-    // GCash failed callback:
-    public function gcashFailed(Request $request)
-    {
-        session()->forget(['sav_pending_amount', 'sav_pending_note', 'sav_pending_type']);
-        return redirect()->route('savings.index')
-            ->with('error', 'GCash payment failed. Please try again.');
-    }
-
     /**
-     * Download receipt as plain text file.
-     */
     /**
      * Download receipt as JPG image.
      */
     public function downloadReceipt(string $referenceNo, Request $request)
     {
         $user = Auth::user();
-        
+
         // Check if this is admin requesting - find transaction by reference_no
         $tx = savings_transaction_tbl::where('reference_no', $referenceNo)->first();
-        
+
         if (!$tx) {
             // Fall back to member lookup
             $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
@@ -328,7 +294,7 @@ class SavingsController extends Controller
         // Get user for the transaction
         $savingsAccount = savings_account_tbl::find($tx->savings_account_id);
         $transactionUser = $savingsAccount ? Users_tbl::find($savingsAccount->user_id) : null;
-        
+
         if (!$transactionUser) {
             $transactionUser = $user;
         }
@@ -493,7 +459,7 @@ class SavingsController extends Controller
 
         $amount = $request->amount;
         $type = $request->type;
-        
+
         // Handle withdrawal - check balance
         if ($type === 'withdrawal') {
             if ($savingsAccount->balance < $amount) {
@@ -525,6 +491,14 @@ class SavingsController extends Controller
             'transaction_date' => Carbon::today(),
         ]);
 
+        $member = Users_tbl::find($request->member_id);
+        AuditLog::log(
+            'Admin ' . ucfirst($type) . ' Savings',
+            ucfirst($type) . " of ₱{$amount} to/from {$member?->first_name} {$member?->last_name} (Ref: {$referenceNo})",
+            'savings',
+            $savingsAccount->id
+        );
+
         return response()->json([
             'success' => true,
             'message' => ucfirst($type) . ' of ₱' . number_format($amount, 2) . ' successful!',
@@ -540,7 +514,142 @@ class SavingsController extends Controller
     {
         $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
         $balance = $savingsAccount ? $savingsAccount->balance : 0;
-        
         return response()->json(['balance' => $balance]);
+    }
+
+    /**
+     * Get member share capital balance for AJAX.
+     */
+    public function getMemberShareCapitalBalance($memberId)
+    {
+        $account = share_capital_account_tbl::where('user_id', $memberId)->first();
+        $balance = $account ? $account->total_amount : 0;
+        return response()->json(['balance' => $balance]);
+    }
+
+    /**
+     * Convert/transfer a portion of a member's Savings into Share Capital.
+     */
+    public function convertToShareCapital(Request $request)
+    {
+        $request->validate([
+            'member_id' => 'required|exists:users_tbls,id',
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        $memberId = $request->member_id;
+        $amount = (float) $request->amount;
+        $amountPerShare = 1000;
+
+        $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
+
+        if (!$savingsAccount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Member does not have a savings account.',
+            ], 422);
+        }
+
+        if ($amount > $savingsAccount->balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient savings balance. Available: ₱' . number_format($savingsAccount->balance, 2),
+            ], 422);
+        }
+
+        $shares = (int) ($amount / $amountPerShare);
+        $convertedAmount = $shares * $amountPerShare;
+
+        if ($shares < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Minimum conversion amount is ₱' . number_format($amountPerShare, 2) . ' (1 share).',
+            ], 422);
+        }
+
+        if ($convertedAmount < $amount) {
+            $remainder = $amount - $convertedAmount;
+        } else {
+            $remainder = 0;
+        }
+
+        $now = Carbon::now();
+        $referenceNo = 'SCV-' . strtoupper(bin2hex(random_bytes(4))) . '-' . $now->format('Ymd');
+
+        DB::beginTransaction();
+
+        try {
+            $savingsNewBalance = $savingsAccount->balance - $convertedAmount;
+            $savingsAccount->update(['balance' => $savingsNewBalance]);
+
+            savings_transaction_tbl::create([
+                'savings_account_id' => $savingsAccount->id,
+                'type' => 'withdrawal',
+                'amount' => $convertedAmount,
+                'payment_method' => 'Internal Transfer',
+                'balance_after' => $savingsNewBalance,
+                'note' => 'Transferred to Share Capital',
+                'reference_no' => $referenceNo,
+                'transaction_date' => $now->toDateString(),
+            ]);
+
+            $scAccount = share_capital_account_tbl::where('user_id', $memberId)->first();
+
+            if ($scAccount) {
+                $scAccount->update([
+                    'total_shares' => $scAccount->total_shares + $shares,
+                    'total_amount' => $scAccount->total_amount + $convertedAmount,
+                    'status' => 'Active',
+                ]);
+                $scAccountId = $scAccount->id;
+            } else {
+                $scAccount = share_capital_account_tbl::create([
+                    'user_id' => $memberId,
+                    'total_shares' => $shares,
+                    'total_amount' => $convertedAmount,
+                    'status' => 'Active',
+                ]);
+                $scAccountId = $scAccount->id;
+            }
+
+            share_capital_transaction_tbl::create([
+                'share_capital_account_id' => $scAccountId,
+                'type' => 'Deposit',
+                'shares' => $shares,
+                'amount_per_share' => $amountPerShare,
+                'total_amount' => $convertedAmount,
+                'payment_method' => 'Internal Transfer',
+                'reference_no' => $referenceNo,
+                'note' => 'Converted from Savings',
+                'status' => 'Completed',
+                'transaction_date' => $now->toDateString(),
+            ]);
+
+            DB::commit();
+
+            $member = Users_tbl::find($memberId);
+            AuditLog::log(
+                'Convert Savings to Share Capital',
+                "Converted ₱{$convertedAmount} ({$shares} shares) from savings to share capital for {$member?->first_name} {$member?->last_name} (Ref: {$referenceNo})",
+                'savings',
+                $savingsAccount->id
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully converted ₱' . number_format($convertedAmount, 2) . ' (' . $shares . ' share(s)) to Share Capital.',
+                'converted_amount' => $convertedAmount,
+                'shares' => $shares,
+                'reference_no' => $referenceNo,
+                'remainder' => $remainder,
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Conversion failed: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

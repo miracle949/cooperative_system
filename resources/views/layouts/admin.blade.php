@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'KMPCATS')</title>
+    <title>@yield('title', 'KPMPCATS')</title>
     <script src="{{ asset('vendor/tailwind/tailwind.min.js') }}"></script>
     <link href="{{ asset('vendor/fonts/inter.css') }}" rel="stylesheet">
     <script src="{{ asset('vendor/chart.js/chart.umd.js') }}"></script>
@@ -18,23 +18,23 @@
                     },
                     colors: {
                         primary: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            200: '#a7f3d0',
-                            300: '#6ee7b7',
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
+                            50: '#edf0f5',
+                            100: '#d0d6e4',
+                            200: '#a8b3cc',
+                            300: '#7d8db0',
+                            400: '#566a96',
+                            500: '#3a4e7a',
+                            600: '#1E2A4A',
+                            700: '#1a253e',
+                            800: '#151e33',
+                            900: '#0f1626',
                         },
                         success: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
+                            50: '#edf0f5',
+                            100: '#d0d6e4',
+                            500: '#3a4e7a',
+                            600: '#1E2A4A',
+                            700: '#1a253e',
                         },
                         warning: {
                             50: '#fffbeb',
@@ -61,36 +61,57 @@
         .sidebar-link {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.625rem 1rem;
-            color: #4b5563;
-            border-radius: 1rem;
-            transition: all 0.2s;
+            gap: 0.65rem;
+            padding: 0.5rem 0.875rem;
+            color: #6b7a99;
+            border-radius: 9px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 13.5px;
         }
 
         .sidebar-link:hover {
-            background-color: #e5e7eb;
-            color: #111827;
+            background-color: #EEF3FF;
+            color: #4F7FFA;
+            transform: translateX(3%);
         }
 
         .sidebar-link.active {
-            background-color: #e5e7eb;
-            color: #1E4035;
-            font-weight: 500;
+            background-color: #EEF3FF;
+            color: #4F7FFA;
+            font-weight: 600;
+            border-radius: 7px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .sidebar-link.active i {
-            color: #1E4035;
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background-color: #4F7FFA;
         }
 
         .sidebar-link i {
-            width: 1.25rem;
-            height: 1.25rem;
-            color: #6b7280;
+            width: 1rem;
+            height: 1rem;
+            color: #6b7a99;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-link.active i {
+            color: #4F7FFA;
+        }
+
+        .sidebar-link:hover i {
+            color: #4F7FFA;
         }
 
         .sidebar-link.active:hover {
-            background-color: #e5e7eb;
+            background-color: #EEF3FF;
         }
 
         .card {
@@ -111,21 +132,21 @@
         }
 
         .btn-primary {
-            background-color: #1E4035;
+            background-color: #1E2A4A;
             color: white;
         }
 
         .btn-primary:hover {
-            background-color: #2A5C4E;
+            background-color: #25335A;
         }
 
         .btn-success {
-            background-color: #10b981;
+            background-color: #3a4e7a;
             color: white;
         }
 
         .btn-success:hover {
-            background-color: #059669;
+            background-color: #1E2A4A;
         }
 
         .btn-danger {
@@ -146,6 +167,21 @@
             background-color: #f9fafb;
         }
 
+        .btn-sm {
+            padding: 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        .btn-warning {
+            background-color: #d97706;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #b45309;
+        }
+
         .input,
         .select {
             width: 100%;
@@ -158,8 +194,8 @@
 
         .input:focus,
         .select:focus {
-            border-color: #1E4035;
-            box-shadow: 0 0 0 3px rgba(30, 64, 53, 0.1);
+            border-color: #1E2A4A;
+            box-shadow: 0 0 0 3px rgba(30, 42, 74, 0.1);
         }
 
         .badge {
@@ -170,8 +206,8 @@
         }
 
         .badge-success {
-            background-color: #d1fae5;
-            color: #059669;
+            background-color: #d0d6e4;
+            color: #1E2A4A;
         }
 
         .badge-warning {
@@ -185,8 +221,8 @@
         }
 
         .badge-primary {
-            background-color: #d1fae5;
-            color: #1E4035;
+            background-color: #d0d6e4;
+            color: #1E2A4A;
         }
 
         .badge-gray {
@@ -230,7 +266,10 @@
 
         .modal-overlay {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
             z-index: 50;
@@ -249,12 +288,13 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             max-width: 32rem;
             width: 100%;
-            margin: 0 1rem;
+            margin: 0;
             max-height: 90vh;
             overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
         }
 
         /* Hide scrollbar for Chrome/Safari/Edge */
@@ -264,6 +304,10 @@
 
         .modal.max-w-4xl {
             max-width: 56rem;
+        }
+
+        .modal.max-w-lg {
+            max-width: 36rem;
         }
 
         .modal > div:first-child {
@@ -334,80 +378,142 @@
     </style>
 </head>
 
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex min-h-screen">
+<body class="bg-gray-50 h-screen overflow-hidden">
+    <div class="flex h-full">
         <!-- Sidebar -->
-        <aside class="w-60 bg-gray-50 border-r border-gray-200 fixed h-full z-40">
+        <aside class="w-60 bg-white border-r border-[#E5EAF3] flex flex-col h-full flex-shrink-0">
             <div class="flex flex-col h-full">
                 <!-- Logo -->
-                <div class="p-5 border-b border-gray-200">
+                <div class="p-5 border-b border-[#E5EAF3]">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                         <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm">
                             <div class="nav-logo">
                             {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}
-                            <img src="images/logo2.png" width="50px" height="50px" style="border-radius: 50%" alt="">
+                            <img src="{{ asset('images/logo2.png') }}" width="50px" height="50px" style="border-radius: 50%" alt="">
                             </div>
                         </div>
                         <div>
-                            <h1 class="text-base font-bold text-gray-900">KMPCATS</h1>
-                            <p class="text-xs text-gray-500">KMPCATS Managment</p>
+                            <h1 class="text-base font-bold text-gray-900">KPMPCATS</h1>
+                            <p class="text-xs text-gray-500">KPMPCATS Managment</p>
                         </div>
                     </a>
                 </div>
 
                 <!-- Navigation -->
-                <nav class="flex-1 p-3 space-y-1">
+                @php
+                    $perms = auth()->user()?->sidebar_permissions;
+                    $hasFullAccess = is_null($perms);
+                @endphp
+                <nav class="flex-1 p-2.5 space-y-0.5 overflow-y-auto">
+                    @if($hasFullAccess || in_array('dashboard', $perms))
                     <a href="{{ route('dashboard') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
                         <span>Dashboard</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('lendings', $perms))
                     <a href="{{ route('lendings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('lendings') ? 'active' : '' }}">
                         <i data-lucide="banknote" class="w-5 h-5"></i>
                         <span>Assistance Management</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('payments', $perms))
+                    <a href="{{ route('payments') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('payments') ? 'active' : '' }}">
+                        <i data-lucide="credit-card" class="w-5 h-5"></i>
+                        <span>Payments</span>
+                    </a>
+                    @endif
+                    @if($hasFullAccess || in_array('members', $perms))
                     <a href="{{ route('dashboard.members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">
                         <i data-lucide="users" class="w-5 h-5"></i>
                         <span>Members</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('seminars', $perms))
+                    <a href="{{ route('seminars.index') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('seminars.*') ? 'active' : '' }}">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                        <span>Seminars</span>
+                    </a>
+                    @endif
+                    @if($hasFullAccess || in_array('savings', $perms))
                     <a href="{{ route('savings') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('savings') ? 'active' : '' }}">
                         <i data-lucide="piggy-bank" class="w-5 h-5"></i>
                         <span>Savings</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('sharecapitals', $perms))
                     <a href="{{ route('sharecapitals') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('sharecapitals') ? 'active' : '' }}">
                         <i data-lucide="coins" class="w-5 h-5"></i>
-                        <span>Share Capitals</span>
+                        <span>Share Capital</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('notifications', $perms))
+                    <a href="{{ route('notifications.index') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span>Notifications</span>
+                    </a>
+                    @endif
+                    @if($hasFullAccess || in_array('reports', $perms))
                     <a href="{{ route('reports') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('reports') ? 'active' : '' }}">
                         <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
                         <span>Reports</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('finance', $perms))
+                    <a href="{{ route('financial.activity') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('financial.activity') ? 'active' : '' }}">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                        <span>Finance</span>
+                    </a>
+                    @endif
+                    @if($hasFullAccess || in_array('archives', $perms))
                     <a href="{{ route('archives') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('archives') ? 'active' : '' }}">
                         <i data-lucide="archive" class="w-5 h-5"></i>
                         <span>Archives</span>
                     </a>
-                    <a href="{{ route('financial.activity') }}"
-                        class="sidebar-link justify-start {{ request()->routeIs('financial.activity') ? 'active' : '' }}">
-                        <i data-lucide="wallet" class="w-5 h-5"></i>
-                        <span>Financial Activity</span>
+                    @endif
+                    @if($hasFullAccess || in_array('officers-committees', $perms))
+                    <a href="{{ route('officers.committees') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('officers.committees') ? 'active' : '' }}">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Officers & Committees</span>
                     </a>
+                    @endif
+                    @if($hasFullAccess || in_array('announcements', $perms))
+                    <a href="{{ route('announcements.index') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('announcements*') ? 'active' : '' }}">
+                        <i data-lucide="megaphone" class="w-5 h-5"></i>
+                        <span>Announcements</span>
+                    </a>
+                    @endif
+                    @if($hasFullAccess || in_array('settings', $perms))
+                    <a href="{{ route('settings') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('settings') ? 'active' : '' }}">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span>Settings</span>
+                    </a>
+                    @endif
                 </nav>
 
                 <!-- User Info -->
-                <div class="p-3 border-t border-gray-200 relative">
-                    <button onclick="toggleUserDropdown(event)" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 cursor-pointer transition-colors w-full text-left">
+                <div class="p-3 border-t border-[#E5EAF3] relative">
+                    <button onclick="toggleUserDropdown(event)" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#EEF3FF] cursor-pointer transition-colors w-full text-left">
                         <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center shadow-sm">
-                            <span class="text-primary-600 font-semibold text-sm">RS</span>
+                            <span class="text-primary-600 font-semibold text-sm">{{ strtoupper(substr(auth()->user()->first_name ?? 'A', 0, 1) . substr(auth()->user()->last_name ?? '', 0, 1)) }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">Ronald Sales</p>
-                            <p class="text-xs text-gray-500 truncate">Administrator</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">{{ auth()->user()->first_name ?? '' }} {{ auth()->user()->last_name ?? '' }}</p>
+                            <p class="text-xs text-gray-500 truncate">{{ ucfirst(auth()->user()->role ?? 'Administrator') }}</p>
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
                     </button>
@@ -429,9 +535,9 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 ml-60">
+        <div class="flex-1 flex flex-col min-h-0">
             <!-- Top Navigation -->
-            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <header class="bg-white border-b border-gray-200 flex-shrink-0 z-30">
                 <div class="flex items-center justify-between px-6 py-4">
                     <!-- Search -->
                     <div class="flex-1 max-w-md">
@@ -446,10 +552,10 @@
                     <!-- Right Side -->
                     <div class="flex items-center gap-4">
                         <!-- Notifications -->
-                        <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <a href="{{ route('notifications.index') }}" class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
                             <i data-lucide="bell" class="w-5 h-5 text-gray-600"></i>
                             <span class="absolute top-1 right-1 w-2 h-2 bg-danger-500 rounded-full"></span>
-                        </button>
+                        </a>
 
                         <!-- Settings Link -->
                         <a href="{{ route('settings') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -475,7 +581,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="p-6">
+            <main class="p-6 flex-1 overflow-y-auto">
                 @yield('content')
             </main>
         </div>

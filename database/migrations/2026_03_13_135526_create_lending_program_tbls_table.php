@@ -23,11 +23,12 @@ return new class extends Migration {
             $table->decimal("lending_amount", 10, 2)->nullable();
             $table->string("lending_type_term")->nullable();
 
-            // Loan Charges (Computed Amounts)
-            $table->decimal("processing_fee", 10, 2)->default(0);
-            $table->decimal("service_fee", 10, 2)->default(0);
+            // Loan Charges (Computed Amounts)     
+            $table->decimal("processing_fee_rate", 10, 2)->default(0);
+            $table->decimal("service_fee_rate", 10, 2)->default(0);
             $table->decimal("loan_protection_fee", 10, 2)->default(0);
-            $table->decimal("retention_amount", 10, 2)->default(0);
+            $table->decimal("retention_paid_rate", 10, 2)->default(0);
+            $table->decimal("retention_unpaid_rate", 10, 2)->default(0);
 
             // Amount Received by Borrower
             $table->decimal("net_proceeds", 10, 2)->default(0);

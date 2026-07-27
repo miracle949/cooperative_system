@@ -28,7 +28,7 @@
     --gold: #F5A623;
     --blue: #4F7FFA;
     --blue-light: #95B3FC;
-    --blue-pale: #D9E5FE;
+    --blue-pale: #D9E5FE; 
     --blue-mist: #EEF3FF;
     --coral: #FF6B6B;
     --mint: #22C993;
@@ -343,11 +343,11 @@
     margin: 5px 0 0;
     /* color: #c8e6dc; */
     /* color: #808080;0 */
-    color: var(--mid);
+    color: var(--muted);
     /* color: #FFFFFF80; */
     /* color: var(--gold); */
     /* color: var(--ink2); */
-    font-size: 12.5px;
+    font-size: 13.5px;
     font-weight: 500;
     /* letter-spacing: .16em; */
 }

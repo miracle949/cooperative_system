@@ -25,4 +25,14 @@ class lending_repayments_tbl extends Model
         "notes",
         "recorded_by",
     ];
+
+    public function lending()
+    {
+        return $this->belongsTo(lending_program_tbl::class, 'lending_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(Users_tbl::class, 'user_id');
+    }
 }

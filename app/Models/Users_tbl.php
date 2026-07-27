@@ -16,6 +16,12 @@ class Users_tbl extends Authenticatable
         "email",
         "password",
         "role",
+        "status",
+        "sidebar_permissions",
+    ];
+
+    protected $casts = [
+        'sidebar_permissions' => 'array',
     ];
 
     public function otherinfo()
@@ -36,5 +42,17 @@ class Users_tbl extends Authenticatable
     public function lendingPrograms()
     {
         return $this->hasMany(lending_program_tbl::class, 'member_id');
+    }
+
+    public function shareCapitalAccount()
+    {
+        return $this->hasOne(share_capital_account_tbl::class, 'user_id');
+    }
+
+    public function isMainAdmin(): bool
+    {
+        if ($this->role !== 'admin') return false;
+        $firstAdmin = self::where('role', 'admin')->orderBy('id')->first();
+        return $firstAdmin && $this->id === $firstAdmin->id;
     }
 }
