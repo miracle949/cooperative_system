@@ -53,6 +53,8 @@
     --shadow: 0 2px 12px rgba(30, 42, 74, 0.08);
     --savings: #1560c0;
     --savings-bg: #e4edff;
+    --panel-dark: #f4f7fb;
+    --panel-border: rgba(0, 100, 200, 0.15);
 
     --ice-blue: #E8F4FD;
     --gold-pale: #FFF8EC;
@@ -1328,7 +1330,7 @@
         display: none;
     }
 
-    .container-fluid .sidebar .account .first-name{
+    .container-fluid .sidebar .account .first-name {
         display: none;
     }
 

@@ -202,7 +202,7 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     border-radius: 10px;
     /* height: 100%; */
@@ -475,11 +475,11 @@ div.container-fluid {
 }
 
 .container-fluid .rightbar .form-step p {
-    font-size: 14.5px;
+    font-size: 16px;
     /* color: #808080; */
     color: var(--muted);
     /* color: #212529; */
-    margin: 0;
+    margin: 6px 0 0;
 }
 
 .container-fluid .rightbar .form-step .header-track {
@@ -747,7 +747,7 @@ div.container-fluid {
 .form-step .form-step-sub-parents {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     /* align-items: center; */
     position: relative;
     margin-top: 20px;
@@ -756,18 +756,17 @@ div.container-fluid {
 }
 
 .form-step .form-step-nav {
-    display: flex;
+    /* display: flex;
     justify-content: center;
     align-items: start;
-    /* align-items: center; */
     flex-direction: column;
     gap: 1.3rem;
-    height: 139px;
+    height: 139px; */
     /* margin-top: 1.5rem; */
 }
 
 .form-step .form-step-nav h2 {
-    font-size: 35px;
+    font-size: 30px;
     /* font-family: "Playfair Display"; */
     font-family: Georgia, "Times New Roman", serif;
     margin: 0;

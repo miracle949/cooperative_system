@@ -535,7 +535,7 @@ div.container-fluid {
     /* width: 630px;
     height: 100%; */
     /* height: 100vh; */
-    overflow-y: auto;
+    overflow-y: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -561,6 +561,10 @@ div.container-fluid {
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
 }
 
+.container-fluid .form-box-parent::-webkit-scrollbar{
+    width: 10px;
+}
+
 /* .container-fluid .form-box-parent::-webkit-scrollbar {
     width: 5px;
 }
@@ -578,7 +582,7 @@ div.container-fluid {
 .container-fluid .form-parent {
     border-radius: 24px;
     z-index: 10;
-    width: 550px;
+    width: 500px;
     /* width: 530px; */
     /* padding: 52px 48px 48px; */
     /* padding: 48px 48px; */
@@ -732,7 +736,7 @@ div.container-fluid {
     color: var(--teal);
     font-weight: 600;
     width: 350px;
-    margin: 10px 0 0;
+    margin: 5px 0 0;
     /* font-family: "Playfair Display"; */
     font-family: Georgia, "Times New Roman", serif;
 }
@@ -767,16 +771,17 @@ div.container-fluid {
 }
 
 .container-fluid .form-input input {
-    font-size: 14.5px;
+    font-size: 15.5px;
     /* background: rgba(255, 255, 255, .07); */
     /* background-color: var(--border); */
     /* background: #f4fafc; */
     /* border: 1px solid rgba(255, 255, 255, .12); */
-    border: 1.5px solid var(--border);
+    /* border: 1.5px solid var(--border); */
+    border: 1px solid var(--panel-border);
     /* color: #fff; */
     color: var(--teal);
     padding: 13px 16px 13px 50px;
-    background-color: #ffffff;
+    background-color: var(--panel-dark);
     width: 100%;
     border-radius: 8px;
     outline: none;
