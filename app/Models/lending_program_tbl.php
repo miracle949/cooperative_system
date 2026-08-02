@@ -15,27 +15,16 @@ class lending_program_tbl extends Model
         'lending_type',
         'lending_amount',
         'lending_type_term',
-
-        // Loan Charges (Computed Amounts)
-        'processing_fee_rate',
-        'service_fee_rate',
-        'loan_protection_fee',
-        'retention_paid_rate',
-        'retention_unpaid_rate',
-
-        // Amount Received by Borrower
-        'net_proceeds',
-
-        // Payment Information
         'monthly_income',
         'monthly_payment',
         'total_payment',
         'total_interest',
-
         'purpose_loan',
         'status',
         'decline_reason',
         'due_date',
+        'late_fee',
+        'penalty_applied_at',
 
         // Shared
         'valid_id',

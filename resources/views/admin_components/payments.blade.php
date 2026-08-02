@@ -162,6 +162,14 @@
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Late Fee (optional)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
+                            <input type="number" name="late_fee" class="input pl-10" placeholder="0.00" step="0.01" min="0" value="0" style="width: 100%; padding-left: 2.5rem;">
+                        </div>
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method <span class="text-red-500">*</span></label>
                         <select name="payment_method" id="rpPaymentMethod" class="select" style="width: 100%;" required onchange="checkPaymentMethodQr()">
                             <option value="">Select method...</option>

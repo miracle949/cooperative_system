@@ -539,7 +539,7 @@
                     <div class="ask-box" style="margin-top: 2rem; border: 1px solid #fecaca; background: #fef2f2;">
                         <div class="text-box">
                             <h4 style="color: #dc2626;">Leave the Cooperative?</h4>
-                            <p>If you wish to resign from the cooperative, you may submit a resignation request. A 60-day holding period applies for share capital withdrawal.</p>
+                            <p style="color: #1e293b;">If you wish to resign from the cooperative, you may submit a resignation request. A 60-day holding period applies for share capital withdrawal.</p>
                         </div>
                         <div class="link-box">
                             <button onclick="document.getElementById('resignModal').style.display='flex'" style="background: #dc2626; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">

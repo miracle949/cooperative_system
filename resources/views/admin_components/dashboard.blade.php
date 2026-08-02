@@ -444,7 +444,7 @@
                     <h2 class="text-lg font-semibold text-gray-900">Audit Logs</h2>
                     <p class="text-sm text-gray-500">Recent system activities</p>
                 </div>
-                <a href="#" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
+                <a href="{{ route('admin.audit-logs.index') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View All</a>
             </div>
 
             <div class="table-container">

@@ -35,7 +35,7 @@ class SavingsController extends Controller
     /**
      * Show the savings page.
      */
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
         $username = Auth::check() ? Auth::user()->username : null;
@@ -59,19 +59,13 @@ class SavingsController extends Controller
             ]);
         }
 
-        // ★ NEW: type filter — all / deposit / withdrawal
-        $type = $request->query('type', 'all');
-
-        $transactionsQuery = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+        // Grouped transactions by Month Year
+        $groupedTransactions = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
             ->orderBy('transaction_date', 'desc')
-            ->orderBy('created_at', 'desc');
-
-        if (in_array($type, ['deposit', 'withdrawal'])) {
-            $transactionsQuery->where('type', $type);
-        }
-
-        // ★ NEW: 10 per page, keeps ?type= on every pagination link automatically
-        $transactions = $transactionsQuery->paginate(10)->withQueryString();
+            ->get()
+            ->groupBy(function ($tx) {
+                return Carbon::parse($tx->transaction_date)->format('F Y');
+            });
 
         $totalMonths = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
             ->groupByRaw("DATE_FORMAT(transaction_date, '%Y-%m')")
@@ -101,8 +95,7 @@ class SavingsController extends Controller
             ],
             compact(
                 'savingsAccount',
-                'transactions',
-                'type',
+                'groupedTransactions',
                 'totalMonths',
                 'monthlyAverage',
                 'lastUpdated',
@@ -269,7 +262,7 @@ class SavingsController extends Controller
             return redirect($data['data']['attributes']['redirect']['checkout_url']);
         }
 
-        return redirect()->back()->with('error', 'GCash payment failed. Please try again.');
+            return redirect()->back()->with('error', 'GCash payment failed. Please try again.');
     }
 
     /**
@@ -279,10 +272,10 @@ class SavingsController extends Controller
     public function downloadReceipt(string $referenceNo, Request $request)
     {
         $user = Auth::user();
-
+        
         // Check if this is admin requesting - find transaction by reference_no
         $tx = savings_transaction_tbl::where('reference_no', $referenceNo)->first();
-
+        
         if (!$tx) {
             // Fall back to member lookup
             $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
@@ -294,7 +287,7 @@ class SavingsController extends Controller
         // Get user for the transaction
         $savingsAccount = savings_account_tbl::find($tx->savings_account_id);
         $transactionUser = $savingsAccount ? Users_tbl::find($savingsAccount->user_id) : null;
-
+        
         if (!$transactionUser) {
             $transactionUser = $user;
         }
@@ -459,7 +452,7 @@ class SavingsController extends Controller
 
         $amount = $request->amount;
         $type = $request->type;
-
+        
         // Handle withdrawal - check balance
         if ($type === 'withdrawal') {
             if ($savingsAccount->balance < $amount) {

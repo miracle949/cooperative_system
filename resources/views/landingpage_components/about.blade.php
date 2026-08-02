@@ -295,83 +295,29 @@
                 continued growth and success.</p>
 
             <div class="tw:flex tw:justify-center tw:items-center tw:flex-wrap gap-5 mt-5">
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
+                @forelse($officers as $officer)
+                    @php
+                        $name = trim(($officer->user->first_name ?? '') . ' ' . ($officer->user->last_name ?? ''));
+                    @endphp
+                    <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
 
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
+                        <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
+                            <i class="fa fa-user"></i>
+                        </div>
+
+                        <h4 class="mt-3">{{ $name }}</h4>
+
+                        <span>{{ $officer->position }}</span>
+
+                        @if($officer->term_start || $officer->term_end)
+                        <p>{{ $officer->term_start ? $officer->term_start->format('Y') : 'Present' }} - {{ $officer->term_end ? $officer->term_end->format('Y') : 'Present' }}</p>
+                        @endif
                     </div>
-
-                    <h4 class="mt-3">Maria Rodriguez</h4>
-
-                    <span>Board Chairperson</span>
-
-                    <p>Leading with vision and integrity for 10 years</p>
-                </div>
-
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
-
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
+                @empty
+                    <div class="text-center py-12 text-gray-400">
+                        <p>Leadership information coming soon.</p>
                     </div>
-
-                    <h4 class="mt-3">Jose Hernandez</h4>
-
-                    <span>General Manager</span>
-
-                    <p>Driving innovation and member satisfaction</p>
-                </div>
-
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
-
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
-                    </div>
-
-                    <h4 class="mt-3">Ana Reyes</h4>
-
-                    <span>Finance Director</span>
-
-                    <p>Ensuring financial stability and transparency</p>
-                </div>
-
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
-
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
-                    </div>
-
-                    <h4 class="mt-3">Carlos Martinez</h4>
-
-                    <span>Member Services Head</span>
-
-                    <p>Committed to exceptional member experience</p>
-                </div>
-
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
-
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
-                    </div>
-
-                    <h4 class="mt-3">Maria Rodriguez</h4>
-
-                    <span>Board Chairperson</span>
-
-                    <p>Leading with vision and integrity for 10 years</p>
-                </div>
-
-                <div data-aos="fade-up" data-aos-duration="1000" class="tw:w-[300px] tw:h-[300px] tw:bg-[white] tw:flex tw:justify-center tw:items-center tw:flex-col text-center p-4" style="border-radius: 10px; border: 1px solid rgba(0,0,0,0.3);">
-
-                    <div class="tw:flex tw:justify-center tw:items-center" style="width: 90px; height: 90px; border-radius: 50%; background-color: #3E8FFF;">
-                        <i class="fa fa-user"></i>
-                    </div>
-
-                    <h4 class="mt-3">Maria Rodriguez</h4>
-
-                    <span>Board Chairperson</span>
-
-                    <p>Leading with vision and integrity for 10 years</p>
-                </div>
+                @endforelse
             </div>
         </section>
 

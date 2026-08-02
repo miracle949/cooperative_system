@@ -11,6 +11,8 @@ class DividendSetting extends Model
     protected $fillable = [
         'year',
         'dividend_fund_percentage',
+        'patronage_fund_percentage',
+        'patronage_basis',
         'updated_by',
     ];
 
@@ -23,7 +25,11 @@ class DividendSetting extends Model
     {
         return static::firstOrCreate(
             ['year' => $year],
-            ['dividend_fund_percentage' => 60.00]
+            [
+                'dividend_fund_percentage' => 60.00,
+                'patronage_fund_percentage' => 40.00,
+                'patronage_basis' => 'total_repayment',
+            ]
         );
     }
 }

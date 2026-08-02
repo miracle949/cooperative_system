@@ -217,13 +217,8 @@ div.container-fluid {
     display: flex;
     justify-content: center;
     align-items: center;
-<<<<<<< HEAD
-    border: 1.5px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-=======
     border: 1px solid var(--line);
     /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
->>>>>>> a54cfb0f13011e5c1f4fb2834fb322c66a72daca
     border-radius: 10px;
     /* height: 100%; */
     /* padding: 20px 0px 40px 40px; */
@@ -498,20 +493,12 @@ div.container-fluid {
 }
 
 .container-fluid .rightbar .form-step p {
-<<<<<<< HEAD
-    font-size: 16px;
-    /* color: #808080; */
-    color: var(--muted);
-    /* color: #212529; */
-    margin: 6px 0 0;
-=======
     font-size: 15.5px;
     /* color: #808080; */
     color: var(--muted);
     /* color: #212529; */
     margin: 0 0 0;
     /* width: 500px; */
->>>>>>> a54cfb0f13011e5c1f4fb2834fb322c66a72daca
 }
 
 .container-fluid .rightbar .form-step .header-track {
@@ -798,7 +785,7 @@ div.container-fluid {
 }
 
 .form-step .form-step-nav h2 {
-    font-size: 30px;
+    font-size: 35px;
     /* font-family: "Playfair Display"; */
     font-family: Georgia, "Times New Roman", serif;
     margin: 0 0 6px;
@@ -922,7 +909,7 @@ label {
 .container-fluid input {
     /* width: 100%; */
     border-radius: 6px;
-    border: 1.5px solid var(--line);
+    border: 1px solid #ccc;
     font-size: 14.5px;
 }
 
@@ -930,14 +917,12 @@ label {
     border-radius: 7px;
     color: #6F7174;
     font-size: 14.5px;
-    border: 1.5px solid var(--line);
 }
 
 .container-fluid select:valid {
     /* color: #212529; */
     color: var(--teal);
     /* border: 1.5px solid var(--line); */
-    border: 1.5px solid var(--line);
 }
 
 .actions {
@@ -988,7 +973,7 @@ button {
 
 .container-fluid .actions .btn-prev {
     /* background: #e5e7eb; */
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--border);
     background-color: #ffffff;
     color: var(--muted);
     font-weight: 600;
@@ -1381,7 +1366,7 @@ div.card-header {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 400px;   /* cap it instead of forcing full height */
+    height: 100vh;
     overflow-y: auto;
     background-color: #ffffff;
 }
@@ -1492,49 +1477,6 @@ div.card-header {
     font-size: 11px;
     color: var(--muted);
     margin-top: 6px;
-}
-
-.autocomplete-wrapper {
-    position: relative;
-}
-
-.autocomplete-list {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    margin-top: 4px;
-    max-height: 220px;
-    overflow-y: auto;
-    z-index: 50;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.autocomplete-list .autocomplete-item {
-    padding: 8px 14px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.autocomplete-list .autocomplete-item:hover,
-.autocomplete-list .autocomplete-item.active {
-    background: #f3f4f6;
-}
-
-.autocomplete-list .autocomplete-empty {
-    padding: 8px 14px;
-    font-size: 13px;
-    color: #9ca3af;
-}
-
-.autocomplete-list .autocomplete-item mark {
-    background: transparent;
-    color: var(--blue, #2563eb);
-    font-weight: 600;
 }
 
 /* .card{

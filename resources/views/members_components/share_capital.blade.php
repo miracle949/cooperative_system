@@ -489,9 +489,7 @@
                                     <div id="modal-full-withdrawal-warning"
                                         style="display:none; background:#fef2f2; border:1.5px solid #fecaca; border-radius:10px; padding:0.65rem 1rem; margin-bottom:0.9rem; font-size:12px; color:#991b1b; line-height:1.5;">
                                         <i class="fa fa-circle-exclamation" style="margin-right:6px;"></i>
-                                        <strong>Notice:</strong> Fully withdrawing your share capital is equivalent to
-                                        resigning. This action will submit a resignation request and is subject to a
-                                        60-day holding period upon approval.
+                                        <strong>Notice:</strong> Fully withdrawing your share capital is equivalent to resigning. This action will submit a resignation request and is subject to a 60-day holding period upon approval.
                                     </div>
 
                                     <div style="margin-bottom: 0.9rem;">
@@ -575,23 +573,17 @@
                     PAGE ACTION BUTTONS
                     ═══════════════════════════════════════ --}}
                     <div class="parent-main">
-                        <div class="parent-text">
-                            <h3>Share Capital Overview</h3>
-                            <p>View your loan applications and track upcoming, due, and overdue payments</p>
+                        <div class="download">
+                            <button>
+                                <i class="fa fa-arrow-down"></i>
+                                <span>Download Statement</span>
+                            </button>
                         </div>
-                        <div class="parent-download">
-                            <!-- <div class="download">
-                                <button>
-                                    <i class="fa fa-arrow-down"></i>
-                                    <span>Download Statement</span>
-                                </button>
-                            </div> -->
-                            <div class="share">
-                                <button data-bs-toggle="modal" data-bs-target="#shareCapital">
-                                    <i class="fa fa-coins"></i>
-                                    <span>Manage Share Capital</span>
-                                </button>
-                            </div>
+                        <div class="share">
+                            <button data-bs-toggle="modal" data-bs-target="#shareCapital">
+                                <i class="fa fa-coins"></i>
+                                <span>Manage Share Capital</span>
+                            </button>
                         </div>
                     </div>
 
@@ -600,50 +592,41 @@
                     ═══════════════════════════════════════ --}}
                     <div class="sc-stat-grid">
 
-                        <div class="sc-stat-card" style="animation-delay:.05s">
-                            <div class="sc-stat-header">
-                                <div class="sc-stat-label">Current Balance</div>
-                                <div class="sc-stat-icon green">
-                                    <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
-                                </div>
-
+                        <div class="sc-stat-card green" style="animation-delay:.05s">
+                            <div class="sc-stat-icon green">
+                                <i class="fa fa-dollar-sign" style="color:#1a4a3a;"></i>
                             </div>
+                            <div class="sc-stat-label">Current Balance</div>
                             <div class="sc-stat-value green">₱{{ number_format($currentBalance, 0) }}</div>
                             <div class="sc-stat-sub">{{ $currentShares }} shares</div>
                         </div>
 
-                        <div class="sc-stat-card {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        <div class="sc-stat-card gold {{ $currentBalance > 0 ? 'clickable' : '' }}"
                             style="animation-delay:.10s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
                             {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scRateModal') title='View dividend rate details'" : '' }}>
-                            <!-- @if($currentBalance > 0)
-                            <div class="sc-info-badge">i</div>@endif -->
-                            <div class="sc-stat-header">
-                                <div class="sc-stat-label">Dividend Rate</div>
-                                <div class="sc-stat-icon gold">
-                                    <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
-                                </div>
-
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon gold">
+                                <i class="fa fa-arrow-trend-up" style="color:#C9A84C;"></i>
                             </div>
-                            <div class="sc-stat-value">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}
+                            <div class="sc-stat-label">Dividend Rate</div>
+                            <div class="sc-stat-value gold">{{ $currentBalance > 0 ? $dividendRate . '% p.a.' : '—' }}
                             </div>
                             <div class="sc-stat-sub">
                                 {{ $currentBalance > 0 ? 'Annual return · click to learn' : 'No share capital yet' }}
                             </div>
                         </div>
 
-                        <div class="sc-stat-card {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        <div class="sc-stat-card purple {{ $currentBalance > 0 ? 'clickable' : '' }}"
                             style="animation-delay:.15s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
                             {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scLastModal') title='View last dividend details'" : '' }}>
-                            <!-- @if($currentBalance > 0)
-                            <div class="sc-info-badge">i</div>@endif -->
-                            <div class="sc-stat-header">
-                                <div class="sc-stat-label">Last Dividend</div>
-                                <div class="sc-stat-icon purple">
-                                    <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
-                                </div>
-
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon purple">
+                                <i class="fa fa-chart-pie" style="color:#7C3AED;"></i>
                             </div>
-                            <div class="sc-stat-value">
+                            <div class="sc-stat-label">Last Dividend</div>
+                            <div class="sc-stat-value purple">
                                 @if($currentBalance <= 0) —
                                 @elseif($lastDividendAmount) ₱{{ number_format($lastDividendAmount, 0) }}
                                 @else —
@@ -657,23 +640,20 @@
                             </div>
                         </div>
 
-                        <div class="sc-stat-card {{ $currentBalance > 0 ? 'clickable' : '' }}"
+                        <div class="sc-stat-card blue {{ $currentBalance > 0 ? 'clickable' : '' }}"
                             style="animation-delay:.20s {{ $currentBalance <= 0 ? '; opacity: 0.5; cursor: default;' : '' }}"
                             {{ $currentBalance > 0 ? "onclick=scOpenDivModal('scNextModal') title='View next dividend details'" : '' }}>
-                            <!-- @if($currentBalance > 0)
-                            <div class="sc-info-badge">i</div>@endif -->
-                            <div class="sc-stat-header">
-                                <div class="sc-stat-label">Next Dividend</div>
-                                <div class="sc-stat-icon blue">
-                                    <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
-                                </div>
-
+                            @if($currentBalance > 0)
+                            <div class="sc-info-badge">i</div>@endif
+                            <div class="sc-stat-icon blue">
+                                <i class="fa fa-calendar-days" style="color:#2563EB;"></i>
                             </div>
+                            <div class="sc-stat-label">Next Dividend</div>
                             <div class="sc-stat-value blue">
                                 {{ $currentBalance > 0 ? $nextDividendDate->format('M d, Y') : '—' }}
                             </div>
                             <div class="sc-stat-sub">
-                                {{ $currentBalance > 0 ? $nextDividendPeriod . '' : 'No share capital yet' }}
+                                {{ $currentBalance > 0 ? $nextDividendPeriod . ' · click to learn' : 'No share capital yet' }}
                             </div>
                         </div>
 
@@ -793,12 +773,11 @@
         ═══════════════════════════════════════ --}}
         @if(session('error'))
             <div style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                                    background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                                                    padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                                    display: flex; align-items: center; gap: 12px; max-width: 360px;">
-                <div
-                    style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                                                        display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                                padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                <div style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
+                                    display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>

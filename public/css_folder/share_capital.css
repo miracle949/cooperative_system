@@ -25,7 +25,7 @@ main {
     padding: 2rem;
     /* background-color: #EAEDEB; */
     /* background-color: #ffffff; */
-    background-color: var(--lavender-tint);
+    background-color: var(--bg);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,7 +33,7 @@ main {
 
 main .main-parent {
     width: 100%;
-    /* max-width: 1200px; */
+    max-width: 1200px;
 }
 
 .container-fluid main .main-intro p {
@@ -59,29 +59,20 @@ main .main-parent {
 
 main .parent-main {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
     gap: 1.5rem;
 }
 
-main .parent-main .parent-download{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
 main h3 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    margin: 0;
 }
 
 main p {
-    font-size: 13.5px;
-    /* color: #808080; */
-    color: var(--muted);
-    /* margin-top: 0.9rem; */
-    margin: 5px 0 0;
+    font-size: 15.5px;
+    color: #808080;
+    margin-top: 0.9rem;
 }
 
 
@@ -246,25 +237,15 @@ main .parent-share .card:nth-child(4) h4 {
 .sc-stat-card {
     /* background: var(--white); */
     background-color: #ffffff;
-    /* box-shadow: var(--shadow-card */
-    /* border: 1px solid rgba(229, 224, 214, 0.6); */
-    border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    /* border-radius: var(--radius-lg); */
-    border-radius: 20px;
-    /* padding: 1.3rem 1.4rem; */
-    padding: 18px 20px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(229, 224, 214, 0.6);
+    border-radius: var(--radius-lg);
+    padding: 1.3rem 1.4rem;
     position: relative;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 10px;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     animation: scFadeUp 0.5s ease both;
-}
-
-.sc-stat-card .sc-stat-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .sc-stat-card.clickable {
@@ -310,7 +291,7 @@ main .parent-share .card:nth-child(4) h4 {
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    /* margin-bottom: 0.9rem; */
+    margin-bottom: 0.9rem;
 }
 
 .sc-stat-icon.green {
@@ -330,19 +311,18 @@ main .parent-share .card:nth-child(4) h4 {
 }
 
 .sc-stat-label {
-    /* font-size: 0.76rem; */
-    font-size: 13.5px;
+    font-size: 0.76rem;
     color: var(--muted);
-    /* margin-bottom: 0.3rem; */
+    margin-bottom: 0.3rem;
     letter-spacing: 0.02em;
 }
 
 .sc-stat-value {
     /* font-size: 1.5rem; */
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 700;
     line-height: 1.1;
-    margin: 10px 0 7px;
+    margin: 10px 0;
 }
 
 .sc-stat-value.green {
@@ -362,10 +342,9 @@ main .parent-share .card:nth-child(4) h4 {
 }
 
 .sc-stat-sub {
-    /* font-size: 0.74rem; */
-    font-size: 12.5px;
+    font-size: 0.74rem;
     color: var(--muted);
-    /* margin-top: 0.25rem; */
+    margin-top: 0.25rem;
 }
 
 .sc-info-badge {

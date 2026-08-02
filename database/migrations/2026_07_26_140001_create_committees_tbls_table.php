@@ -8,17 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('announcements_tbls', function (Blueprint $table) {
+        Schema::create('committees_tbls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users_tbls');
-            $table->string('title');
-            $table->text('content');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('color')->default('primary');
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('announcements_tbls');
+        Schema::dropIfExists('committees_tbls');
     }
 };

@@ -230,7 +230,7 @@
                     @forelse($transactions as $tx)
                     <tr>
                         <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
-                        <td class="text-sm text-gray-600">{{ $tx->created_at->addHours(8)->format('g:i A') }}</td>
+                        <td class="text-sm text-gray-600">{{ $tx->created_at->format('g:i A') }}</td>
                         <td>
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
@@ -396,14 +396,21 @@
 
                     <!-- Payment Method -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                        <select name="payment_method" class="select" style="width: 100%;">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method <span class="text-red-500">*</span></label>
+                        <select name="payment_method" id="savingsPaymentMethod" class="select" style="width: 100%;" onchange="checkSavingsPaymentMethodQr()" required>
                             <option value="">Select payment method...</option>
-                            <option value="cash">Cash</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="gcash">GCash</option>
-                            <option value="check">Check</option>
+                            @foreach($paymentMethods as $pm)
+                                <option value="{{ strtolower($pm->method_name) }}" data-id="{{ $pm->id }}">{{ $pm->method_name }}</option>
+                            @endforeach
                         </select>
+                    </div>
+
+                    <!-- QR Code Display -->
+                    <div id="savingsQrCodeDisplay" class="hidden">
+                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-center">
+                            <p class="text-xs text-gray-500 mb-2 font-medium">Scan QR Code to Pay</p>
+                            <img id="savingsQrCodeImg" class="w-40 h-40 mx-auto rounded-lg object-cover border border-gray-200" src="" alt="Payment QR Code">
+                        </div>
                     </div>
 
                     <!-- Notes -->
@@ -1103,6 +1110,28 @@
                     balanceEl.textContent = '₱0.00';
                 });
         };
+
+        function checkSavingsPaymentMethodQr() {
+            const select = document.getElementById('savingsPaymentMethod');
+            const qrDisplay = document.getElementById('savingsQrCodeDisplay');
+            const qrImg = document.getElementById('savingsQrCodeImg');
+            const selected = select.options[select.selectedIndex];
+            const pmId = selected ? selected.dataset.id : null;
+
+            if (!pmId) { qrDisplay.classList.add('hidden'); return; }
+
+            fetch('/admin/payment-methods/' + pmId + '/qr')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.has_qr) {
+                        qrImg.src = data.qr_url;
+                        qrDisplay.classList.remove('hidden');
+                    } else {
+                        qrDisplay.classList.add('hidden');
+                    }
+                })
+                .catch(() => { qrDisplay.classList.add('hidden'); });
+        }
 
         // Submit admin savings form
         window.submitAdminSavings = function() {

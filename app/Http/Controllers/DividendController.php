@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Dividend;
 use App\Models\DividendSetting;
+use App\Models\PatronageRefundDistribution;
 use App\Models\Users_tbl;
 use App\Models\share_capital_account_tbl;
 use App\Models\savings_account_tbl;
 use App\Models\savings_transaction_tbl;
 use App\Models\AuditLog;
+use App\Services\PatronageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -30,6 +32,13 @@ class DividendController extends Controller
         $totalSumRecommended = 0;
         $totalSumApproved = 0;
 
+        // Patronage data
+        $patronageDistributions = collect();
+        $patronageApprovedCount = 0;
+        $patronageDisbursedCount = 0;
+        $totalSumPatronage = 0;
+        $totalSumPatronageApproved = 0;
+
         if ($distribution) {
             $dividends = Dividend::with('user')
                 ->where('year', $year)
@@ -42,6 +51,18 @@ class DividendController extends Controller
             $totalSumShareCapital = Dividend::where('year', $year)->sum('share_capital_amount');
             $totalSumRecommended = Dividend::where('year', $year)->sum('recommended_amount');
             $totalSumApproved = Dividend::where('year', $year)->sum('approved_amount');
+
+            // Patronage
+            $patronageDistributions = PatronageRefundDistribution::with('user')
+                ->where('year', $year)
+                ->orderBy('id')
+                ->paginate(10, ['*'], 'patronage_page')
+                ->appends(['year' => $year]);
+
+            $patronageApprovedCount = PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->count();
+            $patronageDisbursedCount = PatronageRefundDistribution::where('year', $year)->where('status', 'disbursed')->count();
+            $totalSumPatronage = PatronageRefundDistribution::where('year', $year)->sum('total_patronage');
+            $totalSumPatronageApproved = PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->sum('amount');
         }
 
         $years = DB::table('dividend_distributions')
@@ -52,6 +73,8 @@ class DividendController extends Controller
 
         $dividendSetting = DividendSetting::where('year', $year)->first();
         $dividendFundPercentage = $dividendSetting ? $dividendSetting->dividend_fund_percentage : 60.00;
+        $patronageFundPercentage = $dividendSetting ? $dividendSetting->patronage_fund_percentage : 40.00;
+        $patronageBasis = $dividendSetting ? $dividendSetting->patronage_basis : 'total_repayment';
 
         return compact(
             'distribution',
@@ -64,15 +87,27 @@ class DividendController extends Controller
             'totalSumShareCapital',
             'totalSumRecommended',
             'totalSumApproved',
-            'dividendFundPercentage'
+            'dividendFundPercentage',
+            'patronageDistributions',
+            'patronageApprovedCount',
+            'patronageDisbursedCount',
+            'totalSumPatronage',
+            'totalSumPatronageApproved',
+            'patronageFundPercentage',
+            'patronageBasis'
         );
     }
 
     public function tablePartial(Request $request)
     {
         $data = $this->getDividendData($request);
-
         return view('admin_components.dividends_table_partial', $data);
+    }
+
+    public function patronageTablePartial(Request $request)
+    {
+        $data = $this->getDividendData($request);
+        return view('admin_components.patronage_table_partial', $data);
     }
 
     public function index(Request $request)
@@ -107,8 +142,23 @@ class DividendController extends Controller
             ->first();
 
         if ($existingDistribution) {
-            return redirect()->route('dividends.index', ['year' => $year])
-                ->with('error', "Dividend calculations for year {$year} already exist. Delete them first to regenerate.");
+            // Check if regeneration is allowed (only pending records)
+            $hasApproved = Dividend::where('year', $year)->where('status', 'approved')->exists()
+                || PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->exists();
+
+            $hasDisbursed = Dividend::where('year', $year)->where('status', 'disbursed')->exists()
+                || PatronageRefundDistribution::where('year', $year)->where('status', 'disbursed')->exists();
+
+            if ($hasApproved || $hasDisbursed) {
+                return redirect()->route('dividends.index', ['year' => $year])
+                    ->with('error', 'Cannot regenerate. Approved or disbursed records exist for year ' . $year . '. Reset the annual distribution first.');
+            }
+
+            // Only pending records exist — delete and regenerate
+            Dividend::where('year', $year)->where('status', 'pending')->delete();
+            PatronageRefundDistribution::where('year', $year)->where('status', 'pending')->delete();
+
+            DB::table('dividend_distributions')->where('year', $year)->delete();
         }
 
         $reserveFund = round($netSurplus * 0.10, 2);
@@ -184,11 +234,105 @@ class DividendController extends Controller
             );
 
             return redirect()->route('dividends.index', ['year' => $year])
-                ->with('success', "Dividend calculations for {$year} generated successfully using the RA 9520 formula.");
+                ->with('success', "Distribution for {$year} generated successfully. Dividend pool: ₱" . number_format($dividendPool, 2) . ". Generate patronage refund allocations separately.");
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()
                 ->with('error', 'Failed to generate calculations: ' . $e->getMessage());
+        }
+    }
+
+    public function calculatePatronageRefunds(Request $request)
+    {
+        $year = $request->get('year', now()->year);
+
+        $validator = Validator::make(['year' => $year], [
+            'year' => 'required|integer|min:2000|max:2100',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $distribution = DB::table('dividend_distributions')
+            ->where('year', $year)
+            ->first();
+
+        if (!$distribution) {
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('error', 'Generate the annual distribution first before calculating patronage refunds.');
+        }
+
+        // Check if approved or disbursed patronage refund records already exist
+        $hasApproved = PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->exists();
+        $hasDisbursed = PatronageRefundDistribution::where('year', $year)->where('status', 'disbursed')->exists();
+
+        if ($hasApproved || $hasDisbursed) {
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('error', 'Cannot generate patronage refunds. Approved or disbursed patronage refund records exist for year ' . $year . '. Reset the distribution first.');
+        }
+
+        try {
+            // Delete any existing pending patronage refund records and regenerate
+            PatronageRefundDistribution::where('year', $year)->where('status', 'pending')->delete();
+
+            $patronageService = new PatronageService();
+            $patronageService->generatePatronageRefundDistributions($year);
+
+            AuditLog::log(
+                'Generated Patronage Refund Calculations',
+                "Generated patronage refund allocations for year {$year}. Pool: ₱" . number_format($distribution->patronage_refund_pool, 2),
+                'patronage_refund',
+                null
+            );
+
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('success', 'Patronage refund allocations generated for ' . $year . '.');
+        } catch (\RuntimeException $e) {
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to generate patronage refunds: ' . $e->getMessage());
+        }
+    }
+
+    public function resetDistribution(Request $request, $year)
+    {
+        $hasDisbursed = Dividend::where('year', $year)->where('status', 'disbursed')->exists()
+            || PatronageRefundDistribution::where('year', $year)->where('status', 'disbursed')->exists();
+
+        if ($hasDisbursed) {
+            return redirect()->back()
+                ->with('error', 'Cannot reset distribution for ' . $year . '. Disbursed records exist — money has already been released.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            Dividend::where('year', $year)->where('status', 'approved')->update(['status' => 'pending']);
+            PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->update(['status' => 'pending']);
+
+            DB::table('dividend_distributions')->where('year', $year)->update([
+                'status' => 'draft',
+                'updated_at' => now(),
+            ]);
+
+            DB::commit();
+
+            AuditLog::log(
+                'Reset Annual Distribution',
+                "Reset annual distribution for year {$year}. Approved records reverted to pending.",
+                'dividend',
+                null
+            );
+
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('success', 'Distribution for ' . $year . ' has been reset. You can now regenerate.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Failed to reset distribution: ' . $e->getMessage());
         }
     }
 
@@ -203,6 +347,11 @@ class DividendController extends Controller
         }
 
         $dividend = Dividend::findOrFail($id);
+
+        if ($dividend->status !== 'pending') {
+            return response()->json(['success' => false, 'message' => 'Only pending dividends can be edited.'], 400);
+        }
+
         $oldAmount = $dividend->approved_amount;
         $dividend->approved_amount = $request->approved_amount;
         $dividend->save();
@@ -233,6 +382,7 @@ class DividendController extends Controller
         }
 
         $dividend->status = 'approved';
+        $dividend->approved_at = now();
         $dividend->save();
 
         AuditLog::log(
@@ -248,6 +398,34 @@ class DividendController extends Controller
         ]);
     }
 
+    public function approveAll(Request $request)
+    {
+        $year = $request->get('year', now()->year);
+
+        $pendingDividends = Dividend::where('year', $year)->where('status', 'pending')->get();
+
+        if ($pendingDividends->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'No pending dividends to approve.'], 400);
+        }
+
+        Dividend::where('year', $year)->where('status', 'pending')->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+        ]);
+
+        AuditLog::log(
+            'Approved All Dividends',
+            "Bulk approved " . $pendingDividends->count() . " pending dividends for year {$year}.",
+            'dividend',
+            null
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => $pendingDividends->count() . ' dividend(s) approved.',
+        ]);
+    }
+
     public function disburseOne(Request $request, $id)
     {
         $dividend = Dividend::with('user')->findOrFail($id);
@@ -260,10 +438,18 @@ class DividendController extends Controller
             ], 400);
         }
 
+        if ($dividend->status !== 'approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only approved dividends can be disbursed.',
+            ], 400);
+        }
+
         DB::beginTransaction();
 
         try {
             $dividend->status = 'disbursed';
+            $dividend->disbursed_at = now();
             $dividend->save();
 
             if ($disbursementType === 'savings') {
@@ -271,7 +457,7 @@ class DividendController extends Controller
                     ['user_id' => $dividend->user_id],
                     [
                         'balance' => 0,
-                        'status' => 'Active',
+                        'status' => 'active',
                         'opened_at' => now(),
                     ]
                 );
@@ -353,6 +539,7 @@ class DividendController extends Controller
         try {
             foreach ($approvedDividends as $dividend) {
                 $dividend->status = 'disbursed';
+                $dividend->disbursed_at = now();
                 $dividend->save();
 
                 if ($disbursementType === 'savings') {
@@ -360,7 +547,7 @@ class DividendController extends Controller
                         ['user_id' => $dividend->user_id],
                         [
                             'balance' => 0,
-                            'status' => 'Active',
+                            'status' => 'active',
                             'opened_at' => now(),
                         ]
                     );
@@ -413,7 +600,6 @@ class DividendController extends Controller
             if ($isAjax) {
                 $partialView = view('admin_components.dividends_table_partial', $this->getDividendData($request))->render();
                 $remainingApproved = Dividend::where('year', $year)->where('status', 'approved')->count();
-                $totalDisbursedCount = Dividend::where('year', $year)->where('status', 'disbursed')->count();
                 return response()->json([
                     'success' => true,
                     'message' => 'Successfully disbursed ' . $approvedDividends->count() . ' dividend(s) for year ' . $year . '.',
@@ -436,6 +622,377 @@ class DividendController extends Controller
         }
     }
 
+    // ─── Patronage Refund Methods ───────────────────────────────────────────
+
+    public function updatePatronageRefund(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'Invalid amount'], 422);
+        }
+
+        $record = PatronageRefundDistribution::findOrFail($id);
+
+        if ($record->status !== 'pending') {
+            return response()->json(['success' => false, 'message' => 'Only pending patronage refunds can be edited.'], 400);
+        }
+
+        $oldAmount = $record->amount;
+        $record->amount = $request->amount;
+        $record->save();
+
+        AuditLog::log(
+            'Updated Patronage Refund',
+            "Updated patronage refund for {$record->user->first_name} {$record->user->last_name} (Year: {$record->year}) from ₱" . number_format($oldAmount, 2) . " to ₱" . number_format($record->amount, 2),
+            'patronage_refund',
+            $id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage refund amount updated successfully.',
+            'amount' => number_format($record->amount, 2),
+        ]);
+    }
+
+    public function approvePatronageRefund($id)
+    {
+        $record = PatronageRefundDistribution::findOrFail($id);
+
+        if ($record->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only pending patronage refunds can be approved.',
+            ], 400);
+        }
+
+        $record->status = 'approved';
+        $record->approved_at = now();
+        $record->save();
+
+        AuditLog::log(
+            'Approved Patronage Refund',
+            "Approved patronage refund for {$record->user->first_name} {$record->user->last_name} (Year: {$record->year}) - ₱" . number_format($record->amount, 2),
+            'patronage_refund',
+            $id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage refund approved successfully.',
+        ]);
+    }
+
+    public function approveAllPatronageRefunds(Request $request)
+    {
+        $year = $request->get('year', now()->year);
+
+        $pending = PatronageRefundDistribution::where('year', $year)->where('status', 'pending')->get();
+
+        if ($pending->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'No pending patronage refunds to approve.'], 400);
+        }
+
+        PatronageRefundDistribution::where('year', $year)->where('status', 'pending')->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+        ]);
+
+        AuditLog::log(
+            'Approved All Patronage Refunds',
+            "Bulk approved " . $pending->count() . " pending patronage refunds for year {$year}.",
+            'patronage_refund',
+            null
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => $pending->count() . ' patronage refund(s) approved.',
+        ]);
+    }
+
+    public function disbursePatronageRefundOne(Request $request, $id)
+    {
+        $record = PatronageRefundDistribution::with('user')->findOrFail($id);
+
+        if ($record->status === 'disbursed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This patronage refund has already been disbursed.',
+            ], 400);
+        }
+
+        if ($record->status !== 'approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only approved patronage refunds can be disbursed.',
+            ], 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $record->status = 'disbursed';
+            $record->disbursed_at = now();
+            $record->save();
+
+            $savingsAccount = savings_account_tbl::firstOrCreate(
+                ['user_id' => $record->user_id],
+                [
+                    'balance' => 0,
+                    'status' => 'active',
+                    'opened_at' => now(),
+                ]
+            );
+
+            $savingsAccount->balance += $record->amount;
+            $savingsAccount->save();
+
+            savings_transaction_tbl::create([
+                'savings_account_id' => $savingsAccount->id,
+                'type' => 'deposit',
+                'amount' => $record->amount,
+                'payment_method' => 'Patronage Refund',
+                'balance_after' => $savingsAccount->balance,
+                'note' => "Patronage refund for year {$record->year}",
+                'reference_no' => 'PAT-' . $record->year . '-' . str_pad($record->id, 5, '0', STR_PAD_LEFT),
+                'transaction_date' => now()->toDateString(),
+                'status' => 'Completed',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::commit();
+
+            AuditLog::log(
+                'Disbursed Patronage Refund',
+                "Disbursed patronage refund for {$record->user->first_name} {$record->user->last_name} (Year: {$record->year}) - ₱" . number_format($record->amount, 2) . " to savings",
+                'patronage_refund',
+                $id
+            );
+
+            $partialView = view('admin_components.patronage_table_partial', $this->getDividendData($request))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Patronage refund disbursed to {$record->user->first_name} {$record->user->last_name}.",
+                'html' => $partialView,
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Disbursement failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function disburseAllPatronageRefunds(Request $request, $year = null)
+    {
+        $year = $year ?? $request->get('year', now()->year);
+        $isAjax = $request->ajax();
+
+        $approvedRecords = PatronageRefundDistribution::where('year', $year)
+            ->where('status', 'approved')
+            ->get();
+
+        if ($approvedRecords->isEmpty()) {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'No approved patronage refunds to disburse.'], 400);
+            }
+            return redirect()->back()->with('error', 'No approved patronage refunds to disburse.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($approvedRecords as $record) {
+                $record->status = 'disbursed';
+                $record->disbursed_at = now();
+                $record->save();
+
+                $savingsAccount = savings_account_tbl::firstOrCreate(
+                    ['user_id' => $record->user_id],
+                    [
+                        'balance' => 0,
+                        'status' => 'active',
+                        'opened_at' => now(),
+                    ]
+                );
+
+                $savingsAccount->balance += $record->amount;
+                $savingsAccount->save();
+
+                savings_transaction_tbl::create([
+                    'savings_account_id' => $savingsAccount->id,
+                    'type' => 'deposit',
+                    'amount' => $record->amount,
+                    'payment_method' => 'Patronage Refund',
+                    'balance_after' => $savingsAccount->balance,
+                    'note' => "Patronage refund for year {$year}",
+                    'reference_no' => 'PAT-' . $year . '-' . str_pad($record->id, 5, '0', STR_PAD_LEFT),
+                    'transaction_date' => now()->toDateString(),
+                    'status' => 'Completed',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            $totalDisbursed = $approvedRecords->sum('amount');
+            AuditLog::log(
+                'Disbursed Patronage Refunds',
+                "Disbursed all approved patronage refunds for year {$year}. Total: ₱" . number_format($totalDisbursed, 2) . " ({$approvedRecords->count()} members)",
+                'patronage_refund',
+                null
+            );
+
+            if ($isAjax) {
+                $partialView = view('admin_components.patronage_table_partial', $this->getDividendData($request))->render();
+                $remainingApproved = PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->count();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Successfully disbursed ' . $approvedRecords->count() . ' patronage refund(s) for year ' . $year . '.',
+                    'disbursedCount' => $approvedRecords->count(),
+                    'html' => $partialView,
+                    'approvedCount' => $remainingApproved,
+                ]);
+            }
+
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('success', 'All approved patronage refunds have been disbursed.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'Disbursement failed: ' . $e->getMessage()], 500);
+            }
+            return redirect()->back()
+                ->with('error', 'Disbursement failed: ' . $e->getMessage());
+        }
+    }
+
+    public function disburseBoth(Request $request, $year = null)
+    {
+        $year = $year ?? $request->get('year', now()->year);
+        $isAjax = $request->ajax();
+
+        $approvedDividends = Dividend::where('year', $year)->where('status', 'approved')->get();
+        $approvedPatronage = PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->get();
+
+        if ($approvedDividends->isEmpty() && $approvedPatronage->isEmpty()) {
+            $msg = 'No approved dividends or patronage refunds to disburse.';
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => $msg], 400);
+            }
+            return redirect()->back()->with('error', $msg);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Disburse dividends
+            foreach ($approvedDividends as $dividend) {
+                $dividend->status = 'disbursed';
+                $dividend->disbursed_at = now();
+                $dividend->save();
+
+                $savingsAccount = savings_account_tbl::firstOrCreate(
+                    ['user_id' => $dividend->user_id],
+                    ['balance' => 0, 'status' => 'active', 'opened_at' => now()]
+                );
+
+                $savingsAccount->balance += $dividend->approved_amount;
+                $savingsAccount->save();
+
+                savings_transaction_tbl::create([
+                    'savings_account_id' => $savingsAccount->id,
+                    'type' => 'deposit',
+                    'amount' => $dividend->approved_amount,
+                    'payment_method' => 'Dividend',
+                    'balance_after' => $savingsAccount->balance,
+                    'note' => "Dividend payout for year {$year}",
+                    'reference_no' => 'DIV-' . $year . '-' . str_pad($dividend->id, 5, '0', STR_PAD_LEFT),
+                    'transaction_date' => now()->toDateString(),
+                    'status' => 'Completed',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            // Disburse patronage refunds (separate transactions)
+            foreach ($approvedPatronage as $record) {
+                $record->status = 'disbursed';
+                $record->disbursed_at = now();
+                $record->save();
+
+                $savingsAccount = savings_account_tbl::firstOrCreate(
+                    ['user_id' => $record->user_id],
+                    ['balance' => 0, 'status' => 'active', 'opened_at' => now()]
+                );
+
+                $savingsAccount->balance += $record->amount;
+                $savingsAccount->save();
+
+                savings_transaction_tbl::create([
+                    'savings_account_id' => $savingsAccount->id,
+                    'type' => 'deposit',
+                    'amount' => $record->amount,
+                    'payment_method' => 'Patronage Refund',
+                    'balance_after' => $savingsAccount->balance,
+                    'note' => "Patronage refund for year {$year}",
+                    'reference_no' => 'PAT-' . $year . '-' . str_pad($record->id, 5, '0', STR_PAD_LEFT),
+                    'transaction_date' => now()->toDateString(),
+                    'status' => 'Completed',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('dividend_distributions')
+                ->where('year', $year)
+                ->update(['status' => 'released', 'updated_at' => now()]);
+
+            DB::commit();
+
+            $totalDividends = $approvedDividends->sum('approved_amount');
+            $totalPatronage = $approvedPatronage->sum('amount');
+            AuditLog::log(
+                'Disbursed Dividends and Patronage Refunds',
+                "Disbursed both dividends (₱" . number_format($totalDividends, 2) . ", {$approvedDividends->count()} members) and patronage refunds (₱" . number_format($totalPatronage, 2) . ", {$approvedPatronage->count()} members) for year {$year}.",
+                'dividend',
+                null
+            );
+
+            $dividendHtml = view('admin_components.dividends_table_partial', $this->getDividendData($request))->render();
+            $patronageHtml = view('admin_components.patronage_table_partial', $this->getDividendData($request))->render();
+
+            if ($isAjax) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Disbursed {$approvedDividends->count()} dividend(s) and {$approvedPatronage->count()} patronage refund(s) for year {$year}.",
+                    'dividendHtml' => $dividendHtml,
+                    'patronageHtml' => $patronageHtml,
+                ]);
+            }
+
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('success', 'Both dividends and patronage refunds have been disbursed successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'Disbursement failed: ' . $e->getMessage()], 500);
+            }
+            return redirect()->back()
+                ->with('error', 'Disbursement failed: ' . $e->getMessage());
+        }
+    }
+
+    // ─── Fund Percentage Settings ───────────────────────────────────────────
+
     public function updateFundPercentage(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -449,6 +1006,15 @@ class DividendController extends Controller
 
         $year = $request->year;
         $percentage = round($request->dividend_fund_percentage, 2);
+
+        // Auto-calculate patronage percentage if not provided
+        $patronagePercentage = $request->has('patronage_fund_percentage')
+            ? round($request->patronage_fund_percentage, 2)
+            : round(100 - $percentage, 2);
+
+        if (round($percentage + $patronagePercentage, 2) != 100) {
+            return response()->json(['success' => false, 'message' => 'Fund percentages must total 100%.'], 422);
+        }
 
         $distribution = DB::table('dividend_distributions')
             ->where('year', $year)
@@ -465,6 +1031,7 @@ class DividendController extends Controller
                 ['year' => $year],
                 [
                     'dividend_fund_percentage' => $percentage,
+                    'patronage_fund_percentage' => $patronagePercentage,
                     'updated_by' => auth()->id(),
                 ]
             );
@@ -474,8 +1041,9 @@ class DividendController extends Controller
             $remainingSurplus = round($netSurplus - $totalStatutory, 2);
 
             $dividendFundPct = $percentage / 100;
+            $patronageFundPct = $patronagePercentage / 100;
             $newDividendPool = round($remainingSurplus * $dividendFundPct, 2);
-            $newPatronageRefund = round($remainingSurplus - $newDividendPool, 2);
+            $newPatronageRefund = round($remainingSurplus * $patronageFundPct, 2);
 
             DB::table('dividend_distributions')->where('year', $year)->update([
                 'dividend_pool' => $newDividendPool,
@@ -497,8 +1065,8 @@ class DividendController extends Controller
             DB::commit();
 
             AuditLog::log(
-                'Updated Dividend Fund Percentage',
-                "Changed dividend fund percentage for year {$year} to {$percentage}%. New dividend pool: ₱" . number_format($newDividendPool, 2),
+                'Updated Fund Percentages',
+                "Changed dividend fund to {$percentage}% and patronage fund to {$patronagePercentage}% for year {$year}.",
                 'dividend',
                 null
             );
@@ -507,9 +1075,9 @@ class DividendController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Dividend fund percentage updated and allocations recalculated.',
+                'message' => 'Fund percentages updated and allocations recalculated.',
                 'dividend_fund_percentage' => $percentage,
-                'patronage_refund_percentage' => round(100 - $percentage, 2),
+                'patronage_fund_percentage' => $patronagePercentage,
                 'dividend_pool' => number_format($newDividendPool, 2),
                 'patronage_refund_pool' => number_format($newPatronageRefund, 2),
                 'total_approved' => number_format($totalSumApproved, 2),
@@ -518,5 +1086,108 @@ class DividendController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Update failed: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function updatePatronageBasis(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'year' => 'required|integer|min:2000|max:2100',
+            'patronage_basis' => 'required|string|in:total_repayment,net_repayment',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => 'Invalid input.'], 422);
+        }
+
+        $year = $request->year;
+        $basis = $request->patronage_basis;
+
+        DividendSetting::updateOrCreate(
+            ['year' => $year],
+            [
+                'patronage_basis' => $basis,
+                'updated_by' => auth()->id(),
+            ]
+        );
+
+        AuditLog::log(
+            'Updated Patronage Basis',
+            "Changed patronage calculation basis for year {$year} to: {$basis}",
+            'dividend',
+            null
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage basis updated to: ' . str_replace('_', ' ', $basis),
+            'patronage_basis' => $basis,
+        ]);
+    }
+
+    public function patronageBreakdown($id)
+    {
+        $record = PatronageRefundDistribution::with('user')->findOrFail($id);
+
+        $loanRepayments = DB::table('lending_repayments_tbls')
+            ->join('lending_program_tbls', 'lending_repayments_tbls.lending_id', '=', 'lending_program_tbls.id')
+            ->where('lending_repayments_tbls.user_id', $record->user_id)
+            ->whereYear('lending_repayments_tbls.payment_date', $record->year)
+            ->select(
+                'lending_repayments_tbls.payment_date',
+                'lending_repayments_tbls.amount_paid',
+                'lending_repayments_tbls.principal_paid',
+                'lending_repayments_tbls.interest_paid',
+                'lending_repayments_tbls.service_fee_paid',
+                'lending_repayments_tbls.late_fee',
+                'lending_program_tbls.lending_type'
+            )
+            ->orderBy('lending_repayments_tbls.payment_date')
+            ->get();
+
+        $additionalRecords = DB::table('patronage_records_tbls')
+            ->where('user_id', $record->user_id)
+            ->where('year', $record->year)
+            ->orderBy('created_at')
+            ->get();
+
+        $totalInterest = $loanRepayments->sum('interest_paid');
+        $totalServiceFee = $loanRepayments->sum('service_fee_paid');
+        $totalLateFee = $loanRepayments->sum('late_fee');
+        $totalLoanPatronage = $totalInterest + $totalServiceFee + $totalLateFee;
+        $totalAdditionalPatronage = $additionalRecords->sum('amount');
+
+        return response()->json([
+            'success' => true,
+            'record' => [
+                'member_name' => trim(($record->user->first_name ?? 'Unknown') . ' ' . ($record->user->last_name ?? '')),
+                'year' => $record->year,
+                'total_patronage' => $record->total_patronage,
+                'allocation_ratio' => $record->allocation_ratio,
+                'amount' => $record->amount,
+                'status' => $record->status,
+            ],
+            'loan_repayments' => $loanRepayments->map(fn($r) => [
+                'date' => $r->payment_date,
+                'amount_paid' => $r->amount_paid,
+                'principal_paid' => $r->principal_paid,
+                'interest_paid' => $r->interest_paid,
+                'service_fee_paid' => $r->service_fee_paid,
+                'late_fee' => $r->late_fee,
+                'loan_type' => $r->lending_type,
+            ]),
+            'additional_records' => $additionalRecords->map(fn($r) => [
+                'source' => $r->source,
+                'description' => $r->description,
+                'amount' => $r->amount,
+            ]),
+            'totals' => [
+                'loan_patronage' => round($totalLoanPatronage, 2),
+                'interest' => round($totalInterest, 2),
+                'service_fee' => round($totalServiceFee, 2),
+                'late_fee' => round($totalLateFee, 2),
+                'additional_patronage' => round($totalAdditionalPatronage, 2),
+                'total_patronage' => round($totalLoanPatronage + $totalAdditionalPatronage, 2),
+            ],
+        ]);
     }
 }

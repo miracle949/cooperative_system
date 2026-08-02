@@ -195,7 +195,7 @@
                 <div class="card-body-box">
                     <h5 class="fw-semibold">Vehicle Information</h5>
                     <div id="vehicles_review_display" class="mt-3">
-                        <span style="font-size: 15.5px;">No vehicles entered.</span>
+                        <span>No vehicles entered.</span>
                     </div>
                 </div>
             </div>
@@ -259,8 +259,8 @@
 
         <div class="row">
             <div class="col-lg-12 mt-4">
-                <div class="card py-3 px-4" style="background: rgba(245, 166, 35, .18); border: none; border-radius: 10px;">
-                    <p class="m-0" style="font-size: 14.5px; color: var(--gold);"><b>Note:</b> By submitting this application, you authorize
+                <div class="card py-3 px-4" style="background-color: var(--gold-light); border: 1px solid rgba(201, 169, 110, .3);">
+                    <p class="m-0" style="font-size: 14.5px;"><b>Note:</b> By submitting this application, you authorize
                         the cooperative to verify the information provided and to conduct necessary background checks as
                         required by law.</p>
                 </div>

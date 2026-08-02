@@ -40,11 +40,6 @@
                         <i data-lucide="shield" class="w-5 h-5"></i>
                         Security
                     </a>
-                    <a href="#notifications"
-                        class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
-                        <i data-lucide="bell" class="w-5 h-5"></i>
-                        Notifications
-                    </a>
                     <a href="#company" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg">
                         <i data-lucide="building-2" class="w-5 h-5"></i>
                         Company
@@ -121,20 +116,23 @@
                 <div class="space-y-6">
                     <div>
                         <h3 class="font-medium text-gray-900 mb-4">Change Password</h3>
-                        <div class="space-y-4">
+                        <form id="changePasswordForm" class="space-y-4">
+                            @csrf
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                                <input type="password" class="input" placeholder="Enter current password">
+                                <input type="password" name="current_password" class="input" placeholder="Enter current password" required>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                <input type="password" class="input" placeholder="Enter new password">
+                                <input type="password" name="new_password" class="input" placeholder="Enter new password (min 8 characters)" required minlength="8">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                                <input type="password" class="input" placeholder="Confirm new password">
+                                <input type="password" name="new_password_confirmation" class="input" placeholder="Confirm new password" required minlength="8">
                             </div>
-                        </div>
+                            <div id="passwordError" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"></div>
+                            <div id="passwordSuccess" class="hidden p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700"></div>
+                        </form>
                     </div>
 
                     <div class="border-t border-gray-200 pt-6">
@@ -178,72 +176,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <button onclick="showToast('Saved', 'Security settings updated successfully')" class="btn btn-primary">
-                        Save Changes
-                    </button>
-                </div>
-            </div>
-
-            <!-- Notification Settings -->
-            <div id="notifications" class="card p-6">
-                <h2 class="text-lg font-semibold text-gray-900 mb-6">Notification Settings</h2>
-
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                        <div>
-                            <p class="font-medium text-gray-900">Email Notifications</p>
-                            <p class="text-sm text-gray-500">Receive email updates about your account</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                        <div>
-                            <p class="font-medium text-gray-900">New Loan Applications</p>
-                            <p class="text-sm text-gray-500">Get notified when a member applies for a loan</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                        <div>
-                            <p class="font-medium text-gray-900">New Member Registrations</p>
-                            <p class="text-sm text-gray-500">Get notified when a new member joins</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                        <div>
-                            <p class="font-medium text-gray-900">Large Transactions</p>
-                            <p class="text-sm text-gray-500">Get notified for transactions above threshold</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer">
-                            <div
-                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex justify-end">
-                    <button onclick="showToast('Saved', 'Notification preferences updated')" class="btn btn-primary">
+                    <button onclick="submitPasswordChange()" id="changePasswordBtn" class="btn btn-primary">
                         Save Changes
                     </button>
                 </div>
@@ -447,7 +380,6 @@
                                     'finance'             => ['label' => 'Finance',                'icon' => 'wallet'],
                                     'archives'            => ['label' => 'Archives',               'icon' => 'archive'],
                                     'officers-committees' => ['label' => 'Officers & Committees',  'icon' => 'briefcase'],
-                                    'announcements'       => ['label' => 'Announcements',          'icon' => 'megaphone'],
                                     'settings'            => ['label' => 'Settings',               'icon' => 'settings'],
                                 ];
                             @endphp
@@ -469,76 +401,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-
-            <!-- Existing Admins List -->
-            <div class="card p-6 mt-6">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-900">Existing Admin & Officer Accounts</h2>
-                        <p class="text-sm text-gray-500">View, edit, or deactivate admin/officer accounts</p>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($adminList as $item)
-                            <tr>
-                                <td>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
-                                            <span class="text-xs font-semibold text-primary-600">{{ strtoupper(substr($item['first_name'], 0, 1) . substr($item['last_name'], 0, 1)) }}</span>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $item['first_name'] }} {{ $item['last_name'] }}</p>
-                                            <p class="text-xs text-gray-400">{{ $item['username'] }}</p>
-                                        </div>
-                                        @if($item['is_main'])
-                                        <span class="badge badge-primary text-xs">Main Admin</span>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td><span class="text-sm text-gray-600">{{ $item['email'] }}</span></td>
-                                <td>
-                                    @php $roleName = $roles->firstWhere('slug', $item['role'])?->name ?? ucfirst($item['role']); @endphp
-                                    <span class="badge {{ $item['role'] === 'admin' ? 'badge-primary' : 'badge-info' }}">{{ $roleName }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge {{ $item['status'] === 'active' ? 'badge-success' : ($item['status'] === 'pending' ? 'badge-warning' : 'badge-danger') }}">{{ ucfirst($item['status'] ?? 'active') }}</span>
-                                </td>
-                                <td>
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="openEditAdminModal({{ $item['id'] }})"
-                                            class="px-3 py-1.5 text-xs font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-                                            Edit
-                                        </button>
-                                        @if(!$item['is_main'])
-                                        <button onclick="confirmDeleteAdmin({{ $item['id'] }}, '{{ $item['first_name'] }} {{ $item['last_name'] }}')"
-                                            class="px-3 py-1.5 text-xs font-medium text-danger-600 bg-danger-50 rounded-lg hover:bg-danger-100 transition-colors">
-                                            Deactivate
-                                        </button>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-6 text-gray-500">No admin or officer accounts found</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <!-- Manage Roles -->
@@ -619,80 +481,6 @@
                 </div>
             </div>
 
-            <!-- Edit Admin Modal -->
-            <div id="editAdminModal" class="modal-overlay hidden" style="display:none">
-                <div class="modal max-w-2xl">
-                    <div class="p-6 border-b border-gray-100">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                                    <i data-lucide="user-cog" class="w-5 h-5 text-primary-600"></i>
-                                </div>
-                                <div>
-                                    <h2 class="text-xl font-bold text-gray-900">Edit Admin Account</h2>
-                                    <p class="text-xs text-gray-500">Update role, permissions, and account details</p>
-                                </div>
-                            </div>
-                            <button onclick="closeModal('editAdminModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                                <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <form id="editAdminForm" method="POST">
-                        @csrf
-                        <input type="hidden" name="id" id="edit_admin_id">
-                        <div class="p-6 max-h-[60vh] overflow-y-auto">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                                    <input type="text" name="first_name" id="edit_first_name" class="input" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                                    <input type="text" name="last_name" id="edit_last_name" class="input" required>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                    <input type="email" name="email" id="edit_email" class="input" required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                    <select name="role" id="edit_role" class="input" required>
-                                        @foreach($roles as $role)
-                                        <option value="{{ $role->slug }}">{{ $role->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-6">
-                                <h3 class="text-sm font-semibold text-gray-800 mb-3">Sidebar Access Permissions</h3>
-                                <p class="text-xs text-gray-500 mb-3">Check the sections this admin will be allowed to access.</p>
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="edit_permissions_container">
-                                    @foreach($sidebarMenus as $key => $menu)
-                                    <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
-                                        <input type="checkbox" name="sidebar_permissions[]" value="{{ $key }}"
-                                            class="edit-perm-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500">
-                                        <span class="text-sm font-medium text-gray-800 group-hover:text-primary-600 transition-colors">{{ $menu['label'] }}</span>
-                                    </label>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
-                            <button type="button" onclick="closeModal('editAdminModal')" class="btn btn-outline">Cancel</button>
-                            <button type="submit" class="btn btn-primary">
-                                <i data-lucide="save" class="w-4 h-4"></i>
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <script type="application/json" id="admin-list-data">
-                {!! json_encode($adminList) !!}
-            </script>
-
             <!-- Company Settings -->
             <div id="company" class="card p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-6">Company Settings</h2>
@@ -736,77 +524,44 @@
             </div>
 
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const adminList = JSON.parse(document.getElementById('admin-list-data').textContent);
+                function submitPasswordChange() {
+                    const form = document.getElementById('changePasswordForm');
+                    const errorDiv = document.getElementById('passwordError');
+                    const successDiv = document.getElementById('passwordSuccess');
+                    const btn = document.getElementById('changePasswordBtn');
 
-                    document.getElementById('editAdminForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const form = this;
-                        const formData = new FormData(form);
+                    errorDiv.classList.add('hidden');
+                    successDiv.classList.add('hidden');
 
-                        fetch('{{ route('admin.update') }}', {
-                            method: 'POST',
-                            body: formData,
-                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                showToast('Success', data.message, 'success');
-                                closeModal('editAdminModal');
-                                setTimeout(() => location.reload(), 1000);
-                            } else {
-                                showToast('Error', data.message, 'error');
-                            }
-                        })
-                        .catch(() => showToast('Error', 'Failed to update admin account', 'error'));
-                    });
-                });
+                    const formData = new FormData(form);
+                    btn.disabled = true;
+                    btn.textContent = 'Saving...';
 
-                function openEditAdminModal(id) {
-                    const adminList = JSON.parse(document.getElementById('admin-list-data').textContent);
-                    const admin = adminList.find(a => a.id === id);
-                    if (!admin) return;
-
-                    document.getElementById('edit_admin_id').value = admin.id;
-                    document.getElementById('edit_first_name').value = admin.first_name;
-                    document.getElementById('edit_last_name').value = admin.last_name;
-                    document.getElementById('edit_email').value = admin.email;
-                    document.getElementById('edit_role').value = admin.role;
-
-                    document.querySelectorAll('.edit-perm-checkbox').forEach(cb => cb.checked = false);
-                    const perms = admin.sidebar_permissions;
-                    if (Array.isArray(perms)) {
-                        perms.forEach(p => {
-                            const cb = document.querySelector(`.edit-perm-checkbox[value="${p}"]`);
-                            if (cb) cb.checked = true;
-                        });
-                    }
-
-                    openModal('editAdminModal');
-                }
-
-                function confirmDeleteAdmin(id, name) {
-                    if (!confirm(`Are you sure you want to deactivate "${name}"? They will lose access to the system.`)) return;
-
-                    const formData = new FormData();
-                    formData.append('id', id);
-
-                    fetch('{{ route('admin.delete') }}', {
+                    fetch('{{ route("admin.change-password") }}', {
                         method: 'POST',
                         body: formData,
                         headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
                     })
-                    .then(res => res.json())
-                    .then(data => {
+                    .then(res => res.json().then(data => ({ status: res.status, data })))
+                    .then(({ status, data }) => {
                         if (data.success) {
+                            successDiv.textContent = data.message;
+                            successDiv.classList.remove('hidden');
+                            form.reset();
                             showToast('Success', data.message, 'success');
-                            setTimeout(() => location.reload(), 1000);
                         } else {
-                            showToast('Error', data.message, 'error');
+                            errorDiv.textContent = data.message || 'Failed to change password.';
+                            errorDiv.classList.remove('hidden');
                         }
                     })
-                    .catch(() => showToast('Error', 'Failed to deactivate admin account', 'error'));
+                    .catch(() => {
+                        errorDiv.textContent = 'An error occurred. Please try again.';
+                        errorDiv.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        btn.disabled = false;
+                        btn.textContent = 'Save Changes';
+                    });
                 }
 
                 // Role Management
@@ -852,31 +607,6 @@
                         }
                     })
                     .catch(() => showToast('Error', 'Failed to delete role', 'error'));
-                }
-
-                function toggleAdminStatus(id, status) {
-                    const label = status.charAt(0).toUpperCase() + status.slice(1);
-                    if (!confirm(`Set this admin account status to "${label}"?`)) return;
-
-                    const formData = new FormData();
-                    formData.append('id', id);
-                    formData.append('status', status);
-
-                    fetch('{{ route('admin.toggle-status') }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            showToast('Success', data.message, 'success');
-                            setTimeout(() => location.reload(), 1000);
-                        } else {
-                            showToast('Error', data.message, 'error');
-                        }
-                    })
-                    .catch(() => showToast('Error', 'Failed to update admin status', 'error'));
                 }
             </script>
             @endif

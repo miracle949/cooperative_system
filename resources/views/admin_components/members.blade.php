@@ -247,49 +247,72 @@
     </div>
     @endif
 
-    <!-- Admin Table -->
+    <!-- Existing Admin & Officer Accounts -->
+    @if(auth()->user()?->isMainAdmin())
     <div class="mt-8">
-        <h2 class="text-xl font-bold text-gray-900 mb-4">Admin</h2>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-900">Existing Admin & Officer Accounts</h2>
+                    <p class="text-sm text-gray-500">View, edit, or deactivate admin/officer accounts</p>
+                </div>
+            </div>
+
             <div class="table-container">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Category</th>
+                            <th>Role</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($admins as $admin)
+                        @forelse($adminList as $item)
                         <tr>
-                            <td class="text-sm font-medium text-gray-900">ADM-{{ str_pad($admin->id, 4, '0', STR_PAD_LEFT) }}</td>
                             <td>
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                                        <span class="text-white font-bold text-sm">
-                                            {{ strtoupper(substr($admin->first_name, 0, 1)) }}{{ strtoupper(substr($admin->last_name ?? '', 0, 1)) }}
-                                        </span>
+                                    <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-xs font-semibold text-primary-600">{{ strtoupper(substr($item['first_name'], 0, 1) . substr($item['last_name'], 0, 1)) }}</span>
                                     </div>
-                                    <span class="text-sm font-medium text-gray-900">{{ $admin->first_name }} {{ $admin->last_name }}</span>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">{{ $item['first_name'] }} {{ $item['last_name'] }}</p>
+                                        <p class="text-xs text-gray-400">{{ $item['username'] }}</p>
+                                    </div>
+                                    @if($item['is_main'])
+                                    <span class="badge badge-primary text-xs">Main Admin</span>
+                                    @endif
                                 </div>
                             </td>
-                            <td class="text-sm text-gray-600">{{ $admin->email }}</td>
-                            <td class="text-sm text-gray-600">{{ $admin->membership_category ?? 'General Manager' }}</td>
+                            <td><span class="text-sm text-gray-600">{{ $item['email'] }}</span></td>
                             <td>
-                                <span class="badge badge-info">Admin</span>
+                                @php $roleName = $roles->firstWhere('slug', $item['role'])?->name ?? ucfirst($item['role']); @endphp
+                                <span class="badge {{ $item['role'] === 'admin' ? 'badge-primary' : 'badge-info' }}">{{ $roleName }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {{ $item['status'] === 'active' ? 'badge-success' : ($item['status'] === 'pending' ? 'badge-warning' : 'badge-danger') }}">{{ ucfirst($item['status'] ?? 'active') }}</span>
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="openEditAdminModal({{ $item['id'] }})"
+                                        class="px-3 py-1.5 text-xs font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
+                                        Edit
+                                    </button>
+                                    @if(!$item['is_main'])
+                                    <button onclick="confirmDeleteAdmin({{ $item['id'] }}, '{{ $item['first_name'] }} {{ $item['last_name'] }}')"
+                                        class="px-3 py-1.5 text-xs font-medium text-danger-600 bg-danger-50 rounded-lg hover:bg-danger-100 transition-colors">
+                                        Deactivate
+                                    </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center py-12">
-                                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <i data-lucide="shield" class="w-8 h-8 text-gray-300"></i>
-                                </div>
-                                <h3 class="text-lg font-semibold text-gray-900 mb-1">No admin accounts found</h3>
-                                <p class="text-sm text-gray-500">There are no admin accounts in the system.</p>
+                            <td colspan="5" class="text-center py-6 text-gray-500">
+                                No admin or officer accounts found
                             </td>
                         </tr>
                         @endforelse
@@ -298,6 +321,99 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Admin Modal -->
+    <div id="editAdminModal" class="modal-overlay hidden" style="display:none">
+        <div class="modal max-w-2xl">
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="user-cog" class="w-5 h-5 text-primary-600"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Edit Admin Account</h2>
+                            <p class="text-xs text-gray-500">Update role, permissions, and account details</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('editAdminModal')" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+            <form id="editAdminForm" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="edit_admin_id">
+                <div class="p-6 max-h-[60vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" name="first_name" id="edit_first_name" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" name="last_name" id="edit_last_name" class="input" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" name="email" id="edit_email" class="input" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select name="role" id="edit_role" class="input" required>
+                                @foreach($roles as $role)
+                                <option value="{{ $role->slug }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-sm font-semibold text-gray-800 mb-3">Sidebar Access Permissions</h3>
+                        <p class="text-xs text-gray-500 mb-3">Check the sections this admin will be allowed to access.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3" id="edit_permissions_container">
+                            @php
+                                $sidebarMenus = [
+                                    'dashboard'           => ['label' => 'Dashboard',              'icon' => 'layout-dashboard'],
+                                    'lendings'            => ['label' => 'Assistance Management',  'icon' => 'banknote'],
+                                    'payments'            => ['label' => 'Payments',               'icon' => 'credit-card'],
+                                    'members'             => ['label' => 'Members',                'icon' => 'users'],
+                                    'seminars'            => ['label' => 'Seminars',               'icon' => 'graduation-cap'],
+                                    'savings'             => ['label' => 'Savings',                'icon' => 'piggy-bank'],
+                                    'sharecapitals'       => ['label' => 'Share Capitals',         'icon' => 'coins'],
+                                    'notifications'       => ['label' => 'Notifications',          'icon' => 'bell'],
+                                    'dividends'           => ['label' => 'Dividends',              'icon' => 'gift'],
+                                    'reports'             => ['label' => 'Reports',                'icon' => 'bar-chart-3'],
+                                    'finance'             => ['label' => 'Finance',                'icon' => 'wallet'],
+                                    'archives'            => ['label' => 'Archives',               'icon' => 'archive'],
+                                    'officers-committees' => ['label' => 'Officers & Committees',  'icon' => 'briefcase'],
+                                    'settings'            => ['label' => 'Settings',               'icon' => 'settings'],
+                                ];
+                            @endphp
+                            @foreach($sidebarMenus as $key => $menu)
+                            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors group">
+                                <input type="checkbox" name="sidebar_permissions[]" value="{{ $key }}"
+                                    class="edit-perm-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                <span class="text-sm font-medium text-gray-800 group-hover:text-primary-600 transition-colors">{{ $menu['label'] }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 border-t border-gray-100 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('editAdminModal')" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="application/json" id="admin-list-data">
+        {!! json_encode($adminList) !!}
+    </script>
+    @endif
 
     <!-- Resignation Requests -->
     @if($resignationRequests->count() > 0)
@@ -1020,7 +1136,7 @@
     
     <script>
         const membersData = {!! json_encode($members->items()) !!};
-        const adminsData = {!! json_encode($admins) !!};
+        const adminsData = {!! json_encode($adminList) !!};
         
         function closeAllDropdowns() {
             document.querySelectorAll('.dropdown-menu').forEach(el => el.classList.add('hidden'));
@@ -1031,6 +1147,78 @@
                 closeAllDropdowns();
             }
         });
+
+        @if(auth()->user()?->isMainAdmin())
+        // Admin Edit Form Handler
+        document.getElementById('editAdminForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch('{{ route('admin.update') }}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success', data.message, 'success');
+                    closeModal('editAdminModal');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('Error', data.message, 'error');
+                }
+            })
+            .catch(() => showToast('Error', 'Failed to update admin account', 'error'));
+        });
+
+        function openEditAdminModal(id) {
+            const adminList = JSON.parse(document.getElementById('admin-list-data').textContent);
+            const admin = adminList.find(a => a.id === id);
+            if (!admin) return;
+
+            document.getElementById('edit_admin_id').value = admin.id;
+            document.getElementById('edit_first_name').value = admin.first_name;
+            document.getElementById('edit_last_name').value = admin.last_name;
+            document.getElementById('edit_email').value = admin.email;
+            document.getElementById('edit_role').value = admin.role;
+
+            document.querySelectorAll('.edit-perm-checkbox').forEach(cb => cb.checked = false);
+            const perms = admin.sidebar_permissions;
+            if (Array.isArray(perms)) {
+                perms.forEach(p => {
+                    const cb = document.querySelector(`.edit-perm-checkbox[value="${p}"]`);
+                    if (cb) cb.checked = true;
+                });
+            }
+
+            openModal('editAdminModal');
+        }
+
+        function confirmDeleteAdmin(id, name) {
+            if (!confirm(`Are you sure you want to deactivate "${name}"? They will lose access to the system.`)) return;
+
+            const formData = new FormData();
+            formData.append('id', id);
+
+            fetch('{{ route('admin.delete') }}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Success', data.message, 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast('Error', data.message, 'error');
+                }
+            })
+            .catch(() => showToast('Error', 'Failed to deactivate admin account', 'error'));
+        }
+        @endif
         
         function openMemberDetailModal(memberId) {
             let member = membersData.find(m => m.id === memberId);

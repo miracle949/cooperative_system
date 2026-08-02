@@ -4,13 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-
+        
         Schema::create('lending_repayments_tbls', function (Blueprint $table) {
             $table->id();
             $table->foreignId("lending_id")
@@ -20,12 +21,12 @@ return new class extends Migration {
                 ->constrained("users_tbls")
                 ->onDelete("cascade");
             $table->integer("payment_number");
-            $table->decimal("amount_due", 10, 2)->nullable();
+            $table->date("amount_due")->nullable()->change();
             $table->decimal("amount_paid", 10, 2);
-            $table->date("due_date")->nullable();
+            $table->date("due_date")->nullable()->change();
             $table->date("payment_date");
-            $table->decimal("late_fee", 10, 2)->nullable();
-            $table->date("penalty_applied_at")->nullable();
+            $table->decimal("late_fee", 10, 2)->nullable()->change();
+            $table->date("penalty_applied_at")->nullable()->change();
             $table->string("payment_method");
             $table->string("payment_type");
             $table->string("reference_no")->nullable();
