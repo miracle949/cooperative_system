@@ -166,11 +166,11 @@ div.container-fluid {
     align-items: flex-start; */
     /* border-right: 1px solid var(--border); */
     width: 50%;
-    flex: 0 0 50%;
+    /* flex: 0 0 50%; */
     /* width: 440px;
     min-width: 440px; */
     height: 100%;
-    /* padding: 2rem 3.5rem; */
+    padding: 2rem 1.5rem;
     flex-shrink: 0;
     overflow: hidden;
     position: relative;
@@ -546,6 +546,7 @@ div.container-fluid {
     /* width: 630px;
     height: 100%; */
     /* height: 100vh; */
+    overflow-y: hidden;
     overflow-y: none;
     display: flex;
     flex-direction: column;
@@ -569,6 +570,10 @@ div.container-fluid {
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
 }
 
+.container-fluid .form-box-parent::-webkit-scrollbar{
+    width: 10px;
+}
+
 /* .container-fluid .form-box-parent::-webkit-scrollbar {
     width: 5px;
 }
@@ -586,6 +591,7 @@ div.container-fluid {
 .container-fluid .form-parent {
     border-radius: 24px;
     z-index: 10;
+    width: 500px;
     width: 490px;
     max-width: 100%;
     /* width: 530px; */
@@ -765,6 +771,8 @@ div.container-fluid {
     /* color: #fff; */
     color: var(--teal);
     font-weight: 600;
+    width: 350px;
+    margin: 5px 0 0;
     /* width: 350px; */
     width: 450px;
     margin: 0;
@@ -804,11 +812,17 @@ div.container-fluid {
 }
 
 .container-fluid .form-input input {
-    font-size: 14.5px;
+    font-size: 15.5px;
     /* background: rgba(255, 255, 255, .07); */
     /* background-color: var(--border); */
     /* background: #f4fafc; */
     /* border: 1px solid rgba(255, 255, 255, .12); */
+    /* border: 1.5px solid var(--border); */
+    border: 1px solid var(--panel-border);
+    /* color: #fff; */
+    color: var(--teal);
+    padding: 13px 16px 13px 50px;
+    background-color: var(--panel-dark);
     border: 1.5px solid var(--line);
     /* color: #fff; */
     color: var(--teal);
@@ -990,7 +1004,6 @@ div.container-fluid {
     }
 
     .container-fluid .form-box-parent {
-        /* padding: 0rem 0rem 0rem; */
         padding: 2rem 3rem 2rem;
     }
 

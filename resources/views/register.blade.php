@@ -77,7 +77,7 @@
             <hr style="margin-top: 5rem; color: #FFFFFF4D;">
 
             <div class="form-acc">
-                <label>Already a member? <a href="{{ route("LoginPage") }}">Sign in here</a></label>
+                <label>Already a member? <a href="{{ route("LoginPage") }}" id="signin-link">Sign in here</a></label>
                 <label>Need help? <button>Contact Support</button></label>
             </div>
         </div>
@@ -297,6 +297,17 @@
         });
     </script>
 
+    {{-- ── Clear saved registration data when leaving to the Login page ───── --}}
+    {{-- This makes sure the form always starts fresh (Step 1, blank fields) --}}
+    {{-- the next time anyone opens /register-page on this browser/tab. --}}
+    <script>
+        document.getElementById('signin-link')?.addEventListener('click', function () {
+            if (typeof window.clearAllRegistrationData === 'function') {
+                window.clearAllRegistrationData();
+            }
+        });
+    </script>
+
     {{-- ── Success modal (shown after successful registration) ────────────── --}}
     @if (session("success"))
         <button id="triggerModal" data-bs-toggle="modal" data-bs-target="#successModal" style="display:none;"></button>
@@ -307,9 +318,9 @@
                 <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 16px;">
 
                     <div class="modal-header border-0 d-flex flex-column align-items-center text-center py-4"
-                        style="background: #1E4035;">
+                        style="background: var(--teal);">
                         <div class="d-flex justify-content-center align-items-center mb-3"
-                            style="width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.6);">
+                            style="width: 72px; height: 72px; border-radius: 50%; background: rgba(79,127,250,0.25); border: 2px solid var(--blue);">
                             <i class="fa fa-check" style="font-size: 32px; color: #fff;"></i>
                         </div>
                         <h4 class="modal-title fw-bold text-white mb-1">Registration Successful!</h4>
@@ -318,22 +329,22 @@
                     </div>
 
                     <div class="modal-body text-center px-4 py-4">
-                        <p class="fw-semibold mb-2" style="color: #2d2d2d; font-size: 1rem;">
+                        <p class="fw-semibold mb-2" style="color: var(--teal); font-size: 1rem;">
                             {{ session("success") }}
                         </p>
                         <hr style="border-color: #e9ecef;">
                         <div class="d-flex align-items-start gap-3 text-start mt-3 p-3 rounded-3"
-                            style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-                            <i class="fa fa-envelope mt-1" style="color: #16a34a; font-size: 1.1rem;"></i>
-                            <p class="mb-0" style="color: #166534; font-size: 0.9rem; line-height: 1.6;">
+                            style="background: var(--blue-mist); border: 1px solid var(--blue-pale);">
+                            <i class="fa fa-envelope mt-1" style="color: var(--blue); font-size: 1.1rem;"></i>
+                            <p class="mb-0" style="color: var(--teal); font-size: 0.9rem; line-height: 1.6;">
                                 You will receive an <strong>email notification</strong> once your application
                                 has been reviewed and approved by the Board of Directors. Please check your Gmail inbox.
                             </p>
                         </div>
                         <div class="d-flex align-items-start gap-3 text-start mt-3 p-3 rounded-3"
-                            style="background: #fffbeb; border: 1px solid #fde68a;">
-                            <i class="fa fa-clock mt-1" style="color: #d97706; font-size: 1.1rem;"></i>
-                            <p class="mb-0" style="color: #92400e; font-size: 0.9rem; line-height: 1.6;">
+                            style="background: var(--gold-pale); border: 1px solid #F5D9A8;">
+                            <i class="fa fa-clock mt-1" style="color: var(--gold); font-size: 1.1rem;"></i>
+                            <p class="mb-0" style="color: #6b4f18; font-size: 0.9rem; line-height: 1.6;">
                                 Processing may take a few business days. Please be patient while we review your membership
                                 application.
                             </p>
@@ -342,7 +353,7 @@
 
                     <div class="modal-footer border-0 justify-content-center pb-4">
                         <button type="button" class="btn px-5 py-2 fw-semibold text-white" data-bs-dismiss="modal"
-                            style="background: #1E4035; border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px;">
+                            style="background: var(--blue); border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px;">
                             OK, Got it!
                         </button>
                     </div>

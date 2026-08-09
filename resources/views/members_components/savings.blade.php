@@ -96,7 +96,7 @@
         }
 
         /* ── Transaction ref in table ── */
-        .tx-ref {
+        /* .tx-ref {
             font-family: monospace;
             font-size: 0.78rem;
             color: #000000;
@@ -104,6 +104,11 @@
             border-radius: 5px;
             display: inline-block;
             margin-top: 2px;
+        } */
+
+        .tx-ref {
+            color: var(--muted);
+            font-weight: 600;
         }
     </style>
 </head>
@@ -111,7 +116,7 @@
 <body>
 
     <div class="container-fluid p-0 m-0">
-    
+
         @include("components.offcanvas")
         @include("components.sidebar")
 
@@ -119,50 +124,53 @@
             @include("components.navbar2")
             <div class="main-sub-parent">
                 <div class="main-parent">
+                    @if(!$hasShareCapital)
+                        {{-- Lock overlay banner --}}
+                        <div
+                            style="width: 100%; background: #fff8e1; border: 1.5px solid #ffe082;border-radius: 12px; padding: 1rem 1.25rem 1rem; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; font-size: 0.88rem; color: #856404;">
+                            <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
+                            <span>
+                                Your savings features are <strong>locked</strong>.
+                                Please <a href="{{ route('ShareCapitalMember') }}"
+                                    style="color:#1a4a3a;font-weight:700;text-decoration:underline;">subscribe to Share
+                                    Capital</a> first to unlock deposits, withdrawals, and your savings stats.
+                            </span>
+                        </div>
+                    @endif
+                    <div class="main-header">
+                        <h3>Savings Overview</h3>
+                        <p>Last updated {{ $lastUpdated }} ·
+                            {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
+                            active
+                        </p>
+                    </div>
                     <main>
-                        @if(!$hasShareCapital)
-                            {{-- Lock overlay banner --}}
-                            <div style="
-                                width: 100%;
-                                background: #fff8e1;
-                                border: 1.5px solid #ffe082;
-                                border-radius: 12px;
-                                padding: 1rem 1.25rem 1rem;
-                                margin-bottom: 1rem;
-                                display: flex;
-                                align-items: center;
-                                gap: 12px;
-                                font-size: 0.88rem;
-                                color: #856404;
-                                        ">
-                                <i class="fa-solid fa-lock" style="font-size:1.1rem;"></i>
-                                <span>
-                                    Your savings features are <strong>locked</strong>.
-                                    Please <a href="{{ route('ShareCapitalMember') }}"
-                                        style="color:#1a4a3a;font-weight:700;text-decoration:underline;">subscribe to Share
-                                        Capital</a> first to unlock deposits, withdrawals, and your savings stats.
-                                </span>
-                            </div>
-                        @endif
                         <div class="card-box-parent">
                             <div class="card-box-text">
                                 <h3>Total Savings Balance</h3>
-                                <h2 class="mt-3 mb-3">₱ {{ number_format($savingsAccount->balance, 2) }}</h2>
-                                <span>Last updated {{ $lastUpdated }} ·
+                                <h2>₱ <b>{{ number_format($savingsAccount->balance, 2) }}</b></h2>
+                                <!-- <span>Last updated {{ $lastUpdated }} ·
                                     {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
                                     active
-                                </span>
-                            </div>
+                                </span> -->
+                                <div class="hero-sub">
+                                    Time Deposit
+                                    <span class="delta">
+                                        <i class="fa fa-arrow-up"></i>
 
-                            <div
-                                class="card-box-buttons d-flex justify-content-left align-items-center flex-wrap gap-4">
+                                        ₱+500 this week
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-box-buttons">
 
                                 {{-- Deposit --}}
                                 @if($hasShareCapital)
                                     <div class="card-box" data-bs-toggle="modal" data-bs-target="#depositModal"
                                         style="cursor:pointer;">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                            <!-- <i class="fa fa-arrow-right"></i> -->
+                                            <img src="images/arrow-icon.png" alt="">
                                         </div>
                                         <div>
                                             <p>Deposit</p>
@@ -172,7 +180,7 @@
                                     <div class="card-box" disabled style="opacity:0.45; cursor:not-allowed;"
                                         title="You must have active share capital to use savings.">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-down"></i>
+                                            <img src="images/arrow-icon.png" alt="">
                                         </div>
                                         <div>
                                             <p>Deposit</p>
@@ -185,7 +193,7 @@
                                     <div class="card-box" data-bs-toggle="modal" data-bs-target="#withdrawModal"
                                         style="cursor:pointer;">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                            <img src="images/arrow-icon.png" alt="">
                                         </div>
                                         <div>
                                             <p>Withdraw</p>
@@ -195,7 +203,7 @@
                                     <div class="card-box" disabled style="cursor:not-allowed; opacity:0.45;"
                                         title="You must have active share capital to use savings.">
                                         <div class="card-icon">
-                                            <i class="fa-solid fa-circle-arrow-up"></i>
+                                            <img src="images/arrow-icon.png" alt="">
                                         </div>
                                         <div>
                                             <p>Withdraw</p>
@@ -203,78 +211,111 @@
                                     </div>
                                 @endif
 
+                                <div class="card-box">
+                                    <div class="card-icon">
+                                        <i class="fa fa-calendar-days"></i>
+                                    </div>
+                                    <div>
+                                        <p>Statement</p>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </main>
 
-                    <section>
-                        <div class="d-flex justify-content-between align-items-center card-box-parent flex-wrap">
+                    <section id="section1">
+                        <div class="main-card-box">
 
                             @if($hasShareCapital)
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-peso-sign"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Savings</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-peso-sign"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Savings</p>
-                                    <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
-                                    <span>All time contributions</span>
+                                    <div class="card-body">
+                                        <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                                        <span>All time contributions</span>
+                                    </div>
                                 </div>
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Monthly Average</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        </div>
                                     </div>
-                                    <p>Monthly Average</p>
-                                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                                    <span>Per month average</span>
+                                    <div class="card-body">
+                                        <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                                        <span>Per month average</span>
+                                    </div>
                                 </div>
 
                                 <div class="card-box tw:bg-white">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-calendar-days"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Months</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Months</p>
-                                    <h4>{{ $totalMonths }} Months</h4>
-                                    <span>Months saving</span>
+                                    <div class="card-body">
+                                        <h4>{{ $totalMonths }} Months</h4>
+                                        <span>Months saving</span>
+                                    </div>
                                 </div>
 
                             @else
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-peso-sign"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Savings</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-peso-sign"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Savings</p>
-                                    <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
-                                    <span>All time contributions</span>
+                                    <div class="card-body">
+                                        <h4>₱ {{ number_format($savingsAccount->balance, 2) }}</h4>
+                                        <span>All time contributions</span>
+                                    </div>
                                 </div>
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Monthly Average</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-arrow-trend-up"></i>
+                                        </div>
                                     </div>
-                                    <p>Monthly Average</p>
-                                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                                    <span>Per month average</span>
+                                    <div class="card-body">
+                                        <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                                        <span>Per month average</span>
+                                    </div>
                                 </div>
 
                                 <div class="card-box tw:bg-white" style="cursor:not-allowed;"
                                     title="You must have active share capital to use savings.">
-                                    <div class="card-accent"></div>
-                                    <div class="card-icon d-flex justify-content-center align-items-center">
-                                        <i class="fa-solid fa-calendar-days"></i>
+                                    <!-- <div class="card-accent"></div> -->
+                                    <div class="card-header-icon">
+                                        <p>Total Months</p>
+                                        <div class="card-icon d-flex justify-content-center align-items-center">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                        </div>
                                     </div>
-                                    <p>Total Months</p>
-                                    <h4>{{ $totalMonths }} Months</h4>
-                                    <span>Months saving</span>
+                                    <div class="card-body">
+                                        <h4>{{ $totalMonths }} Months</h4>
+                                        <span>Months saving</span>
+                                    </div>
                                 </div>
 
                             @endif
@@ -282,12 +323,141 @@
                         </div>
                     </section>
 
+                    <div class="parent-panel">
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Savings Breakdown</h3>
+                                <p>By account type</p>
+                            </div>
+                            <div class="panel-body">
+                                <div class="panel-card">
+                                    <div class="panel-icon">
+                                        <i class="fa fa-circle-arrow-up"></i>
+                                    </div>
+                                    <div class="panel-text">
+                                        <div class="text">
+                                            <h4>Regular Savings</h4>
+                                            <p>Available anytime · No lock-in</p>
+                                        </div>
+                                        <div class="price">
+                                            <h4>₱5,200.00</h4>
+                                            <p>83.9%</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-card">
+                                    <div class="panel-icon">
+                                        <i class="fa fa-calendar-days"></i>
+                                    </div>
+                                    <div class="panel-text">
+                                        <div class="text">
+                                            <h4>Time Deposit</h4>
+                                            <p>Matures Jan 15, 2027 · 3.5% p.a.</p>
+                                        </div>
+                                        <div class="price">
+                                            <h4>₱1,000.00</h4>
+                                            <p>16.1%</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-card">
+                                    <div class="panel-icon">
+                                        <i class="fa fa-circle-check"></i>
+                                    </div>
+                                    <div class="panel-text">
+                                        <div class="text">
+                                            <h4>Interest Accured</h4>
+                                            <p>Credited quarterly</p>
+                                        </div>
+                                        <div class="price">
+                                            <h4>₱87.40</h4>
+                                            <p>1.4%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Savings Growth</h3>
+                                <p>Net deposits over the last 6 months</p>
+                            </div>
+
+                            <div class="chart-wrap">
+                                <div class="bar-col">
+                                    <div class="bar" style="height:52%"><span class="bar-val">₱450</span></div><span
+                                        class="bar-month">Feb</span>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:64%"><span class="bar-val">₱520</span></div><span
+                                        class="bar-month">Mar</span>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:40%"><span class="bar-val">₱350</span></div><span
+                                        class="bar-month">Apr</span>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:78%"><span class="bar-val">₱610</span></div><span
+                                        class="bar-month">May</span>
+                                </div>
+                                <div class="bar-col">
+                                    <div class="bar" style="height:58%"><span class="bar-val">₱10,000</span></div><span
+                                        class="bar-month">Jun</span>
+                                </div>
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱700</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+
+                                <div class="bar-col active">
+                                    <div class="bar" style="height:92%"><span class="bar-val">₱30,000</span></div><span
+                                        class="bar-month">Jul</span>
+                                </div>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item"><span class="legend-dot"
+                                        style="background:var(--blue);"></span>Prior
+                                    months</div>
+                                <div class="legend-item"><span class="legend-dot"
+                                        style="background:var(--gold);"></span>Current
+                                    month</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <section id="section2">
                         <div class="card-box-parent">
                             <div class="d-flex justify-content-between align-items-center card-box-title">
                                 <div class="title">
                                     <h3>Transaction History</h3>
-                                    <p class="tw:text-[#808080]">View your monthly transactions breakdown</p>
+                                    <p>View your monthly transactions breakdown</p>
                                 </div>
                                 <div class="gap-3 print">
                                     <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
@@ -299,63 +469,136 @@
                                 </div>
                             </div>
 
-                            {{-- Grouped transactions by month --}}
-                            @forelse ($groupedTransactions as $monthYear => $transactions)
-                                <div class="card-box">
-                                    <h4>{{ $monthYear }}</h4>
-                                    <div class="mt-4 overflow-x-auto">
-                                        <table class="table table-striped table-hover table-scroll">
-                                            <thead>
-                                                <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
-                                                    <th>Date</th>
-                                                    <th>Type</th>
-                                                    <th>Reference No.</th>
-                                                    <th class="text-end">Amount</th>
-                                                    <th class="text-end">Receipt</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($transactions as $tx)
-                                                    <tr>
-                                                        <td>{{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
-                                                        </td>
-                                                        <td>{{ ucfirst(str_replace('_', ' ', $tx->type)) }}</td>
-                                                        <td>
-                                                            @if ($tx->reference_no)
-                                                                <span class="tx-ref">{{ $tx->reference_no }}</span>
-                                                            @else
-                                                                <span style="color:#000000;font-size:0.78rem">—</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-end"
-                                                            style="font-weight:600; color:{{ $tx->type === 'withdrawal' ? '#DC2626' : '#1E4035' }}">
-                                                            {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
-                                                            {{ number_format($tx->amount, 2) }}
-                                                        </td>
-                                                        <td class="text-end">
-                                                            @if ($tx->reference_no)
-                                                                <a href="{{ route('savings.receipt', $tx->reference_no) }}"
-                                                                    title="Download Receipt"
-                                                                    style="color:#1E4035;font-size:0.9rem;">
-                                                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                                                </a>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="card-box text-center py-5">
-                                    <i class="fa-solid fa-folder-open fa-2x mb-3" style="color:#d0d0d0;"></i>
-                                    <p style="color:#808080;margin-top:0.5rem;">No transactions yet.</p>
-                                </div>
-                            @endforelse
+                            {{-- ★ NEW: Filter tabs --}}
+                            <div class="sm-tab-group">
+                                <a href="{{ route('savings.index', ['type' => 'all']) }}"
+                                    class="sm-tab {{ $type === 'all' ? 'active' : '' }}">All</a>
+                                <a href="{{ route('savings.index', ['type' => 'deposit']) }}"
+                                    class="sm-tab {{ $type === 'deposit' ? 'active' : '' }}">Deposits</a>
+                                <a href="{{ route('savings.index', ['type' => 'withdrawal']) }}"
+                                    class="sm-tab {{ $type === 'withdrawal' ? 'active' : '' }}">Withdrawals</a>
+                            </div>
 
+                            <div class="card-box">
+                                <div class="overflow-x-auto">
+                                    <table class="table table-scroll m-0">
+                                        <thead>
+                                            <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
+                                                <th class="text-start">Type</th>
+                                                <th class="text-start">Reference No.</th>
+                                                <th class="text-start">Date</th>
+                                                <th class="text-start">Amount</th>
+                                                <th class="text-start">Receipt</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($transactions as $tx)
+                                                <tr>
+                                                    <td class="text-start">{{ ucfirst(str_replace('_', ' ', $tx->type)) }}
+                                                    </td>
+                                                    <td class="text-start">
+                                                        @if ($tx->reference_no)
+                                                            <span class="tx-ref">{{ $tx->reference_no }}</span>
+                                                        @else
+                                                            <span style="color:#000000;font-size:0.78rem">—</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-start">
+                                                        {{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
+                                                    </td>
+                                                    <td class="text-start"
+                                                        style="font-weight:700; color:{{ $tx->type === 'withdrawal' ? '#DC2626' : 'var(--green)' }}">
+                                                        {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
+                                                        {{ number_format($tx->amount, 2) }}
+                                                    </td>
+                                                    <td class="text-start">
+                                                        @if ($tx->reference_no)
+                                                            <a href="{{ route('savings.receipt', $tx->reference_no) }}"
+                                                                title="Download Receipt"
+                                                                style="color: var(--teal);font-size: 18px;">
+                                                                <i class="fa-solid fa-file-arrow-down"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-5">
+                                                        <i class="fa-solid fa-folder-open fa-2x mb-3"
+                                                            style="color: var(--muted);"></i>
+                                                        <p style="color:var(--muted);margin-top:0.5rem;">No transactions
+                                                            yet.</p>
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {{-- ★ NEW: Pagination — only shows page numbers that exist --}}
+                                @if ($transactions->total() > 0)
+                                    <div class="sm-pagination-wrap">
+                                        <div class="sm-pagination-info">
+                                            Showing
+                                            <b>{{ $transactions->lastItem() }}</b>
+                                            of <b>{{ $transactions->total() }}</b> transactions
+                                        </div>
+
+                                        @if ($transactions->hasPages())
+                                            <div class="sm-pagination">
+                                                @if ($transactions->onFirstPage())
+                                                    <span class="sm-page-btn disabled"><i
+                                                            class="fa-solid fa-chevron-left"></i></span>
+                                                @else
+                                                    <a href="{{ $transactions->previousPageUrl() }}" class="sm-page-btn">
+                                                        <i class="fa-solid fa-chevron-left"></i>
+                                                    </a>
+                                                @endif
+
+                                                @for ($i = 1; $i <= $transactions->lastPage(); $i++)
+                                                    <a href="{{ $transactions->url($i) }}"
+                                                        class="sm-page-btn {{ $i == $transactions->currentPage() ? 'active' : '' }}">
+                                                        {{ $i }}
+                                                    </a>
+                                                @endfor
+
+                                                @if ($transactions->hasMorePages())
+                                                    <a href="{{ $transactions->nextPageUrl() }}" class="sm-page-btn">
+                                                        <i class="fa-solid fa-chevron-right"></i>
+                                                    </a>
+                                                @else
+                                                    <span class="sm-page-btn disabled"><i
+                                                            class="fa-solid fa-chevron-right"></i></span>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </section>
+
+                    <!-- <section id="section3">
+                        <div class="parent-policy">
+                            <div class="policy">
+                                <h4><i class="fa fa-money-bill"></i> Withdrawal Policy</h4>
+                                <p>Regular savings withdrawals are processed within 1–2 business days. Time deposits are
+                                    locked until maturity; early withdrawal incurs a 2% penalty.</p>
+                            </div>
+
+                            <div class="policy">
+                                <h4><i class="fa fa-file-circle-check"></i> Interest Crediting</h4>
+                                <p>Interest is computed daily and credited to your account every quarter (Mar, Jun, Sep,
+                                    Dec) at the prevailing board-approved rate.</p>
+                            </div>
+
+                            <div class="policy">
+                                <h4><i class="fa fa-circle-question"></i> Need help?</h4>
+                                <p>For deposit disputes or passbook updates, visit the cooperative office or message our
+                                    support team through Notifications.</p>
+                            </div>
+                        </div>
+                    </section> -->
                 </div>
             </div>
         </div>
@@ -371,7 +614,8 @@
                     <div class="modal-header sm-modal-header" style="padding: 24px 20px;">
                         <div class="modal-text">
                             <div class="sm-modal-icon sm-deposit-icon">
-                                <i class="fa-solid fa-circle-arrow-down"></i>
+                                <!-- <i class="fa-solid fa-circle-arrow-down"></i> -->
+                                <img src="images/arrow-icon.png" alt="">
                             </div>
                             <div class="sm-modal-text">
                                 <h1 class="modal-title sm-modal-title" id="depositModalLabel">Deposit Savings</h1>
@@ -489,7 +733,8 @@
                     <div class="modal-header sm-modal-header" style="padding: 24px 20px;">
                         <div class="modal-text">
                             <div class="sm-modal-icon sm-withdraw-icon">
-                                <i class="fa-solid fa-circle-arrow-up"></i>
+                                <!-- <i class="fa-solid fa-circle-arrow-up"></i> -->
+                                <img src="images/arrow-icon.png" alt="">
                             </div>
                             <div class="sm-modal-text">
                                 <h1 class="modal-title sm-modal-title" id="withdrawModalLabel">Withdraw Savings</h1>

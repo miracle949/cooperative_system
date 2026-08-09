@@ -65,8 +65,8 @@
                     <p>Account</p>
                 </div>
 
-                <li>
-                    <a href="#">
+                <li class="{{ request()->routeIs('ProfileMember') ? 'active' : '' }}">
+                    <a href="{{ route('ProfileMember') }}">
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-user"></i>
                         <!-- </div> -->
@@ -74,8 +74,8 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="{{ request()->routeIs('Transactions') ? 'active' : '' }}">
+                    <a href="{{ route('Transactions') }}">
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-receipt"></i>
                         <!-- </div> -->
@@ -83,8 +83,8 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="{{ request()->routeIs('Notifications') ? 'active' : '' }}">
+                    <a href="{{ route('Notifications') }}">
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-bell"></i>
                         <!-- </div> -->
@@ -92,8 +92,8 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="{{ request()->routeIs('Settings') ? 'active' : '' }}">
+                    <a href="{{ route("Settings") }}">
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-gear"></i>
                         <!-- </div> -->

@@ -18,6 +18,25 @@
         but keeps the step across F5 / accidental reloads)
     ══════════════════════════════════════ */
     const STEP_STORAGE_KEY = 'kpmpcats_register_step';
+    const OTP_VERIFIED_KEY = 'kpmpcats_otp_verified_email'; // ADD
+
+    function saveOtpVerified(email) {                         // ADD
+        try { sessionStorage.setItem(OTP_VERIFIED_KEY, email); } catch (e) { }
+    }
+
+    function restoreOtpVerified() {                            // ADD
+        try {
+            const savedEmail = sessionStorage.getItem(OTP_VERIFIED_KEY);
+            if (savedEmail) {
+                emailOtpVerified = true;
+                otpAlreadySentEmail = savedEmail;
+            }
+        } catch (e) { }
+    }
+
+    function clearOtpVerified() {                               // ADD
+        try { sessionStorage.removeItem(OTP_VERIFIED_KEY); } catch (e) { }
+    }
 
     function saveCurrentStep() {
         try {
@@ -46,7 +65,26 @@
         } catch (e) { /* no-op */ }
     }
 
+    /* ══════════════════════════════════════
+       CLEAR EVERYTHING — used when leaving to Login
+       (or anywhere else the form data should not persist)
+    ══════════════════════════════════════ */
+    function clearAllRegistrationData() {
+        try {
+            const keysToRemove = [];
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key && key.startsWith('kpmpcats')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(k => sessionStorage.removeItem(k));
+        } catch (e) { /* no-op */ }
+    }
+    window.clearAllRegistrationData = clearAllRegistrationData;
+
     restoreCurrentStep();
+    restoreOtpVerified(); // ADD — call this right after restoreCurrentStep()
 
     /* ══════════════════════════════════════
        ONE-TIME: inject spinner CSS
@@ -177,6 +215,11 @@
             nextBtn.style.display = "inline-block";
             submitBtn.style.display = "none";
         }
+
+        // ✅ ADD THIS — reapply saved values (incl. password) when switching steps
+        if (typeof window.restoreFormFields === 'function') {
+            window.restoreFormFields();
+        }
     }
 
     function goToNextStep() {
@@ -278,6 +321,7 @@
 
                     if (data.valid) {
                         emailOtpVerified = true;
+                        saveOtpVerified(email);
                         overlay.style.display = 'none';
                         freshConfirm.disabled = false;
                         freshConfirm.textContent = 'Confirm';
@@ -600,6 +644,7 @@
         if (e.target.id === 'email') {
             emailOtpVerified = false;
             otpAlreadySentEmail = null;
+            clearOtpVerified(); // ADD
             const emailVal = e.target.value;
             const existsErr = document.getElementById('email-exists-error');
             let gmailErr = document.getElementById('email-gmail-error');
@@ -655,9 +700,7 @@
         });
     }
 
-    /* ══════════════════════════════════════
-       SIGNATURE MODAL — fullscreen
-    ══════════════════════════════════════ */
+
     function openSignatureModal() {
         const overlay = document.getElementById('signature-modal-overlay');
         overlay.style.display = 'flex';
@@ -703,6 +746,19 @@
 
     document.getElementById('signature-modal-overlay')?.addEventListener('click', function (e) {
         if (e.target === this) this.style.display = 'none';
+    });
+
+    /* ══════════════════════════════════════
+       BFCACHE SAFETY NET
+       If the browser restores this page from its back/forward
+       cache (e.g. user hits the Back button from /login-page),
+       force a real reload so stale field values/steps never
+       show up visually for the next person using this device.
+    ══════════════════════════════════════ */
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) {
+            window.location.reload();
+        }
     });
 
     // ✅ Expose functions called via HTML onclick="..."

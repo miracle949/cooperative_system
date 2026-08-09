@@ -36,12 +36,16 @@ class OtpController extends Controller
             ], 500);
         }
 
-        AuditLog::log(
-            'Sent OTP',
-            "Sent OTP verification email to {$email}",
-            'otp',
-            null
-        );
+        try {
+            AuditLog::log(
+                'Sent OTP',
+                "Sent OTP verification email to {$email}",
+                'otp',
+                null
+            );
+        } catch (\Exception $e) {
+            Log::error('AuditLog failed (non-fatal): ' . $e->getMessage());
+        }
 
         return response()->json(['sent' => true]);
     }
@@ -68,12 +72,24 @@ class OtpController extends Controller
         Session::forget(['email_otp', 'email_otp_email', 'email_otp_expires']);
         Session::put('email_otp_verified_email', $request->email);
 
-        AuditLog::log(
-            'Verified OTP',
-            "OTP verified for email {$request->email}",
-            'otp',
-            null
-        );
+        // ✅ FIX: wrap in try/catch, same as send().
+        // Previously this was unguarded — if AuditLog::log() threw for any
+        // reason (DB issue, model constraint, etc.), Laravel returned a 500
+        // HTML error page instead of our JSON response. The frontend's
+        // res.json() then failed to parse that HTML, landed in its catch
+        // block, and showed "Verification failed. Please try again." —
+        // even though the OTP itself was correct and had already been
+        // verified successfully above.
+        try {
+            AuditLog::log(
+                'Verified OTP',
+                "OTP verified for email {$request->email}",
+                'otp',
+                null
+            );
+        } catch (\Exception $e) {
+            Log::error('AuditLog failed (non-fatal): ' . $e->getMessage());
+        }
 
         return response()->json(['valid' => true]);
     }
