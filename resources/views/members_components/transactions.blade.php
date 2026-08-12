@@ -110,7 +110,7 @@
                         </div>
                         <input type="date" class="filter-select" name="date" value="{{ $date }}"
                             onchange="document.getElementById('tx-filter-form').submit()">
-                        <select class="filter-select" name="status"
+                        <select class="filter-select " name="status"
                             onchange="document.getElementById('tx-filter-form').submit()">
                             <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All statuses</option>
                             <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Completed</option>

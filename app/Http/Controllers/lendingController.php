@@ -592,7 +592,6 @@ class lendingController extends Controller
         $totalPayments = (int) ($status->total_payments ?? 0);
         $monthlyPayment = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : (float) $request->amount_paid;
 
-<<<<<<< HEAD
         // Tracks the note + raw amount for whatever penalty gets applied on
         // this visit, so both are saved onto the repayment record itself —
         // instead of only existing as an aggregate on lending_status_tbls.
@@ -645,10 +644,8 @@ class lendingController extends Controller
         // Merge any member-entered notes with the auto-generated penalty note
         // so both are preserved and visible on the repayment record.
         $combinedNotes = trim(implode(' — ', array_filter([$request->notes, $penaltyNote])));
-=======
         // Compute income breakdown per payment
         $interestRatio = ($loan->total_payment > 0) ? ($loan->total_interest / $loan->total_payment) : 0;
->>>>>>> bdb952345eec40b3475944d6da0cdcbecffc88a0
 
         if ($paymentType === 'full' && $status) {
             // ── FULL REPAYMENT (Cash) ────────────────────────────────────────
@@ -666,15 +663,12 @@ class lendingController extends Controller
                     'payment_number' => $paymentsMade + 1,
                     'amount_due' => $monthlyPayment,
                     'amount_paid' => $monthlyPayment,
-<<<<<<< HEAD
                     'late_fee' => $i === 1 ? $penaltyAmountForRecord : 0,
                     'penalty_applied_at' => $i === 1 && $penaltyAmountForRecord > 0 ? now()->timezone('Asia/Manila') : null,
                     'payment_proof_path' => $i === 1 ? $proofPath : null,
-=======
                     'principal_paid' => $principalPaid,
                     'interest_paid' => $interestPaid,
                     'service_fee_paid' => 0,
->>>>>>> bdb952345eec40b3475944d6da0cdcbecffc88a0
                     'due_date' => $status->due_date ?? now()->format('Y-m-d'),
                     'payment_date' => now()->format('Y-m-d'),
                     'payment_method' => $request->payment_method,
@@ -706,15 +700,12 @@ class lendingController extends Controller
                 'payment_number' => $request->payment_number,
                 'amount_due' => $monthlyPayment,
                 'amount_paid' => $request->amount_paid,
-<<<<<<< HEAD
                 'late_fee' => $penaltyAmountForRecord,
                 'penalty_applied_at' => $penaltyAmountForRecord > 0 ? now()->timezone('Asia/Manila') : null,
                 'payment_proof_path' => $proofPath,
-=======
                 'principal_paid' => $principalPaid,
                 'interest_paid' => $interestPaid,
                 'service_fee_paid' => 0,
->>>>>>> bdb952345eec40b3475944d6da0cdcbecffc88a0
                 'due_date' => $status->due_date ?? now()->format('Y-m-d'),
                 'payment_date' => now()->format('Y-m-d'),
                 'payment_method' => $request->payment_method,

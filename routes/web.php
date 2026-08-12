@@ -134,7 +134,6 @@ Route::middleware(['auth'])->group(function () {
     
 });
 
-<<<<<<< HEAD
 Route::get('/savings/open-time-deposit', function () {
     return redirect()->route('TimeDeposit');
 });
@@ -145,9 +144,7 @@ Route::post('/admin/loans/apply-penalties', [lendingController::class, 'adminApp
     ->name('admin.loans.applyPenalties');
 
 Route::post('/share-capital/store', [ShareCapital::class, 'store'])->name('share_capital.store');
-=======
 Route::post('/share-capital/store', [ShareCapital::class, 'store'])->name('share_capital.store.admin');
->>>>>>> bdb952345eec40b3475944d6da0cdcbecffc88a0
 
 // Share Capital form via email link
 Route::get('/share-capital-form/{id}', [ShareCapital::class, 'showForMember'])->name('share_capital.show');

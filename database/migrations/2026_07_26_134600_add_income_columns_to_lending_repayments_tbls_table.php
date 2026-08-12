@@ -10,10 +10,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('lending_repayments_tbls', function (Blueprint $table) {
-            $table->decimal('principal_paid', 10, 2)->default(0)->after('amount_paid');
-            $table->decimal('interest_paid', 10, 2)->default(0)->after('principal_paid');
-            $table->decimal('service_fee_paid', 10, 2)->default(0)->after('interest_paid');
-            $table->decimal('late_fee', 10, 2)->nullable()->after('service_fee_paid');
+            if (!Schema::hasColumn('lending_repayments_tbls', 'principal_paid')) {
+                $table->decimal('principal_paid', 10, 2)->default(0)->after('amount_paid');
+            }
+            if (!Schema::hasColumn('lending_repayments_tbls', 'interest_paid')) {
+                $table->decimal('interest_paid', 10, 2)->default(0)->after('principal_paid');
+            }
+            if (!Schema::hasColumn('lending_repayments_tbls', 'service_fee_paid')) {
+                $table->decimal('service_fee_paid', 10, 2)->default(0)->after('interest_paid');
+            }
+            if (!Schema::hasColumn('lending_repayments_tbls', 'late_fee')) {
+                $table->decimal('late_fee', 10, 2)->nullable()->after('service_fee_paid');
+            }
         });
 
         // Idempotent backfill: compute income breakdown for existing records
@@ -36,7 +44,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('lending_repayments_tbls', function (Blueprint $table) {
-            $table->dropColumn(['principal_paid', 'interest_paid', 'service_fee_paid', 'late_fee']);
+            $columns = ['principal_paid', 'interest_paid', 'service_fee_paid', 'late_fee'];
+            foreach ($columns as $column) {
+                if (Schema::hasColumn('lending_repayments_tbls', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };

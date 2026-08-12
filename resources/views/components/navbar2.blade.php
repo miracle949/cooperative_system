@@ -70,9 +70,9 @@
                             {{ auth()->user()->first_name ?? '' }}
                             {{ auth()->user()->last_name ?? '' }}
                         </p>
-                        <p>
+                        <!-- <p>
                             {{ auth()->user()->email ?? '' }}
-                        </p>
+                        </p> -->
                     </div>
 
                 </a>

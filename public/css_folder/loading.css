@@ -959,7 +959,7 @@
 .container-fluid .nav-acc2 ul li a p {
     font-size: 14px;
     color: var(--muted);
-    margin: 3px 0 0;
+    margin: 0;
 }
 
 /* .container-fluid .nav-acc2 ul li:focus-within ul {
@@ -1116,8 +1116,8 @@
 }
 
 .container-fluid .nav-acc2 ul li a .first-last {
-    width: 45px;
-    height: 45px;
+    width: 35px;
+    height: 35px;
     /* background-color: var(--blue); */
     background-color: #D0D6E4;
     /* background-color: var(--teal); */

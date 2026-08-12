@@ -51,7 +51,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box span{
+.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box span {
     font-size: 12.5px;
     color: var(--muted);
     font-weight: 600;
@@ -63,7 +63,7 @@
     align-items: center;
 }
 
-.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box .card-header .sum-icon{
+.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box .card-header .sum-icon {
     width: 32px;
     height: 32px;
     border-radius: 10px;
@@ -73,7 +73,7 @@
     align-items: center;
 }
 
-.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box .card-header .sum-icon .fa{
+.container-fluid .rightbar .main-parent .main-body .card-box-parent .card-box .card-header .sum-icon .fa {
     font-size: 15px;
     color: var(--teal);
 }
@@ -181,6 +181,7 @@
     flex: 1;
     background: transparent;
 }
+
 
 .filter-select {
     background: #fff;
