@@ -11,7 +11,8 @@
     width: calc(100% - 250px);
     height: 100vh;
     margin-left: 250px;
-    background-color: var(--lavender-tint);
+    /* background-color: var(--lavender-tint); */
+    background-color: #FBFBFD;
     /* padding: 2rem; */
 }
 
@@ -35,19 +36,20 @@
     color: var(--muted);
 }
 
-.container-fluid .rightbar .main-parent .main-header{
+.container-fluid .rightbar .main-parent .main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.container-fluid .rightbar .main-parent .main-header button{
+.container-fluid .rightbar .main-parent .main-header button {
     padding: 10px 20px;
 }
 
 .container-fluid .rightbar .main-parent .main-personal-card {
     margin-top: 1.5rem;
     background-color: #ffffff;
+    /* background-color: var(--teal); */
     padding: 1.8rem 2rem 1.8rem;
     border: 1px solid var(--border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -81,12 +83,15 @@
 
 .container-fluid .rightbar .main-parent .main-personal-card .personal-header .header-parent h5 {
     margin: 0;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     /* display: flex;
     align-items: center;
     gap: 12px; */
     letter-spacing: .2em;
+    /* color: #ffffff; */
+    color: #1a1a1a;
+    font-family: Georgia, "Times New Roman", serif;
     /* color: var(--blue); */
     /* font-family: Georgia, "Times New Roman", serif; */
     /* letter-spacing: .16em; */
@@ -101,8 +106,9 @@
 
 .container-fluid .rightbar .main-parent .main-personal-card .personal-header .header-parent p {
     margin: 5px 0 0;
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     font-size: 13.5px;
+    font-weight: 500;
 }
 
 .container-fluid .rightbar .main-parent .main-personal-card .personal-header {
@@ -173,6 +179,7 @@
     font-size: 19px;
     margin: 0;
     font-weight: 600;
+    color: #1a1a1a;
     /* font-family: Georgia, "Times New Roman", serif; */
 }
 
@@ -203,25 +210,58 @@
     flex-direction: column;
 }
 
-.container-fluid .rightbar .main-parent .main-personal-card .personal-body .since-parent .member span {
-    font-size: 13.5px;
-    color: var(--muted);
-    text-transform: uppercase;
-}
-
-.container-fluid .rightbar .main-parent .main-personal-card .personal-body .since-parent .member strong {
-    margin: 0 0 0;
-    font-size: 14.5px;
-}
-
 .perforation {
     position: relative;
     height: 1px;
     border-top: 2px dashed var(--border);
     margin: 1.5rem -34px 0;
+    display: none;
 }
 
-.perforation::before,
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-body {
+    margin-top: 0.4rem;
+}
+
+/* ── Progress bar track + fill ── */
+.parent-progress {
+    width: 100%;
+    height: 15px;
+    /* background-color: var(--line, #e9e9e9); */
+    background-color: #EDF0F5;
+    border-radius: 28px;
+    overflow: hidden;
+}
+
+.parent-progress .progress {
+    height: 100%;
+    background-color: var(--teal);
+    border-radius: 28px;
+    transition: width 0.6s ease;
+}
+
+.container-fluid .rightbar .main-parent .main-personal-card .personal-body .personal-sub-body .parent-box .since-parent {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    margin: 10px 0 0;
+}
+
+.container-fluid .rightbar .main-parent .main-personal-card .personal-body .personal-sub-body .parent-box .since-parent .member span {
+    font-size: 12.5px;
+    color: var(--muted);
+    /* color: #1a1a1a; */
+    text-transform: uppercase;
+}
+
+.container-fluid .rightbar .main-parent .main-personal-card .personal-body .personal-sub-body .parent-box .since-parent .member strong {
+    margin: 0 0 0;
+    font-size: 14.5px;
+    color: #1a1a1a;
+    font-weight: 500;
+    letter-spacing: .5px;
+}
+
+/* .perforation::before,
 .perforation::after {
     content: '';
     position: absolute;
@@ -231,7 +271,7 @@
     border-radius: 50%;
     background: var(--bg);
     border: 1px solid var(--border);
-}
+} */
 
 .perforation::before {
     left: -11px;
@@ -249,7 +289,7 @@
     gap: 20px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-sub-information{
+.container-fluid .rightbar .main-parent .parent-information .personal-sub-information {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -276,15 +316,37 @@
     gap: 8px;
 }
 
+.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .personal-information-header .header-text .header-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #EDF0F5;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-header .header-text .header-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #EDF0F5;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .container-fluid .rightbar .main-parent .parent-information .personal-information-1 .personal-information-header .header-text h4 {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .personal-information-header a{
-    font-size: 13.5px;
+.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .personal-information-header a {
+    font-size: 14px;
     text-decoration: none;
+    color: var(--teal);
+    font-weight: 600;
 }
 
 .container-fluid .rightbar .main-parent .parent-information .personal-information-1 .personal-information-body {
@@ -338,13 +400,15 @@
 
 .container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-header .header-text h4 {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-header a{
-    font-size: 13.5px;
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-header a {
+    font-size: 13px;
     text-decoration: none;
+    color: var(--teal);
+    font-weight: 600;
 }
 
 .container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body {
@@ -354,7 +418,7 @@
     gap: 20px 24px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .more-button{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .more-button {
     /* position: absolute;
     right: 25px;
     bottom: 15px; */
@@ -363,35 +427,35 @@
     justify-content: end;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .more-button button{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .more-button button {
     font-size: 13.5px;
     color: var(--blue);
     font-weight: 600;
 }
 
 .container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 {
-    padding: 24px 24px 20px;
+    padding: 12px 24px 20px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-head{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-head p{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-head p {
     font-weight: 600;
     text-transform: uppercase;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent {
     /* margin-top: 1rem; */
     display: flex;
     flex-direction: column;
     /* gap: 1rem; */
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item {
     /* display: flex;
     justify-content: space-between;
     align-items: center; */
@@ -407,16 +471,21 @@
     padding: 12px 0;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1){
-    padding: 0 0 12px;
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item-net {
+    padding: 12px 0 0;
+    border: none;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value strong{
+/* .container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1){
+    padding: 0 0 12px;
+} */
+
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value strong {
     font-size: 14px;
     color: var(--teal);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-icon{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-icon {
     width: 40px;
     height: 40px;
     display: flex;
@@ -425,47 +494,47 @@
     border-radius: 11px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1) .stat-icon{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1) .stat-icon {
     background-color: var(--gold-pale);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1) .stat-icon .fa{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(1) .stat-icon .fa {
     color: var(--gold);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(2) .stat-icon{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(2) .stat-icon {
     background-color: var(--savings-bg);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(2) .stat-icon .fa{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(2) .stat-icon .fa {
     color: var(--savings);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(3) .stat-icon{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(3) .stat-icon {
     background-color: var(--mint-pale);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(3) .stat-icon .fa{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(3) .stat-icon .fa {
     color: var(--mint);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(4) .stat-icon{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(4) .stat-icon {
     background-color: var(--gold-pale);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(4) .stat-icon .fa{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item:nth-child(4) .stat-icon .fa {
     color: var(--gold);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-icon .fa{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-icon .fa {
     font-size: 15px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value {
     flex: 1;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value span{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .item-value span {
     font-size: 13px;
     color: var(--muted);
     display: block;
@@ -474,54 +543,54 @@
 }
 
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item-net .item-value span{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item-net .item-value span {
     margin: 0;
     font-size: 14px;
     color: var(--teal);
     font-weight: 600;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-delta{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item .stat-delta {
     font-size: 11.5px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item-net .stat-delta{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .personal-parent .item-net .stat-delta {
     font-size: 14px;
     font-weight: 600;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .fa{
-    color: var(--blue);
+.container-fluid .rightbar .main-parent .parent-information .fa {
+    color: var(--teal);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay{
-    padding: 12px 0;
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay {
+    padding: 12px 0 12px;
     border-bottom: 1px solid var(--line);
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay:nth-child(1){
-    padding: 0 0 12px;
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay:nth-child(1) {
+    padding: 12 0 12px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header strong{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header strong {
     font-size: 14px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header span{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-header span {
     font-size: 13px;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-body{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .personal-information-body-2 .parent-sub-progress .progress-repay .progress-body {
     margin-top: 0.4rem;
 }
 
-.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .document-body{
+.container-fluid .rightbar .main-parent .parent-information .personal-information-1 .document-body {
     display: flex;
     flex-direction: column;
 }
@@ -695,6 +764,166 @@ label {
 
 .label-text p {
     margin-top: 8px;
+}
+
+.sm-modal-content {
+    border-radius: 16px;
+    border: none;
+    overflow: hidden;
+}
+
+.sm-modal-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sm-modal-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--navy, #0f1b3d);
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.sm-modal-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #16213e;
+}
+
+.sm-modal-subtitle {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.sm-modal-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #999;
+    cursor: pointer;
+}
+
+.sm-modal-body {
+    padding: 1.3rem 1.5rem;
+}
+
+.sm-summary-strip {
+    background: #f0f4fa;
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+}
+
+.sm-summary-label {
+    font-size: 12px;
+    color: #6b7fa3;
+    font-weight: 600;
+}
+
+.sm-summary-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #16213e;
+}
+
+.sm-field-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.sm-field-row .sm-field {
+    flex: 1;
+    min-width: 0;
+}
+
+.sm-field {
+    margin-bottom: 1.1rem;
+}
+
+.sm-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.sm-input {
+    width: 100%;
+    border-radius: 10px;
+    border: 1.5px solid #e0e0e0;
+    height: 46px;
+    font-size: 14px;
+    color: #333;
+    padding: 0 14px;
+    box-sizing: border-box;
+}
+
+textarea.sm-input {
+    height: auto;
+    padding: 10px 14px;
+    resize: none;
+}
+
+.sm-input-prefix {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--teal, #0f766e);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.sm-input-prefixed {
+    padding-left: 30px;
+}
+
+.sm-current-file {
+    display: block;
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.sm-btn-confirm {
+    width: 100%;
+    background: var(--navy, #0f1b3d);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    height: 48px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 0.4rem;
+}
+
+.sm-btn-cancel {
+    width: 100%;
+    background: #fff;
+    color: #6b7fa3;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    height: 46px;
+    font-size: 14px;
+    margin-top: 0.6rem;
 }
 
 @media only screen and (max-width: 1200px) {

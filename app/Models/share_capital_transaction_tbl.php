@@ -17,6 +17,7 @@ class share_capital_transaction_tbl extends Model
         "total_amount",
         "payment_method",
         "reference_no",
+        'gcash_proof_path',
         "note",
         "status",
         "transaction_date",

@@ -216,22 +216,25 @@ class UsersHandle extends Controller
         }
     }
 
-    public function MemberPortal()
+    public function MemberPortal(Request $request)
     {
         $user = Auth::user();
-        $member = $user->otherinfo;  // ← keep only this, delete the $member = null line
+        $member = $user->otherinfo;
         $username = $user->username ?? null;
         $email = $user->email ?? null;
-
-        // dd([
-        //     'user_id' => $user->id,
-        //     'member' => $member,
-        //     'raw' => DB::table('otherinfo_tbls')->where('user_id', $user->id)->first(),
-        // ]);
 
         $firstName = $user->first_name ?? '';
         $middleName = $user->middle_name ?? '';
         $lastName = $user->last_name ?? '';
+
+        // ── Year filter (drives all growth charts + announcements) ─────────────
+        $currentYear = (int) Carbon::now()->year;
+        $selectedYear = (int) $request->query('year', $currentYear);
+        $availableYears = collect(range($currentYear, $currentYear - 4))->values();
+
+        $referenceMonth = $selectedYear === $currentYear
+            ? Carbon::now()
+            : Carbon::create($selectedYear, 12, 1);
 
         // ── Savings ──────────────────────────────────────────────────────────────
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->first();
@@ -244,6 +247,38 @@ class UsersHandle extends Controller
                 'opened_at' => Carbon::today(),
             ]);
         }
+
+        // ── Savings Growth (bar chart, same logic as Savings page) ──────────────────
+        $growthStart = $referenceMonth->copy()->startOfMonth()->subMonths(5);
+        $growthMonths = collect(range(5, 0))->map(fn($i) => $referenceMonth->copy()->subMonths($i));
+
+        $growthTxs = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->where('transaction_date', '>=', $growthStart)
+            ->whereIn('type', ['deposit', 'withdrawal'])
+            ->get()
+            ->groupBy(fn($tx) => Carbon::parse($tx->transaction_date)->format('Y-m'));
+
+        $savingsGrowth = collect();
+        foreach ($growthMonths as $month) {
+            $key = $month->format('Y-m');
+            $monthTxs = $growthTxs->get($key, collect());
+            $net = $monthTxs->sum(fn($tx) => $tx->type === 'deposit' ? (float) $tx->amount : -(float) $tx->amount);
+
+            $savingsGrowth->push([
+                'label' => $month->format('M'),
+                'net' => $net,
+                'is_current' => $month->isSameMonth(Carbon::now()),
+            ]);
+        }
+
+        $maxGrowth = $savingsGrowth->max(fn($m) => max($m['net'], 0)) ?: 1;
+
+        $savingsGrowth = $savingsGrowth->map(function ($m) use ($maxGrowth) {
+            $m['height_percent'] = $m['net'] > 0
+                ? max(6, round(($m['net'] / $maxGrowth) * 78))
+                : 4;
+            return $m;
+        });
 
         // ── Share Capital ─────────────────────────────────────────────────────────
         $shareCapitalAccount = DB::table('share_capital_account_tbls')
@@ -265,32 +300,69 @@ class UsersHandle extends Controller
             $shareCapitalShares = 0;
         }
 
-        // Dividend rate
-        $dividendRateRecord = null;
-        try {
-            if (DB::getSchemaBuilder()->hasTable('dividend_rates_tbls')) {
-                $dividendRateRecord = DB::table('dividend_rates_tbls')
-                    ->orderByDesc('effective_year')
-                    ->orderByDesc('created_at')
-                    ->first();
-            }
-        } catch (\Throwable) {
-        }
-        $dividendRate = $dividendRateRecord->rate ?? 8.5;
+        // ── Balance month filter (drives Account Balance pie chart) ──────────────
+        $balanceMonth = $request->query('balance_month', Carbon::now()->format('Y-m'));
+        $balanceDateCarbon = Carbon::createFromFormat('Y-m', $balanceMonth)->endOfMonth()->endOfDay();
 
-        // Next dividend date
-        $today = Carbon::today();
-        $jun15ThisYear = Carbon::create($today->year, 6, 15);
-        $dec15ThisYear = Carbon::create($today->year, 12, 15);
-        $jun15NextYear = Carbon::create($today->year + 1, 6, 15);
+        $availableBalanceMonths = collect(range(0, 11))
+            ->map(fn($i) => Carbon::now()->copy()->subMonths($i)->format('Y-m'))
+            ->values();
 
-        if ($today->lte($jun15ThisYear)) {
-            $nextDividendDate = $jun15ThisYear;
-        } elseif ($today->lte($dec15ThisYear)) {
-            $nextDividendDate = $dec15ThisYear;
-        } else {
-            $nextDividendDate = $jun15NextYear;
+        // ── Balances "as of" the selected date (drives Account Balance pie chart) ──
+        $shareCapitalBalanceAsOf = 0;
+        if ($shareCapitalAccount) {
+            $shareCapitalBalanceAsOf = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->where('transaction_date', '<=', $balanceDateCarbon)
+                ->whereIn('status', ['Completed', 'completed'])
+                ->get()
+                ->sum(fn($tx) => in_array($tx->type, ['Deposit', 'Subscription'])
+                    ? (float) $tx->total_amount
+                    : -(float) $tx->total_amount);
         }
+
+        $isCurrentMonth = $balanceDateCarbon->isSameMonth(Carbon::now()) && $balanceDateCarbon->isSameYear(Carbon::now());
+
+        $savingsBalanceAsOf = $isCurrentMonth
+            ? (float) $savingsAccount->balance
+            : DB::table('savings_transaction_tbls')
+                ->where('savings_account_id', $savingsAccount->id)
+                ->where('transaction_date', '<=', $balanceDateCarbon)
+                ->get()
+                ->sum(fn($tx) => strtolower($tx->type) === 'deposit' ? (float) $tx->amount : -(float) $tx->amount);
+
+        $loanBalanceAsOf = DB::table('lending_program_tbls')
+            ->where('user_id', $user->id)
+            ->where('status', 'Approved')
+            ->where('created_at', '<=', $balanceDateCarbon)
+            ->get()
+            ->sum(function ($loan) use ($balanceDateCarbon) {
+                $repaidByDate = DB::table('lending_repayments_tbls')
+                    ->where('lending_id', $loan->id)
+                    ->where('payment_date', '<=', $balanceDateCarbon)
+                    ->sum('amount_paid');
+
+                return max(0, (float) $loan->lending_amount - (float) $repaidByDate);
+            });
+
+        // Still used elsewhere on the page (current, not "as of")
+        $loanBalance = $loanBalanceAsOf;
+
+        // ── Account Balance chart (Share Capital / Savings / Loan Balance) ───────
+        $accountBalanceChart = collect([
+            ['label' => 'Share Capital', 'value' => max(0, $shareCapitalBalanceAsOf), 'color' => 'gold'],
+            ['label' => 'Savings', 'value' => max(0, $savingsBalanceAsOf), 'color' => 'blue'],
+            ['label' => 'Loan Balance', 'value' => $loanBalanceAsOf, 'color' => 'coral'],
+        ]);
+
+        $maxBalance = $accountBalanceChart->max('value') ?: 1;
+
+        $accountBalanceChart = $accountBalanceChart->map(function ($item) use ($maxBalance) {
+            $item['height_percent'] = $item['value'] > 0
+                ? max(6, round(($item['value'] / $maxBalance) * 78))
+                : 4;
+            return $item;
+        });
 
         // ── Loans ─────────────────────────────────────────────────────────────────
         $loans = lending_program_tbl::where('user_id', $user->id)
@@ -347,7 +419,252 @@ class UsersHandle extends Controller
             }
         }
 
+        // ── Net Standing "as of" selected month (drives Net Standing modal) ──────
+        $standingMonth = $request->query('standing_month', Carbon::now()->format('Y-m'));
+        $standingDateCarbon = Carbon::createFromFormat('Y-m', $standingMonth)->endOfMonth()->endOfDay();
+
+        $shareCapitalStandingAsOf = 0;
+        if ($shareCapitalAccount) {
+            $shareCapitalStandingAsOf = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->where('transaction_date', '<=', $standingDateCarbon)
+                ->whereIn('status', ['Completed', 'completed'])
+                ->get()
+                ->sum(fn($tx) => in_array($tx->type, ['Deposit', 'Subscription'])
+                    ? (float) $tx->total_amount
+                    : -(float) $tx->total_amount);
+        }
+
+        $isStandingCurrentMonth = $standingDateCarbon->isSameMonth(Carbon::now()) && $standingDateCarbon->isSameYear(Carbon::now());
+
+        $savingsStandingAsOf = $isStandingCurrentMonth
+            ? (float) $savingsAccount->balance
+            : DB::table('savings_transaction_tbls')
+                ->where('savings_account_id', $savingsAccount->id)
+                ->where('transaction_date', '<=', $standingDateCarbon)
+                ->get()
+                ->sum(fn($tx) => strtolower($tx->type) === 'deposit' ? (float) $tx->amount : -(float) $tx->amount);
+
+        $loanStandingAsOf = DB::table('lending_program_tbls')
+            ->where('user_id', $user->id)
+            ->where('status', 'Approved')
+            ->where('created_at', '<=', $standingDateCarbon)
+            ->get()
+            ->sum(function ($loan) use ($standingDateCarbon) {
+                $repaidByDate = DB::table('lending_repayments_tbls')
+                    ->where('lending_id', $loan->id)
+                    ->where('payment_date', '<=', $standingDateCarbon)
+                    ->sum('amount_paid');
+
+                return max(0, (float) $loan->lending_amount - (float) $repaidByDate);
+            });
+
+        $netStandingAsOf = $shareCapitalStandingAsOf + $savingsStandingAsOf - $loanStandingAsOf;
+
         $overdueCount = count($penalizedLoans);
+
+        // ── Net savings this month (Savings Balance card subtext) ────────────────
+        $netSavingsThisMonth = DB::table('savings_transaction_tbls')
+            ->where('savings_account_id', $savingsAccount->id)
+            ->whereYear('transaction_date', Carbon::now()->year)
+            ->whereMonth('transaction_date', Carbon::now()->month)
+            ->get()
+            ->sum(fn($tx) => strtolower($tx->type) === 'deposit' ? (float) $tx->amount : -(float) $tx->amount);
+
+        // ── Net Standing (true total: Share Capital + Savings - Loan Balance) ────
+        $netStandingTotal = $shareCapitalBalance + (float) $savingsAccount->balance - $loanBalance;
+
+        // ── Next due date across active, non-overdue loans (Active Loans subtext) ──
+        $nextDueLoan = $loans->where('status', 'Approved')
+            ->filter(fn($loan) => !empty($loan->due_date) && Carbon::parse($loan->due_date)->isFuture())
+            ->sortBy(fn($loan) => Carbon::parse($loan->due_date))
+            ->first();
+        $nextDueDisplay = $nextDueLoan ? Carbon::parse($nextDueLoan->due_date)->format('M d') : null;
+
+        // ── Earliest overdue date (Overdue Loans subtext) ─────────────────────────
+        $earliestOverdue = collect($penalizedLoans)->sortBy('due_date')->first();
+        $earliestOverdueDisplay = $earliestOverdue ? Carbon::parse($earliestOverdue['due_date'])->format('M d') : null;
+
+        // ── Share Capital Growth (net contributions over last 6 months) ─────────
+        $scGrowthTxs = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $shareCapitalAccount->id ?? 0)
+            ->where('transaction_date', '>=', $growthStart)
+            ->whereIn('status', ['Completed', 'completed', 'Approved', 'approved'])
+            ->get()
+            ->groupBy(fn($tx) => Carbon::parse($tx->transaction_date)->format('Y-m'));
+
+        $shareCapitalGrowth = collect();
+        foreach ($growthMonths as $month) {
+            $key = $month->format('Y-m');
+            $monthTxs = $scGrowthTxs->get($key, collect());
+            $net = $monthTxs->sum(fn($tx) => in_array($tx->type, ['Deposit', 'Subscription'])
+                ? (float) $tx->total_amount
+                : -(float) $tx->total_amount);
+
+            $shareCapitalGrowth->push([
+                'label' => $month->format('M'),
+                'net' => $net,
+                'is_current' => $month->isSameMonth(Carbon::now()),
+            ]);
+        }
+
+        $maxScGrowth = $shareCapitalGrowth->max(fn($m) => max($m['net'], 0)) ?: 1;
+
+        $shareCapitalGrowth = $shareCapitalGrowth->map(function ($m) use ($maxScGrowth) {
+            $m['height_percent'] = $m['net'] > 0
+                ? max(6, round(($m['net'] / $maxScGrowth) * 78))
+                : 4;
+            return $m;
+        });
+
+        // ── Loan Balance Growth (net repayments over last 6 months) ──────────────
+        $loanGrowthTxs = DB::table('lending_repayments_tbls')
+            ->where('user_id', $user->id)
+            ->where('payment_date', '>=', $growthStart)
+            ->get()
+            ->groupBy(fn($tx) => Carbon::parse($tx->payment_date)->format('Y-m'));
+
+        $loanBalanceGrowth = collect();
+        foreach ($growthMonths as $month) {
+            $key = $month->format('Y-m');
+            $monthTxs = $loanGrowthTxs->get($key, collect());
+            $net = $monthTxs->sum(fn($tx) => (float) $tx->amount_paid);
+
+            $loanBalanceGrowth->push([
+                'label' => $month->format('M'),
+                'net' => $net,
+                'is_current' => $month->isSameMonth(Carbon::now()),
+            ]);
+        }
+
+        $maxLoanGrowth = $loanBalanceGrowth->max(fn($m) => max($m['net'], 0)) ?: 1;
+
+        $loanBalanceGrowth = $loanBalanceGrowth->map(function ($m) use ($maxLoanGrowth) {
+            $m['height_percent'] = $m['net'] > 0
+                ? max(6, round(($m['net'] / $maxLoanGrowth) * 78))
+                : 4;
+            return $m;
+        });
+
+        // Dividend rate
+        $dividendRateRecord = null;
+        try {
+            if (DB::getSchemaBuilder()->hasTable('dividend_rates_tbls')) {
+                $dividendRateRecord = DB::table('dividend_rates_tbls')
+                    ->orderByDesc('effective_year')
+                    ->orderByDesc('created_at')
+                    ->first();
+            }
+        } catch (\Throwable) {
+        }
+        $dividendRate = $dividendRateRecord->rate ?? 8.5;
+
+        // Next dividend date
+        $today2 = Carbon::today();
+        $jun15ThisYear = Carbon::create($today2->year, 6, 15);
+        $dec15ThisYear = Carbon::create($today2->year, 12, 15);
+        $jun15NextYear = Carbon::create($today2->year + 1, 6, 15);
+
+        if ($today2->lte($jun15ThisYear)) {
+            $nextDividendDate = $jun15ThisYear;
+        } elseif ($today2->lte($dec15ThisYear)) {
+            $nextDividendDate = $dec15ThisYear;
+        } else {
+            $nextDividendDate = $jun15NextYear;
+        }
+
+        // ── Announcements (month + year filter) ───────────────────────────────────
+        $announcementMonth = $request->query('announcement_month', Carbon::now()->format('Y-m'));
+        $annCarbon = Carbon::createFromFormat('Y-m', $announcementMonth);
+
+        $announcements = collect();
+        try {
+            if (DB::getSchemaBuilder()->hasTable('announcements_tbls')) {
+                $announcements = DB::table('announcements_tbls')
+                    ->whereYear('created_at', $annCarbon->year)
+                    ->whereMonth('created_at', $annCarbon->month)
+                    ->orderByDesc('created_at')
+                    ->limit(3)
+                    ->get()
+                    ->map(fn($a) => [
+                        'title' => $a->title,
+                        'date' => Carbon::parse($a->created_at)->format('M d'),
+                        'description' => $a->description,
+                    ]);
+            }
+        } catch (\Throwable) {
+        }
+
+        if ($announcements->isEmpty()) {
+            $announcements = collect([
+                [
+                    'title' => 'Annual General Assembly',
+                    'date' => 'Aug 10',
+                    'description' => 'All members are invited to the AGM at the Branch 2 hall, 9:00 AM.',
+                ],
+                [
+                    'title' => 'Dividend Declaration',
+                    'date' => 'Jul 15',
+                    'description' => '5.2% dividend on share capital approved for FY2025, credited Aug 1.',
+                ],
+                [
+                    'title' => 'System Maintenance',
+                    'date' => 'Jul 12',
+                    'description' => 'Online portal will be unavailable Sunday, 12AM–4AM for upgrades.',
+                ],
+            ]);
+        }
+
+        // ── Recent Transactions (dashboard preview, reuses Transactions page builders) ──
+        $recentTransactions = collect()
+            ->concat($this->buildShareCapitalEntries($user->id))
+            ->concat($this->buildSavingsEntries($user->id))
+            ->concat($this->buildLoanEntries($user->id))
+            ->sortByDesc(fn($e) => $e['sort_at'])
+            ->take(8)
+            ->values();
+
+        // ── Upcoming Dues (next payment per active loan) ─────────────────────────
+        $typeMapDues = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
+        $upcomingDues = collect();
+        foreach ($loans->where('status', 'Approved') as $loan) {
+            if (empty($loan->due_date)) {
+                continue;
+            }
+
+            $dueDateCarbon = Carbon::parse($loan->due_date);
+            if ($dueDateCarbon->isPast()) {
+                continue; // already overdue — handled separately by penalty logic
+            }
+
+            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+            $monthlyDue = $termMonths > 0
+                ? (float) $loan->lending_amount / $termMonths
+                : (float) $loan->lending_amount;
+
+            $displayType = $typeMapDues[$loan->lending_type] ?? $loan->lending_type;
+            $daysLeft = (int) Carbon::today()->diffInDays($dueDateCarbon, false);
+
+            $upcomingDues->push([
+                'sort_at' => $dueDateCarbon,
+                'icon' => 'gold',
+                'icon_fa' => 'fa-calendar-day',
+                'title' => "{$displayType} Payment",
+                'subtitle' => $daysLeft === 0
+                    ? 'Due today'
+                    : ($daysLeft === 1 ? 'Due tomorrow' : "Due in {$daysLeft} days"),
+                'date_display' => $dueDateCarbon->format('M d, Y'),
+                'amount' => $monthlyDue,
+            ]);
+        }
+
+        $upcomingDues = $upcomingDues->sortBy('sort_at')->take(6)->values();
 
         return view('members_components.member_portal', [
             'username' => $username,
@@ -359,6 +676,16 @@ class UsersHandle extends Controller
 
             // Savings
             'savingsAccount' => $savingsAccount,
+            'savingsGrowth' => $savingsGrowth,
+
+            'shareCapitalGrowth' => $shareCapitalGrowth,
+            'loanBalanceGrowth' => $loanBalanceGrowth,
+
+            // Transactions
+            'recentTransactions' => $recentTransactions,
+
+            // Upcoming Dues
+            'upcomingDues' => $upcomingDues,
 
             // Share Capital
             'shareCapitalBalance' => $shareCapitalBalance,
@@ -366,9 +693,23 @@ class UsersHandle extends Controller
             'dividendRate' => $dividendRate,
             'nextDividendDate' => $nextDividendDate,
 
+            // Account Balance chart
+            'loanBalance' => $loanBalance,
+            'accountBalanceChart' => $accountBalanceChart,
+
+            // Announcements
+            'announcements' => $announcements,
+
+            // Year filter
+            'selectedYear' => $selectedYear,
+            'availableYears' => $availableYears,
+
             // Loans
             'loans' => $loans,
             'activeLoansCount' => $activeLoansCount,
+
+            'balanceMonth' => $balanceMonth,
+            'availableBalanceMonths' => $availableBalanceMonths,
 
             // Late Fee Penalties
             'penalizedLoans' => $penalizedLoans,
@@ -376,6 +717,19 @@ class UsersHandle extends Controller
             'overdueCount' => $overdueCount,
             'lateFeePercentage' => $lateFeePercentage,
             'gracePeriodMonths' => $gracePeriodMonths,
+
+            'netSavingsThisMonth' => $netSavingsThisMonth,
+            'netStandingTotal' => $netStandingTotal,
+            'nextDueDisplay' => $nextDueDisplay,
+            'earliestOverdueDisplay' => $earliestOverdueDisplay,
+            'announcementMonth' => $announcementMonth,
+
+            // Net Standing modal
+            'standingMonth' => $standingMonth,
+            'shareCapitalStandingAsOf' => $shareCapitalStandingAsOf,
+            'savingsStandingAsOf' => $savingsStandingAsOf,
+            'loanStandingAsOf' => $loanStandingAsOf,
+            'netStandingAsOf' => $netStandingAsOf,
         ]);
     }
 
@@ -486,49 +840,640 @@ class UsersHandle extends Controller
         );
     }
 
-    public function Settings(){
-        $username = Auth::check() ? Auth::user()->username : null;
-        $email = Auth::check() ? Auth::user()->email : null;
+    public function Settings()
+    {
+        $user = Auth::user();
+        $username = $user->username ?? null;
+        $email = $user->email ?? null;
+        $memberId = $user->id;
 
-        $memberId = Auth::id();
+        $settings = \App\Models\AccountSettings_tbl::firstOrCreate(
+            ['user_id' => $memberId],
+            [
+                'loan_reminders' => true,
+                'savings_updates' => true,
+                'email_digest' => false,
+                'announcements' => true,
+                'two_factor_enabled' => false,
+                'login_alerts' => true,
+            ]
+        );
+
+        $passwordChangedAt = $user->password_changed_at
+            ? Carbon::parse($user->password_changed_at)->diffForHumans()
+            : 'Never changed';
+
+        $pendingDeactivation = DB::table('resignation_requests_tbls')
+            ->where('user_id', $memberId)
+            ->where('status', 'Pending')
+            ->exists();
 
         return view(
             "members_components.settings",
             [
                 "username" => $username,
-                "email" => $email
+                "email" => $email,
+                "settings" => $settings,
+                "passwordChangedAt" => $passwordChangedAt,
+                "pendingDeactivation" => $pendingDeactivation,
             ]
         );
     }
 
-    public function Transactions(){
-        $username = Auth::check() ? Auth::user()->username : null;
-        $email = Auth::check() ? Auth::user()->email : null;
+    public function UpdateSetting(Request $request)
+    {
+        $request->validate([
+            'field' => 'required|string|in:loan_reminders,savings_updates,email_digest,announcements,two_factor_enabled,login_alerts',
+            'value' => 'required|boolean',
+        ]);
 
         $memberId = Auth::id();
+        $settings = \App\Models\AccountSettings_tbl::firstOrCreate(['user_id' => $memberId]);
+        $settings->{$request->field} = $request->boolean('value');
+        $settings->save();
+
+        $user = Auth::user();
+        AuditLog::log(
+            'Updated Settings',
+            "{$user->first_name} {$user->last_name} toggled {$request->field} " . ($request->boolean('value') ? 'on' : 'off'),
+            'user',
+            $memberId
+        );
+
+        return response()->json([
+            'success' => true,
+            'field' => $request->field,
+            'value' => $settings->{$request->field},
+        ]);
+    }
+
+    public function ChangePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            return response()->json(['success' => false, 'message' => 'Current password is incorrect.'], 422);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->password_changed_at = now();
+        $user->save();
+
+        AuditLog::log(
+            'Changed Password',
+            "{$user->first_name} {$user->last_name} changed their password",
+            'user',
+            $user->id
+        );
+
+        return response()->json(['success' => true, 'message' => 'Password updated successfully.']);
+    }
+
+    public function RequestDeactivation(Request $request)
+    {
+        $request->validate([
+            'reason' => 'nullable|string|max:500',
+        ]);
+
+        $memberId = Auth::id();
+
+        $alreadyPending = DB::table('resignation_requests_tbls')
+            ->where('user_id', $memberId)
+            ->where('status', 'Pending')
+            ->exists();
+
+        if ($alreadyPending) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You already have a pending deactivation request.',
+            ], 422);
+        }
+
+        DB::table('resignation_requests_tbls')->insert([
+            'user_id' => $memberId,
+            'reason' => $request->reason,
+            'status' => 'Pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $user = Auth::user();
+        AuditLog::log(
+            'Requested Deactivation',
+            "{$user->first_name} {$user->last_name} requested account deactivation",
+            'user',
+            $memberId
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Deactivation request submitted. Our staff will contact you.',
+        ]);
+    }
+
+    public function ExportData()
+    {
+        $userId = Auth::id();
+
+        $user = Users_tbl::find($userId);
+        $otherinfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        $savingsAccount = savings_account_tbl::where('user_id', $userId)->first();
+        $shareCapitalAccount = share_capital_account_tbl::where('user_id', $userId)->first();
+        $loans = lending_program_tbl::where('user_id', $userId)->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.member_data', compact(
+            'user',
+            'otherinfo',
+            'savingsAccount',
+            'shareCapitalAccount',
+            'loans'
+        ));
+
+        AuditLog::log(
+            'Exported Data',
+            "{$user->first_name} {$user->last_name} exported their membership data",
+            'user',
+            $userId
+        );
+
+        return $pdf->download('membership-record-' . $user->id . '.pdf');
+    }
+
+    public function Transactions(Request $request)
+    {
+        $username = Auth::check() ? Auth::user()->username : null;
+        $email = Auth::check() ? Auth::user()->email : null;
+        $memberId = Auth::id();
+
+        // ── Filters from query string ──────────────────────────────
+        $type = $request->query('type', 'all');           // all | share_capital | savings | loans
+        $search = trim((string) $request->query('search', ''));
+        $date = $request->query('date', '');
+        $status = strtolower(trim((string) $request->query('status', 'all'))); // all | pending | completed | released | locked | credited | rejected | approved
+        $page = max(1, (int) $request->query('page', 1));
+        $perPage = 10;
+
+        $entries = collect()
+            ->concat($this->buildShareCapitalEntries($memberId))
+            ->concat($this->buildSavingsEntries($memberId))
+            ->concat($this->buildLoanEntries($memberId));
+
+        // ── Summary cards (computed from ALL completed entries, unfiltered by tab/search) ──
+        $completed = $entries->filter(fn($e) => $e['status_class'] === 'completed');
+
+        $totalDeposits = $completed
+            ->filter(fn($e) => in_array($e['category'], ['share_capital', 'savings']) && $e['amount'] > 0)
+            ->sum('amount');
+
+        $totalRepayments = abs($completed
+            ->filter(fn($e) => $e['category'] === 'loans' && $e['amount'] < 0)
+            ->sum('amount'));
+
+        $thisMonth = $completed->filter(
+            fn($e) =>
+            $e['sort_at']->isSameMonth(now()) && $e['sort_at']->isSameYear(now())
+        );
+        $transactThisMonth = $thisMonth->sum(fn($e) => abs($e['amount']));
+
+        $netChange = $completed->sum('amount');
+
+        // ── Build the list of statuses actually present, for the dropdown ──
+        // Uses status_label (the granular, human-facing value: "Locked", "Released",
+        // "Credited", etc.) rather than status_class, which only ever holds
+        // 'completed' or 'pending' and would collapse the dropdown to 2 options.
+        $availableStatuses = $entries
+            ->pluck('status_label')
+            ->filter()
+            ->map(fn($s) => trim($s))
+            ->unique()
+            ->sortBy(fn($s) => strtolower($s))
+            ->values();
+
+        // ── Apply date filter ──────────────────────────────────
+        if ($date !== '') {
+            $entries = $entries->filter(fn($e) => $e['sort_at']->format('Y-m-d') === $date);
+        }
+
+        // ── Apply tab filter ──────────────────────────────────────────
+        if ($type !== 'all') {
+            $entries = $entries->filter(fn($e) => $e['category'] === $type);
+        }
+
+        // ── Apply status filter (matches on the granular status_label, case-insensitive) ──
+        if ($status !== 'all') {
+            $entries = $entries->filter(fn($e) => strtolower($e['status_label'] ?? '') === $status);
+        }
+
+        // ── Apply search (description or reference no.) ────────────────
+        if ($search !== '') {
+            $needle = strtolower($search);
+            $entries = $entries->filter(function ($e) use ($needle) {
+                return str_contains(strtolower($e['title']), $needle)
+                    || str_contains(strtolower($e['subtitle']), $needle)
+                    || str_contains(strtolower($e['reference_no']), $needle);
+            });
+        }
+
+        // ── Sort newest first, then paginate manually ───────────────────
+        $entries = $entries->sortByDesc(fn($e) => $e['sort_at'])->values();
+        $total = $entries->count();
+        $paged = $entries->slice(($page - 1) * $perPage, $perPage)->values();
+
+        $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paged,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view(
             "members_components.transactions",
             [
                 "username" => $username,
-                "email" => $email
+                "email" => $email,
+                "transactions" => $transactions,
+                "type" => $type,
+                "search" => $search,
+                "date" => $date,
+                "status" => $status,
+                "availableStatuses" => $availableStatuses,
+                "totalDeposits" => $totalDeposits,
+                "totalRepayments" => $totalRepayments,
+                "transactThisMonth" => $transactThisMonth,
+                "netChange" => $netChange,
             ]
         );
     }
 
-    public function Notifications(){
+    // ─────────────────────────────────────────────────────────────────
+// Normalized transaction builders
+// ─────────────────────────────────────────────────────────────────
+
+    private function buildShareCapitalEntries($memberId)
+    {
+        $account = DB::table('share_capital_account_tbls')->where('user_id', $memberId)->first();
+        if (!$account)
+            return collect();
+
+        return DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id)
+            ->get()
+            ->map(function ($row) {
+                $isDeposit = in_array($row->type, ['Deposit', 'Subscription']);
+                $statusRaw = strtolower($row->status ?? '');
+                $statusClass = str_contains($statusRaw, 'complet') ? 'completed'
+                    : (str_contains($statusRaw, 'pend') ? 'pending' : 'pending');
+
+                return [
+                    'sort_at' => Carbon::parse($row->created_at ?? $row->transaction_date),
+                    'category' => 'share_capital',
+                    'icon' => 'gold',
+                    'icon_fa' => 'fa-layer-group',
+                    'title' => $isDeposit ? 'Share Capital Contribution' : 'Share Capital Withdrawal',
+                    'subtitle' => $row->note ?: ($isDeposit ? 'Deposit' : 'Withdrawal request'),
+                    'reference_no' => $row->reference_no ?? '—',
+                    'date_display' => Carbon::parse($row->transaction_date)->format('M d, Y'),
+                    'time_display' => Carbon::parse($row->created_at ?? $row->transaction_date)
+                        ->timezone('Asia/Manila')->format('g:i A'),
+                    'amount' => $isDeposit ? (float) $row->total_amount : -(float) $row->total_amount,
+                    'status_label' => ucfirst($statusRaw ?: 'Pending'),
+                    'status_class' => $statusClass,
+                ];
+            });
+    }
+
+    private function buildSavingsEntries($memberId)
+    {
+        $account = DB::table('savings_account_tbls')->where('user_id', $memberId)->first();
+        if (!$account)
+            return collect();
+
+        return DB::table('savings_transaction_tbls')
+            ->where('savings_account_id', $account->id)
+            ->get()
+            ->map(function ($row) {
+                $config = match ($row->type) {
+                    'deposit' => ['title' => 'Savings Deposit', 'subtitle' => 'Regular Savings', 'icon' => 'savings', 'icon_fa' => 'fa-piggy-bank', 'sign' => 1],
+                    'withdrawal' => ['title' => 'Savings Withdrawal', 'subtitle' => 'Regular Savings', 'icon' => 'savings', 'icon_fa' => 'fa-piggy-bank', 'sign' => -1],
+                    'td_open' => ['title' => 'Time Deposit (Opened)', 'subtitle' => 'Goal set, no funds moved', 'icon' => 'gold', 'icon_fa' => 'fa-bullseye', 'sign' => 0],
+                    'td_lock' => ['title' => 'Time Deposit (Deposit)', 'subtitle' => 'Deposited toward TD goal', 'icon' => 'savings', 'icon_fa' => 'fa-piggy-bank', 'sign' => 1],
+                    'td_release' => ['title' => 'Time Deposit (Claimed)', 'subtitle' => 'Principal + interest released', 'icon' => 'mint', 'icon_fa' => 'fa-hand-holding-dollar', 'sign' => 1],
+                    default => ['title' => ucfirst(str_replace('_', ' ', $row->type)), 'subtitle' => 'Savings activity', 'icon' => 'savings', 'icon_fa' => 'fa-piggy-bank', 'sign' => 1],
+                };
+
+                return [
+                    'sort_at' => Carbon::parse($row->created_at ?? $row->transaction_date),
+                    'category' => 'savings',
+                    'icon' => $config['icon'],
+                    'icon_fa' => $config['icon_fa'],
+                    'title' => $config['title'],
+                    'subtitle' => $row->note ?: $config['subtitle'],
+                    'reference_no' => $row->reference_no ?? '—',
+                    'date_display' => Carbon::parse($row->transaction_date)->format('M d, Y'),
+                    'time_display' => Carbon::parse($row->created_at ?? $row->transaction_date)
+                        ->timezone('Asia/Manila')->format('g:i A'),
+                    'amount' => $config['sign'] * (float) $row->amount,
+                    'status_label' => ucfirst($row->status ?? 'Completed'),
+                    'status_class' => strtolower($row->status ?? 'completed') === 'pending' ? 'pending' : 'completed',
+                ];
+            });
+    }
+
+    private function buildLoanEntries($memberId)
+    {
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
+        $loans = DB::table('lending_program_tbls')
+            ->where('user_id', $memberId)
+            ->get();
+
+        // 1) Loan Application — one entry per submitted application
+        $applications = $loans->map(function ($row) use ($typeMap) {
+            $displayType = $typeMap[$row->lending_type] ?? $row->lending_type;
+            $statusRaw = strtolower($row->status ?? 'pending');
+            $statusClass = $statusRaw === 'pending' ? 'pending' : 'completed';
+
+            return [
+                'sort_at' => Carbon::parse($row->created_at),
+                'category' => 'loans',
+                'icon' => 'gold',
+                'icon_fa' => 'fa-file-signature',
+                'title' => 'Loan Application',
+                'subtitle' => "{$displayType} application submitted",
+                'reference_no' => $row->reference_no ?? '—',
+                'date_display' => Carbon::parse($row->created_at)->format('M d, Y'),
+                'time_display' => Carbon::parse($row->created_at)->timezone('Asia/Manila')->format('g:i A'),
+                'amount' => 0,
+                'status_label' => ucfirst($row->status ?? 'Pending'),
+                'status_class' => $statusClass,
+            ];
+        });
+
+        // 2) Loan Approval / Decline — the decision on the application
+        $decisions = $loans
+            ->filter(fn($row) => in_array(strtolower($row->status ?? ''), ['approved', 'declined', 'rejected']))
+            ->map(function ($row) use ($typeMap) {
+                $displayType = $typeMap[$row->lending_type] ?? $row->lending_type;
+                $isApproved = strtolower($row->status) === 'approved';
+
+                return [
+                    'sort_at' => Carbon::parse($row->updated_at ?? $row->created_at),
+                    'category' => 'loans',
+                    'icon' => $isApproved ? 'mint' : 'coral',
+                    'icon_fa' => $isApproved ? 'fa-circle-check' : 'fa-circle-xmark',
+                    'title' => $isApproved ? 'Loan Approved' : 'Loan Declined',
+                    'subtitle' => $isApproved
+                        ? "{$displayType} approved"
+                        : trim("{$displayType} declined" . ($row->decline_reason ? " — {$row->decline_reason}" : '')),
+                    'reference_no' => $row->reference_no ?? '—',
+                    'date_display' => Carbon::parse($row->updated_at ?? $row->created_at)->format('M d, Y'),
+                    'time_display' => Carbon::parse($row->updated_at ?? $row->created_at)->timezone('Asia/Manila')->format('g:i A'),
+                    'amount' => 0,
+                    'status_label' => $isApproved ? 'Approved' : 'Declined',
+                    'status_class' => 'completed',
+                ];
+            });
+
+        // 3) Loan Disbursement — money actually released
+        $disbursements = $loans
+            ->filter(fn($row) => strtolower($row->status ?? '') === 'approved' && !empty($row->disbursed_at))
+            ->map(function ($row) use ($typeMap) {
+                $displayType = $typeMap[$row->lending_type] ?? $row->lending_type;
+
+                return [
+                    'sort_at' => Carbon::parse($row->disbursed_at),
+                    'category' => 'loans',
+                    'icon' => 'coral',
+                    'icon_fa' => 'fa-file-invoice-dollar',
+                    'title' => 'Loan Disbursement',
+                    'subtitle' => "{$displayType} released" . ($row->disbursement_method ? " via {$row->disbursement_method}" : ''),
+                    'reference_no' => $row->disbursement_reference ?? $row->reference_no ?? '—',
+                    'date_display' => Carbon::parse($row->disbursed_at)->format('M d, Y'),
+                    'time_display' => Carbon::parse($row->disbursed_at)->timezone('Asia/Manila')->format('g:i A'),
+                    'amount' => (float) ($row->net_proceeds ?? $row->lending_amount),
+                    'status_label' => 'Completed',
+                    'status_class' => 'completed',
+                ];
+            });
+
+        // 4) Loan Repayment — unchanged from before
+        $repayments = DB::table('lending_repayments_tbls as r')
+            ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'r.lending_id')
+            ->where('r.user_id', $memberId)
+            ->select('r.*', 's.total_payments')
+            ->get()
+            ->map(function ($row) {
+                $totalPayments = $row->total_payments ?? '?';
+                return [
+                    'sort_at' => Carbon::parse($row->created_at ?? $row->payment_date),
+                    'category' => 'loans',
+                    'icon' => 'mint',
+                    'icon_fa' => 'fa-hand-holding-dollar',
+                    'title' => 'Loan Repayment',
+                    'subtitle' => "Installment {$row->payment_number} of {$totalPayments}",
+                    'reference_no' => $row->reference_no ?? '—',
+                    'date_display' => Carbon::parse($row->payment_date)->format('M d, Y'),
+                    'time_display' => Carbon::parse($row->created_at ?? $row->payment_date)->timezone('Asia/Manila')->format('g:i A'),
+                    'amount' => -(float) $row->amount_paid,
+                    'status_label' => 'Completed',
+                    'status_class' => 'completed',
+                ];
+            });
+
+        return $applications->concat($decisions)->concat($disbursements)->concat($repayments);
+    }
+
+    public function Notifications()
+    {
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
-
         $memberId = Auth::id();
+
+        $notifications = \App\Models\Notifications_tbl::where('user_id', $memberId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $unreadCount = $notifications->where('is_read', false)->count();
+        $importantCount = $notifications->where('is_important', true)->count();
+        $inboxCount = $notifications->where('category', 'inbox')->count();
+        $announcementCount = $notifications->where('category', 'announcement')->count();
+        $spamCount = $notifications->where('category', 'spam')->count();
+        $socialCount = $notifications->where('category', 'social')->count();
+
+        // Group notifications into date buckets for display
+        $grouped = $notifications->groupBy(function ($n) {
+            $date = Carbon::parse($n->created_at);
+            if ($date->isToday()) {
+                return 'Today · ' . $date->format('M d, Y');
+            } elseif ($date->isCurrentWeek()) {
+                return 'Earlier this week';
+            } elseif ($date->isCurrentMonth()) {
+                return 'Earlier this month';
+            }
+            return $date->format('F Y');
+        });
 
         return view(
             "members_components.notifications",
             [
                 "username" => $username,
-                "email" => $email
+                "email" => $email,
+                "notifications" => $notifications,
+                "grouped" => $grouped,
+                "unreadCount" => $unreadCount,
+                "importantCount" => $importantCount,
+                "inboxCount" => $inboxCount,
+                "announcementCount" => $announcementCount,
+                "spamCount" => $spamCount,
+                "socialCount" => $socialCount,
             ]
         );
+    }
+
+    public function MarkAllRead(Request $request)
+    {
+        $memberId = Auth::id();
+
+        \App\Models\Notifications_tbl::where('user_id', $memberId)
+            ->where('is_read', false)
+            ->update(['is_read' => true, 'updated_at' => now()]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->back()->with('success', 'All notifications marked as read.');
+    }
+
+    public function Seminars()
+    {
+        $user = Auth::user();
+        $username = $user->username ?? null;
+        $email = $user->email ?? null;
+        $userId = $user->id;
+
+        $typeLabels = [
+            'pmes' => 'PMES',
+            'fundamentals' => 'Cooperative Fundamentals',
+            'finance' => 'Cooperative Finance',
+        ];
+
+        // ── All of this member's attendee records, with their seminar info ──
+        $attendeeRecords = \App\Models\SeminarAttendees_tbl::with('seminar')
+            ->where('user_id', $userId)
+            ->get()
+            ->filter(fn($a) => $a->seminar); // guard against orphaned rows
+
+        // ── Upcoming: scheduled sessions this member is registered for ──
+        $upcomingSeminars = $attendeeRecords
+            ->filter(fn($a) => $a->seminar->schedule_datetime >= now() && $a->status === 'pending')
+            ->sortBy(fn($a) => $a->seminar->schedule_datetime)
+            ->map(function ($a) use ($typeLabels) {
+                $s = $a->seminar;
+                return [
+                    'label' => $typeLabels[$s->seminar_type] ?? ucfirst($s->seminar_type),
+                    'datetime' => $s->schedule_datetime,
+                    'delivery_type' => $s->delivery_type,
+                    'online_link' => $s->online_link,
+                    'meetup_place' => $s->meetup_place,
+                    'exact_venue' => $s->exact_venue,
+                ];
+            })
+            ->values();
+
+        // ── History: past sessions — attended, absent, or awaiting admin marking ──
+        $seminarHistory = $attendeeRecords
+            ->filter(fn($a) => $a->seminar->schedule_datetime < now())
+            ->sortByDesc(fn($a) => $a->seminar->schedule_datetime)
+            ->map(function ($a) use ($typeLabels) {
+                $s = $a->seminar;
+
+                $status = match ($a->status) {
+                    'attended' => 'attended',
+                    'absent' => 'missed',
+                    default => 'pending_review', // date passed, admin hasn't marked yet
+                };
+
+                return [
+                    'label' => $typeLabels[$s->seminar_type] ?? ucfirst($s->seminar_type),
+                    'datetime' => $s->schedule_datetime,
+                    'delivery_type' => $s->delivery_type,
+                    'meetup_place' => $s->meetup_place,
+                    'status' => $status,
+                ];
+            })
+            ->values();
+
+        // ── Completion summary (drives hero card) ──
+        $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
+        $completedFlags = [
+            'pmes' => (bool) ($completion->pmes_completed ?? false),
+            'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
+            'finance' => (bool) ($completion->finance_completed ?? false),
+        ];
+
+        $totalSeminars = count($typeLabels);
+        $completedCount = collect($completedFlags)->filter()->count();
+        $remainingCount = $totalSeminars - $completedCount;
+        $isFullyComplete = $remainingCount === 0;
+
+        $remainingLabels = collect($completedFlags)
+            ->filter(fn($done) => !$done)
+            ->keys()
+            ->map(fn($key) => $typeLabels[$key]);
+
+        $nextUpcoming = $upcomingSeminars->first();
+
+        if ($isFullyComplete) {
+            $heroTitle = "You've completed full membership training!";
+            $heroSubtitle = "You've finished all required seminars and are a full member in good standing.";
+            $heroNextLine = null;
+        } else {
+            $heroTitle = $remainingCount === 1
+                ? "You're one seminar away from full membership."
+                : "Complete {$remainingCount} more seminars to reach full membership.";
+
+            $heroSubtitle = $remainingCount === 1
+                ? "Complete {$remainingLabels->first()} to finish the required track and unlock full member benefits."
+                : "Attend the required sessions below to unlock full member benefits and gain access to exclusive cooperative services, programs, and opportunities designed to support your financial growth.";
+
+            $heroNextLine = null;
+            if ($nextUpcoming) {
+                $deliveryText = $nextUpcoming['delivery_type'] === 'online'
+                    ? 'Online'
+                    : 'F2F · ' . ($nextUpcoming['meetup_place'] ?? 'Venue TBA');
+
+                $heroNextLine = "Next up: {$nextUpcoming['label']} · "
+                    . $nextUpcoming['datetime']->format('M d') . ' · ' . $deliveryText;
+            } else {
+                $heroNextLine = 'Awaiting schedule from the cooperative.';
+            }
+        }
+
+        return view('members_components.seminars', [
+            'username' => $username,
+            'email' => $email,
+            'upcomingSeminars' => $upcomingSeminars,
+            'seminarHistory' => $seminarHistory,
+            'totalSeminars' => $totalSeminars,
+            'completedCount' => $completedCount,
+            'remainingCount' => $remainingCount,
+            'isFullyComplete' => $isFullyComplete,
+            'heroTitle' => $heroTitle,
+            'heroSubtitle' => $heroSubtitle,
+            'heroNextLine' => $heroNextLine,
+        ]);
     }
 
     public function ProfileMember()
@@ -564,6 +1509,62 @@ class UsersHandle extends Controller
                     ];
                 });
         }
+
+        // ── Loan data for Account Balance & Repayment Progress ──────────────
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
+        $approvedLoans = DB::table('lending_program_tbls as l')
+            ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'l.id')
+            ->where('l.user_id', $userId)
+            ->where('l.status', 'Approved')
+            ->select('l.*', 's.remaining_balance', 's.total_payments', 's.payments_made')
+            ->get()
+            ->map(function ($loan) use ($typeMap) {
+                $loan->display_type = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+                $totalPayments = (int) ($loan->total_payments ?? 0);
+                $paymentsMade = (int) ($loan->payments_made ?? 0);
+                $loan->progress_percent = $totalPayments > 0
+                    ? min(100, round(($paymentsMade / $totalPayments) * 100))
+                    : 0;
+                $loan->remaining_balance = (float) ($loan->remaining_balance ?? $loan->total_payment ?? $loan->lending_amount);
+                return $loan;
+            });
+
+        // Total outstanding across ALL active loans → feeds "Loan Balance" stat
+        $loanBalance = $approvedLoans->sum('remaining_balance');
+
+        // Grouped by type → feeds "Loan Repayment Progress" panel.
+        // Always show all 4 loan types, even ones the member has never taken —
+        // zero balance / zero progress rather than omitting the row entirely.
+        $loansByTypeActual = $approvedLoans->groupBy('display_type')->map(function ($loans) {
+            return [
+                'balance' => $loans->sum('remaining_balance'),
+                'progress' => (int) round($loans->avg('progress_percent')),
+            ];
+        });
+
+        $allLoanTypes = ['Personal Loan', 'Emergency Loan', 'Business Loan', 'Education Loan'];
+        $loansByType = collect($allLoanTypes)->mapWithKeys(function ($type) use ($loansByTypeActual) {
+            return [$type => $loansByTypeActual[$type] ?? ['balance' => 0, 'progress' => 0]];
+        });
+
+        $savedMonthlyIncome = DB::table('lending_program_tbls')
+            ->where('user_id', $userId)
+            ->whereNotNull('monthly_income')
+            ->orderBy('created_at', 'desc')
+            ->value('monthly_income');
+
+        $shareCapitalBalance = (float) ($shareCapitalAccount->total_amount ?? 0);
+        $savingsBalance = (float) ($savingsAccount->balance ?? 0);
+        // Overall = straight sum of all three balances shown in the Account Balance
+// card, not netted against the loan — the card lists Loan Balance as its
+// own line, so this total is a "what's on this card" sum, not net worth.
+        $overallBalance = $shareCapitalBalance + $savingsBalance + $loanBalance;
 
         $shareCapitalTransactions = collect();
         if ($shareCapitalAccountId) {
@@ -654,6 +1655,13 @@ class UsersHandle extends Controller
                 "username" => $user->username ?? null,
                 "email" => $user->email ?? null,
                 "missingCount" => $missingCount,
+                // ── new ──
+                "loanBalance" => $loanBalance,
+                "loansByType" => $loansByType,
+                "shareCapitalBalance" => $shareCapitalBalance,
+                "savingsBalance" => $savingsBalance,
+                "overallBalance" => $overallBalance,
+                "savedMonthlyIncome" => $savedMonthlyIncome,
             ]
         );
     }
@@ -682,88 +1690,89 @@ class UsersHandle extends Controller
         );
     }
 
-    // public function UpdateProfileMember(Request $request)
-    // {
-    //     $userId = Auth::id();
+    public function UpdateProfileMember(Request $request)
+    {
+        $userId = Auth::id();
+        $user = Users_tbl::find($userId);
+        $existingInfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        $membergovernIds = Membergovern_ids_tbl::where('user_id', $userId)->first();
+        $family = Family_tbl::where('user_id', $userId)->first();
 
-    //     $user = Users_tbl::find($userId);
-    //     $existingInfo = Otherinfo_tbl::where('user_id', $userId)->first();
+        if ($request->_form === 'personal') {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+            ]);
+        }
 
-    //     $request->validate([
-    //         'first_name' => 'required|string|max:255',
-    //         'last_name' => 'required|string|max:255',
-    //     ]);
+        if ($request->_form === 'personal') {
+            $user->first_name = $request->first_name;
+            $user->middle_name = $request->middle_name;
+            $user->last_name = $request->last_name;
+            $user->save();
+        }
 
-    //     $user->first_name = $request->first_name;
-    //     $user->middle_name = $request->middle_name;
-    //     $user->last_name = $request->last_name;
-    //     $user->save();
+        $updateData = [
+            'contact_no' => $request->contact_no,
+            'present_address' => $request->present_address,
+            'permanent_address' => $request->permanent_address,
+            'date_of_birth' => $request->date_of_birth,
+            'sex' => $request->sex,
+            'civil_status' => $request->civil_status,
+            'citizenship' => $request->citizenship,
+            'height' => $request->height,
+            'weight' => $request->weight,
+            'blood_type' => $request->blood_type,
+        ];
 
-    //     $updateData = [
-    //         'contact_no' => $request->contact_no,
-    //         'present_address' => $request->present_address,
-    //         'permanent_address' => $request->permanent_address,
-    //         'date_of_birth' => $request->date_of_birth,
-    //         'sex' => $request->sex,
-    //         'civil_status' => $request->civil_status,
-    //         'citizenship' => $request->citizenship,
-    //         'height' => $request->height,
-    //         'weight' => $request->weight,
-    //         'blood_type' => $request->blood_type,
-    //     ];
+        foreach ($updateData as $key => $value) {
+            if (empty($value) && !empty($existingInfo->$key)) {
+                $updateData[$key] = $existingInfo->$key;
+            }
+        }
 
-    //     foreach ($updateData as $key => $value) {
-    //         if (empty($value) && !empty($existingInfo->$key)) {
-    //             $updateData[$key] = $existingInfo->$key;
-    //         }
-    //     }
+        Otherinfo_tbl::updateOrCreate(['user_id' => $userId], $updateData);
 
-    //     Otherinfo_tbl::updateOrCreate(
-    //         ['user_id' => $userId],
-    //         $updateData
-    //     );
+        $govIdsData = [];
+        $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
 
-    //     $govIdsData = [];
-    //     $idFields = ['sss_id', 'philhealth_id', 'pagibig_id', 'tin_id'];
+        foreach ($idFields as $field) {
+            if ($request->hasFile($field)) {
+                $govIdsData[$field] = $request->file($field)->store('government_ids', 'public');
+            } elseif (!empty($membergovernIds->$field)) {
+                $govIdsData[$field] = $membergovernIds->$field;
+            }
+        }
 
-    //     foreach ($idFields as $field) {
-    //         if ($request->hasFile($field)) {
-    //             $file = $request->file($field);
-    //             $filename = $field . '_' . $userId . '_' . time() . '.' . $file->getClientOriginalExtension();
-    //             $file->move(public_path('images'), $filename);
-    //             $govIdsData[$field] = $filename;
-    //         } elseif (!empty($membergovernIds->$field)) {
-    //             $govIdsData[$field] = $membergovernIds->$field;
-    //         }
-    //     }
+        if (!empty($govIdsData)) {
+            Membergovern_ids_tbl::updateOrCreate(['user_id' => $userId], $govIdsData);
+        }
 
-    //     if (!empty($govIdsData)) {
-    //         Membergovern_ids_tbl::updateOrCreate(
-    //             ['user_id' => $userId],
-    //             $govIdsData
-    //         );
-    //     }
+        $familyData = [
+            'spouse_name' => $request->spouse_name,
+            'spouse_date_birth' => $request->spouse_date_birth,
+            'number_son' => $request->number_son,
+            'number_daughter' => $request->number_daughter,
+        ];
 
-    //     $familyData = [
-    //         'spouse_name' => $request->spouse_name,
-    //         'spouse_date_birth' => $request->spouse_date_birth,
-    //         'number_son' => $request->number_son,
-    //         'number_daughter' => $request->number_daughter,
-    //     ];
-    //     if (!empty(array_filter($familyData))) {
-    //         foreach ($familyData as $key => $value) {
-    //             if (empty($value) && !empty($family->$key)) {
-    //                 $familyData[$key] = $family->$key;
-    //             }
-    //         }
-    //         Family_tbl::updateOrCreate(
-    //             ['user_id' => $userId],
-    //             $familyData
-    //         );
-    //     }
+        if (!empty(array_filter($familyData))) {
+            foreach ($familyData as $key => $value) {
+                if (empty($value) && !empty($family->$key)) {
+                    $familyData[$key] = $family->$key;
+                }
+            }
+            Family_tbl::updateOrCreate(['user_id' => $userId], $familyData);
+        }
 
-    //     return redirect()->route('ProfileMember')->with('success', 'Profile updated successfully!');
-    // }
+        AuditLog::log(
+            'Updated Profile',
+            "{$user->first_name} {$user->last_name} updated their profile",
+            'user',
+            $userId
+        );
+
+        return redirect()->route('ProfileMember')->with('success', 'Profile updated successfully!');
+    }
 
     public function Navbar2()
     {

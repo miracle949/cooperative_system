@@ -10,11 +10,19 @@ class savings_account_tbl extends Model
     protected $table = "savings_account_tbls";
 
     protected $fillable = [
-        "user_id",
-        "balance",
-        "status",
-        "balance_after",
-        "opened_at"
+        'user_id',
+        'balance',
+        'status',
+        'opened_at',
+        'td_balance',
+        'td_goal_amount',
+        'td_interest_rate',
+        'td_term_months',
+        'td_opened_at',
+        'td_maturity_date',
+        'td_status',
+        'td_reference_no',
+        'interest_accrued_balance',
     ];
 
     public function user()

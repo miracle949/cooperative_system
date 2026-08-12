@@ -45,193 +45,148 @@
                                 <div class="sum-icon"><i class="fa fa-wallet"></i></div>
                             </div>
                             <div class="card-body">
-                                <div class="sum-value">₱5,500.00</div>
+                                <div class="sum-value">₱{{ number_format($totalDeposits, 2) }}</div>
                                 <div class="sum-stat"></div>
                             </div>
+                            <span>Total amount deposited</span>
                         </div>
 
                         <div class="card-box">
                             <div class="card-header">
                                 <div class="sum-label">Total Repayments</div>
-                                <div class="sum-icon"><i class="fa fa-wallet"></i></div>
+                                <div class="sum-icon"><i class="fa fa-money-bill-transfer"></i></div>
                             </div>
                             <div class="card-body">
-                                <div class="sum-value">₱5,500.00</div>
+                                <div class="sum-value">₱{{ number_format($totalRepayments, 2) }}</div>
                                 <div class="sum-stat"></div>
                             </div>
+                            <span>Total loan repayments made</span>
                         </div>
 
                         <div class="card-box">
                             <div class="card-header">
                                 <div class="sum-label">Transact this month</div>
-                                <div class="sum-icon"><i class="fa fa-wallet"></i></div>
+                                <div class="sum-icon"><i class="fa fa-receipt"></i></div>
                             </div>
                             <div class="card-body">
-                                <div class="sum-value">₱5,500.00</div>
+                                <div class="sum-value">₱{{ number_format($transactThisMonth, 2) }}</div>
                                 <div class="sum-stat"></div>
                             </div>
+                            <span>Transactions recorded</span>
                         </div>
 
                         <div class="card-box">
                             <div class="card-header">
                                 <div class="sum-label">Net Change</div>
-                                <div class="sum-icon"><i class="fa fa-wallet"></i></div>
+                                <div class="sum-icon"><i class="fa fa-chart-line"></i></div>
                             </div>
                             <div class="card-body">
-                                <div class="sum-value">₱5,500.00</div>
+                                <div class="sum-value">₱{{ number_format($netChange, 2) }}</div>
                                 <div class="sum-stat"></div>
                             </div>
+                            <span>Overall balance change</span>
                         </div>
                     </div>
 
                     <div class="filters">
                         <div class="tab-group">
-                            <div class="tab active">All</div>
-                            <div class="tab">Share Capital</div>
-                            <div class="tab">Savings</div>
-                            <div class="tab">Loans</div>
+                            <a href="{{ route('transactions', array_merge(request()->except('type', 'page'), ['type' => 'all'])) }}"
+                                class="tab {{ $type === 'all' ? 'active' : '' }}">All</a>
+                            <a href="{{ route('transactions', array_merge(request()->except('type', 'page'), ['type' => 'share_capital'])) }}"
+                                class="tab {{ $type === 'share_capital' ? 'active' : '' }}">Share Capital</a>
+                            <a href="{{ route('transactions', array_merge(request()->except('type', 'page'), ['type' => 'savings'])) }}"
+                                class="tab {{ $type === 'savings' ? 'active' : '' }}">Savings</a>
+                            <a href="{{ route('transactions', array_merge(request()->except('type', 'page'), ['type' => 'loans'])) }}"
+                                class="tab {{ $type === 'loans' ? 'active' : '' }}">Loans</a>
                         </div>
                     </div>
 
-                    <div class="toolbar">
-                        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text"
-                                placeholder="Search by description or reference no."></div>
-                        <select class="filter-select">
-                            <option>Last 30 days</option>
-                            <option>Last 90 days</option>
-                            <option>This year</option>
-                            <option>All time</option>
+                    <form method="GET" action="{{ route('transactions') }}" class="toolbar" id="tx-filter-form">
+                        <input type="hidden" name="type" value="{{ $type }}">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" name="search" value="{{ $search }}"
+                                placeholder="Search by description or reference no.">
+                        </div>
+                        <input type="date" class="filter-select" name="date" value="{{ $date }}"
+                            onchange="document.getElementById('tx-filter-form').submit()">
+                        <select class="filter-select" name="status"
+                            onchange="document.getElementById('tx-filter-form').submit()">
+                            <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All statuses</option>
+                            <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
                         </select>
-                        <select class="filter-select">
-                            <option>All statuses</option>
-                            <option>Completed</option>
-                            <option>Pending</option>
-                        </select>
-                    </div>
+                    </form>
 
-                    <div class="ledger-page">
-                        <table class="tx-table">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th>Reference No.</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th class="num">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon savings"><i class="fa-solid fa-piggy-bank"></i></div>
-                                            <div class="tx-desc"><strong>Savings Deposit</strong><span>Regular
-                                                    Savings</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-88213</td>
-                                    <td class="tx-date">Jul 20, 2026<br>9:14 AM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt up">+₱1,500.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon mint"><i class="fa-solid fa-hand-holding-dollar"></i>
-                                            </div>
-                                            <div class="tx-desc"><strong>Loan Repayment</strong><span>Installment 6 of
-                                                    12</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-88109</td>
-                                    <td class="tx-date">Jul 05, 2026<br>2:30 PM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt down">-₱1,650.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon gold"><i class="fa-solid fa-layer-group"></i></div>
-                                            <div class="tx-desc"><strong>Share Capital
-                                                    Contribution</strong><span>Voluntary
-                                                    top-up</span></div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-87990</td>
-                                    <td class="tx-date">Jun 28, 2026<br>11:05 AM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt up">+₱2,000.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon savings"><i class="fa-solid fa-piggy-bank"></i></div>
-                                            <div class="tx-desc"><strong>Savings Deposit</strong><span>Regular
-                                                    Savings</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-87814</td>
-                                    <td class="tx-date">Jun 15, 2026<br>10:47 AM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt up">+₱1,000.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon mint"><i class="fa-solid fa-hand-holding-dollar"></i>
-                                            </div>
-                                            <div class="tx-desc"><strong>Loan Repayment</strong><span>Installment 5 of
-                                                    12</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-87650</td>
-                                    <td class="tx-date">Jun 05, 2026<br>1:12 PM</td>
-                                    <td><span class="status-chip pending">Pending</span></td>
-                                    <td class="tx-amt down">-₱1,650.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon coral"><i class="fa-solid fa-file-invoice-dollar"></i>
-                                            </div>
-                                            <div class="tx-desc"><strong>Loan Disbursement</strong><span>Multi-Purpose
-                                                    Loan
-                                                    approved</span></div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-81204</td>
-                                    <td class="tx-date">Jan 12, 2026<br>10:00 AM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt up">+₱18,000.00</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="tx-desc-cell">
-                                            <div class="tx-icon gold"><i class="fa-solid fa-layer-group"></i></div>
-                                            <div class="tx-desc"><strong>Share Capital
-                                                    Contribution</strong><span>Monthly
-                                                    contribution</span></div>
-                                        </div>
-                                    </td>
-                                    <td class="tx-ref">TX-80991</td>
-                                    <td class="tx-date">Jan 08, 2026<br>9:30 AM</td>
-                                    <td><span class="status-chip completed">Completed</span></td>
-                                    <td class="tx-amt up">+₱1,500.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="ledger-page overflow-x-auto">
+                        <div class="table-scroll-wrapper">
+                            <table class="tx-table table table-scroll m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Reference No.</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th class="num">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($transactions as $tx)
+                                        <tr>
+                                            <td>
+                                                <div class="tx-desc-cell">
+                                                    <div class="tx-icon {{ $tx['icon'] }}"><i
+                                                            class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
+                                                    <div class="tx-desc">
+                                                        <strong>{{ $tx['title'] }}</strong>
+                                                        <span>{{ $tx['subtitle'] }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="tx-ref">{{ $tx['reference_no'] }}</td>
+                                            <td class="tx-date">{{ $tx['date_display'] }}<br>{{ $tx['time_display'] }}</td>
+                                            <td><span
+                                                    class="status-chip {{ $tx['status_class'] }}">{{ $tx['status_label'] }}</span>
+                                            </td>
+                                            <td class="tx-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
+                                                {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5"
+                                                style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-inbox"
+                                                    style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No transactions found.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="pagination">
-                            <span>Showing 1–7 of 42 transactions</span>
+                            <span>Showing {{ $transactions->lastItem() ?? 0 }} of
+                                {{ $transactions->total() }} transactions</span>
                             <div class="page-btns">
-                                <div class="page-btn"><i class="fa-solid fa-chevron-left"></i></div>
-                                <div class="page-btn active">1</div>
-                                <div class="page-btn">2</div>
-                                <div class="page-btn">3</div>
-                                <div class="page-btn"><i class="fa-solid fa-chevron-right"></i></div>
+                                @if($transactions->onFirstPage())
+                                    <span class="page-btn disabled"><i class="fa-solid fa-chevron-left"></i></span>
+                                @else
+                                    <a href="{{ $transactions->previousPageUrl() }}" class="page-btn"><i
+                                            class="fa-solid fa-chevron-left"></i></a>
+                                @endif
+
+                                @foreach(range(1, $transactions->lastPage()) as $p)
+                                    <a href="{{ $transactions->url($p) }}"
+                                        class="page-btn {{ $p === $transactions->currentPage() ? 'active' : '' }}">{{ $p }}</a>
+                                @endforeach
+
+                                @if($transactions->hasMorePages())
+                                    <a href="{{ $transactions->nextPageUrl() }}" class="page-btn"><i
+                                            class="fa-solid fa-chevron-right"></i></a>
+                                @else
+                                    <span class="page-btn disabled"><i class="fa-solid fa-chevron-right"></i></span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -239,6 +194,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const searchInput = document.querySelector('.search-box input[name="search"]');
+        const filterForm = document.getElementById('tx-filter-form');
+        let searchDebounce;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchDebounce);
+                searchDebounce = setTimeout(() => filterForm.submit(), 500);
+            });
+
+            // restore cursor/focus after the reload triggered by typing
+            if (searchInput.value) {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+        }
+    </script>
 
 </body>
 

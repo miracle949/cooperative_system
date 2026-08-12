@@ -15,6 +15,16 @@ use Carbon\Carbon;
 
 class ShareCapital extends Controller
 {
+    // ─────────────────────────────────────────────────────────────────────
+    // COOPERATIVE POLICY CONSTANTS (not stored per-row — fixed by bylaws)
+    // ─────────────────────────────────────────────────────────────────────
+    const PAR_VALUE = 200;     // ₱ per share
+    const TARGET_SHARES = 50;      // shares required for full subscription
+    const TARGET_AMOUNT = 10000;   // = TARGET_SHARES * PAR_VALUE
+    const INSTALLMENT_SLOTS = 8;       // 8 quarters = 2 years
+    const ISC_SPLIT = 0.60;    // 60% Interest on Share Capital
+    const PATRONAGE_SPLIT = 0.40;    // 40% Patronage Refund
+
     /**
      * Show the Share Capital form (first-time subscription only).
      */
@@ -27,36 +37,8 @@ class ShareCapital extends Controller
             ->first();
 
         if ($account) {
-            $depositAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('total_amount') ?? 0;
+            [$currentBalance, $currentShares] = $this->computeBalanceAndShares($account);
 
-            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('total_amount') ?? 0;
-
-            $currentBalance = $depositAmount - $withdrawalAmount;
-
-            $deposits = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('shares') ?? 0;
-
-            $withdrawals = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('shares') ?? 0;
-
-            $currentShares = $deposits - $withdrawals;
-
-            // Redirect users who already have share capital to the member page
-            // But allow the success modal to show first
             if ($currentShares >= 10 && !session('success')) {
                 return redirect()->route('ShareCapitalMember');
             }
@@ -65,84 +47,28 @@ class ShareCapital extends Controller
             $currentShares = 0;
         }
 
-        // Dividend rate
-        $dividendRateRecord = null;
-        if ($this->tableExists('dividend_rates_tbls')) {
-            $dividendRateRecord = DB::table('dividend_rates_tbls')
-                ->orderByDesc('effective_year')
-                ->orderByDesc('created_at')
-                ->first();
-        }
+        $dividendRateRecord = $this->getDividendRateRecord();
         $dividendRate = $dividendRateRecord->rate ?? 8.5;
         $dividendRateYear = $dividendRateRecord->effective_year ?? now()->year;
+        $rateHistory = $this->getRateHistory();
+        $dividendHistory = $account ? $this->getDividendHistory($account->id) : collect();
 
-        // Rate history
-        $rateHistory = collect();
-        if ($this->tableExists('dividend_rates_tbls')) {
-            $rateHistory = DB::table('dividend_rates_tbls')
-                ->orderByDesc('effective_year')
-                ->limit(5)
-                ->get();
-        }
-
-        // Dividend history
-        $dividendHistory = collect();
-        if ($this->tableExists('dividend_histories_tbls') && $account) {
-            $dividendHistory = DB::table('dividend_histories_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->orderByDesc('year')
-                ->orderByDesc('semester')
-                ->get();
-        }
-
-        // Contributions
         $contributions = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
             ->where('status', '!=', 'failed')
             ->orderByDesc('transaction_date')
             ->get();
 
-        // Last dividend
-        $lastDividend = $dividendHistory->where('status', 'Paid')->sortByDesc(fn($d) => $d->date_paid)->first();
-        $lastDividendAmount = $lastDividend->dividend_amount ?? null;
-        $lastDividendDate = $lastDividend ? Carbon::parse($lastDividend->date_paid)->format('M d, Y') : null;
-        $lastDividendPeriod = $lastDividend->period_label ?? null;
-
-        // Next dividend date
-        $today = Carbon::today();
-        $jun15ThisYear = Carbon::create($today->year, 6, 15);
-        $dec15ThisYear = Carbon::create($today->year, 12, 15);
-        $jun15NextYear = Carbon::create($today->year + 1, 6, 15);
-
-        if ($today->lte($jun15ThisYear)) {
-            $nextDividendDate = $jun15ThisYear;
-            $nextDividendPeriod = '1st Semester ' . $today->year;
-            $nextDividendSemester = 1;
-        } elseif ($today->lte($dec15ThisYear)) {
-            $nextDividendDate = $dec15ThisYear;
-            $nextDividendPeriod = '2nd Semester ' . $today->year;
-            $nextDividendSemester = 2;
-        } else {
-            $nextDividendDate = $jun15NextYear;
-            $nextDividendPeriod = '1st Semester ' . ($today->year + 1);
-            $nextDividendSemester = 1;
-        }
+        $dividendDates = $this->computeDividendDates();
+        extract($dividendDates);
 
         $projectedNextDividend = round($currentBalance * ($dividendRate / 100) / 2, 2);
         $totalDividendsEarned = $dividendHistory->where('status', 'Paid')->sum('dividend_amount');
 
-        $prevDividendDate = $lastDividend
-            ? Carbon::parse($lastDividend->date_paid)
-            : $nextDividendDate->copy()->subMonths(6);
-        $prevDividendPeriod = $lastDividend->period_label
-            ?? ($nextDividendSemester === 1
-                ? '2nd Semester ' . ($nextDividendDate->year - 1)
-                : '1st Semester ' . $nextDividendDate->year);
-
-        $futureDate2 = $nextDividendDate->copy()->addMonths(6);
-        $futurePeriod2 = $nextDividendSemester === 1
-            ? '2nd Semester ' . $nextDividendDate->year
-            : '1st Semester ' . ($nextDividendDate->year + 1);
+        $lastDividend = $dividendHistory->where('status', 'Paid')->sortByDesc(fn($d) => $d->date_paid)->first();
+        $lastDividendAmount = $lastDividend->dividend_amount ?? null;
+        $lastDividendDate = $lastDividend ? Carbon::parse($lastDividend->date_paid)->format('M d, Y') : null;
+        $lastDividendPeriod = $lastDividend->period_label ?? null;
 
         return view('ShareCapitalForm.share_capital_form', compact(
             'currentBalance',
@@ -174,7 +100,6 @@ class ShareCapital extends Controller
     {
         $username = Auth::check() ? Auth::user()->username : null;
         $email = Auth::check() ? Auth::user()->email : null;
-
         $memberId = Auth::id();
 
         $account = DB::table('share_capital_account_tbls')
@@ -182,33 +107,7 @@ class ShareCapital extends Controller
             ->first();
 
         if ($account) {
-            $depositAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('total_amount') ?? 0;
-
-            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('total_amount') ?? 0;
-
-            $currentBalance = $depositAmount - $withdrawalAmount;
-
-            $deposits = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('shares') ?? 0;
-
-            $withdrawals = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('shares') ?? 0;
-
-            $currentShares = $deposits - $withdrawals;
+            [$currentBalance, $currentShares] = $this->computeBalanceAndShares($account);
         } else {
             $currentBalance = 0;
             $currentShares = 0;
@@ -220,73 +119,47 @@ class ShareCapital extends Controller
             ->orderByDesc('transaction_date')
             ->get();
 
-        // ─────────────────────────────────────────────────────────────
-        // DIVIDEND DATA
-        // ─────────────────────────────────────────────────────────────
+        // ── Target / paid-up progress ─────────────────────────────────
+        $targetAmount = self::TARGET_AMOUNT;
+        $targetShares = self::TARGET_SHARES;
+        $parValue = self::PAR_VALUE;
+        $paidUpPercent = $targetAmount > 0 ? min(100, round(($currentBalance / $targetAmount) * 100)) : 0;
+        $remainingToTarget = max(0, $targetAmount - $currentBalance);
+        $certificateEligible = $currentBalance >= $targetAmount;
 
-        $dividendRateRecord = null;
-        if ($this->tableExists('dividend_rates_tbls')) {
-            $dividendRateRecord = DB::table('dividend_rates_tbls')
-                ->orderByDesc('effective_year')
-                ->orderByDesc('created_at')
-                ->first();
-        }
+        // ── Installment (Capital Build-Up) timeline ─────────────────────
+        $timelineData = $this->buildInstallmentTimeline($account, $contributions);
+        $installmentTimeline = $timelineData['slots'];
+        $advancePayment = $timelineData['advance'];
+        $nextDueSlot = collect($installmentTimeline)->firstWhere('status', 'due')
+            ?? collect($installmentTimeline)->firstWhere('status', 'upcoming');
+
+        // ── Dividend data ────────────────────────────────────────────
+        $dividendRateRecord = $this->getDividendRateRecord();
         $dividendRate = $dividendRateRecord->rate ?? 8.5;
         $dividendRateYear = $dividendRateRecord->effective_year ?? now()->year;
+        $rateHistory = $this->getRateHistory();
+        $dividendHistory = $account ? $this->getDividendHistory($account->id) : collect();
 
-        $rateHistory = collect();
-        if ($this->tableExists('dividend_rates_tbls')) {
-            $rateHistory = DB::table('dividend_rates_tbls')
-                ->orderByDesc('effective_year')
-                ->limit(5)
-                ->get();
-        }
-
-        $dividendHistory = collect();
-        if ($this->tableExists('dividend_histories_tbls') && $account) {
-            $dividendHistory = DB::table('dividend_histories_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->orderByDesc('year')
-                ->orderByDesc('semester')
-                ->get();
-        }
-
-        $lastDividend = $dividendHistory
-            ->where('status', 'Paid')
-            ->sortByDesc(fn($d) => $d->date_paid)
-            ->first();
-
+        $lastDividend = $dividendHistory->where('status', 'Paid')->sortByDesc(fn($d) => $d->date_paid)->first();
         $lastDividendAmount = $lastDividend->dividend_amount ?? null;
-        $lastDividendDate = $lastDividend
-            ? Carbon::parse($lastDividend->date_paid)->format('M d, Y')
-            : null;
+        $lastDividendDate = $lastDividend ? Carbon::parse($lastDividend->date_paid)->format('M d, Y') : null;
         $lastDividendPeriod = $lastDividend->period_label ?? null;
 
-        $today = Carbon::today();
-        $jun15ThisYear = Carbon::create($today->year, 6, 15);
-        $dec15ThisYear = Carbon::create($today->year, 12, 15);
-        $jun15NextYear = Carbon::create($today->year + 1, 6, 15);
+        $dividendDates = $this->computeDividendDates();
+        extract($dividendDates);
 
-        if ($today->lte($jun15ThisYear)) {
-            $nextDividendDate = $jun15ThisYear;
-            $nextDividendPeriod = '1st Semester ' . $today->year;
-            $nextDividendSemester = 1;
-        } elseif ($today->lte($dec15ThisYear)) {
-            $nextDividendDate = $dec15ThisYear;
-            $nextDividendPeriod = '2nd Semester ' . $today->year;
-            $nextDividendSemester = 2;
-        } else {
-            $nextDividendDate = $jun15NextYear;
-            $nextDividendPeriod = '1st Semester ' . ($today->year + 1);
-            $nextDividendSemester = 1;
-        }
-
-        $projectedNextDividend = round($currentBalance * ($dividendRate / 100) / 2, 2);
+        // Approximate Average Monthly Balance (AMB) as current paid-up balance
+        // since we don't store month-end snapshots. Flagged as an estimate in the view.
+        $averageMonthlyBalance = $currentBalance;
+        $projectedNextDividend = round($averageMonthlyBalance * ($dividendRate / 100) / 2, 2);
+        $iscAmount = round($projectedNextDividend * self::ISC_SPLIT, 2);
+        $patronageAmount = round($projectedNextDividend * self::PATRONAGE_SPLIT, 2);
         $totalDividendsEarned = $dividendHistory->where('status', 'Paid')->sum('dividend_amount');
 
         $prevDividendDate = $lastDividend
             ? Carbon::parse($lastDividend->date_paid)
-            : ($nextDividendDate->copy()->subMonths(6));
+            : $nextDividendDate->copy()->subMonths(6);
         $prevDividendPeriod = $lastDividend->period_label
             ?? ($nextDividendSemester === 1
                 ? '2nd Semester ' . ($nextDividendDate->year - 1)
@@ -297,7 +170,9 @@ class ShareCapital extends Controller
             ? '2nd Semester ' . $nextDividendDate->year
             : '1st Semester ' . ($nextDividendDate->year + 1);
 
-        // ─────────────────────────────────────────────────────────────
+        $gcashPaymentMethod = \App\Models\PaymentMethod::where('method_name', 'GCash')
+            ->where('is_active', true)
+            ->first();
 
         return view('members_components.share_capital', array_merge(
             ['username' => $username, 'email' => $email],
@@ -305,6 +180,15 @@ class ShareCapital extends Controller
                 'currentBalance',
                 'currentShares',
                 'contributions',
+                'targetAmount',
+                'targetShares',
+                'parValue',
+                'paidUpPercent',
+                'remainingToTarget',
+                'certificateEligible',
+                'installmentTimeline',
+                'nextDueSlot',
+                'advancePayment',
                 'dividendRate',
                 'dividendRateYear',
                 'rateHistory',
@@ -315,12 +199,16 @@ class ShareCapital extends Controller
                 'lastDividendPeriod',
                 'nextDividendDate',
                 'nextDividendPeriod',
+                'averageMonthlyBalance',
                 'projectedNextDividend',
+                'iscAmount',
+                'patronageAmount',
                 'totalDividendsEarned',
                 'prevDividendDate',
                 'prevDividendPeriod',
                 'futureDate2',
                 'futurePeriod2',
+                'gcashPaymentMethod'
             )
         ));
     }
@@ -335,14 +223,15 @@ class ShareCapital extends Controller
             'type' => ['required', 'in:Deposit,Withdrawal'],
             'payment_method' => ['required', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:500'],
+            'gcash_proof' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
 
-        if (strtolower($validated['payment_method']) === 'gcash') {
-            return $this->payViaGcash($request);
-        }
+        $gcashProofPath = $request->hasFile('gcash_proof')
+            ? $request->file('gcash_proof')->store('documents/gcash_proofs', 'public')
+            : null;
 
         $memberId = Auth::id();
-        $amountPerShare = 1000;
+        $amountPerShare = self::PAR_VALUE;
         $shares = (int) $validated['shares'];
         $totalAmount = $shares * $amountPerShare;
         $now = Carbon::now();
@@ -355,21 +244,21 @@ class ShareCapital extends Controller
 
         $currentBalance = $account->total_amount ?? 0;
 
-        // ── FIX 1: Block withdrawal when balance is 0 ──────────────────
+        // ── Block withdrawal when balance is 0 ──────────────────
         if ($type === 'Withdrawal' && $currentBalance <= 0) {
             return redirect()->back()
                 ->with('error', 'You cannot withdraw because your current balance is ₱0.')
                 ->withInput();
         }
 
-        // ── FIX 2: Block withdrawal exceeding current balance ──────────
+        // ── Block withdrawal exceeding current balance ──────────
         if ($type === 'Withdrawal' && $totalAmount > $currentBalance) {
             return redirect()->back()
                 ->with('error', 'Withdrawal amount (₱' . number_format($totalAmount, 0) . ') exceeds your current balance (₱' . number_format($currentBalance, 0) . ').')
                 ->withInput();
         }
 
-        // ── FIX 3: Full withdrawal → auto-resignation ───────────────────
+        // ── Full withdrawal → auto-resignation ───────────────────
         if ($type === 'Withdrawal' && $totalAmount >= $currentBalance) {
             $existing = ResignationRequest_tbl::where('user_id', $memberId)
                 ->whereIn('status', ['pending'])
@@ -407,7 +296,6 @@ class ShareCapital extends Controller
 
         try {
             if ($account) {
-                // ── FIX 3: Only set Active & update balance on Deposit/Subscription ──
                 if ($type !== 'Withdrawal') {
                     DB::table('share_capital_account_tbls')
                         ->where('user_id', $memberId)
@@ -418,7 +306,6 @@ class ShareCapital extends Controller
                             'updated_at' => $now,
                         ]);
 
-                    // Also set membership_status to Active in users table
                     if ($type === 'Deposit') {
                         DB::table('otherinfo_tbls')
                             ->where('user_id', $memberId)
@@ -435,16 +322,8 @@ class ShareCapital extends Controller
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
-
-                // Set membership_status to Active on first deposit/subscription
-                // if ($type === 'Subscription') {
-                //     DB::table('otherinfo_tbls')
-                //         ->where('user_id', $memberId)
-                //         ->update(['membership_status' => 'Active']);
-                // }
             }
 
-            // ── FIX 4: Deposit/Subscription → Completed; Withdrawal → Pending ──
             $transactionStatus = ($type === 'Withdrawal') ? 'Pending' : 'Completed';
 
             DB::table('share_capital_transaction_tbls')->insert([
@@ -455,6 +334,7 @@ class ShareCapital extends Controller
                 'total_amount' => $totalAmount,
                 'payment_method' => $validated['payment_method'],
                 'reference_no' => $referenceNo,
+                'gcash_proof_path' => $gcashProofPath,
                 'note' => $validated['note'] ?? null,
                 'status' => $transactionStatus,
                 'transaction_date' => $now->toDateString(),
@@ -472,7 +352,6 @@ class ShareCapital extends Controller
             );
 
             $memberName = $this->resolveMemberName();
-            // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
 
             return redirect()->route($redirectRoute)
@@ -483,7 +362,7 @@ class ShareCapital extends Controller
                 ->with('sc_receipt_ref', $referenceNo)
                 ->with('sc_receipt_member', $memberName)
                 ->with('sc_receipt_type', $type)
-                ->with('sc_receipt_status', $transactionStatus); // pass status to blade
+                ->with('sc_receipt_status', $transactionStatus);
 
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -503,10 +382,9 @@ class ShareCapital extends Controller
         }
 
         $shares = (int) $request->input('shares', 1);
-        $totalAmount = $shares * 1000;
+        $totalAmount = $shares * self::PAR_VALUE;
         $type = $request->input('type', 'Deposit');
 
-        // ── FIX 5: Block GCash withdrawal when balance is 0 or insufficient ──
         if ($type === 'Withdrawal') {
             $memberId = Auth::id();
             $account = DB::table('share_capital_account_tbls')
@@ -527,7 +405,6 @@ class ShareCapital extends Controller
                     ->withInput();
             }
 
-            // Full withdrawal via GCash → auto-resignation
             if ($totalAmount >= $currentBalance) {
                 $existing = ResignationRequest_tbl::where('user_id', $memberId)
                     ->whereIn('status', ['pending'])
@@ -566,8 +443,6 @@ class ShareCapital extends Controller
             'sc_pending_shares' => $shares,
             'sc_pending_note' => $request->input('note'),
             'sc_pending_type' => $type,
-            'sc_pending_type' => $request->input('type', 'Deposit'),
-            'sc_pending_type' => $type ?? $request->input('type', 'Deposit'),
         ]);
 
         $response = Http::withBasicAuth(env('PAYMONGO_SECRET_KEY'), '')
@@ -601,7 +476,7 @@ class ShareCapital extends Controller
     public function gcashSuccess(Request $request)
     {
         $memberId = Auth::id();
-        $amountPerShare = 1000;
+        $amountPerShare = self::PAR_VALUE;
         $shares = (int) session('sc_pending_shares', 1);
         $note = session('sc_pending_note');
         $type = session('sc_pending_type', 'Deposit');
@@ -629,7 +504,6 @@ class ShareCapital extends Controller
                             'updated_at' => $now,
                         ]);
 
-                    // Set membership_status to Active on deposit
                     if ($type === 'Deposit') {
                         DB::table('otherinfo_tbls')
                             ->where('user_id', $memberId)
@@ -646,16 +520,8 @@ class ShareCapital extends Controller
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
-
-                // Set membership_status to Active on first deposit
-                // if ($type === 'Subscription') {
-                //     DB::table('otherinfo_tbls')
-                //         ->where('user_id', $memberId)
-                //         ->update(['membership_status' => 'Active']);
-                // }
             }
 
-            // Deposit/Subscription → Completed; Withdrawal → Pending
             $transactionStatus = ($type === 'Withdrawal') ? 'Pending' : 'Completed';
 
             DB::table('share_capital_transaction_tbls')->insert([
@@ -683,7 +549,6 @@ class ShareCapital extends Controller
             );
 
             $memberName = $this->resolveMemberName();
-            // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
 
             return redirect()->route($redirectRoute)
@@ -698,7 +563,6 @@ class ShareCapital extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            // $redirectRoute = ($type === 'Subscription') ? 'share_capital.index' : 'ShareCapitalMember';
             $redirectRoute = 'ShareCapitalMember';
             return redirect()->route($redirectRoute)
                 ->with('error', 'GCash payment was received but failed to save. Please contact support.');
@@ -710,11 +574,9 @@ class ShareCapital extends Controller
      */
     public function gcashFailed(Request $request)
     {
-        $type = session('sc_pending_type', 'Deposit');
         session()->forget(['sc_pending_shares', 'sc_pending_note', 'sc_pending_type']);
 
-        $redirectRoute = 'ShareCapitalMember';
-        return redirect()->route($redirectRoute)
+        return redirect()->route('ShareCapitalMember')
             ->with('error', 'GCash payment failed. Please try again.');
     }
 
@@ -730,45 +592,13 @@ class ShareCapital extends Controller
             ->first();
 
         if ($account) {
-            $depositAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('total_amount') ?? 0;
-
-            $withdrawalAmount = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('total_amount') ?? 0;
-
-            $currentBalance = $depositAmount - $withdrawalAmount;
-
-            $deposits = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
-                ->whereIn('status', ['Completed', 'completed'])
-                ->sum('shares') ?? 0;
-
-            $withdrawals = DB::table('share_capital_transaction_tbls')
-                ->where('share_capital_account_id', $account->id)
-                ->where('type', 'Withdrawal')
-                ->whereIn('status', ['Approved', 'approved'])
-                ->sum('shares') ?? 0;
-
-            $currentShares = $deposits - $withdrawals;
+            [$currentBalance, $currentShares] = $this->computeBalanceAndShares($account);
         } else {
             $currentBalance = 0;
             $currentShares = 0;
         }
 
-        $dividendRateRecord = null;
-        if ($this->tableExists('dividend_rates_tbls')) {
-            $dividendRateRecord = DB::table('dividend_rates_tbls')
-                ->orderByDesc('effective_year')
-                ->orderByDesc('created_at')
-                ->first();
-        }
+        $dividendRateRecord = $this->getDividendRateRecord();
         $dividendRate = $dividendRateRecord->rate ?? 8.5;
 
         if (!Auth::check()) {
@@ -801,7 +631,7 @@ class ShareCapital extends Controller
         $buyerId = (int) $request->buyer_id;
         $shares = (float) $request->shares;
         $totalAmount = (float) $request->amount;
-        $amountPerShare = 1000;
+        $amountPerShare = self::PAR_VALUE;
         $now = Carbon::now();
 
         DB::beginTransaction();
@@ -911,6 +741,199 @@ class ShareCapital extends Controller
     // ─────────────────────────────────────────────────────────────────────────
     // HELPERS
     // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Compute balance/shares consistently (Completed deposits minus Approved withdrawals).
+     */
+    private function computeBalanceAndShares($account): array
+    {
+        $depositAmount = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id)
+            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('total_amount') ?? 0;
+
+        $withdrawalAmount = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('total_amount') ?? 0;
+
+        $currentBalance = $depositAmount - $withdrawalAmount;
+
+        $deposits = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id)
+            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('status', ['Completed', 'completed'])
+            ->sum('shares') ?? 0;
+
+        $withdrawals = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id)
+            ->where('type', 'Withdrawal')
+            ->whereIn('status', ['Approved', 'approved'])
+            ->sum('shares') ?? 0;
+
+        $currentShares = $deposits - $withdrawals;
+
+        return [$currentBalance, $currentShares];
+    }
+
+    /**
+     * Build the 8-quarter (2-year) Capital Build-Up installment timeline.
+     * Each slot represents a real 3-month calendar window starting from the
+     * account's creation date. All completed Deposit/Subscription
+     * transactions that fall inside a window are SUMMED into that slot —
+     * so multiple small deposits in the same quarter don't spill into
+     * later slots. Anything paid after the 8-quarter plan window ends
+     * (or once the target is already met) is reported separately as an
+     * "advance payment" rather than being silently dropped.
+     * No new columns required — this is fully derived from transaction_date.
+     */
+    private function buildInstallmentTimeline($account, $contributions): array
+    {
+        if (!$account) {
+            $slots = [];
+            for ($i = 1; $i <= self::INSTALLMENT_SLOTS; $i++) {
+                $year = $i <= 4 ? 1 : 2;
+                $quarter = (($i - 1) % 4) + 1;
+                $slots[] = [
+                    'index' => $i,
+                    'label' => "Q{$quarter}",
+                    'sublabel' => "Year {$year}",
+                    'status' => 'upcoming',
+                    'amount' => null,
+                    'date' => null,
+                ];
+            }
+            return ['slots' => $slots, 'advance' => 0];
+        }
+
+        $paid = collect($contributions)
+            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->filter(fn($c) => strtolower($c->status ?? '') === 'completed')
+            ->map(fn($c) => (object) [
+                'amount' => (float) $c->total_amount,
+                'date' => Carbon::parse($c->transaction_date),
+            ])
+            ->sortBy('date')
+            ->values();
+
+        // Anchor the plan's day-one to whichever is EARLIER: the account
+        // row's created_at, or the member's first completed contribution.
+        // Without this, transactions dated before the account row was
+        // created/seeded would fall before window 1 and never match any
+        // slot — which is what was causing everything to show "Upcoming"
+        // despite a fully paid-up balance.
+        $startDate = Carbon::parse($account->created_at);
+        if ($paid->isNotEmpty() && $paid->first()->date->lt($startDate)) {
+            $startDate = $paid->first()->date->copy();
+        }
+
+        $planEnd = $startDate->copy()->addMonths(self::INSTALLMENT_SLOTS * 3);
+
+        $quartersElapsed = (int) ceil(max(1, $startDate->diffInMonths(Carbon::today()) / 3));
+
+        $slots = [];
+        $firstUnpaidFound = false;
+
+        for ($i = 1; $i <= self::INSTALLMENT_SLOTS; $i++) {
+            $year = $i <= 4 ? 1 : 2;
+            $quarter = (($i - 1) % 4) + 1;
+            $windowStart = $startDate->copy()->addMonths(($i - 1) * 3);
+            $windowEnd = $startDate->copy()->addMonths($i * 3);
+
+            $inWindow = $paid->filter(fn($c) => $c->date->gte($windowStart) && $c->date->lt($windowEnd));
+            $sum = $inWindow->sum('amount');
+
+            if ($sum > 0) {
+                $status = 'paid';
+                $amount = $sum;
+                $date = $inWindow->last()->date;
+            } elseif (!$firstUnpaidFound && $quartersElapsed >= $i) {
+                $status = 'due';
+                $amount = null;
+                $date = $windowStart;
+                $firstUnpaidFound = true;
+            } else {
+                $status = 'upcoming';
+                $amount = null;
+                $date = $windowStart;
+            }
+
+            $slots[] = [
+                'index' => $i,
+                'label' => "Q{$quarter}",
+                'sublabel' => "Year {$year}",
+                'status' => $status,
+                'amount' => $amount,
+                'date' => $date,
+            ];
+        }
+
+        // Anything paid after the 8-quarter plan window closes is an
+        // advance/overflow payment — never dropped, just reported separately.
+        $advance = $paid->filter(fn($c) => $c->date->gte($planEnd))->sum('amount');
+
+        return ['slots' => $slots, 'advance' => $advance];
+    }
+
+    private function computeDividendDates(): array
+    {
+        $today = Carbon::today();
+        $jun15ThisYear = Carbon::create($today->year, 6, 15);
+        $dec15ThisYear = Carbon::create($today->year, 12, 15);
+        $jun15NextYear = Carbon::create($today->year + 1, 6, 15);
+
+        if ($today->lte($jun15ThisYear)) {
+            $nextDividendDate = $jun15ThisYear;
+            $nextDividendPeriod = '1st Semester ' . $today->year;
+            $nextDividendSemester = 1;
+        } elseif ($today->lte($dec15ThisYear)) {
+            $nextDividendDate = $dec15ThisYear;
+            $nextDividendPeriod = '2nd Semester ' . $today->year;
+            $nextDividendSemester = 2;
+        } else {
+            $nextDividendDate = $jun15NextYear;
+            $nextDividendPeriod = '1st Semester ' . ($today->year + 1);
+            $nextDividendSemester = 1;
+        }
+
+        return compact('nextDividendDate', 'nextDividendPeriod', 'nextDividendSemester');
+    }
+
+    private function getDividendRateRecord()
+    {
+        if ($this->tableExists('dividend_rates_tbls')) {
+            return DB::table('dividend_rates_tbls')
+                ->orderByDesc('effective_year')
+                ->orderByDesc('created_at')
+                ->first();
+        }
+        return null;
+    }
+
+    private function getRateHistory()
+    {
+        if ($this->tableExists('dividend_rates_tbls')) {
+            return DB::table('dividend_rates_tbls')
+                ->orderByDesc('effective_year')
+                ->limit(5)
+                ->get();
+        }
+        return collect();
+    }
+
+    private function getDividendHistory($accountId)
+    {
+        if ($this->tableExists('dividend_histories_tbls')) {
+            return DB::table('dividend_histories_tbls')
+                ->where('share_capital_account_id', $accountId)
+                ->orderByDesc('year')
+                ->orderByDesc('semester')
+                ->get();
+        }
+        return collect();
+    }
 
     private function generateReferenceNo(): string
     {

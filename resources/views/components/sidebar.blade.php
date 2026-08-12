@@ -5,6 +5,10 @@
             <h3>KPMPCATS</h3>
             <p>Member Management</p>
         </div>
+
+        <!-- <div class="button-accordion">
+            <i class="fa fa-chevron-left"></i>
+        </div> -->
     </div>
     <div class="sidebar-menu">
         <ul>
@@ -59,6 +63,13 @@
                     </a>
                 </li>
 
+                <li class="{{ request()->routeIs('Seminars') ? 'active' : '' }}">
+                    <a href="{{ route('Seminars') }}" title="Seminars">
+                        <i class="fa fa-graduation-cap"></i>
+                        <span>Seminars</span>
+                    </a>
+                </li>
+
                 <div class="sidebar-divider"></div>
 
                 <div class="menu" style="padding: 10px 10px 8px;">
@@ -74,8 +85,8 @@
                     </a>
                 </li>
 
-                <li class="{{ request()->routeIs('Transactions') ? 'active' : '' }}">
-                    <a href="{{ route('Transactions') }}">
+                <li class="{{ request()->routeIs('transactions') ? 'active' : '' }}">
+                    <a href="{{ route('transactions') }}">
                         <!-- <div class="nav-icon"> -->
                         <i class="fa fa-receipt"></i>
                         <!-- </div> -->

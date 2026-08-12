@@ -39,9 +39,8 @@
                         <p>Loan reminders, account activity and cooperative announcements</p>
                     </div>
                     <div>
-                        <button>
+                        <button id="markAllReadBtn" type="button">
                             <i class="fa fa-envelope-open"></i>
-
                             Mark all as read
                         </button>
                     </div>
@@ -50,96 +49,196 @@
                 <div class="main-body">
                     <div class="filters">
                         <div class="tab-group">
-                            <div class="tab active">All <div class="tab-count">5</div>
+                            <div class="tab active" data-filter="all">All
+                                <div class="tab-count">{{ $notifications->count() }}</div>
                             </div>
-                            <div class="tab">Unread <div class="tab-count">3</div>
+                            <div class="tab" data-filter="unread">Unread
+                                <div class="tab-count">{{ $unreadCount }}</div>
                             </div>
-                            <div class="tab">Loans</div>
-                            <div class="tab">Share Capital</div>
-                            <div class="tab">Savings</div>
-                            <div class="tab">Announcements</div>
-                        </div>
-                    </div>
-
-                    <div class="notif-group">
-                        <div class="group-label">Today · Jul 25, 2026</div>
-                        <div class="ledger-page">
-                            <div class="notif-row">
-                                <div class="notif-icon coral">
-                                    <i class="fa fa-hand-holding-dollar"></i>
-                                </div>
-                                <div class="notif-body">
-                                    <div class="notif-top">
-                                        <div class="notif-title">Personal loan due soon</div>
-                                        <div class="notif-time">9:02 AM</div>
-                                    </div>
-                                    <div class="notif-desc">Your personal loan 7 out of 12 is due on Aug 05, 2026</div>
-                                    <div class="notif-meta-row">
-                                        <div class="notif-chip due">Due in 12 days</div>
-                                        <div class="notif-action">Pay Now</div>
-                                    </div>
-                                </div>
+                            <div class="tab" data-filter="important">Important
+                                <div class="tab-count">{{ $importantCount }}</div>
                             </div>
-                            <div class="notif-row">
-                                <div class="notif-icon blue">
-                                    <i class="fa fa-piggy-bank"></i>
-                                </div>
-                                <div class="notif-body">
-                                    <div class="notif-top">
-                                        <div class="notif-title">Savings deposit received</div>
-                                        <div class="notif-time">8:41 AM</div>
-                                    </div>
-                                    <div class="notif-desc">A deposit of ₱1,500.00 was posted to your Regular Savings account.</div>
-                                    <div class="notif-meta-row">
-                                        <!-- <div class="notif-chip due">Due in 12 days</div> -->
-                                        <div class="notif-action">View transaction</div>
-                                    </div>
-                                </div>
+                            <div class="tab" data-filter="inbox">Inbox
+                                <div class="tab-count">{{ $inboxCount }}</div>
+                            </div>
+                            <div class="tab" data-filter="announcement">Announcements
+                                <div class="tab-count">{{ $announcementCount }}</div>
+                            </div>
+                            <div class="tab" data-filter="spam">Spam
+                                <div class="tab-count">{{ $spamCount }}</div>
+                            </div>
+                            <div class="tab" data-filter="social">Social
+                                <div class="tab-count">{{ $socialCount }}</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="notif-group">
-                        <div class="group-label">Earlier this week</div>
-                        <div class="ledger-page">
-                            <div class="notif-row">
-                                <div class="notif-icon coral">
-                                    <i class="fa fa-hand-holding-dollar"></i>
-                                </div>
-                                <div class="notif-body">
-                                    <div class="notif-top">
-                                        <div class="notif-title">Personal loan due soon</div>
-                                        <div class="notif-time">9:02 AM</div>
-                                    </div>
-                                    <div class="notif-desc">Your personal loan 7 out of 12 is due on Aug 05, 2026</div>
-                                    <div class="notif-meta-row">
-                                        <div class="notif-chip due">Due in 12 days</div>
-                                        <div class="notif-action">Pay Now</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="notif-row">
-                                <div class="notif-icon blue">
-                                    <i class="fa fa-piggy-bank"></i>
-                                </div>
-                                <div class="notif-body">
-                                    <div class="notif-top">
-                                        <div class="notif-title">Savings deposit received</div>
-                                        <div class="notif-time">8:41 AM</div>
-                                    </div>
-                                    <div class="notif-desc">A deposit of ₱1,500.00 was posted to your Regular Savings account.</div>
-                                    <div class="notif-meta-row">
-                                        <!-- <div class="notif-chip due">Due in 12 days</div> -->
-                                        <div class="notif-action">View transaction</div>
-                                    </div>
-                                </div>
-                            </div>
+                    @if($notifications->isEmpty())
+                        <div class="empty-state" id="emptyState">
+                            <i class="fa fa-bell-slash"></i>
+                            <p>No notifications yet</p>
                         </div>
-                    </div>
+                    @else
+                        <div id="notifList">
+                            @foreach($grouped as $label => $items)
+                                <div class="notif-group" data-group>
+                                    <div class="group-label">{{ $label }}</div>
+                                    <div class="ledger-page">
+                                        @foreach($items as $notif)
+                                            @php
+                                                $titleLower = strtolower($notif->title ?? '');
+                                                if (str_contains($titleLower, 'loan')) {
+                                                    $iconClass = 'coral';
+                                                    $iconFa = 'fa-hand-holding-dollar';
+                                                } elseif (str_contains($titleLower, 'saving') || str_contains($titleLower, 'deposit')) {
+                                                    $iconClass = 'blue';
+                                                    $iconFa = 'fa-piggy-bank';
+                                                } elseif ($notif->category === 'announcement') {
+                                                    $iconClass = 'blue';
+                                                    $iconFa = 'fa-bullhorn';
+                                                } elseif ($notif->category === 'spam') {
+                                                    $iconClass = 'coral';
+                                                    $iconFa = 'fa-triangle-exclamation';
+                                                } elseif ($notif->category === 'social') {
+                                                    $iconClass = 'blue';
+                                                    $iconFa = 'fa-users';
+                                                } else {
+                                                    $iconClass = 'coral';
+                                                    $iconFa = 'fa-bell';
+                                                }
+                                            @endphp
+                                            <div class="notif-row {{ $notif->is_read ? '' : 'unread' }}"
+                                                data-category="{{ $notif->category }}"
+                                                data-important="{{ $notif->is_important ? '1' : '0' }}"
+                                                data-read="{{ $notif->is_read ? '1' : '0' }}" data-id="{{ $notif->id }}">
+                                                <div class="notif-icon {{ $iconClass }}">
+                                                    <i class="fa {{ $iconFa }}"></i>
+                                                </div>
+                                                <div class="notif-body">
+                                                    <div class="notif-top">
+                                                        <div class="notif-title">{{ $notif->title }}</div>
+                                                        <div class="notif-time">
+                                                            {{ \Carbon\Carbon::parse($notif->created_at)->format('g:i A') }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="notif-desc">{{ $notif->message }}</div>
+                                                    <div class="notif-meta-row">
+                                                        @if(!$notif->is_read)
+                                                            <div class="notif-chip due">Unread</div>
+                                                        @endif
+                                                        <div class="notif-action">View</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="empty-state" id="emptyState" style="display:none;">
+                            <i class="fa fa-bell-slash"></i>
+                            <p>No notifications in this category</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab-group .tab');
+            const groups = document.querySelectorAll('.notif-group');
+            const emptyState = document.getElementById('emptyState');
+
+            function applyFilter(filter) {
+                let anyVisible = false;
+
+                groups.forEach(group => {
+                    let groupHasVisible = false;
+                    group.querySelectorAll('.notif-row').forEach(row => {
+                        const category = row.dataset.category;
+                        const isImportant = row.dataset.important === '1';
+                        const isUnread = row.dataset.read === '0';
+                        let show;
+
+                        switch (filter) {
+                            case 'all':
+                                show = true;
+                                break;
+                            case 'unread':
+                                show = isUnread;
+                                break;
+                            case 'important':
+                                show = isImportant;
+                                break;
+                            default:
+                                show = category === filter;
+                        }
+
+                        row.style.display = show ? '' : 'none';
+                        if (show) {
+                            groupHasVisible = true;
+                            anyVisible = true;
+                        }
+                    });
+                    group.style.display = groupHasVisible ? '' : 'none';
+                });
+
+                if (emptyState) {
+                    emptyState.style.display = anyVisible ? 'none' : 'block';
+                }
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    applyFilter(this.dataset.filter);
+                });
+            });
+
+            // Mark all as read
+            const markAllBtn = document.getElementById('markAllReadBtn');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', function () {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                    fetch("{{ route('notifications.markAllRead') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.querySelectorAll('.notif-row').forEach(row => {
+                                    row.dataset.read = '1';
+                                    row.classList.remove('unread');
+                                    const chip = row.querySelector('.notif-chip.due');
+                                    if (chip && chip.textContent.trim() === 'Unread') {
+                                        chip.remove();
+                                    }
+                                });
+
+                                const unreadTab = document.querySelector('.tab[data-filter="unread"] .tab-count');
+                                if (unreadTab) unreadTab.textContent = '0';
+
+                                const activeTab = document.querySelector('.tab.active');
+                                if (activeTab) applyFilter(activeTab.dataset.filter);
+                            }
+                        })
+                        .catch(err => console.error('Mark all as read failed:', err));
+                });
+            }
+
+            applyFilter('all');
+        });
+    </script>
 
 </body>
 

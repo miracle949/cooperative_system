@@ -16,7 +16,7 @@ class LendingProgramObserver
                 return;
 
             $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
-            
+
             lending_status_tbl::create([
                 'lending_id' => $loan->id,
                 'user_id' => $loan->user_id,
@@ -27,7 +27,9 @@ class LendingProgramObserver
                 'interest_rate' => ($loan->lending_amount > 0 && $loan->total_interest > 0)
                     ? round(($loan->total_interest / $loan->lending_amount) * 100, 2)
                     : 0,
-                'due_date' => now()->addMonths($termMonths)->format('Y-m-d'),
+                'due_date' => \Carbon\Carbon::parse($loan->created_at)
+                    ->addDays(\App\Http\Controllers\lendingController::PAYMENT_INTERVAL_DAYS)
+                    ->format('Y-m-d'),
                 'status' => 'Active',
             ]);
         }

@@ -210,11 +210,24 @@
                         @if ($username)
                             <div class="main-header">
                                 <div class="main-intro">
+                                    <!-- <div class="main-left">
+                                        <div class="left-icon">
+
+                                        </div>
+                                        <div class="left-text">
+                                            <span>Member Cooperative Assistant</span>
+                                            <p>Your money are growing steadily. Every peso you save today builds a stronger
+                                            tomorrow for you and the community.</p>
+                                        </div>
+                                    </div>
+                                    <div class="main-right">
+
+                                    </div> -->
                                     <div class="main-intro-icon"></div>
                                     <div class="main-intro-text">
                                         <span>Member Cooperative Assistant</span>
                                         <p>Your money are growing steadily. Every peso you save today builds a stronger
-                                            tomorrow for you and the community.</p>
+                                            tomorrow for you.</p>
                                     </div>
                                 </div>
                             </div>
@@ -226,14 +239,11 @@
                             <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
                                 <div class="card-header">
                                     <p>Savings Balance</p>
-                                    <div class="update">
-                                        <i class="fa fa-arrow-up"></i>
-                                        <p>Active</p>
-                                    </div>
+                                    <div class="update"><i class="fa fa-layer-group"></i></div>
                                 </div>
                                 <div class="card-body">
                                     <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
-                                    <p>↑ +₱3,200 this month</p>
+                                    <p>{{ $netSavingsThisMonth >= 0 ? '↑ +' : '↓ -' }}₱{{ number_format(abs($netSavingsThisMonth), 2) }} this month</p>
                                 </div>
                             </div>
 
@@ -241,14 +251,11 @@
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
                                 <div class="card-header">
                                     <p>Active Loans</p>
-                                    <div class="update">
-                                        <i class="fa fa-arrow-up"></i>
-                                        <p>Active</p>
-                                    </div>
+                                    <div class="update"><i class="fa fa-piggy-bank"></i></div>
                                 </div>
                                 <div class="card-body">
                                     <h5>{{ $activeLoansCount }} Loan(s)</h5>
-                                    <p>2 active loans</p>
+                                    <p>{{ $nextDueDisplay ? "Next due {$nextDueDisplay}" : 'No upcoming dues' }}</p>
                                 </div>
                             </div>
 
@@ -256,24 +263,29 @@
                             <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
                                 <div class="card-header">
                                     <p>Overdue Loans</p>
-                                    <div class="update">
-                                        @if($overdueCount > 0)
-                                            <p style="color:#dc2626;">Total: ₱{{ number_format($totalLateFees, 2) }}</p>
-                                        @else
-                                            <p style="color:#0f6e56;">No overdue</p>
-                                        @endif
-                                    </div>
+                                    <div class="update"><i class="fa fa-triangle-exclamation"></i></div>
                                 </div>
                                 <div class="card-body">
                                     <h5>{{ $overdueCount }} Loan(s)</h5>
-                                    <p>⚠ Due May 15</p>
+                                    <p>{{ $earliestOverdueDisplay ? "⚠ Due {$earliestOverdueDisplay}" : 'No overdue' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="card-box" onclick="document.getElementById('netStandingModal').style.display='flex'">
+                                <div class="card-header">
+                                    <p>Net Standing</p>
+                                    <div class="update"><i class="fa fa-wallet"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>₱{{ number_format($netStandingTotal, 2) }}</h5>
+                                    <p>Overall financial position</p>
                                 </div>
                             </div>
 
                         </div>
                     </main>
 
-                    <div class="ask-box">
+                    <!-- <div class="ask-box">
                         <div class="text-box">
                             <h4>Need financial assistance?</h4>
                             <p>Apply for a lending today — fast processing, exclusive member rates.</p>
@@ -286,36 +298,172 @@
                         </div>
                     </div>
 
-                    <h3>Quick Summary</h3>
+                    <h3>Quick Summary</h3> -->
 
                     <section>
-                        <div class="section-card">
-                            <div class="section-header">
-                                <div>
-                                    <div class="section-title">Financial Trends</div>
-                                    <div class="section-sub">Savings &amp; loan repayments over time</div>
+                        <div class="parent-panel panel-1">
+                            <div class="panel graph" style="width:100%;">
+                                <div class="panel-head"
+                                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Savings Growth</h3>
+                                        <p>Net deposits over the last 6 months</p>
+                                    </div>
+                                    <div class="year-filter">
+                                        <select onchange="window.location='{{ url()->current() }}?year='+this.value">
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="chart-wrap">
+                                        @foreach ($savingsGrowth as $month)
+                                            <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
+                                                <div class="bar" style="height:{{ $month['height_percent'] }}%">
+                                                    <div class="bar-tooltip">
+                                                        <div class="bar-tooltip-title">{{ $month['label'] }}</div>
+                                                        <div class="bar-tooltip-row">
+                                                            <span
+                                                                class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
+                                                            <span class="bar-tooltip-label">Net Savings:</span>
+                                                            <span class="bar-tooltip-value">
+                                                                {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{ number_format(abs($month['net']), 2) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="bar-month">{{ $month['label'] }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <!-- <div class="chart-legend">
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--blue);"></span>Prior months</div>
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--gold);"></span>Current month</div>
+                                    </div> -->
                                 </div>
                             </div>
-                            <div class="chart-wrap">
-                                <div class="chart-tabs">
-                                    <button class="chart-tab active"
-                                        onclick="switchChart('monthly', this)">Monthly</button>
-                                    <button class="chart-tab"
-                                        onclick="switchChart('cumulative', this)">Cumulative</button>
+
+                            <div class="panel graph announcements">
+                                <div class="panel-head"
+                                style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                <div>
+                                    <h3>Announcements</h3>
+                                    <p>Latest updates from your cooperative</p>
                                 </div>
-                                <div class="chart-container">
-                                    <canvas id="trendsChart"></canvas>
+                                <div class="balance-date">
+                                    <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
+                                        @foreach (range(1, 12) as $m)
+                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
+                                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
+                                        @foreach ($availableYears as $year)
+                                            <option value="{{ $year }}"
+                                                {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="chart-legend">
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#1e9e6b"></div>Savings
+                            </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="parent-panel panel-2" style="margin-top:1.5rem;">
+                            <div class="panel graph">
+                                <div class="panel-head"
+                                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Account Balance</h3>
+                                        <p>Share capital, savings &amp; loan balance overview</p>
                                     </div>
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#1560c0"></div>Loan Payments
+                                    <div class="balance-date">
+                                        <select id="balanceMonthSelect" onchange="updateBalanceMonth()">
+                                            @foreach (range(1, 12) as $m)
+                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                    {{ (int) explode('-', $balanceMonth)[1] === $m ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="balanceYearSelect" onchange="updateBalanceMonth()">
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}"
+                                                    {{ (int) explode('-', $balanceMonth)[0] === $year ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="legend-item">
-                                        <div class="legend-dot" style="background:#f0a500"></div>Share Capital
+                                </div>
+                                <div class="panel-body">
+                                    <div class="pie-chart-wrap">
+                                        <canvas id="accountBalancePie" width="220" height="220"></canvas>
                                     </div>
+                                    <div class="chart-legend">
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--gold);"></span>Share Capital</div>
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--blue);"></span>Savings</div>
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--coral);"></span>Loan Balance</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel graph">
+                                <div class="panel-head"
+                                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Share Capital Growth</h3>
+                                        <p>Net contributions over the last 6 months</p>
+                                    </div>
+                                    <div class="year-filter">
+                                        <select onchange="window.location='{{ url()->current() }}?year='+this.value">
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="chart-wrap">
+                                        @foreach ($shareCapitalGrowth as $month)
+                                            <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
+                                                <div class="bar" style="height:{{ $month['height_percent'] }}%">
+                                                    <div class="bar-tooltip">
+                                                        <div class="bar-tooltip-title">{{ $month['label'] }}</div>
+                                                        <div class="bar-tooltip-row">
+                                                            <span
+                                                                class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
+                                                            <span class="bar-tooltip-label">Net Contribution:</span>
+                                                            <span class="bar-tooltip-value">
+                                                                {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{ number_format(abs($month['net']), 2) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="bar-month">{{ $month['label'] }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <!-- <div class="chart-legend">
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--blue);"></span>Prior months</div>
+                                        <div class="legend-item"><span class="legend-dot"
+                                                style="background:var(--gold);"></span>Current month</div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -329,196 +477,62 @@
                                         <p>Latest account activity across all accounts</p>
                                     </div>
                                     <div>
-                                        <a href="#">View all</a>
+                                        <a href="{{ route('transactions') }}">View all</a>
                                     </div>
                                 </div>
                                 <div class="recent-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Description</th>
-                                                <th>Reference</th>
-                                                <th>Type</th>
-                                                <th>Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Savings Deposit</td>
-                                                <td>REF-052801</td>
-                                                <td>
-                                                    <span>Savings</span>
-                                                </td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Loan Payment</td>
-                                                <td>REF-052801</td>
-                                                <td>
-                                                    <span>Loan</span>
-                                                </td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Loan Payment</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Share Capital Contribution</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Savings Deposit</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Savings Deposit</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Savings Deposit</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td>May 28, 2026</td>
-                                                <td>Savings Deposit</td>
-                                                <td>REF-052801</td>
-                                                <td>Savings</td>
-                                                <td>+₱3,200.00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="tx-list">
+                                        @forelse ($recentTransactions as $tx)
+                                            <div class="tx-list-item">
+                                                <div class="tx-icon {{ $tx['icon'] }}"><i class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $tx['title'] }}</strong>
+                                                    <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
+                                                </div>
+                                                <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
+                                                    {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No transactions found.
+                                            </div>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="loan-overview">
                                 <div class="loan-header">
                                     <div>
-                                        <h4>Loan Overview</h4>
-                                        <p>Your loan details and repayment progress</p>
+                                        <h4>Upcoming Dues</h4>
+                                        <p>Your next loan payments across all accounts</p>
                                     </div>
                                     <div>
-                                        <a href="#">View all</a>
+                                        <a href="{{ route('LoanStatus') }}">View all</a>
                                     </div>
                                 </div>
-                                <div class="loan-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Loan #</th>
-                                                <th>Type</th>
-                                                <th>Amount</th>
-                                                <th>Balance</th>
-                                                <th>Next Due</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <p>LN-2024-001</p>
-                                                    <p>Released Jan 10</p>
-                                                </td>
-                                                <td>Emergency Loan</td>
-                                                <td>₱15,000</td>
-                                                <td>
-                                                    <p>₱9,200</p>
-                                                    <div class="parent-progress">
-                                                        <div class="progress"></div>
-                                                    </div>
-                                                    <p>39% paid</p>
-                                                </td>
-                                                <td>June 15</td>
-                                                <td>Active</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>LN-2024-001</p>
-                                                    <p>Released Jan 10</p>
-                                                </td>
-                                                <td>Personal Loan</td>
-                                                <td>₱15,000</td>
-                                                <td>
-                                                    <p>₱9,200</p>
-                                                    <div class="parent-progress">
-                                                        <div class="progress"></div>
-                                                    </div>
-                                                    <p>39% paid</p>
-                                                </td>
-                                                <td>June 15</td>
-                                                <td>Active</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>LN-2024-001</p>
-                                                    <p>Released Jan 10</p>
-                                                </td>
-                                                <td>Education Loan</td>
-                                                <td>₱15,000</td>
-                                                <td>
-                                                    <p>₱9,200</p>
-                                                    <div class="parent-progress">
-                                                        <div class="progress"></div>
-                                                    </div>
-                                                    <p>39% paid</p>
-                                                </td>
-                                                <td>June 15</td>
-                                                <td>Active</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>LN-2024-001</p>
-                                                    <p>Released Jan 10</p>
-                                                </td>
-                                                <td>Education Loan</td>
-                                                <td>₱15,000</td>
-                                                <td>
-                                                    <p>₱9,200</p>
-                                                    <div class="parent-progress">
-                                                        <div class="progress"></div>
-                                                    </div>
-                                                    <p>39% paid</p>
-                                                </td>
-                                                <td>June 15</td>
-                                                <td>Active</td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p>LN-2024-001</p>
-                                                    <p>Released Jan 10</p>
-                                                </td>
-                                                <td>Education Loan</td>
-                                                <td>₱15,000</td>
-                                                <td>
-                                                    <p>₱9,200</p>
-                                                    <div class="parent-progress">
-                                                        <div class="progress"></div>
-                                                    </div>
-                                                    <p>39% paid</p>
-                                                </td>
-                                                <td>June 15</td>
-                                                <td>Active</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="recent-body">
+                                    <div class="tx-list">
+                                        @forelse ($upcomingDues as $due)
+                                            <div class="tx-list-item">
+                                                <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $due['title'] }}</strong>
+                                                    <span>{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
+                                                </div>
+                                                <div class="tx-list-amt down">
+                                                    ₱{{ number_format($due['amount'], 2) }}
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No upcoming dues.
+                                            </div>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -535,8 +549,8 @@
                         </div> -->
                         {{-- end Financial Trends Chart --}}
 
-                    <!-- Resign from Cooperative -->
-                    <div class="ask-box" style="margin-top: 2rem; border: 1px solid #fecaca; background: #fef2f2;">
+                        <!-- Resign from Cooperative -->
+                        <!-- <div class="ask-box" style="margin-top: 2rem; border: 1px solid #fecaca; background: #fef2f2;">
                         <div class="text-box">
                             <h4 style="color: #dc2626;">Leave the Cooperative?</h4>
                             <p>If you wish to resign from the cooperative, you may submit a resignation request. A 60-day holding period applies for share capital withdrawal.</p>
@@ -547,149 +561,170 @@
                                 <span>Request Resignation</span>
                             </button>
                         </div>
-                    </div>
+                    </div> -->
+                    
 
-                    <!-- Resignation Modal -->
-                    <div id="resignModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
-                        <div style="background:#fff; border-radius:12px; max-width:450px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
-                            <div style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
-                                <h3 style="margin:0; font-size:18px; font-weight:700; color:#111827;">Request Resignation</h3>
-                                <button onclick="document.getElementById('resignModal').style.display='none'" style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+                        <!-- Resignation Modal -->
+                        <div id="resignModal"
+                            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
+                            onclick="if(event.target===this)this.style.display='none'">
+                            <div
+                                style="background:#fff; border-radius:12px; max-width:450px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+                                <div
+                                    style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                                    <h3 style="margin:0; font-size:18px; font-weight:700; color:#111827;">Request
+                                        Resignation</h3>
+                                    <button onclick="document.getElementById('resignModal').style.display='none'"
+                                        style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+                                </div>
+                                <form method="POST" action="{{ route('resignation.request') }}" style="padding:24px;">
+                                    @csrf
+                                    <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">Please select your
+                                        preference for your share capital:</p>
+                                    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
+                                        <label class="resign-option"
+                                            style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
+                                            <input type="radio" name="withdraw_share_capital" value="1"
+                                                style="accent-color:#1E2A4A;" required
+                                                onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
+                                            <div>
+                                                <strong style="display:block; color:#111827; font-size:15px;">Withdraw
+                                                    Share Capital</strong>
+                                                <span style="font-size:13px; color:#6b7280;">I want my share capital
+                                                    paid out after 60 days</span>
+                                            </div>
+                                        </label>
+                                        <label class="resign-option"
+                                            style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
+                                            <input type="radio" name="withdraw_share_capital" value="0"
+                                                style="accent-color:#1E2A4A;" required
+                                                onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
+                                            <div>
+                                                <strong style="display:block; color:#111827; font-size:15px;">Leave
+                                                    Share Capital</strong>
+                                                <span style="font-size:13px; color:#6b7280;">I leave my share capital
+                                                    with the cooperative</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div style="display:flex; gap:12px;">
+                                        <button type="button"
+                                            onclick="document.getElementById('resignModal').style.display='none'"
+                                            style="flex:1; padding:12px; background:#f3f4f6; color:#374151; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
+                                        <button type="submit"
+                                            style="flex:1; padding:12px; background:#dc2626; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;"
+                                            onclick="return confirm('Are you sure you want to submit a resignation request? This action will be reviewed by admin.')">Submit
+                                            Request</button>
+                                    </div>
+                                </form>
                             </div>
-                            <form method="POST" action="{{ route('resignation.request') }}" style="padding:24px;">
-                                @csrf
-                                <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">Please select your preference for your share capital:</p>
-                                <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:24px;">
-                                    <label class="resign-option" style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
-                                        <input type="radio" name="withdraw_share_capital" value="1" style="accent-color:#1E2A4A;" required onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
-                                        <div>
-                                            <strong style="display:block; color:#111827; font-size:15px;">Withdraw Share Capital</strong>
-                                            <span style="font-size:13px; color:#6b7280;">I want my share capital paid out after 60 days</span>
-                                        </div>
-                                    </label>
-                                    <label class="resign-option" style="display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e5e7eb; border-radius:10px; cursor:pointer; transition:all .2s;">
-                                        <input type="radio" name="withdraw_share_capital" value="0" style="accent-color:#1E2A4A;" required onchange="document.querySelectorAll('.resign-option').forEach(l=>l.style.borderColor='#e5e7eb');this.closest('label').style.borderColor='#1E2A4A'">
-                                        <div>
-                                            <strong style="display:block; color:#111827; font-size:15px;">Leave Share Capital</strong>
-                                            <span style="font-size:13px; color:#6b7280;">I leave my share capital with the cooperative</span>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div style="display:flex; gap:12px;">
-                                    <button type="button" onclick="document.getElementById('resignModal').style.display='none'" style="flex:1; padding:12px; background:#f3f4f6; color:#374151; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Cancel</button>
-                                    <button type="submit" style="flex:1; padding:12px; background:#dc2626; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;" onclick="return confirm('Are you sure you want to submit a resignation request? This action will be reviewed by admin.')">Submit Request</button>
-                                </div>
-                            </form>
                         </div>
-                    </div>
+
+                        <!-- Net Standing Modal -->
+                        <div id="netStandingModal"
+                            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
+                            onclick="if(event.target===this)this.style.display='none'">
+                            <div
+                                style="background:#fff; border-radius:16px; max-width:420px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+                                <div
+                                    style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Net Standing</h3>
+                                        <p style="margin: 3.2px 0 0; font-size: 13.5px;color: var(--muted);">Overall Financial Position</p>
+                                    </div>
+                                    <button onclick="document.getElementById('netStandingModal').style.display='none'"
+                                        style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+                                </div>
+
+                                <div style="padding:24px;">
+
+                                    <div style="display:flex; gap:8px; margin-bottom:15px;">
+                                        <select id="standingMonthSelect" class="form-select" onchange="updateStandingMonth()" style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
+                                            @foreach (range(1, 12) as $m)
+                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                    {{ (int) explode('-', $standingMonth)[1] === $m ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="standingYearSelect" class="form-select" onchange="updateStandingMonth()" style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}"
+                                                    {{ (int) explode('-', $standingMonth)[0] === $year ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div style="text-align:center; padding:16px 0 20px; border-bottom:1px dashed var(--border); margin-bottom:16px;">
+                                        <p style="margin:0; font-size:12.5px; color:#808080; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Net Standing</p>
+                                        <h2 style="margin:6px 0 0; font-size:32px; font-weight:800; color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">
+                                            ₱{{ number_format($netStandingAsOf, 2) }}
+                                        </h2>
+                                    </div>
+
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
+                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--gold);"></span>
+                                                Share Capital
+                                            </span>
+                                            <strong style="color:#1a1a1a;">₱{{ number_format($shareCapitalStandingAsOf, 2) }}</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
+                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--blue);"></span>
+                                                Savings
+                                            </span>
+                                            <strong style="color:#1a1a1a;">+ ₱{{ number_format($savingsStandingAsOf, 2) }}</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px; padding-bottom:12px; border-bottom:1px solid #f0f0f0;">
+                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--coral);"></span>
+                                                Loan Balance
+                                            </span>
+                                            <strong style="color:#DC2626;">− ₱{{ number_format($loanStandingAsOf, 2) }}</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14.5px;">
+                                            <span style="font-weight:700; color:#1a1a1a;">Total</span>
+                                            <strong style="color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">₱{{ number_format($netStandingAsOf, 2) }}</strong>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </section>
                 </div>
             </div>
         </div>{{-- end #page-content --}}
     </div>{{-- end .container-fluid --}}
 
-    {{-- ═══════════════════════════════════════════════
-    FINANCIAL TRENDS CHART SCRIPT
-    ═══════════════════════════════════════════════ --}}
     <script>
-        const months = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'];
+        function updateBalanceMonth() {
+            var month = document.getElementById('balanceMonthSelect').value;
+            var year = document.getElementById('balanceYearSelect').value;
+            window.location = '{{ url()->current() }}?balance_month=' + year + '-' + month;
+        }
 
-        const monthlyData = {
-            savings: [1500, 2000, 0, 2000, 2500, 2000, 3200],
-            loanPay: [0, 0, 1500, 850, 2350, 1500, 2350],
-            capital: [500, 500, 500, 500, 500, 500, 500],
-        };
+        function updateAnnouncementMonth() {
+            var month = document.getElementById('announcementMonthSelect').value;
+            var year = document.getElementById('announcementYearSelect').value;
+            var url = new URL(window.location.href);
+            url.searchParams.set('announcement_month', year + '-' + month);
+            window.location = url.toString();
+        }
 
-        const cumulativeData = {
-            savings: monthlyData.savings.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
-            loanPay: monthlyData.loanPay.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
-            capital: monthlyData.capital.reduce((a, v, i) => { a.push((a[i - 1] || 0) + v); return a; }, []),
-        };
-
-        const commonDataset = (data) => [
-            {
-                label: 'Savings',
-                data: data.savings,
-                borderColor: '#1e9e6b',
-                backgroundColor: 'rgba(30,158,107,.10)',
-                tension: .4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2
-            },
-            {
-                label: 'Loan Payments',
-                data: data.loanPay,
-                borderColor: '#1560c0',
-                backgroundColor: 'rgba(21,96,192,.08)',
-                tension: .4,
-                fill: true,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2
-            },
-            {
-                label: 'Share Capital',
-                data: data.capital,
-                borderColor: '#f0a500',
-                backgroundColor: 'rgba(240,165,0,.08)',
-                tension: .4,
-                fill: false,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2,
-                borderDash: [5, 4]
-            },
-        ];
-
-        const ctx = document.getElementById('trendsChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: { labels: months, datasets: commonDataset(monthlyData) },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#0f1f45',
-                        titleColor: 'rgba(255,255,255,.6)',
-                        bodyColor: '#fff',
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: ctx => ` ${ctx.dataset.label}: ₱${ctx.parsed.y.toLocaleString()}`
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11 }, color: '#8891ad' }
-                    },
-                    y: {
-                        grid: { color: 'rgba(15,31,69,.06)' },
-                        ticks: {
-                            font: { size: 11 },
-                            color: '#8891ad',
-                            callback: v => '₱' + (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v)
-                        }
-                    }
-                }
-            }
-        });
-
-        function switchChart(type, btn) {
-            document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            const d = type === 'monthly' ? monthlyData : cumulativeData;
-            chart.data.datasets = commonDataset(d);
-            chart.update();
+        function updateStandingMonth() {
+            var month = document.getElementById('standingMonthSelect').value;
+            var year = document.getElementById('standingYearSelect').value;
+            var url = new URL(window.location.href);
+            url.searchParams.set('standing_month', year + '-' + month);
+            url.searchParams.set('open_standing_modal', '1');
+            window.location = url.toString();
         }
     </script>
-
 
     {{-- Toast --}}
     @if (session("message"))
@@ -707,6 +742,14 @@
                     msg.addEventListener("animationend", () => msg.remove());
                 }
             }, 3000);
+        </script>
+    @endif
+
+    @if (request('open_standing_modal'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('netStandingModal').style.display = 'flex';
+            });
         </script>
     @endif
 
@@ -764,6 +807,40 @@
             })();
         </script>
     @endif
+
+    <script>
+        (function () {
+            const style = getComputedStyle(document.documentElement);
+            const colors = {
+                gold: style.getPropertyValue('--gold').trim() || '#C9A84C',
+                blue: style.getPropertyValue('--blue').trim() || '#5B8DEF',
+                coral: style.getPropertyValue('--coral').trim() || '#FF8A75',
+            };
+
+            const ctx = document.getElementById('accountBalancePie');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Share Capital', 'Savings', 'Loan Balance'],
+                        datasets: [{
+                            data: [
+                            {{ $accountBalanceChart[0]['value'] ?? 0 }},
+                            {{ $accountBalanceChart[1]['value'] ?? 0 }},
+                            {{ $accountBalanceChart[2]['value'] ?? 0 }},
+                            ],
+                            backgroundColor: [colors.gold, colors.blue, colors.coral],
+                            borderWidth: 0,
+                        }],
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        responsive: false,
+                    },
+                });
+            }
+        })();
+    </script>
 
 
     <script>

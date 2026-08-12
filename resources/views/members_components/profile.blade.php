@@ -74,29 +74,30 @@
                             <div class="body-icon">
                                 {{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}
                             </div>
-                            <div class="body-text">
-                                <h2>{{ $user->first_name }}
-                                    {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
-                                </h2>
-                                <p>{{ $user->role }} · {{ $otherinfo->present_address ?? 'N/A' }}</p>
+                            <div class="parent-box">
+                                <div class="body-text">
+                                    <h2>{{ $user->first_name }}
+                                        {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
+                                    </h2>
+                                    <p>{{ $user->role }} · {{ $otherinfo->present_address ?? 'N/A' }}</p>
+                                </div>
+                                <div class="since-parent">
+                                    <div class="member member-no">
+                                        <span>Member No</span>
+                                        <strong>#48291</strong>
+                                    </div>
+                                    <div class="member member-since">
+                                        <span>Member Since</span>
+                                        <strong>{{ $memberSince }}</strong>
+                                    </div>
+                                    <div class="member member-id">
+                                        <span>Tax ID</span>
+                                        <strong>••• •• 7742</strong>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="since-sub-parent">
-                            <div class="since-parent">
-                                <div class="member member-no">
-                                    <span>Member No</span>
-                                    <strong>#48291</strong>
-                                </div>
-                                <div class="member member-since">
-                                    <span>Member Since</span>
-                                    <strong>{{ $memberSince }}</strong>
-                                </div>
-                                <div class="member member-id">
-                                    <span>Tax ID</span>
-                                    <strong>••• •• 7742</strong>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="perforation"></div>
@@ -107,12 +108,13 @@
                         <div class="personal-information-1">
                             <div class="personal-information-header">
                                 <div class="header-text">
-                                    <i class="fa fa-user"></i>
+                                    <div class="header-icon">
+                                        <i class="fa fa-user"></i>
+                                    </div>
                                     <h4>Personal Information</h4>
                                 </div>
                                 <div>
-                                    <a href="#">
-                                        <i class="fa fa-pencil"></i>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editPersonalInfoModal">
                                         Edit
                                     </a>
                                 </div>
@@ -190,12 +192,13 @@
                         <div class="personal-information-1">
                             <div class="personal-information-header">
                                 <div class="header-text">
-                                    <i class="fa fa-briefcase"></i>
+                                    <div class="header-icon">
+                                        <i class="fa fa-briefcase"></i>
+                                    </div>
                                     <h4>Employment & Membership</h4>
                                 </div>
                                 <div>
-                                    <a href="#">
-                                        <i class="fa fa-pencil"></i>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editEmploymentModal">
                                         Edit
                                     </a>
                                 </div>
@@ -208,7 +211,7 @@
 
                                 <div class="information">
                                     <span>Monthly Income</span>
-                                    <strong>{{ $otherinfo->height ?? 'N/A' }}</strong>
+                                    <strong>{{ $savedMonthlyIncome ? '₱' . number_format($savedMonthlyIncome, 2) : 'N/A' }}</strong>
                                 </div>
 
                                 <div class="information">
@@ -218,17 +221,17 @@
 
                                 <div class="information">
                                     <span>Status</span>
-                                    <strong>{{ $otherinfo->blood_type ?? 'N/A' }}</strong>
+                                    <strong>{{ $otherinfo->membership_status ?? 'N/A' }}</strong>
                                 </div>
 
                                 <div class="information">
                                     <span>Employer</span>
-                                    <strong>{{ $otherinfo->citizenship ?? 'N/A' }}</strong>
+                                    <strong>{{ $otherinfo->employer ?? 'N/A' }}</strong>
                                 </div>
 
                                 <div class="information">
                                     <span>Standing</span>
-                                    <strong>{{ $otherinfo->citizenship ?? 'N/A' }}</strong>
+                                    <strong>{{ $user->status ?? 'N/A' }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -236,48 +239,35 @@
                         <div class="personal-information-1">
                             <div class="personal-information-header">
                                 <div class="header-text">
-                                    <i class="fa fa-folder-open"></i>
+                                    <div class="header-icon">
+                                        <i class="fa fa-folder-open"></i>
+                                    </div>
                                     <h4>Documents on File</h4>
                                 </div>
                                 <div>
-                                    <a href="#">
-                                        <i class="fa fa-upload"></i>
-                                        Upload
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#editDocumentsModal">
+                                        Edit
                                     </a>
                                 </div>
                             </div>
                             <div class="personal-information-body document-body">
-                                <div class="doc-row">
-                                    <i class="fa fa-file-lines doc-icon"></i>
-
-                                    <div class="doc-name">SSS ID</div>
-
-                                    <div class="doc-meta">Uploaded Mar 2, 2026</div>
-                                </div>
-
-                                <div class="doc-row">
-                                    <i class="fa fa-file-lines doc-icon"></i>
-
-                                    <div class="doc-name">Philhealth ID</div>
-
-                                    <div class="doc-meta">Uploaded Mar 2, 2026</div>
-                                </div>
-
-                                <div class="doc-row">
-                                    <i class="fa fa-file-lines doc-icon"></i>
-
-                                    <div class="doc-name">Pag Ibig ID</div>
-
-                                    <div class="doc-meta">Uploaded Mar 2, 2026</div>
-                                </div>
-
-                                <div class="doc-row">
-                                    <i class="fa fa-file-lines doc-icon"></i>
-
-                                    <div class="doc-name">Tin ID</div>
-
-                                    <div class="doc-meta">Uploaded Mar 2, 2026</div>
-                                </div>
+                                @php
+                                    $docs = [
+                                        'SSS ID' => $membergovernIds->sss_id ?? null,
+                                        'Philhealth ID' => $membergovernIds->philhealth_id ?? null,
+                                        'Pag Ibig ID' => $membergovernIds->pagibig_id ?? null,
+                                        'Tin ID' => $membergovernIds->tin_id ?? null,
+                                    ];
+                                @endphp
+                                @foreach($docs as $label => $path)
+                                    <div class="doc-row">
+                                        <i class="fa fa-file-lines doc-icon"></i>
+                                        <div class="doc-name">{{ $label }}</div>
+                                        <div class="doc-meta">
+                                            {{ $path ? 'Uploaded' . ($membergovernIds->updated_at ? ' ' . $membergovernIds->updated_at->format('M d, Y') : '') : 'Not uploaded' }}
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -285,14 +275,10 @@
                         <div class="personal-information-2">
                             <div class="personal-information-header">
                                 <div class="header-text">
-                                    <i class="fa fa-wallet"></i>
+                                    <div class="header-icon">
+                                        <i class="fa fa-wallet"></i>
+                                    </div>
                                     <h4>Account Balance</h4>
-                                </div>
-                                <div>
-                                    <a href="#">
-                                        <i class="fa fa-pencil"></i>
-                                        Edit
-                                    </a>
                                 </div>
                             </div>
                             <div class="personal-information-body-2">
@@ -307,10 +293,8 @@
                                         </div>
                                         <div class="fw-bold item-value item-value-share">
                                             <span>Share Capital Account</span>
-
-                                            <strong>₱42,300.00</strong>
+                                            <strong>₱{{ number_format($shareCapitalBalance, 2) }}</strong>
                                         </div>
-                                        <div class="stat-delta">+4.2%</div>
                                     </div>
 
                                     <div class="item item-savings">
@@ -319,10 +303,8 @@
                                         </div>
                                         <div class="fw-bold item-value item-category-savings">
                                             <span>Savings Account</span>
-
-                                            <strong>₱18,750.00</strong>
+                                            <strong>₱{{ number_format($savingsBalance, 2) }}</strong>
                                         </div>
-                                        <div class="stat-delta">+4.2%</div>
                                     </div>
 
                                     <div class="item item-loan">
@@ -331,22 +313,15 @@
                                         </div>
                                         <div class="fw-bold item-value item-category-loan">
                                             <span>Loan Balance</span>
-
-                                            <strong>₱9,120.00</strong>
+                                            <strong>₱{{ number_format($loanBalance, 2) }}</strong>
                                         </div>
-                                        <div class="stat-delta">+4.2%</div>
                                     </div>
 
                                     <div class="item item-net">
-                                        <!-- <div class="stat-icon">
-                                            <i class="fa fa-layer-group"></i>
-                                        </div> -->
                                         <div class="fw-bold item-value item-category-net">
-                                            <span>Net Standing</span>
-
-                                            <!-- <strong>₱51,930.00</strong> -->
+                                            <span>Overall</span>
                                         </div>
-                                        <div class="stat-delta">₱51,930.00</div>
+                                        <div class="stat-delta">₱{{ number_format($overallBalance, 2) }}</div>
                                     </div>
                                 </div>
                                 <!-- <div class="personal-footer">
@@ -365,66 +340,32 @@
                         <div class="personal-information-2">
                             <div class="personal-information-header">
                                 <div class="header-text">
-                                    <i class="fa fa-chart-simple"></i>
+                                    <div class="header-icon">
+                                        <i class="fa fa-chart-simple"></i>
+                                    </div>
                                     <h4>Loan Repayment Progress</h4>
-                                </div>
-                                <div>
-                                    <a href="#">
-                                        <i class="fa fa-eye"></i>
-                                        View
-                                    </a>
                                 </div>
                             </div>
                             <div class="personal-information-body-2">
 
                                 <div class="parent-sub-progress">
-                                    <div class="progress-repay progress-personal">
-                                        <div class="progress-header">
-                                            <strong>Personal Loan</strong>
-                                            <span>₱18,000.00</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="parent-progress">
-                                                <div class="progress"></div>
+                                    @foreach($loansByType as $type => $data)
+                                        <a href="{{ route('LoanApplication') }}"
+                                            style="text-decoration:none; color:inherit; display:block;">
+                                            <div class="progress-repay progress-personal" style="cursor:pointer;">
+                                                <div class="progress-header">
+                                                    <strong>{{ $type }}</strong>
+                                                    <span>₱{{ number_format($data['balance'], 2) }}</span>
+                                                </div>
+                                                <div class="progress-body">
+                                                    <div class="parent-progress">
+                                                        <div class="progress" style="width: {{ $data['progress'] }}%;">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-repay progress-business">
-                                        <div class="progress-header">
-                                            <strong>Business Loan</strong>
-                                            <span>₱18,000.00</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="parent-progress">
-                                                <div class="progress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-repay progress-personal">
-                                        <div class="progress-header">
-                                            <strong>Emergency Loan</strong>
-                                            <span>₱18,000.00</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="parent-progress">
-                                                <div class="progress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="progress-repay progress-personal">
-                                        <div class="progress-header">
-                                            <strong>Education Loan</strong>
-                                            <span>₱18,000.00</span>
-                                        </div>
-                                        <div class="progress-body">
-                                            <div class="parent-progress">
-                                                <div class="progress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </a>
+                                    @endforeach
                                 </div>
 
                             </div>
@@ -435,53 +376,60 @@
         </div>
     </div>
 
-    {{-- Edit Profile Modal --}}
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg"
-            style="height: 100vh; max-height: 100vh; margin: auto; display: flex; align-items: center; justify-content: center;">
-            <div class="modal-content" style="max-height: 90vh; width: 100%;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel"><i class="fa fa-edit"></i> Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    {{-- Edit Personal Information Modal --}}
+    <div class="modal fade" id="editPersonalInfoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content sm-modal-content">
+                <div class="modal-header sm-modal-header">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="sm-modal-icon"><i class="fa fa-user"></i></div>
+                        <div>
+                            <h5 class="sm-modal-title">Edit Personal Information</h5>
+                            <p class="sm-modal-subtitle">Update your personal and contact details</p>
+                        </div>
+                    </div>
+                    <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
                 </div>
-                <div class="modal-body" style="overflow-y: auto; max-height: 78vh;">
-                    <form action="{{ route('UpdateProfileMember') }}" method="POST">
+                <div class="modal-body sm-modal-body" style="max-height: 68vh; overflow-y: auto;">
+                    <form action="{{ route('UpdateProfileMember') }}" method="POST" enctype="multipart/form-data"
+                        id="personalInfoForm">
                         @csrf
-                        <h6 class="mb-3" style="color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 5px;">
-                            Personal Information</h6>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">First Name</label>
-                                <input type="text" name="first_name" class="form-control"
+                        <input type="hidden" name="_form" value="personal">
+
+                        <div class="sm-field-row">
+                            <div class="sm-field">
+                                <label class="sm-label">First Name</label>
+                                <input type="text" name="first_name" class="sm-input"
                                     value="{{ $user->first_name ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Middle Name</label>
-                                <input type="text" name="middle_name" class="form-control"
+                            <div class="sm-field">
+                                <label class="sm-label">Middle Name</label>
+                                <input type="text" name="middle_name" class="sm-input"
                                     value="{{ $user->middle_name ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" name="last_name" class="form-control"
+                            <div class="sm-field">
+                                <label class="sm-label">Last Name</label>
+                                <input type="text" name="last_name" class="sm-input"
                                     value="{{ $user->last_name ?? '' }}">
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Contact Number</label>
-                                <input type="text" name="contact_no" class="form-control"
+                        <div class="sm-field-row">
+                            <div class="sm-field">
+                                <label class="sm-label">Contact Number</label>
+                                <input type="text" name="contact_no" class="sm-input"
                                     value="{{ $otherinfo->contact_no ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Date of Birth</label>
-                                <input type="date" name="date_of_birth" class="form-control"
+                            <div class="sm-field">
+                                <label class="sm-label">Date of Birth</label>
+                                <input type="date" name="date_of_birth" class="sm-input"
                                     value="{{ $otherinfo->date_of_birth ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Sex</label>
-                                <select name="sex" class="form-control">
+                            <div class="sm-field">
+                                <label class="sm-label">Sex</label>
+                                <select name="sex" class="sm-input">
                                     <option value="">Select</option>
                                     <option value="Male" {{ ($otherinfo->sex ?? '') == 'Male' ? 'selected' : '' }}>Male
                                     </option>
@@ -491,10 +439,10 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Civil Status</label>
-                                <select name="civil_status" class="form-control">
+                        <div class="sm-field-row">
+                            <div class="sm-field">
+                                <label class="sm-label">Civil Status</label>
+                                <select name="civil_status" class="sm-input">
                                     <option value="">Select</option>
                                     <option value="Single" {{ ($otherinfo->civil_status ?? '') == 'Single' ? 'selected' : '' }}>Single</option>
                                     <option value="Married" {{ ($otherinfo->civil_status ?? '') == 'Married' ? 'selected' : '' }}>Married</option>
@@ -502,120 +450,151 @@
                                     <option value="Divorced" {{ ($otherinfo->civil_status ?? '') == 'Divorced' ? 'selected' : '' }}>Divorced</option>
                                 </select>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Citizenship</label>
-                                <select name="citizenship" class="form-control">
-                                    <option value="">Select</option>
-                                    <option value="Filipino" {{ ($otherinfo->citizenship ?? '') == 'Filipino' ? 'selected' : '' }}>Filipino</option>
-                                    <option value="American" {{ ($otherinfo->citizenship ?? '') == 'American' ? 'selected' : '' }}>American</option>
-                                    <option value="Chinese" {{ ($otherinfo->citizenship ?? '') == 'Chinese' ? 'selected' : '' }}>Chinese</option>
-                                    <option value="Japanese" {{ ($otherinfo->citizenship ?? '') == 'Japanese' ? 'selected' : '' }}>Japanese</option>
-                                    <option value="Korean" {{ ($otherinfo->citizenship ?? '') == 'Korean' ? 'selected' : '' }}>Korean</option>
-                                    <option value="Indian" {{ ($otherinfo->citizenship ?? '') == 'Indian' ? 'selected' : '' }}>Indian</option>
-                                    <option value="Other" {{ ($otherinfo->citizenship ?? '') == 'Other' ? 'selected' : '' }}>Other</option>
-                                </select>
+                            <div class="sm-field">
+                                <label class="sm-label">Citizenship</label>
+                                <input type="text" name="citizenship" class="sm-input"
+                                    value="{{ $otherinfo->citizenship ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Blood Type</label>
-                                <input type="text" name="blood_type" class="form-control"
+                            <div class="sm-field">
+                                <label class="sm-label">Blood Type</label>
+                                <input type="text" name="blood_type" class="sm-input"
                                     value="{{ $otherinfo->blood_type ?? '' }}">
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Height</label>
-                                <input type="text" name="height" class="form-control"
+                        <div class="sm-field-row">
+                            <div class="sm-field">
+                                <label class="sm-label">Height</label>
+                                <input type="text" name="height" class="sm-input"
                                     value="{{ $otherinfo->height ?? '' }}">
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">Weight</label>
-                                <input type="text" name="weight" class="form-control"
+                            <div class="sm-field">
+                                <label class="sm-label">Weight</label>
+                                <input type="text" name="weight" class="sm-input"
                                     value="{{ $otherinfo->weight ?? '' }}">
                             </div>
                         </div>
 
-                        <h6 class="mb-3 mt-4"
-                            style="color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 5px;">Address
-                            Information</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Present Address</label>
-                                <textarea name="present_address" class="form-control"
-                                    rows="3">{{ $otherinfo->present_address ?? '' }}</textarea>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Permanent Address</label>
-                                <textarea name="permanent_address" class="form-control"
-                                    rows="3">{{ $otherinfo->permanent_address ?? '' }}</textarea>
+                        <div class="sm-field">
+                            <label class="sm-label">Present Address</label>
+                            <textarea name="present_address" class="sm-input"
+                                rows="2">{{ $otherinfo->present_address ?? '' }}</textarea>
+                        </div>
+                        <div class="sm-field">
+                            <label class="sm-label">Permanent Address</label>
+                            <textarea name="permanent_address" class="sm-input"
+                                rows="2">{{ $otherinfo->permanent_address ?? '' }}</textarea>
+                        </div>
+
+                        <button type="submit" class="sm-btn-confirm"><i class="fa fa-check"></i> Confirm
+                            Changes</button>
+                        <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+
+                @if ($errors->any() && old('_form') === 'personal')
+                    <div class="alert alert-danger" style="border-radius:10px; font-size:13px; margin-bottom:1rem;">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Employment & Membership Modal --}}
+    <div class="modal fade" id="editEmploymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content sm-modal-content">
+                <div class="modal-header sm-modal-header">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="sm-modal-icon"><i class="fa fa-briefcase"></i></div>
+                        <div>
+                            <h5 class="sm-modal-title">Edit Employment & Membership</h5>
+                            <p class="sm-modal-subtitle">Update your work and income details</p>
+                        </div>
+                    </div>
+                    <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body sm-modal-body">
+                    <form action="{{ route('UpdateProfileMember') }}" method="POST" id="employmentForm">
+                        @csrf
+                        <input type="hidden" name="_form" value="employment">
+
+                        <div class="sm-summary-strip">
+                            <span class="sm-summary-label">Current Role</span>
+                            <span class="sm-summary-value">{{ $user->role ?? 'Member' }}</span>
+                        </div>
+
+                        <div class="sm-field">
+                            <label class="sm-label">Monthly Income</label>
+                            <div style="position:relative;">
+                                <span class="sm-input-prefix">₱</span>
+                                <input type="number" step="0.01" name="monthly_income"
+                                    class="sm-input sm-input-prefixed" value="{{ $savedMonthlyIncome ?? '' }}">
                             </div>
                         </div>
 
-                        <h6 class="mb-3 mt-4"
-                            style="color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 5px;">Government
-                            IDs</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">SSS ID</label>
-                                <input type="file" name="sss_id" class="form-control" accept="image/*">
-                                @if(!empty($membergovernIds->sss_id))<small class="text-muted">Current:
-                                {{ $membergovernIds->sss_id }}</small>@endif
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">PhilHealth ID</label>
-                                <input type="file" name="philhealth_id" class="form-control" accept="image/*">
-                                @if(!empty($membergovernIds->philhealth_id))<small class="text-muted">Current:
-                                {{ $membergovernIds->philhealth_id }}</small>@endif
-                            </div>
+                        <button type="submit" class="sm-btn-confirm"><i class="fa fa-check"></i> Confirm
+                            Changes</button>
+                        <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Edit Documents on File Modal --}}
+    <div class="modal fade" id="editDocumentsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content sm-modal-content">
+                <div class="modal-header sm-modal-header">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="sm-modal-icon"><i class="fa fa-folder-open"></i></div>
+                        <div>
+                            <h5 class="sm-modal-title">Edit Documents on File</h5>
+                            <p class="sm-modal-subtitle">Upload or replace your government IDs</p>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Pag-IBIG ID</label>
-                                <input type="file" name="pagibig_id" class="form-control" accept="image/*">
-                                @if(!empty($membergovernIds->pagibig_id))<small class="text-muted">Current:
-                                {{ $membergovernIds->pagibig_id }}</small>@endif
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">TIN ID</label>
-                                <input type="file" name="tin_id" class="form-control" accept="image/*">
-                                @if(!empty($membergovernIds->tin_id))<small class="text-muted">Current:
-                                {{ $membergovernIds->tin_id }}</small>@endif
-                            </div>
+                    </div>
+                    <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body sm-modal-body">
+                    <form action="{{ route('UpdateProfileMember') }}" method="POST" enctype="multipart/form-data"
+                        id="documentsForm">
+                        @csrf
+                        <input type="hidden" name="_form" value="documents">
+
+                        <div class="sm-field">
+                            <label class="sm-label">SSS ID</label>
+                            <input type="file" name="sss_id" class="sm-input" accept="image/*">
+                            @if(!empty($membergovernIds->sss_id))<small class="sm-current-file">Current file on
+                            record</small>@endif
+                        </div>
+                        <div class="sm-field">
+                            <label class="sm-label">PhilHealth ID</label>
+                            <input type="file" name="philhealth_id" class="sm-input" accept="image/*">
+                            @if(!empty($membergovernIds->philhealth_id))<small class="sm-current-file">Current file on
+                            record</small>@endif
+                        </div>
+                        <div class="sm-field">
+                            <label class="sm-label">Pag-IBIG ID</label>
+                            <input type="file" name="pagibig_id" class="sm-input" accept="image/*">
+                            @if(!empty($membergovernIds->pagibig_id))<small class="sm-current-file">Current file on
+                            record</small>@endif
+                        </div>
+                        <div class="sm-field">
+                            <label class="sm-label">TIN ID</label>
+                            <input type="file" name="tin_id" class="sm-input" accept="image/*">
+                            @if(!empty($membergovernIds->tin_id))<small class="sm-current-file">Current file on
+                            record</small>@endif
                         </div>
 
-                        <h6 class="mb-3 mt-4"
-                            style="color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 5px;">Family
-                            Background</h6>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Spouse Name</label>
-                                <input type="text" name="spouse_name" class="form-control"
-                                    value="{{ $family->spouse_name ?? '' }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Spouse Birthdate</label>
-                                <input type="date" name="spouse_date_birth" class="form-control"
-                                    value="{{ $family->spouse_date_birth ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Number of Sons</label>
-                                <input type="number" name="number_son" class="form-control"
-                                    value="{{ $family->number_son ?? '' }}">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Number of Daughters</label>
-                                <input type="number" name="number_daughter" class="form-control"
-                                    value="{{ $family->number_daughter ?? '' }}">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-save"></i> Save Changes
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        </div>
+                        <button type="submit" class="sm-btn-confirm"><i class="fa fa-check"></i> Confirm
+                            Changes</button>
+                        <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
                     </form>
                 </div>
             </div>

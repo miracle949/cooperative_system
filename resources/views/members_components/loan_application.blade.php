@@ -107,7 +107,8 @@
         .modal-invoice-sidebar {
             width: 250px;
             flex-shrink: 0;
-            background: linear-gradient(160deg, var(--teal) 0%, var(--teal) 60%, var(--teal) 100%);
+            /* background: linear-gradient(160deg, var(--teal) 0%, var(--teal) 60%, var(--teal) 100%); */
+            background-color: #ffffff;
             border-right: 1px solid var(--border);
             padding: 26px 18px;
             display: flex;
@@ -117,7 +118,7 @@
             overflow: hidden;
         }
 
-        .modal-invoice-sidebar::before {
+        /* .modal-invoice-sidebar::before {
             content: '';
             position: absolute;
             top: -60px;
@@ -137,7 +138,7 @@
             height: 120px;
             border-radius: 50%;
             background: rgba(184, 148, 63, .07);
-        }
+        } */
 
         .mis-eyebrow {
             font-size: 8.5px;
@@ -152,7 +153,7 @@
         .mis-title {
             font-size: 16px;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--teal);
             position: relative;
             z-index: 1;
             margin-bottom: 1px;
@@ -166,8 +167,13 @@
         }
 
         .mis-amount-box {
-            background: rgba(255, 255, 255, .07);
-            border: 1px solid rgba(255, 255, 255, .12);
+            /* background: rgba(255, 255, 255, .07); */
+            /* background-color: #EDF0F5; */
+            /* background-color: var(--teal); */
+            /* background-color: #EDF0F5; */
+            background-color: #fafafa;
+            border: 1px solid var(--border);
+            /* border: 1px solid rgba(255, 255, 255, .12); */
             border-radius: 12px;
             padding: 14px;
             text-align: center;
@@ -180,14 +186,16 @@
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, .5);
+            /* color: rgba(255, 255, 255, .5); */
+            color: var(--muted);
             margin-bottom: 6px;
         }
 
         .mis-amount-val {
             font-size: 20px;
             font-weight: 700;
-            color: #ffffff;
+            /* color: #ffffff; */
+            color: var(--teal);
             line-height: 1;
         }
 
@@ -198,7 +206,8 @@
 
         .mis-amount-hint {
             font-size: 9.5px;
-            color: rgba(255, 255, 255, .35);
+            /* color: rgba(255, 255, 255, .35); */
+            color: var(--muted);
             margin-top: 5px;
         }
 
@@ -223,24 +232,28 @@
         }
 
         .mis-lbl {
-            color: rgba(255, 255, 255, .5);
+            /* color: rgba(255, 255, 255, .5); */
+            color: var(--muted);
             font-weight: 600;
         }
 
         .mis-val {
-            color: #ffffff;
+            /* color: #ffffff; */
+            color: #1a1a1a;
             font-weight: 700;
             font-size: 12px;
         }
 
         .mis-val.dim {
-            color: rgba(255, 255, 255, .3);
+            /* color: rgba(255, 255, 255, .3); */
+            color: #1a1a1a;
             font-weight: 400;
         }
 
         .mis-divider {
             height: 1px;
-            background: rgba(255, 255, 255, .1);
+            /* background: rgba(255, 255, 255, .1); */
+            background-color: var(--border);
             margin: 4px 0;
             position: relative;
             z-index: 1;
@@ -258,20 +271,23 @@
         .mis-total-lbl {
             font-size: 12px;
             font-weight: 700;
-            color: rgba(255, 255, 255, .5);
+            /* color: rgba(255, 255, 255, .5); */
+            color: var(--muted);
         }
 
         .mis-total-val {
             font-size: 12px;
             font-weight: 700;
-            color: #ffffff;
+            /* color: #ffffff; */
+            color: #1a1a1a;
         }
 
         .mis-total-val.dim {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 12px;
             font-weight: 400;
-            color: rgba(255, 255, 255, .3);
+            /* color: rgba(255, 255, 255, .3); */
+            color: var(--teal)
         }
 
         .modal-main-area {
@@ -312,19 +328,23 @@
         }
 
         .m-step.active .m-step-circle {
-            background: var(--blue);
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
+            background: var(--teal);
+            color: #ffffff;
+            /* box-shadow: 0 0 0 3px rgba(79, 127, 250, .12); */
+            box-shadow: 0 0 0 3px #EDF0F5;
         }
 
         .m-step.done .m-step-circle {
-            background: var(--blue);
-            color: #fff;
+            background: var(--teal);
+            color: #ffffff;
         }
 
         .m-step.pending .m-step-circle {
-            background: #ebebeb;
+            /* background: #ebebeb; */
+            /* background-color: #EDF0F5; */
+            background-color: #fafafa;
             color: var(--light);
+            border: 1px solid var(--border);
         }
 
         .m-step-info .m-step-num {
@@ -332,11 +352,13 @@
             font-weight: 700;
             letter-spacing: .6px;
             text-transform: uppercase;
-            color: var(--light);
+            /* color: var(--light); */
+            color: #1a1a1a;
         }
 
         .m-step.active .m-step-info .m-step-num {
-            color: var(--blue);
+            /* color: var(--teal); */
+            color: #1a1a1a;
         }
 
         .m-step.done .m-step-info .m-step-num {
@@ -410,7 +432,7 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--blue);
+            color: var(--teal);
             margin-bottom: 14px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border);
@@ -424,7 +446,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--blue);
+            background: var(--teal);
             display: block;
         }
 
@@ -464,8 +486,9 @@
             font-weight: 700;
             padding: 1px 7px;
             border-radius: 8px;
-            background: var(--blue-mist);
-            color: var(--blue);
+            /* background: var(--blue-mist); */
+            background-color: #EDF0F5;
+            color: var(--teal);
         }
 
         .p-inp-wrap {
@@ -633,7 +656,7 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: var(--blue);
+            color: var(--teal);
             padding-bottom: 6px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 14px;
@@ -647,7 +670,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--blue);
+            background: var(--teal);
             display: block;
         }
 
@@ -672,12 +695,12 @@
         }
 
         .upload-card-modal:hover {
-            border-color: var(--blue);
+            border-color: var(--teal);
             background-color: #ffffff;
         }
 
         .upload-card-modal.has-file {
-            border-color: var(--blue);
+            border-color: var(--teal);
             background-color: #ffffff;
         }
 
@@ -729,17 +752,18 @@
 
         .uc-badge.required {
             background: rgba(201, 68, 68, .1);
-            color: #dc2626;
+            /* color: #dc2626; */
+            color: var(--red);
         }
 
         .uc-badge.uploaded {
-            background-color: var(--blue-mist);
-            color: var(--blue);
+            background-color: var(--green-tint);
+            color: var(--green);
         }
 
         .uc-badge.optional {
-            background: var(--blue-mist);
-            color: var(--blue);
+            background: var(--green-tint);
+            color: var(--green);
         }
 
         .uc-filename {
@@ -763,7 +787,7 @@
         .loan-status-banner {
             border-radius: 10px;
             padding: .85rem 1rem;
-            margin-top: 1rem;
+            margin: 1rem 0;
             display: flex;
             align-items: flex-start;
             gap: 10px;
@@ -942,7 +966,7 @@
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: var(--blue);
+            color: var(--teal);
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -954,7 +978,7 @@
             width: 2.5px;
             height: 10px;
             border-radius: 2px;
-            background: var(--blue);
+            background: var(--teal);
             display: block;
         }
 
@@ -963,6 +987,7 @@
             border-radius: 8px;
             overflow: hidden;
             display: block;
+            margin: 0 0 16px;
         }
 
         .amort-scroll-m {
@@ -1024,7 +1049,7 @@
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: var(--blue);
+            background: var(--teal);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1063,7 +1088,7 @@
         }
 
         .sum-head-m {
-            background: var(--blue);
+            background: var(--teal);
             padding: 10px 14px;
             font-size: 9.5px;
             font-weight: 700;
@@ -1115,7 +1140,7 @@
         }
 
         .sum-val-m.bigf {
-            font-size: 14.5px;
+            font-size: 12.5px;
             color: var(--teal);
         }
 
@@ -1131,7 +1156,7 @@
             background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: 8px;
-            margin-bottom: 4px;
+            margin-bottom: 16px;
             cursor: pointer;
             transition: border-color .2s;
         }
@@ -1180,6 +1205,7 @@
             padding: 14px 20px;
             border-top: 1px solid var(--line);
             background: #fafafa;
+            /* background-color: #EDF0F5; */
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -1228,17 +1254,17 @@
 
         .m-btn-outline {
             background: transparent;
-            color: var(--blue);
-            border: 1px solid var(--blue)
+            color: var(--teal);
+            border: 1px solid var(--teal)
         }
 
         .m-btn-outline:hover {
-            border: 1px solid var(--blue)
+            border: 1px solid var(--teal)
         }
 
         .m-btn-primary {
-            background: linear-gradient(135deg, var(--blue), var(--blue));
-            color: #fff;
+            background: linear-gradient(135deg, var(--teal), var(--teal));
+            color: #ffffff;
             box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
 
@@ -1248,7 +1274,7 @@
         }
 
         .m-btn-gold {
-            background: linear-gradient(135deg, var(--blue), var(--blue));
+            background: linear-gradient(135deg, var(--teal), var(--teal));
             color: #fff;
             box-shadow: 0 4px 14px rgba(27, 61, 47, .22);
         }
@@ -1392,16 +1418,6 @@
             box-shadow: 0 4px 16px rgba(30, 42, 74, .06);
         }
 
-        .loan-row {
-            display: grid;
-            grid-template-columns: 1.7fr 1fr 1fr 1fr 1.2fr auto;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            cursor: pointer;
-            background: #fff;
-        }
-
         .loan-ref-block {
             display: flex;
             align-items: center;
@@ -1417,21 +1433,26 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            background: var(--blue-mist);
-            color: var(--blue);
+            /* background: var(--blue-mist);
+            color: var(--blue); */
+            /* background-color: var(--teal); */
+            background-color: #EDF0F5;
+            /* color: #ffffff; */
+            color: var(--teal);
             font-size: 15px;
         }
 
         .loan-ref {
             font-weight: 700;
             font-size: 14px;
-            color: var(--teal);
+            color: #1a1a1a;
         }
 
         .loan-purpose {
             font-size: 12.5px;
             color: var(--muted);
             margin-top: 1px;
+            font-weight: 600;
         }
 
         .col-cell .cell-label {
@@ -1446,20 +1467,15 @@
         .col-cell .cell-value {
             font-size: 13.5px;
             font-weight: 700;
-            color: var(--teal);
+            /* color: var(--teal); */
+            color: #1a1a1a;
         }
 
         .loan-amount {
             font-size: 14.5px;
             font-weight: 800;
-            color: var(--teal);
-        }
-
-        .col-status {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 6px;
+            /* color: var(--teal); */
+            color: #1a1a1a;
         }
 
         .badge {
@@ -1480,8 +1496,10 @@
         }
 
         .badge.pending {
-            background: var(--gold-pale);
-            color: #a5710f;
+            /* background: var(--gold-pale);
+            color: #a5710f; */
+            background: #fff8e1;
+            color: #b8860b;
         }
 
         .badge.pending::before {
@@ -1489,7 +1507,10 @@
         }
 
         .badge.approved {
-            background: var(--mint-pale);
+            /* background: var(--mint-pale);
+            color: var(--green); */
+            background-color: var(--mint-pale);
+            /* border: 1px solid rgba(34, 201, 147, .4); */
             color: var(--green);
         }
 
@@ -1498,12 +1519,13 @@
         }
 
         .badge.completed {
-            background: var(--lavender-tint);
-            color: var(--muted);
+            /* background: var(--lavender-tint); */
+            background-color: var(--green-tint);
+            color: var(--green);
         }
 
         .badge.completed::before {
-            background: var(--muted);
+            background: var(--green);
         }
 
         .badge.rejected {
@@ -1526,7 +1548,7 @@
         }
 
         .due-tag .fa {
-            color: var(--blue);
+            color: var(--mint);
         }
 
         .due-tag.today {
@@ -1548,6 +1570,8 @@
             color: var(--muted);
             transition: transform .2s;
             flex-shrink: 0;
+            display: flex;
+            justify-content: end;
         }
 
         .loan-card.open .chevron {
@@ -1570,12 +1594,6 @@
             border-top: 1px dashed var(--border);
         }
 
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 18px;
-        }
 
         .detail-box {
             background: #fff;
@@ -1622,7 +1640,7 @@
         .progress-fill {
             height: 100%;
             border-radius: 6px;
-            background: linear-gradient(90deg, var(--blue), var(--blue-light));
+            background: linear-gradient(90deg, var(--teal), var(--teal));
             transition: width .6s ease;
         }
 
@@ -1650,8 +1668,8 @@
         }
 
         .btn-ghost:hover {
-            border-color: var(--blue-light);
-            color: var(--blue);
+            border-color: var(--teal);
+            color: var(--teal);
         }
 
         .empty-state {
@@ -1659,21 +1677,6 @@
             padding: 50px 20px;
             color: var(--muted);
             font-size: 13px;
-        }
-
-        @media (max-width: 980px) {
-            .loan-row {
-                grid-template-columns: 1.6fr 1fr 1fr auto;
-            }
-
-            .loan-row .col-term,
-            .loan-row .col-purpose-cell {
-                display: none;
-            }
-
-            .detail-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
 
         /* ============ LOCKED / GATED OVERLAY (Share Capital not met) ============ */
@@ -1694,7 +1697,7 @@
             gap: 10px;
             text-align: center;
             padding: 20px;
-            opacity: 0;
+            /* opacity: 0; */
             pointer-events: none;
             transition: opacity .18s ease;
             z-index: 5;
@@ -1708,16 +1711,16 @@
         }
 
         .gate-lock {
-            width: 38px;
+            /* width: 38px;
             height: 38px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow); */
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--gold);
-            font-size: 15px;
+            color: var(--blue);
+            font-size: 18px;
         }
 
         .gate-msg {
@@ -1727,9 +1730,10 @@
         }
 
         .gate-sub {
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--muted);
-            max-width: 260px;
+            /* max-width: 260px; */
+            max-width: 350px;
             line-height: 1.5;
         }
 
@@ -1813,15 +1817,18 @@
                                 <h3>Loan Application</h3>
                                 <p>View your loan applications and track upcoming, due, and overdue payments</p>
                             </div>
-                            <div class="main-button">
-                                <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
-                                style="opacity:.5;cursor:not-allowed;" @endif>
-                                    <i class="fa fa-plus"></i>
-                                    <span>Apply for a Loan</span>
-                                </button>
+                            <div class="{{ !$canApplyLoan ? 'gated' : '' }}">
+                                <div class="main-button">
+                                    <button onclick="openLoanModal()" @if(!$canApplyLoan) disabled
+                                    style="opacity:.5;cursor:not-allowed;" @endif>
+                                        <i class="fa fa-plus"></i>
+                                        <span>Apply for a Loan</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
+                        {{-- ══ STATS CARDS — its own gated/hover-lock block ══ --}}
                         <div class="{{ !$canApplyLoan ? 'gated' : '' }}">
                             <div class="card-box-parent">
                                 <div class="card-box">
@@ -1869,6 +1876,23 @@
                                 </div>
                             </div>
 
+                            @if(!$canApplyLoan)
+                                <div class="gate-shield">
+                                    <div class="gate-lock"><i class="fa fa-lock"></i></div>
+                                    <div class="gate-msg">Loan stats are locked</div>
+                                    <div class="gate-sub">
+                                        You need at least <strong>₱{{ number_format($minSavingsToApply, 2) }}</strong> in
+                                        Savings to unlock this.
+                                        You currently have <strong>₱{{ number_format($currentSavings, 2) }}</strong> —
+                                        <strong>₱{{ number_format(max(0, $minSavingsToApply - $currentSavings), 2) }}
+                                            more</strong> needed.
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- ══ TABS + TABLE — its own separate gated/hover-lock block ══ --}}
+                        <div class="{{ !$canApplyLoan ? 'gated' : '' }}" style="margin-top: 20px;">
                             <nav>
                                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
@@ -1898,10 +1922,10 @@
                                         data-bs-target="#nav-disabled" type="button" role="tab"
                                         aria-controls="nav-disabled" aria-selected="false">
                                         Overdue
-                                        @if(isset($overdueCount) && $overdueCount > 0)
+                                        <!-- @if(isset($overdueCount) && $overdueCount > 0)
                                             <span
-                                                style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $overdueCount }}</span>
-                                        @endif
+                                                style="background:#ffffff;color:#dc2626;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $overdueCount }}</span>
+                                        @endif -->
                                     </button>
                                 </div>
                             </nav>
@@ -1916,8 +1940,29 @@
                                             <div class="filter search-parent">
                                                 <i class="fa fa-search"></i>
                                                 <input type="search" id="search-all"
-                                                    oninput="filterCards('all-loans-list', this.value)"
-                                                    placeholder="Search by reference, type, purpose">
+                                                    oninput="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                    placeholder="Search by reference, type, purpose"
+                                                    class="form-control">
+                                            </div>
+
+                                            <div class="filter-parent">
+                                                <div class="filter date">
+                                                    <input type="date" id="date-all" class="date-input"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-control">
+                                                </div>
+
+                                                <div class="filter status">
+                                                    <select id="status-all"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-select">
+                                                        <option value="all">All Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Approved">Approved</option>
+                                                        <option value="Completed">Completed</option>
+                                                        <option value="Rejected">Rejected</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -1929,12 +1974,14 @@
                                                     $progress = $loan->progress_percent ?? 0;
                                                     $dueCat = $loan->due_category ?? null;
                                                 @endphp
-                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}">
+                                                <div class="loan-card" data-ref="{{ $loan->reference_no }}"
+                                                    data-status="{{ $loan->status }}"
+                                                    data-date="{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}">
                                                     <div class="loan-row" onclick="toggleLoanCard(this)">
                                                         <div class="loan-ref-block">
                                                             <div class="loan-type-icon"><i class="fa fa-file-lines"></i>
                                                             </div>
-                                                            <div style="min-width:0;">
+                                                            <div>
                                                                 <div class="loan-ref">{{ $loan->reference_no }}</div>
                                                                 <div class="loan-purpose">{{ $loan->purpose_loan }}</div>
                                                             </div>
@@ -1942,7 +1989,7 @@
                                                         <div class="col-cell col-purpose-cell">
                                                             <div class="cell-label">Date Applied</div>
                                                             <div class="cell-value">
-                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-cell col-term">
@@ -1958,7 +2005,7 @@
                                                             <span class="badge {{ $badgeClass }}">{{ $loan->status }}</span>
                                                             @if($loan->status === 'Approved')
                                                                 <span class="due-tag"
-                                                                    style="background:var(--blue-mist);color:var(--blue);">
+                                                                    style="background:var(--mint-pale);color:var(--green);">
                                                                     <i class="fa fa-circle" style="font-size:6px;"></i>
                                                                     Active
                                                                 </span>
@@ -2081,8 +2128,27 @@
                                         <div class="table-filter">
                                             <div class="filter search-parent">
                                                 <i class="fa fa-search"></i>
-                                                <input type="search" oninput="filterCards('due-today-list', this.value)"
+                                                <input type="search" id="search-all"
+                                                    oninput="applyFilters('all-loans-list','search-all','date-all','status-all')"
                                                     placeholder="Search by reference, type, purpose">
+                                            </div>
+
+                                            <div class="filter-parent">
+                                                <div class="filter date">
+                                                    <input type="date" id="date-all" class="date-input"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                </div>
+
+                                                <div class="filter status">
+                                                    <select id="status-all"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        <option value="all">All Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Approved">Approved</option>
+                                                        <option value="Completed">Completed</option>
+                                                        <option value="Rejected">Rejected</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2102,7 +2168,7 @@
                                                         <div class="col-cell col-purpose-cell">
                                                             <div class="cell-label">Date Applied</div>
                                                             <div class="cell-value">
-                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-cell col-term">
@@ -2196,8 +2262,27 @@
                                         <div class="table-filter">
                                             <div class="filter search-parent">
                                                 <i class="fa fa-search"></i>
-                                                <input type="search" oninput="filterCards('due-week-list', this.value)"
+                                                <input type="search" id="search-all"
+                                                    oninput="applyFilters('all-loans-list','search-all','date-all','status-all')"
                                                     placeholder="Search by reference, type, purpose">
+                                            </div>
+
+                                            <div class="filter-parent">
+                                                <div class="filter date">
+                                                    <input type="date" id="date-all" class="date-input"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                </div>
+
+                                                <div class="filter status">
+                                                    <select id="status-all"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        <option value="all">All Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Approved">Approved</option>
+                                                        <option value="Completed">Completed</option>
+                                                        <option value="Rejected">Rejected</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2217,7 +2302,7 @@
                                                         <div class="col-cell col-purpose-cell">
                                                             <div class="cell-label">Date Applied</div>
                                                             <div class="cell-value">
-                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-cell col-term">
@@ -2311,8 +2396,27 @@
                                         <div class="table-filter">
                                             <div class="filter search-parent">
                                                 <i class="fa fa-search"></i>
-                                                <input type="search" oninput="filterCards('overdue-list', this.value)"
+                                                <input type="search" id="search-all"
+                                                    oninput="applyFilters('all-loans-list','search-all','date-all','status-all')"
                                                     placeholder="Search by reference, type, purpose">
+                                            </div>
+
+                                            <div class="filter-parent">
+                                                <div class="filter date">
+                                                    <input type="date" id="date-all" class="date-input"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                </div>
+
+                                                <div class="filter status">
+                                                    <select id="status-all"
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        <option value="all">All Status</option>
+                                                        <option value="Pending">Pending</option>
+                                                        <option value="Approved">Approved</option>
+                                                        <option value="Completed">Completed</option>
+                                                        <option value="Rejected">Rejected</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2332,7 +2436,7 @@
                                                         <div class="col-cell col-purpose-cell">
                                                             <div class="cell-label">Date Applied</div>
                                                             <div class="cell-value">
-                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}
+                                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}
                                                             </div>
                                                         </div>
                                                         <div class="col-cell col-term">
@@ -2421,36 +2525,38 @@
 
                             </div>
 
-                            {{-- Card expand/collapse + search filter JS --}}
-                            <script>
-                                function toggleLoanCard(rowEl) {
-                                    const card = rowEl.closest('.loan-card');
-                                    if (!card) return;
-                                    card.classList.toggle('open');
-                                }
-
-                                function filterCards(listId, query) {
-                                    const list = document.getElementById(listId);
-                                    if (!list) return;
-                                    const q = query.toLowerCase().trim();
-                                    list.querySelectorAll('.loan-card').forEach(card => {
-                                        card.style.display = (q === '' || card.textContent.toLowerCase().includes(q)) ? '' : 'none';
-                                    });
-                                }
-                            </script>
-
                             @if(!$canApplyLoan)
                                 <div class="gate-shield">
                                     <div class="gate-lock"><i class="fa fa-lock"></i></div>
-                                    <div class="gate-msg">Loan stats are locked</div>
+                                    <div class="gate-msg">Loan history is locked</div>
                                     <div class="gate-sub">
-                                        You need at least <strong>10 shares</strong> of Share Capital to unlock this.
-                                        You currently have <strong>{{ $currentShares }} share(s)</strong> —
-                                        <strong>{{ 10 - $currentShares }} more</strong> needed.
+                                        You need at least <strong>₱{{ number_format($minSavingsToApply, 2) }}</strong> in
+                                        Savings to unlock this.
+                                        You currently have <strong>₱{{ number_format($currentSavings, 2) }}</strong> —
+                                        <strong>₱{{ number_format(max(0, $minSavingsToApply - $currentSavings), 2) }}
+                                            more</strong> needed.
                                     </div>
                                 </div>
                             @endif
                         </div>
+
+                        {{-- Card expand/collapse + search filter JS --}}
+                        <script>
+                            function toggleLoanCard(rowEl) {
+                                const card = rowEl.closest('.loan-card');
+                                if (!card) return;
+                                card.classList.toggle('open');
+                            }
+
+                            function filterCards(listId, query) {
+                                const list = document.getElementById(listId);
+                                if (!list) return;
+                                const q = query.toLowerCase().trim();
+                                list.querySelectorAll('.loan-card').forEach(card => {
+                                    card.style.display = (q === '' || card.textContent.toLowerCase().includes(q)) ? '' : 'none';
+                                });
+                            }
+                        </script>
 
                     </div>
                 </main>
@@ -2537,11 +2643,15 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <div class="sc-alert-title">Share Capital Requirement</div>
-                                        <p class="sc-alert-text">You need at least <strong>10 shares</strong> of Share
-                                            Capital to apply. You currently have <strong>{{ $currentShares }}
-                                                share(s)</strong> — you need <strong>{{ 10 - $currentShares }}
-                                                more</strong>.</p>
+                                        <div class="sc-alert-title">Savings Requirement</div>
+                                        <p class="sc-alert-text">You need at least
+                                            <strong>₱{{ number_format($minSavingsToApply, 2) }}</strong> in
+                                            Savings to apply. You currently have
+                                            <strong>₱{{ number_format($currentSavings, 2) }}</strong> —
+                                            you need
+                                            <strong>₱{{ number_format(max(0, $minSavingsToApply - $currentSavings), 2) }}
+                                                more</strong>.
+                                        </p>
                                     </div>
                                 </div>
                             @endif
@@ -3293,6 +3403,38 @@
     </div><!-- /container-fluid -->
 
     <script>
+        function applyFilters(listId, searchId, dateId, statusId) {
+            const list = document.getElementById(listId);
+            if (!list) return;
+
+            const searchVal = (document.getElementById(searchId)?.value || '').toLowerCase().trim();
+            const dateVal = document.getElementById(dateId)?.value || ''; // '' = All Dates, else 'YYYY-MM-DD'
+            const statusVal = document.getElementById(statusId)?.value || 'all';
+
+            list.querySelectorAll('.loan-card').forEach(card => {
+                let visible = true;
+
+                if (searchVal && !card.textContent.toLowerCase().includes(searchVal)) {
+                    visible = false;
+                }
+
+                if (visible && statusVal !== 'all' && card.dataset.status !== statusVal) {
+                    visible = false;
+                }
+
+                if (visible && dateVal && card.dataset.date !== dateVal) {
+                    visible = false;
+                }
+
+                card.dataset.filteredOut = visible ? 'false' : 'true';
+            });
+
+            pgState[listId] = 1;
+            paginateList(listId);
+        }
+    </script>
+
+    <script>
         // ══════════════════════════════════════════════════════════
         //  MODAL OPEN / CLOSE
         // ══════════════════════════════════════════════════════════
@@ -3740,13 +3882,14 @@
             const tb = document.getElementById('amortBody');
             tb.innerHTML = '';
             const moPrin = a / t;
-            const moInt = calc.totalInterest / t; // even split for display; totals reconcile with actual total interest
             let bal = a;
             for (let m = 1; m <= t; m++) {
+                const moInt = bal * fees.rate;           // interest on remaining balance BEFORE this month's payment
+                const moPayment = moPrin + moInt;        // this month's actual payment (varies, since interest declines)
                 bal -= moPrin;
                 tb.innerHTML += `<tr>
                     <td><span class="mo-n">${m}</span></td>
-                    <td><strong>${fmt(calc.monthlyPayment)}</strong></td>
+                    <td><strong>${fmt(moPayment)}</strong></td>
                     <td>${fmt(moPrin)}</td>
                     <td class="int-n">${fmt(moInt)}</td>
                     <td class="bal-n">${fmt(Math.max(bal, 0))}</td>
@@ -3860,18 +4003,29 @@
         function paginateList(listId) {
             const list = document.getElementById(listId);
             if (!list) return;
-            const cards = getFilteredCards(listId);
-            const totalPages = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+
+            const allCards = Array.from(list.querySelectorAll('.loan-card'));
+            const filtered = allCards.filter(card => card.dataset.filteredOut !== 'true');
+
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
             let page = pgState[listId] || 1;
             if (page > totalPages) page = totalPages;
             pgState[listId] = page;
 
-            cards.forEach((card, i) => {
+            // Hide anything the filters excluded
+            allCards.forEach(card => {
+                if (card.dataset.filteredOut === 'true') {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show only the current page of what's left
+            filtered.forEach((card, i) => {
                 const onPage = Math.floor(i / PAGE_SIZE) + 1 === page;
                 card.style.display = onPage ? '' : 'none';
             });
 
-            renderPaginationControls(listId, page, totalPages, cards.length);
+            renderPaginationControls(listId, page, totalPages, filtered.length);
         }
 
         function renderPaginationControls(listId, page, totalPages, total) {

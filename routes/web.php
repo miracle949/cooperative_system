@@ -85,7 +85,35 @@ Route::get("/settings", [UsersHandle::class, "Settings"])->name("Settings");
 
 Route::get("/notifications", [UsersHandle::class, "Notifications"])->name("Notifications");
 
-Route::get("/transactions", [UsersHandle::class, "Transactions"])->name("Transactions");
+Route::post('/settings/toggle', [App\Http\Controllers\UsersHandle::class, 'UpdateSetting'])->name('settings.toggle');
+Route::post('/settings/change-password', [App\Http\Controllers\UsersHandle::class, 'ChangePassword'])->name('settings.changePassword');
+Route::post('/settings/request-deactivation', [App\Http\Controllers\UsersHandle::class, 'RequestDeactivation'])->name('settings.requestDeactivation');
+Route::get('/settings/export', [App\Http\Controllers\UsersHandle::class, 'ExportData'])->name('settings.export');
+
+Route::get('/savings', [SavingsController::class, 'index'])->name('savings.index');
+
+Route::get("/Seminars", [UsersHandle::class, "Seminars"])->name("Seminars");
+
+Route::get("/Time-Deposit", [SavingsController::class, "TimeDeposit"])->name("TimeDeposit");
+
+Route::post('/savings/time-deposit/deposit', [SavingsController::class, 'depositToTimeDeposit'])
+    ->name('savings.depositTimeDeposit');
+
+Route::post('/notifications/mark-all-read', [App\Http\Controllers\UsersHandle::class, 'MarkAllRead'])
+    ->name('notifications.markAllRead');
+
+Route::get('/member-portal', [UsersHandle::class, 'MemberPortal'])->name('MemberPortal');
+
+Route::post('/admin/savings/credit-interest', [SavingsController::class, 'adminCreditInterest'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.savings.creditInterest');
+
+Route::post('/savings/claim-time-deposit', [App\Http\Controllers\SavingsController::class, 'claimTimeDeposit'])
+    ->name('savings.claimTimeDeposit');
+
+Route::get("/transactions", [UsersHandle::class, "Transactions"])->name("transactions");
+
+Route::post('/savings/open-time-deposit', [SavingsController::class, 'openTimeDeposit'])->name('savings.openTimeDeposit');
 
 // Driver Portal page GET
 Route::get("/driver-portal", [UserController::class, "DriverPortal"])->name("DriverPortal");
@@ -103,7 +131,17 @@ Route::get('/messageAboutShare/{id}', [UserController::class, "messageAboutShare
 Route::middleware(['auth'])->group(function () {
     Route::get('/share-capital-form', [ShareCapital::class, 'index'])->name('share_capital.index');
     Route::post('/share-capital-form', [ShareCapital::class, 'store'])->name('share_capital.store');
+    
 });
+
+Route::get('/savings/open-time-deposit', function () {
+    return redirect()->route('TimeDeposit');
+});
+
+Route::post('/loan-disburse', [lendingController::class, 'disburseLoan'])->name('loan.disburse');
+
+Route::post('/admin/loans/apply-penalties', [lendingController::class, 'adminApplyOverduePenalties'])
+    ->name('admin.loans.applyPenalties');
 
 Route::post('/share-capital/store', [ShareCapital::class, 'store'])->name('share_capital.store');
 
@@ -352,13 +390,13 @@ if (config('app.env') === 'local' && config('app.debug')) {
             </div>
             {$output}
             </body></html>";
-});
+    });
 
-// Payment Method routes
-Route::get('/admin/payment-methods', [App\Http\Controllers\PaymentMethodController::class, 'index'])->name('payment-methods.index');
-Route::post('/admin/payment-methods', [App\Http\Controllers\PaymentMethodController::class, 'store'])->name('payment-methods.store');
-Route::put('/admin/payment-methods/{id}', [App\Http\Controllers\PaymentMethodController::class, 'update'])->name('payment-methods.update');
-Route::delete('/admin/payment-methods/{id}', [App\Http\Controllers\PaymentMethodController::class, 'destroy'])->name('payment-methods.delete');
-Route::post('/admin/payment-methods/{id}/toggle', [App\Http\Controllers\PaymentMethodController::class, 'toggleActive'])->name('payment-methods.toggle');
-Route::get('/admin/payment-methods/{id}/qr', [App\Http\Controllers\PaymentMethodController::class, 'getQrCode'])->name('payment-methods.qr');
+    // Payment Method routes
+    Route::get('/admin/payment-methods', [App\Http\Controllers\PaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::post('/admin/payment-methods', [App\Http\Controllers\PaymentMethodController::class, 'store'])->name('payment-methods.store');
+    Route::put('/admin/payment-methods/{id}', [App\Http\Controllers\PaymentMethodController::class, 'update'])->name('payment-methods.update');
+    Route::delete('/admin/payment-methods/{id}', [App\Http\Controllers\PaymentMethodController::class, 'destroy'])->name('payment-methods.delete');
+    Route::post('/admin/payment-methods/{id}/toggle', [App\Http\Controllers\PaymentMethodController::class, 'toggleActive'])->name('payment-methods.toggle');
+    Route::get('/admin/payment-methods/{id}/qr', [App\Http\Controllers\PaymentMethodController::class, 'getQrCode'])->name('payment-methods.qr');
 }

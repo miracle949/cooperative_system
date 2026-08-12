@@ -16,6 +16,7 @@ class savings_transaction_tbl extends Model
         "balance_after",
         "note",
         "reference_no",
+        'gcash_proof_path',
         "transaction_date",
         "status",
     ];

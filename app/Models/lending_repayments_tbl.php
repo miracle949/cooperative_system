@@ -22,6 +22,7 @@ class lending_repayments_tbl extends Model
         "payment_method",
         "payment_type",
         "reference_no",
+        'payment_proof_path',
         "notes",
         "recorded_by",
     ];

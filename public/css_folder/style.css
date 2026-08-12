@@ -274,7 +274,7 @@ line-height: 25px;
     width: 100%;
     overflow: hidden;
     padding: 2rem 2rem 5rem 2rem;
-    margin-top: -64px;
+    margin-top: -80px;
 }
 
 .carousel-track {
@@ -334,13 +334,14 @@ line-height: 25px;
 }
 
 .main-text .slide .button-group a:nth-child(1) {
-    background-color: var(--accent);
+    /* background-color: var(--accent); */
+    background-color: var(--teal);
     color: #ffffff;
-    box-shadow: 0 8px 20px rgba(79, 127, 250, .35);
+    box-shadow: 0 8px 20px rgba(30, 42, 74, 0.35);
 }
 
 .main-text .slide .button-group a:nth-child(2) {
-    border: 1px solid var(--border);
+    border: 1px solid var(--teal);
     color: var(--teal);
 }
 
@@ -662,9 +663,14 @@ line-height: 25px;
     animation: slideIn 0.8s ease both;
 }
 
+.marquee-sub-parent {
+    padding: 2rem;
+}
+
 .marquee-parent {
     background: var(--teal);
     padding: 44px 48px;
+    border-radius: 28px;
 }
 
 .marquee-parent .marquee-section-parent {

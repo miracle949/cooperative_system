@@ -38,6 +38,7 @@ return new class extends Migration {
             $table->decimal("monthly_payment", 10, 2)->nullable();
             $table->decimal("total_payment", 10, 2)->nullable();
             $table->decimal("total_interest", 10, 2)->nullable();
+            $table->date("due_date");
 
             $table->text("purpose_loan")->nullable();
 

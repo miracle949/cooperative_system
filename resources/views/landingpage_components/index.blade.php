@@ -417,26 +417,28 @@
             </div> --}}
         </main>
 
-        <div class="marquee-parent">
-            <div class="marquee-section-parent">
-                <div class="stat">
-                    <strong>₱2.4B+</strong>
-                    <span>Funded to Members</span>
-                </div>
+        <div class="marquee-sub-parent">
+            <div class="marquee-parent">
+                <div class="marquee-section-parent">
+                    <div class="stat">
+                        <strong>₱2.4B+</strong>
+                        <span>Funded to Members</span>
+                    </div>
 
-                <div class="stat">
-                    <strong>12,400</strong>
-                    <span>Active Members</span>
-                </div>
+                    <div class="stat">
+                        <strong>12,400</strong>
+                        <span>Active Members</span>
+                    </div>
 
-                <div class="stat">
-                    <strong>48 Hrs</strong>
-                    <span>Avg. Approval Time</span>
-                </div>
+                    <div class="stat">
+                        <strong>48 Hrs</strong>
+                        <span>Avg. Approval Time</span>
+                    </div>
 
-                <div class="stat">
-                    <strong>4.9 / 5</strong>
-                    <span>Average Rating</span>
+                    <div class="stat">
+                        <strong>4.9 / 5</strong>
+                        <span>Average Rating</span>
+                    </div>
                 </div>
             </div>
         </div>

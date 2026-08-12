@@ -460,7 +460,8 @@ div.container-fluid {
     /* background-color: #ffffff; */
     height: 100vh;
     overflow-y: auto;
-    background-color: var(--lavender-tint);
+    /* background-color: var(--lavender-tint); */
+    background-color: #FBFBFD;
 }
 
 .container-fluid .rightbar h2 {
@@ -910,6 +911,7 @@ label {
     /* width: 100%; */
     border-radius: 6px;
     border: 1.5px solid var(--line);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     font-size: 14.5px;
 }
 
@@ -918,6 +920,7 @@ label {
     color: #6F7174;
     font-size: 14.5px;
     border: 1.5px solid var(--line);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
 }
 
 .container-fluid select:valid {

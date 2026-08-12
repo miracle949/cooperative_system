@@ -1,5 +1,5 @@
 <nav id="dashboard-nav"
-    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[2rem] tw:h-[70px] tw:bg-[#ffffff] tw:p-[1rem]">
+    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[2rem] tw:h-[80px] tw:bg-[#ffffff] tw:p-[1rem]">
     <div class="nav-logo">
         {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}
         <!-- <img src="images/logo2.png" width="50px" height="50px" style="border-radius: 50%" alt="">
@@ -58,17 +58,23 @@
 
     <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa fa-bell" style="font-size: 17px; color: #5a7a85;;"></i>
+            <i class="fa-solid fa-bell" style="font-size: 17px; color: var(--muted);"></i>
             <li>
                 <a href="#" onclick="toggleDropdown(event)"
                     class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem] position-relative">
                     <div class="first-last">
                         <p>{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</p>
                     </div>
-                    <p style="margin: 0">
-                        {{ auth()->user()->first_name ?? '' }}
-                    </p>
-                    
+                    <div class="name-email">
+                        <p>
+                            {{ auth()->user()->first_name ?? '' }}
+                            {{ auth()->user()->last_name ?? '' }}
+                        </p>
+                        <p>
+                            {{ auth()->user()->email ?? '' }}
+                        </p>
+                    </div>
+
                 </a>
                 <!-- @if ($username)
                     @php

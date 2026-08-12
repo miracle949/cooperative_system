@@ -175,7 +175,8 @@ div.container-fluid {
     overflow: hidden;
     position: relative;
     /* background-color: #ffffff; */
-    background-color: var(--lavender-tint);
+    /* background-color: var(--lavender-tint); */
+    background-color: #FBFBFD;
 }
 
 /* .container-fluid .form-image::before {
@@ -553,7 +554,8 @@ div.container-fluid {
     justify-content: flex-start;
     align-items: center;
     padding: 2rem;
-    background-color: #F5F6FA;
+    /* background-color: #F5F6FA; */
+    background-color: #FBFBFD;
     /* background-color: var(--ice); */
     /* background-color: var(--ice); */
     /* background-color: var(--cyan); */
@@ -794,7 +796,7 @@ div.container-fluid {
 }
 
 .container-fluid .form-input label {
-    font-size: 15.5px;
+    font-size: 15px;
     /* text-transform: uppercase; */
     /* letter-spacing: .12em; */
     /* letter-spacing: 0.08em; */
@@ -805,12 +807,14 @@ div.container-fluid {
 }
 
 .container-fluid .form-input input {
-    font-size: 14.5px;
+    font-size: 14px;
     /* background: rgba(255, 255, 255, .07); */
     /* background-color: var(--border); */
     /* background: #f4fafc; */
     /* border: 1px solid rgba(255, 255, 255, .12); */
+    /* border: 1.5px solid var(--line); */
     border: 1.5px solid var(--line);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); */
     /* color: #fff; */
     color: var(--teal);
     background-color: #ffffff;
@@ -835,9 +839,10 @@ div.container-fluid {
 }
 
 .container-fluid .form-input input:-webkit-autofill:focus {
-    border-color: var(--blue) !important;
-    box-shadow: 0 0 0 1000px var(--line) inset,
-        0 0 0 3px rgba(79, 127, 250, .12) !important;
+    border-color: var(--teal) !important;
+    /* box-shadow: 0 0 0 1000px var(--line) inset,
+        0 0 0 3px rgba(79, 127, 250, .12) !important; */
+    box-shadow: 0 8px 20px var(--line) inset, rgba(30, 42, 74, 0.35) !important;
     color: #6B7280;
 }
 
@@ -847,7 +852,7 @@ div.container-fluid {
 }
 
 .container-fluid .form-input input:focus {
-    border-color: var(--blue);
+    border-color: var(--teal);
     background: rgba(255, 255, 255, .11);
     box-shadow: 0 0 0 3px rgba(79, 127, 250, .12);
 }
@@ -855,7 +860,7 @@ div.container-fluid {
 .container-fluid .form-input:focus-within .envelope i,
 .container-fluid .form-input:focus-within .lock i {
     /* color: var(--gold); */
-    color: var(--blue);
+    color: var(--teal);
     /* color: #6B7280; */
 }
 
@@ -890,7 +895,7 @@ div.container-fluid {
     border-radius: 8px;
     font-size: 12.5px;
     position: relative;
-    background-color: var(--blue);
+    background-color: var(--teal);
     /* color: var(--teal); */
     color: #ffffff;
     letter-spacing: 0.25em;
@@ -924,10 +929,10 @@ div.container-fluid {
 
 .form-forgot a {
     /* color: var(--blue); */
-    color: var(--muted);
+    color: var(--teal);
     text-decoration: none;
     font-weight: 500;
-    font-size: 15.5px;
+    font-size: 15px;
 }
 
 .form-change {
@@ -942,11 +947,11 @@ div.container-fluid {
 .form-change label,
 .form-change a {
     text-transform: none;
-    font-size: 15.5px;
+    font-size: 15px;
 }
 
 .form-change a {
-    color: var(--blue);
+    color: var(--teal);
     font-weight: 500;
     text-decoration: none;
 }
@@ -1072,6 +1077,30 @@ div.container-fluid {
 @media only screen and (min-width: 1300px) {
     .container-fluid .form-parent {
         width: 500px;
+    }
+
+    .container-fluid h1 {
+        font-size: 45px;
+    }
+
+    .container-fluid .form-parent p {
+        font-size: 16px;
+    }
+
+    .container-fluid .form-input label {
+        font-size: 16px;
+    }
+
+    .container-fluid .form-input input {
+        font-size: 15px;
+    }
+
+    .form-forgot a {
+        font-size: 16px;
+    }
+
+    .form-change label {
+        font-size: 16px;
     }
 }
 

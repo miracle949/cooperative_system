@@ -317,14 +317,14 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 16px;">
 
-                    <div class="modal-header border-0 d-flex flex-column align-items-center text-center py-4"
-                        style="background: var(--teal);">
+                    <div class="modal-header d-flex flex-column align-items-center text-center py-4"
+                        style="background: #ffffff; border-bottom: 1px solid var(--line);">
                         <div class="d-flex justify-content-center align-items-center mb-3"
-                            style="width: 72px; height: 72px; border-radius: 50%; background: rgba(79,127,250,0.25); border: 2px solid var(--blue);">
-                            <i class="fa fa-check" style="font-size: 32px; color: #fff;"></i>
+                            style="width: 72px; height: 72px; border-radius: 50%; background-color: var(--teal);">
+                            <i class="fa fa-check" style="font-size: 32px; color: #ffffff;"></i>
                         </div>
-                        <h4 class="modal-title fw-bold text-white mb-1">Registration Successful!</h4>
-                        <p class="text-white mb-0" style="opacity: 0.85; font-size: 0.9rem;">Your application has been
+                        <h4 class="modal-title fw-bold mb-1" style="color: #1a1a1a;">Registration Successful!</h4>
+                        <p class="mb-0" style="opacity: 0.85; font-size: 0.9rem; color: var(--muted)">Your application has been
                             submitted</p>
                     </div>
 
@@ -334,8 +334,8 @@
                         </p>
                         <hr style="border-color: #e9ecef;">
                         <div class="d-flex align-items-start gap-3 text-start mt-3 p-3 rounded-3"
-                            style="background: var(--blue-mist); border: 1px solid var(--blue-pale);">
-                            <i class="fa fa-envelope mt-1" style="color: var(--blue); font-size: 1.1rem;"></i>
+                            style="background: #EDF0F5; border: 1px solid var(--border);">
+                            <i class="fa fa-envelope mt-1" style="color: var(--teal); font-size: 1.1rem;"></i>
                             <p class="mb-0" style="color: var(--teal); font-size: 0.9rem; line-height: 1.6;">
                                 You will receive an <strong>email notification</strong> once your application
                                 has been reviewed and approved by the Board of Directors. Please check your Gmail inbox.
@@ -353,7 +353,7 @@
 
                     <div class="modal-footer border-0 justify-content-center pb-4">
                         <button type="button" class="btn px-5 py-2 fw-semibold text-white" data-bs-dismiss="modal"
-                            style="background: var(--blue); border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px;">
+                            style="background: var(--teal); border-radius: 50px; border: none; font-size: 1rem; letter-spacing: 0.5px;">
                             OK, Got it!
                         </button>
                     </div>
