@@ -11,18 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AnnouncementController extends Controller
 {
-    public function index()
-    {
-        $announcements = Announcements_tbl::with(['user', 'comments.user', 'likes'])
-            ->withCount('likes', 'comments')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $currentUser = Auth::user();
-
-        return view('admin_components.announcements', compact('announcements', 'currentUser'));
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -43,7 +31,7 @@ class AnnouncementController extends Controller
             $announcement->id
         );
 
-        return redirect()->route('announcements.index')->with('success', 'Announcement published successfully.');
+        return redirect()->route('notifications.index')->with('success', 'Announcement published successfully.');
     }
 
     public function storeComment(Request $request, $id)

@@ -72,6 +72,9 @@ class PaymentController extends Controller
         $loan = lending_program_tbl::findOrFail($lendingId);
         $status = lending_status_tbl::where('lending_id', $lendingId)->first();
 
+        // Compute income breakdown per payment
+        $interestRatio = ($loan->total_payment > 0) ? ($loan->total_interest / $loan->total_payment) : 0;
+
         if ($paymentType === 'full' && $status) {
             // ── FULL REPAYMENT ────────────────────────────────────────────
             $remainingBalance = $status->remaining_balance;
@@ -80,11 +83,18 @@ class PaymentController extends Controller
             // Create one repayment record per remaining payment
             for ($i = 1; $i <= $remainingPayments; $i++) {
                 $paymentsMade = lending_repayments_tbl::where('lending_id', $lendingId)->count();
+                $installmentAmount = $loan->monthly_payment;
+                $interestPaid = round($installmentAmount * $interestRatio, 2);
+                $principalPaid = round($installmentAmount - $interestPaid, 2);
+
                 lending_repayments_tbl::create([
                     'lending_id' => $lendingId,
                     'user_id' => auth()->id(),
                     'payment_number' => $paymentsMade + 1,
-                    'amount_paid' => $loan->monthly_payment,
+                    'amount_paid' => $installmentAmount,
+                    'principal_paid' => $principalPaid,
+                    'interest_paid' => $interestPaid,
+                    'service_fee_paid' => 0,
                     'payment_date' => now()->format('Y-m-d'),
                     'payment_method' => 'GCash',
                     'reference_no' => 'GCASH-FULL-' . now()->format('YmdHis') . '-' . $i,
@@ -105,12 +115,18 @@ class PaymentController extends Controller
         } else {
             // ── SINGLE MONTHLY PAYMENT (existing logic) ───────────────────
             $paymentsMade = lending_repayments_tbl::where('lending_id', $lendingId)->count();
+            $monthlyAmount = $loan->monthly_payment;
+            $interestPaid = round($monthlyAmount * $interestRatio, 2);
+            $principalPaid = round($monthlyAmount - $interestPaid, 2);
 
             lending_repayments_tbl::create([
                 'lending_id' => $lendingId,
                 'user_id' => auth()->id(),
                 'payment_number' => $paymentsMade + 1,
-                'amount_paid' => $loan->monthly_payment,
+                'amount_paid' => $monthlyAmount,
+                'principal_paid' => $principalPaid,
+                'interest_paid' => $interestPaid,
+                'service_fee_paid' => 0,
                 'payment_date' => now()->format('Y-m-d'),
                 'payment_method' => 'GCash',
                 'reference_no' => 'GCASH-' . now()->format('YmdHis'),

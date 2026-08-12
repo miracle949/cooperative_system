@@ -56,6 +56,8 @@
     --green-tint: #e6f6ee;
     --red: #e0483e;
     --red-tint: #fbeae9;
+    --panel-dark: #f4f7fb;
+    --panel-border: rgba(0, 100, 200, 0.15);
 
     --ice-blue: #E8F4FD;
     --gold-pale: #FFF8EC;

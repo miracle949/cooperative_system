@@ -457,8 +457,8 @@
                     @if($hasFullAccess || in_array('notifications', $perms))
                     <a href="{{ route('notifications.index') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-                        <i data-lucide="bell" class="w-5 h-5"></i>
-                        <span>Notifications</span>
+                        <i data-lucide="inbox" class="w-5 h-5"></i>
+                        <span>Communication</span>
                     </a>
                     @endif
                     @if($hasFullAccess || in_array('reports', $perms))
@@ -482,18 +482,18 @@
                         <span>Archives</span>
                     </a>
                     @endif
+                    @if($hasFullAccess || in_array('audit-logs', $perms))
+                    <a href="{{ route('admin.audit-logs.index') }}"
+                        class="sidebar-link justify-start {{ request()->routeIs('admin.audit-logs.index') ? 'active' : '' }}">
+                        <i data-lucide="history" class="w-5 h-5"></i>
+                        <span>Audit Logs</span>
+                    </a>
+                    @endif
                     @if($hasFullAccess || in_array('officers-committees', $perms))
                     <a href="{{ route('officers.committees') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('officers.committees') ? 'active' : '' }}">
                         <i data-lucide="briefcase" class="w-5 h-5"></i>
                         <span>Officers & Committees</span>
-                    </a>
-                    @endif
-                    @if($hasFullAccess || in_array('announcements', $perms))
-                    <a href="{{ route('announcements.index') }}"
-                        class="sidebar-link justify-start {{ request()->routeIs('announcements*') ? 'active' : '' }}">
-                        <i data-lucide="megaphone" class="w-5 h-5"></i>
-                        <span>Announcements</span>
                     </a>
                     @endif
                     @if($hasFullAccess || in_array('settings', $perms))

@@ -134,6 +134,7 @@ Route::middleware(['auth'])->group(function () {
     
 });
 
+<<<<<<< HEAD
 Route::get('/savings/open-time-deposit', function () {
     return redirect()->route('TimeDeposit');
 });
@@ -144,6 +145,9 @@ Route::post('/admin/loans/apply-penalties', [lendingController::class, 'adminApp
     ->name('admin.loans.applyPenalties');
 
 Route::post('/share-capital/store', [ShareCapital::class, 'store'])->name('share_capital.store');
+=======
+Route::post('/share-capital/store', [ShareCapital::class, 'store'])->name('share_capital.store.admin');
+>>>>>>> bdb952345eec40b3475944d6da0cdcbecffc88a0
 
 // Share Capital form via email link
 Route::get('/share-capital-form/{id}', [ShareCapital::class, 'showForMember'])->name('share_capital.show');
@@ -250,6 +254,7 @@ Route::get("/dashboard-reports/journal-summary", [ReportController::class, "jour
 Route::get("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings")->middleware("auth");
 Route::post("/dashboard-settings", [UserController::class, "dashboard_settings"])->name("settings.update")->middleware("auth");
 Route::post("/admin/store", [UserController::class, "storeAdmin"])->name("admin.store");
+Route::post("/admin/change-password", [UserController::class, "changePassword"])->name("admin.change-password")->middleware("auth");
 Route::post("/admin/update", [UserController::class, "updateAdmin"])->name("admin.update");
 Route::post("/admin/delete", [UserController::class, "deleteAdmin"])->name("admin.delete");
 Route::post("/admin/toggle-status", [UserController::class, "toggleAdminStatus"])->name("admin.toggle-status");
@@ -270,9 +275,12 @@ Route::get("/loans/member/{id}/active", function ($id) {
         ->get();
     return response()->json($loans);
 })->name("loans.member.active");
+Route::get("/admin/audit-logs", [UserController::class, "auditLogsIndex"])->name("admin.audit-logs.index");
 Route::get("/dashboard-officers-committees", [UserController::class, "dashboard_officers_committees"])->name("officers.committees");
+Route::post("/officers/store", [UserController::class, "storeOfficer"])->name("officers.store");
+Route::put("/officers/{id}", [UserController::class, "updateOfficer"])->name("officers.update");
+Route::delete("/officers/{id}", [UserController::class, "deleteOfficer"])->name("officers.delete");
 // Announcement routes
-Route::get("/admin/announcements", [App\Http\Controllers\AnnouncementController::class, "index"])->name("announcements.index");
 Route::post("/announcements", [App\Http\Controllers\AnnouncementController::class, "store"])->name("announcements.store");
 Route::post("/announcements/{id}/comment", [App\Http\Controllers\AnnouncementController::class, "storeComment"])->name("announcements.comment");
 Route::post("/announcements/{id}/like", [App\Http\Controllers\AnnouncementController::class, "toggleLike"])->name("announcements.like");
@@ -309,6 +317,25 @@ Route::post("/admin/dividends/{id}/disburse", [DividendController::class, "disbu
 Route::post("/admin/dividends/disburse", [DividendController::class, "disburseAll"])->name("dividends.disburse");
 Route::post("/admin/dividends/disburse-all/{year}", [DividendController::class, "disburseAll"])->name("dividends.disburse-all");
 Route::post("/admin/dividends/fund-percentage", [DividendController::class, "updateFundPercentage"])->name("dividends.update-fund-percentage");
+
+// Patronage Refund Distribution routes
+Route::get("/admin/dividends/patronage-partial", [DividendController::class, "patronageTablePartial"])->name("dividends.patronage-partial");
+Route::get("/admin/dividends/calculate-patronage", [DividendController::class, "calculatePatronageRefunds"])->name("dividends.calculate-patronage");
+Route::get("/admin/dividends/reset/{year}", [DividendController::class, "resetDistribution"])->name("dividends.reset");
+Route::put("/admin/dividends/patronage/{id}/update", [DividendController::class, "updatePatronageRefund"])->name("dividends.patronage.update");
+Route::post("/admin/dividends/patronage/{id}/approve", [DividendController::class, "approvePatronageRefund"])->name("dividends.patronage.approve");
+Route::post("/admin/dividends/patronage/approve-all", [DividendController::class, "approveAllPatronageRefunds"])->name("dividends.patronage.approve-all");
+Route::post("/admin/dividends/patronage/{id}/disburse", [DividendController::class, "disbursePatronageRefundOne"])->name("dividends.patronage.disburse-one");
+Route::post("/admin/dividends/patronage/disburse-all/{year?}", [DividendController::class, "disburseAllPatronageRefunds"])->name("dividends.patronage.disburse-all");
+Route::post("/admin/dividends/disburse-both/{year?}", [DividendController::class, "disburseBoth"])->name("dividends.disburse-both");
+Route::get("/admin/dividends/patronage/{id}/breakdown", [DividendController::class, "patronageBreakdown"])->name("dividends.patronage.breakdown");
+Route::post("/admin/dividends/update-patronage-basis", [DividendController::class, "updatePatronageBasis"])->name("dividends.update-patronage-basis");
+
+// Additional Patronage Records routes
+Route::get("/patronage-records/partial", [UserController::class, "patronageRecordsPartial"])->name("patronage-records.partial");
+Route::post("/patronage-records", [UserController::class, "storePatronageRecord"])->name("patronage-records.store");
+Route::put("/patronage-records/{id}", [UserController::class, "updatePatronageRecord"])->name("patronage-records.update");
+Route::delete("/patronage-records/{id}", [UserController::class, "deletePatronageRecord"])->name("patronage-records.delete");
 
 // ═══════════════════════════════════════════════════
 //  DEBUG — view all database tables & records

@@ -20,6 +20,7 @@ use App\Models\Loan_settings_tbl;
 use App\Models\Dividend;
 use App\Models\CooperativeTransaction;
 use App\Models\system_settings_tbl;
+use Illuminate\Support\Facades\Hash;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -205,7 +206,7 @@ class UserController extends Controller
                     DB::table('otherinfo_tbls')
                         ->where('user_id', $request->id)
                         ->update([
-                            'membership_status' => 'Inactive',
+                            'membership_status' => 'Not Active',
                         ]);
                 }
             }
@@ -336,7 +337,8 @@ class UserController extends Controller
 
     public function AboutUs()
     {
-        return view("landingpage_components.about");
+        $officers = \App\Models\officer_tbl::with('user')->orderBy('sort_order')->get();
+        return view("landingpage_components.about", compact('officers'));
     }
 
     public function ServicesPage()
@@ -695,7 +697,23 @@ class UserController extends Controller
 
         $members = $query->orderBy('id', 'asc')->paginate(10);
         $pendingRequests = Users_tbl::where('role', 'pending')->orderBy('id', 'asc')->get();
-        $admins = Users_tbl::where('role', 'admin')->get();
+
+        $adminList = Users_tbl::whereNotIn('role', ['member', 'pending', 'inactive'])
+            ->orderBy('id')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email,
+                    'username' => $user->username,
+                    'role' => $user->role,
+                    'status' => $user->status,
+                    'sidebar_permissions' => $user->sidebar_permissions,
+                    'is_main' => $user->isMainAdmin(),
+                ];
+            });
 
         $resignationRequests = \App\Models\ResignationRequest_tbl::with('user')
             ->where('status', 'pending')
@@ -803,7 +821,7 @@ class UserController extends Controller
             return $member;
         });
 
-        return view("admin_components.members", compact('members', 'pendingRequests', 'admins', 'memberCategoryCounts', 'adminCategoryCounts', 'resignationRequests', 'inProcessResignations', 'resignees', 'roles', 'roleCounts'));
+        return view("admin_components.members", compact('members', 'pendingRequests', 'adminList', 'memberCategoryCounts', 'adminCategoryCounts', 'resignationRequests', 'inProcessResignations', 'resignees', 'roles', 'roleCounts'));
     }
 
     public function dashboard_savings(Request $request)
@@ -973,6 +991,8 @@ class UserController extends Controller
             }
         }
 
+        $paymentMethods = \App\Models\PaymentMethod::where('is_active', true)->orderBy('id')->get();
+
          return view("admin_components.savings", compact(
              'transactions',
              'currentBalance',
@@ -987,9 +1007,8 @@ class UserController extends Controller
              'todayDeposits',
              'monthlyWithdrawals',
              'monthlyWithdrawalsCount',
-             // 'monthlyWithdrawalData',  // Now calculated in Blade template
-             // 'highestWithdrawalMonth',  // Now calculated in Blade template
-             'monthlyWithdrawalAvg'
+             'monthlyWithdrawalAvg',
+             'paymentMethods',
          ));
     }
 
@@ -1335,6 +1354,8 @@ class UserController extends Controller
             ->orderBy('release_date', 'asc')
             ->get();
 
+        $paymentMethods = \App\Models\PaymentMethod::where('is_active', true)->orderBy('id')->get();
+
         return view("admin_components.sharecapitals", compact(
             'transactions',
             'totalContributions',
@@ -1342,7 +1363,8 @@ class UserController extends Controller
             'perShareValue',
             'lastContribution',
             'allMembers',
-            'pendingReleases'
+            'pendingReleases',
+            'paymentMethods'
         ));
     }
 
@@ -1384,7 +1406,7 @@ class UserController extends Controller
             'member_id' => 'required|exists:users_tbls,id',
             'shares' => 'required|numeric|min:0.5',
             'type' => 'required|string|in:Deposit,Withdrawal',
-            'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
+            'payment_method' => 'required|string',
             'note' => 'nullable|string|max:255',
         ]);
 
@@ -1812,6 +1834,38 @@ class UserController extends Controller
         return view("admin_components.settings", compact('adminUser', 'companySettings', 'adminList', 'roles', 'roleCounts', 'paymentMethods'));
     }
 
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Current password is incorrect.',
+            ], 422);
+        }
+
+        $user->password = bcrypt($request->new_password);
+        $user->save();
+
+        AuditLog::log(
+            'Changed Password',
+            'Admin changed their password',
+            'user',
+            $user->id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+        ]);
+    }
+
     public function updateAdmin(Request $request)
     {
         if (!auth()->user()->isMainAdmin()) {
@@ -2146,6 +2200,19 @@ class UserController extends Controller
             $totalSumApproved = Dividend::where('year', $year)->sum('approved_amount');
         }
 
+        // Patronage data
+        $patronageFundPercentage = $dividendSetting ? $dividendSetting->patronage_fund_percentage : 40.00;
+        $patronageBasis = $dividendSetting ? $dividendSetting->patronage_basis : 'total_repayment';
+        $patronageApprovedCount = 0;
+        $patronageDisbursedCount = 0;
+        $totalSumPatronageApproved = 0;
+
+        if ($distribution) {
+            $patronageApprovedCount = \App\Models\PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->count();
+            $patronageDisbursedCount = \App\Models\PatronageRefundDistribution::where('year', $year)->where('status', 'disbursed')->count();
+            $totalSumPatronageApproved = \App\Models\PatronageRefundDistribution::where('year', $year)->where('status', 'approved')->sum('amount');
+        }
+
         $cooperativeTransactions = CooperativeTransaction::orderBy('created_at', 'desc')->take(10)->get();
         $cooperativeStats = [
             'total_expenses' => CooperativeTransaction::where('transaction_type', 'expense')->sum('amount'),
@@ -2158,7 +2225,8 @@ class UserController extends Controller
             'approvedCount', 'disbursedCount',
             'totalSumShareCapital', 'totalSumRecommended', 'totalSumApproved',
             'cooperativeTransactions', 'cooperativeStats',
-            'dividendFundPercentage'
+            'dividendFundPercentage', 'patronageFundPercentage', 'patronageBasis',
+            'patronageApprovedCount', 'patronageDisbursedCount', 'totalSumPatronageApproved'
         ));
     }
 
@@ -2192,9 +2260,13 @@ class UserController extends Controller
             'payment_method' => 'required|string',
             'reference_no' => 'nullable|string|max:255',
             'payment_date' => 'required|date',
+            'late_fee' => 'nullable|numeric|min:0',
         ]);
 
         $loan = lending_program_tbl::findOrFail($request->lending_id);
+        $interestRatio = ($loan->total_payment > 0) ? ($loan->total_interest / $loan->total_payment) : 0;
+        $lateFee = $request->input('late_fee', 0) ?: 0;
+
         $status = lending_status_tbl::firstOrCreate(
             ['lending_id' => $request->lending_id],
             [
@@ -2214,11 +2286,18 @@ class UserController extends Controller
         try {
             $paymentsMade = lending_repayments_tbl::where('lending_id', $request->lending_id)->count();
 
+            $interestPaid = round($request->amount_paid * $interestRatio, 2);
+            $principalPaid = round($request->amount_paid - $interestPaid, 2);
+
             $repayment = lending_repayments_tbl::create([
                 'lending_id' => $request->lending_id,
                 'user_id' => $request->member_id,
                 'payment_number' => $paymentsMade + 1,
                 'amount_paid' => $request->amount_paid,
+                'principal_paid' => $principalPaid,
+                'interest_paid' => $interestPaid,
+                'service_fee_paid' => 0,
+                'late_fee' => $lateFee > 0 ? $lateFee : null,
                 'payment_date' => $request->payment_date,
                 'payment_method' => $request->payment_method,
                 'reference_no' => $request->reference_no ?: 'ADMIN-' . now()->format('YmdHis'),
@@ -2266,7 +2345,46 @@ class UserController extends Controller
 
     public function dashboard_officers_committees()
     {
-        return view("admin_components.officers_committees");
+        $officers = \App\Models\officer_tbl::with('user')->orderBy('sort_order')->get();
+        $allMembers = Users_tbl::where('role', '!=', 'Admin')->orderBy('first_name')->get();
+
+        return view("admin_components.officers_committees", compact('officers', 'allMembers'));
+    }
+
+    public function storeOfficer(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users_tbls,id',
+            'position' => 'required|string|max:255',
+            'term_start' => 'nullable|date',
+            'term_end' => 'nullable|date|after_or_equal:term_start',
+        ]);
+
+        \App\Models\officer_tbl::create($request->only('user_id', 'position', 'term_start', 'term_end'));
+
+        return response()->json(['success' => true, 'message' => 'Officer added successfully.']);
+    }
+
+    public function updateOfficer(Request $request, $id)
+    {
+        $officer = \App\Models\officer_tbl::findOrFail($id);
+        $request->validate([
+            'position' => 'required|string|max:255',
+            'term_start' => 'nullable|date',
+            'term_end' => 'nullable|date|after_or_equal:term_start',
+        ]);
+
+        $officer->update($request->only('position', 'term_start', 'term_end'));
+
+        return response()->json(['success' => true, 'message' => 'Officer updated successfully.']);
+    }
+
+    public function deleteOfficer($id)
+    {
+        $officer = \App\Models\officer_tbl::findOrFail($id);
+        $officer->delete();
+
+        return response()->json(['success' => true, 'message' => 'Officer removed successfully.']);
     }
 
     public function dashboard_archives(Request $request)
@@ -2315,5 +2433,174 @@ class UserController extends Controller
             'shareCapitalCount',
             'lendingCount'
         ));
+    }
+
+    public function auditLogsIndex(Request $request)
+    {
+        $query = AuditLog::query();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('admin_name', 'like', "%{$search}%")
+                    ->orWhere('action', 'like', "%{$search}%")
+                    ->orWhere('target_type', 'like', "%{$search}%")
+                    ->orWhere('user_role', 'like', "%{$search}%")
+                    ->orWhere('ip_address', 'like', "%{$search}%")
+                    ->orWhere('details', 'like', "%{$search}%");
+            });
+        }
+
+        if ($dateFrom = $request->input('date_from')) {
+            $query->whereDate('created_at', '>=', $dateFrom);
+        }
+
+        if ($dateTo = $request->input('date_to')) {
+            $query->whereDate('created_at', '<=', $dateTo);
+        }
+
+        $logs = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+
+        AuditLog::log(
+            'Viewed Audit Logs',
+            'Accessed the system audit logs page',
+            'audit_logs',
+            null
+        );
+
+        return view('admin_components.audit_logs', compact('logs'));
+    }
+
+    // ─── Additional Patronage Records (Finance Page) ─────────────────────
+
+    public function patronageRecordsPartial(Request $request)
+    {
+        $year = $request->get('year', now()->year);
+        $records = \App\Models\PatronageRecord::with('user', 'recorder')
+            ->where('year', $year)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends(['year' => $year]);
+
+        $totalAmount = \App\Models\PatronageRecord::where('year', $year)->sum('amount');
+        $recordCount = \App\Models\PatronageRecord::where('year', $year)->count();
+
+        $allMembers = Users_tbl::where('role', 'member')
+            ->orderBy('first_name')
+            ->get(['id', 'first_name', 'last_name']);
+
+        return view('admin_components.patronage_records_partial', compact(
+            'records', 'year', 'totalAmount', 'recordCount', 'allMembers'
+        ));
+    }
+
+    public function storePatronageRecord(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'user_id' => 'required|exists:users_tbls,id',
+            'year' => 'required|integer|min:2000|max:2100',
+            'source' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $record = \App\Models\PatronageRecord::create([
+            'user_id' => $request->user_id,
+            'year' => $request->year,
+            'source' => $request->source,
+            'description' => $request->description,
+            'amount' => $request->amount,
+            'recorded_by' => auth()->id(),
+        ]);
+
+        $member = Users_tbl::find($request->user_id);
+        AuditLog::log(
+            'Created Additional Patronage Record',
+            "Added patronage record for {$member->first_name} {$member->last_name} (Year: {$request->year}, Source: {$request->source}, Amount: ₱" . number_format($request->amount, 2) . ")",
+            'patronage_record',
+            $record->id
+        );
+
+        $records = \App\Models\PatronageRecord::with('user', 'recorder')
+            ->where('year', $request->year)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends(['year' => $request->year]);
+
+        $totalAmount = \App\Models\PatronageRecord::where('year', $request->year)->sum('amount');
+        $recordCount = \App\Models\PatronageRecord::where('year', $request->year)->count();
+        $allMembers = Users_tbl::where('role', 'member')->orderBy('first_name')->get(['id', 'first_name', 'last_name']);
+
+        $html = view('admin_components.patronage_records_partial', compact(
+            'records', 'totalAmount', 'recordCount', 'allMembers'
+        ))->with('year', $request->year)->render();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage record added successfully.',
+            'html' => $html,
+        ]);
+    }
+
+    public function updatePatronageRecord(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'amount' => 'required|numeric|min:0.01',
+            'source' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $record = \App\Models\PatronageRecord::findOrFail($id);
+
+        $oldAmount = $record->amount;
+        $record->update([
+            'amount' => $request->amount,
+            'source' => $request->source,
+            'description' => $request->description,
+        ]);
+
+        $member = Users_tbl::find($record->user_id);
+        AuditLog::log(
+            'Updated Additional Patronage Record',
+            "Updated patronage record for {$member->first_name} {$member->last_name} (Year: {$record->year}) from ₱" . number_format($oldAmount, 2) . " to ₱" . number_format($record->amount, 2),
+            'patronage_record',
+            $id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage record updated successfully.',
+        ]);
+    }
+
+    public function deletePatronageRecord($id)
+    {
+        $record = \App\Models\PatronageRecord::with('user')->findOrFail($id);
+        $year = $record->year;
+
+        $memberName = $record->user->first_name . ' ' . $record->user->last_name;
+        $amount = $record->amount;
+        $source = $record->source;
+
+        $record->delete();
+
+        AuditLog::log(
+            'Deleted Additional Patronage Record',
+            "Deleted patronage record for {$memberName} (Year: {$year}, Source: {$source}, Amount: ₱" . number_format($amount, 2) . ")",
+            'patronage_record',
+            $id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Patronage record deleted successfully.',
+        ]);
     }
 }
