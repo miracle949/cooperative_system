@@ -1356,6 +1356,152 @@ class UsersHandle extends Controller
         return redirect()->back()->with('success', 'All notifications marked as read.');
     }
 
+    public function Financial(Request $request)
+    {
+        $user = Auth::user();
+        $username = $user->username ?? null;
+        $email = $user->email ?? null;
+        $userId = $user->id;
+
+        $currentYear = (int) now()->year;
+        $year = (int) $request->query('year', $currentYear);
+        $activeTab = $request->query('tab', 'dividends'); // 'dividends' | 'patronage' | 'records'
+        $search = trim($request->query('search', ''));
+
+        // ★ NEW: shared filter inputs
+        $statusFilter = $request->query('status', 'all');
+        $dateFilter = $request->query('date'); // Y-m-d or null
+
+        $availableYears = \App\Models\Dividend::where('user_id', $userId)
+            ->pluck('year')
+            ->merge(
+                \App\Models\PatronageRefundDistribution::where('user_id', $userId)->pluck('year')
+            )
+            ->push($currentYear)
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        // ── My Dividends for the selected year (paginated + filtered) ────
+        $dividendsQuery = \App\Models\Dividend::where('user_id', $userId)
+            ->where('year', $year);
+
+        if ($statusFilter !== 'all') {
+            $dividendsQuery->where('status', $statusFilter);
+        }
+        if ($dateFilter) {
+            $dividendsQuery->whereDate('updated_at', $dateFilter);
+        }
+        if ($search !== '') {
+            $dividendsQuery->where(function ($q) use ($search) {
+                $q->where('approved_amount', 'like', "%{$search}%")
+                    ->orWhere('recommended_amount', 'like', "%{$search}%")
+                    ->orWhere('share_capital_amount', 'like', "%{$search}%");
+            });
+        }
+
+        $myDividends = $dividendsQuery
+            ->orderByDesc('created_at')
+            ->paginate(10, ['*'], 'dividends_page')
+            ->withQueryString();
+
+        $totalDividendsApproved = \App\Models\Dividend::where('user_id', $userId)
+            ->where('year', $year)
+            ->whereIn('status', ['approved', 'disbursed'])
+            ->sum('approved_amount');
+
+        $totalDividendsDisbursed = \App\Models\Dividend::where('user_id', $userId)
+            ->where('year', $year)
+            ->where('status', 'disbursed')
+            ->sum('approved_amount');
+
+        // ── My Patronage Refunds for the selected year (paginated + filtered) ──
+        $patronageQuery = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
+            ->where('year', $year);
+
+        if ($statusFilter !== 'all') {
+            $patronageQuery->where('status', $statusFilter);
+        }
+        if ($dateFilter) {
+            $patronageQuery->whereDate('updated_at', $dateFilter);
+        }
+        if ($search !== '') {
+            $patronageQuery->where(function ($q) use ($search) {
+                $q->where('amount', 'like', "%{$search}%")
+                    ->orWhere('total_patronage', 'like', "%{$search}%");
+            });
+        }
+
+        $myPatronageRefunds = $patronageQuery
+            ->orderByDesc('created_at')
+            ->paginate(10, ['*'], 'patronage_page')
+            ->withQueryString();
+
+        $totalPatronageApproved = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
+            ->where('year', $year)
+            ->whereIn('status', ['approved', 'disbursed'])
+            ->sum('amount');
+
+        $totalPatronageDisbursed = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
+            ->where('year', $year)
+            ->where('status', 'disbursed')
+            ->sum('amount');
+
+        // ── Additional Patronage Records (date filter only — no status field) ──
+        $recordsQuery = \App\Models\PatronageRecord::where('user_id', $userId)
+            ->where('year', $year);
+
+        if ($dateFilter) {
+            $recordsQuery->whereDate('created_at', $dateFilter);
+        }
+        if ($search !== '') {
+            $recordsQuery->where(function ($q) use ($search) {
+                $q->where('source', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('amount', 'like', "%{$search}%");
+            });
+        }
+
+        $myPatronageRecords = $recordsQuery
+            ->orderByDesc('created_at')
+            ->paginate(10, ['*'], 'records_page')
+            ->withQueryString();
+
+        $totalAdditionalPatronage = \App\Models\PatronageRecord::where('user_id', $userId)
+            ->where('year', $year)
+            ->sum('amount');
+
+        $lifetimeDividends = \App\Models\Dividend::where('user_id', $userId)
+            ->where('status', 'disbursed')
+            ->sum('approved_amount');
+
+        $lifetimePatronage = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
+            ->where('status', 'disbursed')
+            ->sum('amount');
+
+        return view('members_components.Financial', [
+            'username' => $username,
+            'email' => $email,
+            'year' => $year,
+            'currentYear' => $currentYear,
+            'availableYears' => $availableYears,
+            'activeTab' => $activeTab,
+            'statusFilter' => $statusFilter,   // ★ NEW
+            'search' => $search,
+            'dateFilter' => $dateFilter,       // ★ NEW
+            'myDividends' => $myDividends,
+            'totalDividendsApproved' => $totalDividendsApproved,
+            'totalDividendsDisbursed' => $totalDividendsDisbursed,
+            'myPatronageRefunds' => $myPatronageRefunds,
+            'totalPatronageApproved' => $totalPatronageApproved,
+            'totalPatronageDisbursed' => $totalPatronageDisbursed,
+            'myPatronageRecords' => $myPatronageRecords,
+            'totalAdditionalPatronage' => $totalAdditionalPatronage,
+            'lifetimeDividends' => $lifetimeDividends,
+            'lifetimePatronage' => $lifetimePatronage,
+        ]);
+    }
+
     public function Seminars()
     {
         $user = Auth::user();
@@ -1442,7 +1588,7 @@ class UsersHandle extends Controller
         } else {
             $heroTitle = $remainingCount === 1
                 ? "You're one seminar away from full membership."
-                : "Complete {$remainingCount} more seminars to reach full membership.";
+                : "Complete {$remainingCount} more seminars to deepen your understanding of the cooperative.";
 
             $heroSubtitle = $remainingCount === 1
                 ? "Complete {$remainingLabels->first()} to finish the required track and unlock full member benefits."
@@ -1816,15 +1962,157 @@ class UsersHandle extends Controller
         if (empty($membergovernIds->tin_id))
             $missingCount++;
 
+        // ★ NEW: dynamic reminder-style notifications (not stored rows — computed live)
+        $navNotifications = $this->buildMemberNotifications($userId);
 
         return view(
             "components.navbar2",
             [
                 "username" => $username,
                 "email" => $email,
-                "missingCount" => $missingCount
+                "missingCount" => $missingCount,
+                "navNotifications" => $navNotifications, // ★ NEW
             ]
         );
+    }
+
+    /**
+     * Builds the bell-icon notification feed: loan due dates, the Share Capital
+     * 2-year CBU subscription deadline, patronage refunds credited to Savings,
+     * and Time Deposit maturity reminders. Computed fresh on every page load —
+     * nothing here is stored in notifications_tbls.
+     */
+    private function buildMemberNotifications($userId)
+    {
+        $notifications = collect();
+        $today = Carbon::today();
+
+        // ── 1) Loan due dates ──────────────────────────────────────────
+        $typeMap = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
+        $loans = DB::table('lending_program_tbls')
+            ->where('user_id', $userId)
+            ->where('status', 'Approved')
+            ->whereNotNull('due_date')
+            ->get();
+
+        foreach ($loans as $loan) {
+            $due = Carbon::parse($loan->due_date);
+            $daysLeft = (int) $today->diffInDays($due, false);
+            $displayType = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+
+            if ($daysLeft < 0) {
+                $notifications->push([
+                    'icon' => 'fa-triangle-exclamation',
+                    'color' => 'red',
+                    'title' => 'Loan Payment Overdue',
+                    'message' => "{$displayType} was due on {$due->format('M d, Y')}. Please settle to avoid additional late fees.",
+                    'time' => $due->diffForHumans(),
+                    'sort_at' => $due,
+                ]);
+            } elseif ($daysLeft <= 7) {
+                $notifications->push([
+                    'icon' => 'fa-calendar-day',
+                    'color' => 'gold',
+                    'title' => 'Loan Payment Due Soon',
+                    'message' => "{$displayType} is due on {$due->format('M d, Y')}"
+                        . ($daysLeft === 0 ? ' (today)' : " (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ")") . ".",
+                    'time' => $due->diffForHumans(),
+                    'sort_at' => $due,
+                ]);
+            }
+        }
+
+        // ── 2) Share Capital — 2-year CBU subscription deadline ─────────
+        $scAccount = DB::table('share_capital_account_tbls')->where('user_id', $userId)->first();
+
+        if ($scAccount) {
+            $paidUp = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $scAccount->id)
+                ->whereIn('type', ['Deposit', 'Subscription'])
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $targetAmount = 10000; // full CBU subscription target
+            $deadline = Carbon::parse($scAccount->created_at)->addYears(2);
+            $daysLeft = (int) $today->diffInDays($deadline, false);
+
+            // Only surface it once we're within 90 days of the deadline (or past it), and only if unpaid
+            if ($paidUp < $targetAmount && $daysLeft <= 90) {
+                $remaining = $targetAmount - $paidUp;
+
+                $notifications->push([
+                    'icon' => 'fa-layer-group',
+                    'color' => $daysLeft < 0 ? 'red' : 'gold',
+                    'title' => $daysLeft < 0 ? 'Share Capital Subscription Overdue' : 'Share Capital Deadline Approaching',
+                    'message' => $daysLeft < 0
+                        ? "Your 2-year window to complete your ₱" . number_format($targetAmount, 2) . " share capital subscription ended on {$deadline->format('M d, Y')}. ₱" . number_format($remaining, 2) . " remains unpaid."
+                        : "You have ₱" . number_format($remaining, 2) . " remaining to complete your ₱" . number_format($targetAmount, 2) . " share capital subscription by {$deadline->format('M d, Y')} ({$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . " left).",
+                    'time' => $deadline->diffForHumans(),
+                    'sort_at' => $today,
+                ]);
+            }
+        }
+
+        $savingsAccount = savings_account_tbl::where('user_id', $userId)->first();
+
+        if ($savingsAccount) {
+            // ── 3) Patronage refund credited to Savings (last 30 days) ──
+            $patronageTxs = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+                ->where('type', 'deposit')
+                ->where('reference_no', 'like', 'PAT-%')
+                ->where('transaction_date', '>=', $today->copy()->subDays(30))
+                ->get();
+
+            foreach ($patronageTxs as $tx) {
+                $notifications->push([
+                    'icon' => 'fa-piggy-bank',
+                    'color' => 'mint',
+                    'title' => 'Patronage Refund Credited',
+                    'message' => "₱" . number_format($tx->amount, 2) . " patronage refund has been credited to your Savings account (Ref: {$tx->reference_no}).",
+                    'time' => Carbon::parse($tx->created_at ?? $tx->transaction_date)->diffForHumans(),
+                    'sort_at' => Carbon::parse($tx->created_at ?? $tx->transaction_date),
+                ]);
+            }
+
+            // ── 4) Time Deposit maturity ─────────────────────────────────
+            $activeTd = TimeDeposit::where('savings_account_id', $savingsAccount->id)
+                ->where('status', 'active')
+                ->latest('opened_at')
+                ->first();
+
+            if ($activeTd && $activeTd->maturity_date) {
+                $maturity = Carbon::parse($activeTd->maturity_date);
+                $daysLeft = (int) $today->diffInDays($maturity, false);
+
+                if ($maturity->lte($today)) {
+                    $notifications->push([
+                        'icon' => 'fa-circle-check',
+                        'color' => 'mint',
+                        'title' => 'Time Deposit Matured',
+                        'message' => "Your Time Deposit matured on {$maturity->format('M d, Y')}. Claim it to move your balance + interest back to Regular Savings.",
+                        'time' => $maturity->diffForHumans(),
+                        'sort_at' => $maturity,
+                    ]);
+                } elseif ($daysLeft <= 30) {
+                    $notifications->push([
+                        'icon' => 'fa-calendar-days',
+                        'color' => 'gold',
+                        'title' => 'Time Deposit Maturing Soon',
+                        'message' => "Your Time Deposit matures on {$maturity->format('M d, Y')} (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ").",
+                        'time' => $maturity->diffForHumans(),
+                        'sort_at' => $maturity,
+                    ]);
+                }
+            }
+        }
+
+        return $notifications->sortByDesc('sort_at')->values();
     }
 
     public function logout()

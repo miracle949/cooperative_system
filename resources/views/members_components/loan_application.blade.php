@@ -1904,19 +1904,19 @@
                                         data-bs-target="#nav-profile" type="button" role="tab"
                                         aria-controls="nav-profile" aria-selected="false">
                                         Due Today
-                                        @if(isset($dueTodayCount) && $dueTodayCount > 0)
+                                        <!-- @if(isset($dueTodayCount) && $dueTodayCount > 0)
                                             <span
                                                 style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueTodayCount }}</span>
-                                        @endif
+                                        @endif -->
                                     </button>
                                     <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
                                         data-bs-target="#nav-contact" type="button" role="tab"
                                         aria-controls="nav-contact" aria-selected="false">
                                         Due This Week
-                                        @if(isset($dueThisWeekCount) && $dueThisWeekCount > 0)
+                                        <!-- @if(isset($dueThisWeekCount) && $dueThisWeekCount > 0)
                                             <span
                                                 style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;">{{ $dueThisWeekCount }}</span>
-                                        @endif
+                                        @endif -->
                                     </button>
                                     <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab"
                                         data-bs-target="#nav-disabled" type="button" role="tab"

@@ -183,15 +183,15 @@
                                     @if($displayDaysAway === null)
                                         <p class="stat-sub">Fully paid</p>
                                     @elseif($displayDaysAway == 0)
-                                        <p class="stat-sub badge-upcoming-next">Due today</p>
+                                        <p class="stat-sub badge-upcoming-next" style="padding: 0;">Due today</p>
                                     @else
-                                        <p class="stat-sub badge-upcoming-next">{{ $displayDaysAway }} days away</p>
+                                        <p class="stat-sub badge-upcoming-next" style="padding: 0;">{{ $displayDaysAway }} days away</p>
                                     @endif
                                 </div>
 
                                 <div class="alh-stat">
                                     <span>Monthly Due</span>
-                                    <h5>₱{{ number_format($monthlyDue, 2) }}</h5>
+                                    <h5 id="monthly-due-value">₱{{ number_format($monthlyDue + $currentOverduePenalty, 2) }}</h5>
                                     <p>Every {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('jS') }}</p>
                                 </div>
 
@@ -288,6 +288,7 @@
                                             data-status="{{ $row['paid'] ? 'paid' : ($row['overdue'] ? 'overdue' : ($row['is_next'] ? 'active' : 'upcoming')) }}"
                                             data-number="{{ $row['number'] }}"
                                             data-date="{{ $row['date'] }}"
+                                            data-amount="{{ $row['amount'] + ($row['penalty'] ?? 0) }}"
                                             onclick="selectScheduleRow(this)">
                                             <div class="item">
                                                 <div class="item-icon">
@@ -937,9 +938,19 @@
             const number = el.dataset.number;
             const date = el.dataset.date;
             const status = el.dataset.status;
+            const amount = parseFloat(el.dataset.amount || 0);
 
             selectedRowStatus = status;
             selectedRowNumber = number;
+
+            // Keep the "Monthly Due" hero box in sync with whichever schedule row
+            // was clicked — it should always show exactly what that row's total is
+            // (base installment + penalty, if any), matching the Payment Schedule
+            // list and the repayment modal's prefilled amount.
+            const monthlyDueEl = document.getElementById('monthly-due-value');
+            if (monthlyDueEl) {
+                monthlyDueEl.textContent = `₱${amount.toFixed(2)}`;
+            }
 
             // Disable "Make a Payment" outright the moment a Paid row is
             // selected — no need for a click + alert. Re-enable for any

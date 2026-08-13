@@ -131,7 +131,7 @@ Route::get('/messageAboutShare/{id}', [UserController::class, "messageAboutShare
 Route::middleware(['auth'])->group(function () {
     Route::get('/share-capital-form', [ShareCapital::class, 'index'])->name('share_capital.index');
     Route::post('/share-capital-form', [ShareCapital::class, 'store'])->name('share_capital.store');
-    
+
 });
 
 Route::get('/savings/open-time-deposit', function () {
@@ -166,6 +166,10 @@ Route::get("/logout", [UsersHandle::class, "logout"])->name("logout");
 Route::post("/lending-program", [lendingController::class, "lendingProgram"])
     ->name("lendingProgram")
     ->middleware("auth");
+
+Route::get("/Financial", [UsersHandle::class, "Financial"])->name("Financial");
+
+Route::get('/Financial', [UsersHandle::class, 'Financial'])->name('Financial');
 
 Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
     ->name('savings.receipt');

@@ -1074,10 +1074,19 @@ main .dividend-parent .table tbody tr td {
    DIVIDEND EARNINGS — 60/40 SPLIT
    ═══════════════════════════════════════════════════ */
 .sc-split-heading {
+    /* font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a; */
+    margin: 0 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sc-split-heading h4{
     font-size: 15px;
     font-weight: 700;
     color: #1a1a1a;
-    margin: 0 0 1rem;
 }
 
 .sc-split-note {

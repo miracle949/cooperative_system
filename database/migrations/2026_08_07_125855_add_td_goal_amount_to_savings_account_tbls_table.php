@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('savings_account_tbls', function (Blueprint $table) {
-            $table->decimal('td_goal_amount', 12, 2)->nullable()->after('td_balance');
+            $table->decimal('td_goal_amount', 12, 2)->nullable();
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('savings_account_tbls', function (Blueprint $table) {
-            //
+            $table->dropColumn('td_goal_amount');
         });
     }
 };

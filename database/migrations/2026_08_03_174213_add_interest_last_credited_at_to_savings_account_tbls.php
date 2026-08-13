@@ -8,6 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('savings_account_tbls', function (Blueprint $table) {
+            $table->decimal('interest_accrued_balance', 12, 2)->default(0)->after('balance');
             $table->date('interest_last_credited_at')->nullable()->after('interest_accrued_balance');
         });
     }

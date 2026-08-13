@@ -180,6 +180,10 @@ class SavingsController extends Controller
                 } else {
                     $td->display_status = 'in_progress';
                 }
+
+                $td->display_balance = $td->status === 'claimed'
+                    ? (float) ($td->claimed_amount ?? 0)
+                    : (float) $td->balance;
                 return $td;
             });
 
@@ -202,11 +206,11 @@ class SavingsController extends Controller
         $type = $request->query('type', 'all');
 
         $transactionsQuery = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
-            ->whereIn('type', ['deposit', 'withdrawal']) // ★ NEW: exclude td_lock/td_release — those live on the Time Deposit page
+            ->whereIn('type', ['deposit', 'withdrawal', 'td_release']) // ★ CHANGED: td_release (TD claims) now shown here too
             ->orderBy('transaction_date', 'desc')
             ->orderBy('created_at', 'desc');
 
-        if (in_array($type, ['deposit', 'withdrawal'])) {
+        if (in_array($type, ['deposit', 'withdrawal', 'td_release'])) {
             $transactionsQuery->where('type', $type);
         }
 
@@ -502,7 +506,9 @@ class SavingsController extends Controller
     }
 
     /**
-     * Deposit funds from Regular Savings toward an active Time Deposit's goal.
+     * Deposit funds directly toward an active Time Deposit's goal.
+     * Independent of Regular Savings balance — the member can deposit
+     * whatever amount they want (e.g. cash/GCash), same as a Savings deposit.
      */
     public function depositToTimeDeposit(Request $request)
     {
@@ -543,26 +549,20 @@ class SavingsController extends Controller
             return back()->withErrors(['td_amount' => 'Amount exceeds the remaining goal balance of ₱' . number_format($remaining, 2)]);
         }
 
-        // Time Deposit is funded FROM Regular Savings — the two balances must
-        // reconcile, so we require sufficient Savings balance before locking funds.
-        if ((float) $savingsAccount->balance < $request->amount) {
-            return back()->withErrors(['td_amount' => 'Insufficient Savings balance. Your available balance is ₱' . number_format($savingsAccount->balance, 2)]);
-        }
-
+        // ★ CHANGED: No longer sourced from Regular Savings — this is a fresh,
+        // independent deposit straight into the Time Deposit, just like a
+        // Savings deposit. Regular Savings balance is untouched.
         $newTdBalance = $current + $request->amount;
-        $newSavingsBalance = (float) $savingsAccount->balance - $request->amount;
         $referenceNo = 'TD-DEP-' . strtoupper(bin2hex(random_bytes(3))) . '-' . Carbon::today()->format('Ymd');
 
-        // Move the funds: Savings balance goes down, Time Deposit balance goes up
         $activeTd->update(['balance' => $newTdBalance]);
-        $savingsAccount->update(['balance' => $newSavingsBalance]);
 
         savings_transaction_tbl::create([
             'savings_account_id' => $savingsAccount->id,
             'type' => 'td_lock',
             'amount' => $request->amount,
-            'payment_method' => 'Internal Transfer',
-            'balance_after' => $newSavingsBalance,
+            'payment_method' => 'Cash', // ★ CHANGED: no longer "Internal Transfer" since no savings funds move
+            'balance_after' => $savingsAccount->balance, // ★ CHANGED: savings balance unaffected
             'note' => "Deposited ₱" . number_format($request->amount, 2)
                 . " toward Time Deposit goal (₱" . number_format($newTdBalance, 2) . " / ₱" . number_format($goal, 2) . ")",
             'reference_no' => $referenceNo,
@@ -1147,6 +1147,11 @@ class SavingsController extends Controller
 
         $activeTd->update([
             'balance' => 0,
+            // ★ NEW: preserve what was actually released, so history/UI can
+            // still show the real payout amount after balance resets to 0.
+            'claimed_amount' => $totalRelease,
+            'claimed_principal' => $principal,
+            'claimed_interest' => $interest,
             'status' => 'claimed',
             'claim_reference_no' => $referenceNo,
             'claimed_at' => Carbon::now(),

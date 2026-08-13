@@ -747,9 +747,18 @@
                         DIVIDEND EARNINGS — 60/40 SPLIT
                         ═══════════════════════════════════════ --}}
                         <h3 class="sc-split-heading">
-                            Dividend Earnings — The 60/40 Split
+                            <!-- Dividend Earnings — The 60/40 Split
                             <span class="sc-split-note">Distributed once a year, after audited annual surplus is
-                                approved by the General Assembly</span>
+                                approved by the General Assembly</span> -->
+                            <div>
+                                <h4>Dividend Earnings — The 60/40 Split</h4>
+                                <p>Distributed once a year, after audited annual surplus is approved by the General
+                                    Assembly</p>
+                            </div>
+                            <a href="{{ route('Financial', ['tab' => 'dividends']) }}"
+                                style="font-size:13px; font-weight:600; color:var(--teal, #1E2A4A); white-space:nowrap;">
+                                View full dividend history →
+                            </a>
                         </h3>
                         <div class="sc-split-grid">
                             <div class="sc-split-card isc">
@@ -984,12 +993,12 @@
         @if(session('error'))
             <div
                 style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                                                                                                                                                                    background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                                                                                                                                                                                    padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                                                                                                                                                                    display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                                                                                                                                                                                        background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                                                                                                                                                                                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                                                                                                                                                                        display: flex; align-items: center; gap: 12px; max-width: 360px;">
                 <div
                     style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                                                                                                                                                                                        display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                                                                                                                                                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>
@@ -1004,12 +1013,12 @@
         @if(session('warning'))
             <div
                 style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                                                                                                                                                                    background: #fff; border: 1.5px solid #ffe082; border-radius: 14px;
-                                                                                                                                                                                    padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                                                                                                                                                                    display: flex; align-items: center; gap: 12px; max-width: 380px;">
+                                                                                                                                                                                        background: #fff; border: 1.5px solid #ffe082; border-radius: 14px;
+                                                                                                                                                                                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                                                                                                                                                                        display: flex; align-items: center; gap: 12px; max-width: 380px;">
                 <div
                     style="width: 36px; height: 36px; background: #fff8e1; border-radius: 50%;
-                                                                                                                                                                                        display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                                                                                                                                                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-triangle-exclamation" style="color: #b8860b; font-size: 15px;"></i>
                 </div>
                 <div>

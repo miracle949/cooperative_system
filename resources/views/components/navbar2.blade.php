@@ -58,7 +58,67 @@
 
     <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <i class="fa-solid fa-bell" style="font-size: 17px; color: var(--muted);"></i>
+            <div class="nb-notif-wrap" style="position: relative;">
+                <button type="button" onclick="toggleNavNotif(event)"
+                    style="background:none; border:none; cursor:pointer; position:relative; padding:4px; display:flex; align-items:center;">
+                    <i class="fa-solid fa-bell" style="font-size: 17px; color: var(--muted);"></i>
+                    @if($navNotifications->count() > 0)
+                        <span
+                            style="position:absolute; top:-4px; right:-4px; background:#dc2626; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; line-height:1;">
+                            {{ $navNotifications->count() > 9 ? '9+' : $navNotifications->count() }}
+                        </span>
+                    @endif
+                </button>
+
+                <div id="nb-notif-panel"
+                    style="display:none; position:absolute; top:calc(100% + 12px); right:0; width:340px; max-height:420px; overflow:hidden; background:#fff; border-radius:12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border:1px solid var(--border); z-index:1000;">
+                    <div
+                        style="padding:14px 16px; border-bottom:1px solid #f0f0f0; font-weight:700; font-size:14px; color:#1a1a1a;">
+                        Notifications
+                    </div>
+                    <div style="max-height:360px; overflow-y:auto;">
+                        @forelse($navNotifications as $n)
+                            <div style="display:flex; gap:10px; padding:12px 16px; border-bottom:1px solid #f5f5f5;">
+                                <div
+                                    style="width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background: {{ $n['color'] === 'red' ? '#fee2e2' : ($n['color'] === 'gold' ? '#fef3c7' : '#d1fae5') }};">
+                                    <i class="fa-solid {{ $n['icon'] }}"
+                                        style="font-size:13px; color: {{ $n['color'] === 'red' ? '#dc2626' : ($n['color'] === 'gold' ? '#b45309' : '#059669') }};"></i>
+                                </div>
+                                <div style="flex:1; min-width:0;">
+                                    <p style="margin:0; font-size:13px; font-weight:600; color:#1a1a1a;">{{ $n['title'] }}
+                                    </p>
+                                    <p style="margin:2px 0 0; font-size:12px; color:#666; line-height:1.4;">
+                                        {{ $n['message'] }}</p>
+                                    <p style="margin:4px 0 0; font-size:11px; color:#999;">{{ $n['time'] }}</p>
+                                </div>
+                            </div>
+                        @empty
+                            <div style="padding:30px 16px; text-align:center; color:#999; font-size:13px;">
+                                <i class="fa-regular fa-bell-slash"
+                                    style="font-size:20px; display:block; margin-bottom:8px; opacity:0.5;"></i>
+                                No notifications right now.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function toggleNavNotif(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const panel = document.getElementById('nb-notif-panel');
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                }
+
+                document.addEventListener('click', function (e) {
+                    const panel = document.getElementById('nb-notif-panel');
+                    const wrap = document.querySelector('.nb-notif-wrap');
+                    if (panel && wrap && !wrap.contains(e.target) && panel.style.display === 'block') {
+                        panel.style.display = 'none';
+                    }
+                });
+            </script>
             <li>
                 <a href="#" onclick="toggleDropdown(event)"
                     class="tw:flex tw:justify-center tw:items-center tw:gap-x-[0.7rem] position-relative">
@@ -68,7 +128,7 @@
                     <div class="name-email">
                         <p>
                             {{ auth()->user()->first_name ?? '' }}
-                            {{ auth()->user()->last_name ?? '' }}
+                            <!-- {{ auth()->user()->last_name ?? '' }} -->
                         </p>
                         <!-- <p>
                             {{ auth()->user()->email ?? '' }}

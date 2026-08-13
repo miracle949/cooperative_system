@@ -491,7 +491,7 @@
                         </div>
                         <div class="sm-modal-text">
                             <h1 class="modal-title sm-modal-title" id="depositTdModalLabel">Deposit to Time Deposit</h1>
-                            <p class="sm-modal-subtitle">Move funds from Regular Savings toward your goal</p>
+                            <p class="sm-modal-subtitle">Deposit funds toward your goal</p>
                         </div>
                     </div>
                     <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">

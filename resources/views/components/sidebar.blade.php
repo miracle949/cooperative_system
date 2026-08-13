@@ -63,6 +63,17 @@
                     </a>
                 </li>
 
+                <!-- <div class="menu" style="padding: 10px 10px 8px;">
+                    <p>Account</p>
+                </div> -->
+
+                <li class="{{ request()->routeIs('Financial') ? 'active' : '' }}">
+                    <a href="{{ route('Financial') }}" title="Financial">
+                        <i class="fa fa-wallet"></i>
+                        <span>Financial</span>
+                    </a>
+                </li>
+
                 <li class="{{ request()->routeIs('Seminars') ? 'active' : '' }}">
                     <a href="{{ route('Seminars') }}" title="Seminars">
                         <i class="fa fa-graduation-cap"></i>

@@ -20,6 +20,12 @@ class TimeDeposit extends Model
         'reference_no',
         'claim_reference_no',
         'claimed_at',
+        // ★ ADD THESE THREE — missing from fillable is why they saved as NULL
+        'claimed_amount',
+        'claimed_principal',
+        'claimed_interest',
+        'interest_accrued_balance',
+        'last_interest_credited_at',
     ];
 
     protected $casts = [

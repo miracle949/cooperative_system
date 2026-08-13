@@ -434,11 +434,11 @@
 }
 
 .container-fluid .parent-panel .panel .panel-head {
-    padding: 18px 20px 10px;
+    padding: 18px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border-bottom: 1px solid var(--line); */
+    border-bottom: 1px solid var(--line);
 }
 
 .container-fluid .parent-panel .panel .panel-head .panel-view button {
@@ -459,7 +459,7 @@
 }
 
 .container-fluid .parent-panel .panel p {
-    font-size: 12px;
+    font-size: 12.5px;
     margin: 5px 0 0;
     color: var(--muted);
 }
@@ -486,10 +486,161 @@
 }
 
 .container-fluid .parent-panel .panel .panel-body {
-    /* max-height: calc(100% - 60px); */
-    /* height: calc(100% - 256px); */
-    height: 256px;
-    /* overflow-y: auto; */
+    max-height: 256px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    position: relative;
+    mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+.container-fluid .parent-panel .panel .panel-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.container-fluid .parent-panel .panel .panel-body::-webkit-scrollbar-thumb {
+    background: var(--border-hover);
+    border-radius: 10px;
+}
+
+/* Time Deposit modal list */
+#tdHistoryList {
+    /* max-height: 420px; */
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+#tdHistoryList .panel-card {
+    border-bottom: 1px solid var(--line);
+}
+
+#tdHistoryList .panel-card:last-child {
+    border-bottom: none;
+}
+
+/* Time Deposit modal — styled rows */
+#tdHistoryList {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.td-modal-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s;
+}
+
+.td-modal-row:last-child {
+    border-bottom: none;
+}
+
+.td-modal-row:hover {
+    background: var(--lavender-tint);
+}
+
+.td-modal-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.td-icon-completed,
+.td-icon-matured {
+    /* background: var(--green-tint);
+    color: var(--green); */
+    background-color: #EDF0F5;
+    color: var(--teal);
+}
+
+.td-icon-goal_reached {
+    background: var(--blue-mist);
+    color: var(--blue);
+}
+
+.td-icon-in_progress {
+    background: #FFF7ED;
+    color: #AB7817;
+}
+
+.td-modal-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.td-modal-info h4 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.td-modal-info p {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.td-modal-amount {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.td-modal-amount h4 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.td-status-badge {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+    white-space: nowrap;
+}
+
+.td-status-completed,
+.td-status-matured {
+    background: var(--green-tint);
+    color: var(--green);
+}
+
+.td-status-goal_reached {
+    background: var(--blue-mist);
+    /* background-color: #EDF0F5; */
+    color: var(--blue);
+}
+
+.td-status-in_progress {
+    background: #FFF7ED;
+    color: #AB7817;
+}
+
+/* Modal pagination footer */
+.td-pagination-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
 }
 
 .container-fluid .parent-panel .panel-body .panel-card:nth-child(1) .panel-icon {
@@ -1275,8 +1426,9 @@
 /* Give the tallest bar's tooltip room to breathe above it */
 .chart-wrap {
     /* padding-top: 56px; */
-    padding-top: 20px;
-    height: 245px;
+    padding-top: 5px;
+    /* height: 245px; */
+    height: 230px;
 }
 
 /* Last two bars: anchor tooltip to the right edge of the bar instead,
@@ -1360,8 +1512,8 @@
 
 }
 
-@media only screen and (max-width: 808px){
-    .container-fluid .rightbar .main-sub-parent .main-parent .ask-box .ask-body .ask-card .ask-card-text{
+@media only screen and (max-width: 808px) {
+    .container-fluid .rightbar .main-sub-parent .main-parent .ask-box .ask-body .ask-card .ask-card-text {
         width: 350px;
     }
 }
@@ -1400,7 +1552,7 @@
         padding: 2rem 1.5rem;
     } */
 
-    .main-parent{
+    .main-parent {
         padding: 2rem 1.5rem;
     }
 }

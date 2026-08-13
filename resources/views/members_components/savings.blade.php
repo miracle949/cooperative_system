@@ -300,12 +300,12 @@
                                         <p>Time Deposit history</p>
                                     </div>
                                     <div class="panel-view">
-                                        <button>
+                                        <button type="button" data-bs-toggle="modal" data-bs-target="#tdHistoryModal">
                                             View all
                                         </button>
                                     </div>
                                 </div>
-                                <div class="panel-body" style="overflow-y:auto;">
+                                <div class="panel-body">
                                     @forelse ($tdHistory as $td)
                                         <div class="panel-card">
                                             <div class="panel-icon">
@@ -328,7 +328,7 @@
                                                     </p>
                                                 </div>
                                                 <div class="price">
-                                                    <h4>₱{{ number_format($td->balance, 2) }}</h4>
+                                                    <h4>₱{{ number_format($td->display_balance, 2) }}</h4>
                                                     @if ($td->display_status === 'completed')
                                                         <p style="color:var(--green);font-weight:700;">Completed</p>
                                                     @elseif ($td->display_status === 'matured')
@@ -483,8 +483,12 @@
                                                         <td class="text-start">
                                                             @if($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'DISB'))
                                                                 <div class="deposit">Loan Disbursement</div>
+                                                            @elseif($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'PAT'))
+                                                                <div class="deposit">Patronage Refund</div>
                                                             @elseif($tx->type === 'deposit')
                                                                 <div class="deposit">Deposit</div>
+                                                            @elseif($tx->type === 'td_release')
+                                                                <div class="deposit">Time Deposit Claimed</div>
                                                             @elseif(str_starts_with($tx->reference_no ?? '', 'LNPAY'))
                                                                 <div class="withdraw">Loan Repay</div>
                                                             @else
@@ -1015,6 +1019,116 @@
             </div>
         </div>
 
+        {{-- ============================================================
+        TIME DEPOSIT HISTORY MODAL — view all, search & filter
+        ============================================================ --}}
+        <div class="modal fade" id="tdHistoryModal" tabindex="-1" aria-labelledby="tdHistoryModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content sm-modal-content">
+
+                    <div class="modal-header sm-modal-header" style="padding: 24px 20px;">
+                        <div class="modal-text">
+                            <div class="sm-modal-icon sm-deposit-icon">
+                                <i class="fa-solid fa-lock" style="color:#fff;"></i>
+                            </div>
+                            <div class="sm-modal-text">
+                                <h1 class="modal-title sm-modal-title" id="tdHistoryModalLabel">Time Deposit Accounts
+                                </h1>
+                                <p class="sm-modal-subtitle">All your Time Deposit history</p>
+                            </div>
+                        </div>
+                        <button type="button" class="sm-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div class="modal-body sm-modal-body" style="padding: 1.25rem 1.5rem;">
+
+                        <div class="sm-tx-toolbar" style="margin:0 0 1rem;">
+                            <div class="sm-search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="tdSearchInput"
+                                    placeholder="Search by reference no. or goal amount">
+                            </div>
+                            <input type="date" class="sm-filter-select" id="tdDateFilter">
+                            <select class="sm-filter-select" id="tdStatusFilter">
+                                <option value="all">All Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="matured">Ready to Claim</option>
+                                <option value="goal_reached">Fully Funded</option>
+                                <option value="in_progress">In Progress</option>
+                            </select>
+                            <a href="#" id="tdClearFilters" class="sm-filter-clear">Clear filters</a>
+                        </div>
+
+                        <div id="tdHistoryList">
+                            @forelse ($tdHistory as $td)
+                                <div class="td-modal-row" data-ref="{{ strtolower($td->reference_no ?? '') }}"
+                                    data-goal="{{ $td->goal_amount }}"
+                                    data-date="{{ \Carbon\Carbon::parse($td->opened_at)->format('Y-m-d') }}"
+                                    data-status="{{ $td->display_status }}">
+                                    <div class="td-modal-icon td-icon-{{ $td->display_status }}">
+                                        @if ($td->display_status === 'completed')
+                                            <i class="fa fa-circle-check"></i>
+                                        @elseif ($td->display_status === 'matured')
+                                            <i class="fa fa-hourglass-end"></i>
+                                        @elseif ($td->display_status === 'goal_reached')
+                                            <i class="fa fa-bullseye"></i>
+                                        @else
+                                            <i class="fa fa-lock"></i>
+                                        @endif
+                                    </div>
+                                    <div class="td-modal-info">
+                                        <h4>₱{{ number_format($td->goal_amount, 2) }} Goal</h4>
+                                        <p>
+                                            Ref: {{ $td->reference_no ?? '—' }} ·
+                                            Opened {{ \Carbon\Carbon::parse($td->opened_at)->format('M d, Y') }}
+                                            · {{ number_format($td->interest_rate, 2) }}% p.a.
+                                        </p>
+                                    </div>
+                                    <div class="td-modal-amount">
+                                        <h4>₱{{ number_format($td->display_balance, 2) }}</h4>
+                                        @if ($td->display_status === 'completed')
+                                            <span class="td-status-badge td-status-completed">Completed</span>
+                                        @elseif ($td->display_status === 'matured')
+                                            <span class="td-status-badge td-status-matured">Ready to Claim</span>
+                                        @elseif ($td->display_status === 'goal_reached')
+                                            <span class="td-status-badge td-status-goal_reached">Fully Funded</span>
+                                        @else
+                                            <span class="td-status-badge td-status-in_progress">In Progress</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <div style="text-align:center; padding:2.5rem 1rem;">
+                                    <i class="fa-solid fa-piggy-bank fa-2x" style="color:var(--muted); opacity:.4;"></i>
+                                    <p style="color:var(--muted); margin-top:0.75rem; font-size:13.5px;">
+                                        No Time Deposits opened yet.
+                                    </p>
+                                </div>
+                            @endforelse
+
+                            <div id="tdNoResults" style="display:none; text-align:center; padding:2.5rem 1rem;">
+                                <i class="fa-solid fa-magnifying-glass fa-2x"
+                                    style="color:var(--muted); opacity:.4;"></i>
+                                <p style="color:var(--muted); margin-top:0.75rem; font-size:13.5px;">
+                                    No matching Time Deposits found.
+                                </p>
+                            </div>
+                        </div>
+
+                        @if($tdHistory->count() > 0)
+                            <div class="td-pagination-wrap">
+                                <div class="sm-pagination-info" id="tdPaginationInfo"></div>
+                                <div class="sm-pagination" id="tdPaginationBtns"></div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- ★ KEPT: Claiming a matured TD (initiated from the Time Deposit page)
         still redirects here, so this confirmation modal stays. --}}
         <div class="modal fade" id="tdClaimSuccessModal" tabindex="-1" aria-hidden="true">
@@ -1238,6 +1352,110 @@
             @endif
 
         });
+
+        // Reset the Time Deposit mini-panel scroll on load (fixes the "cut off row" look)
+        document.querySelectorAll('.parent-panel .panel-body').forEach(el => el.scrollTop = 0);
+
+        // Time Deposit modal — search, filter & pagination (10 per page)
+        (function () {
+            const searchInput = document.getElementById('tdSearchInput');
+            const dateFilter = document.getElementById('tdDateFilter');
+            const statusFilter = document.getElementById('tdStatusFilter');
+            const clearBtn = document.getElementById('tdClearFilters');
+            const noResults = document.getElementById('tdNoResults');
+            const paginationInfo = document.getElementById('tdPaginationInfo');
+            const paginationBtns = document.getElementById('tdPaginationBtns');
+            const allRows = Array.from(document.querySelectorAll('.td-modal-row'));
+            const PAGE_SIZE = 10;
+            let currentPage = 1;
+
+            function getFilteredRows() {
+                const q = (searchInput?.value || '').trim().toLowerCase();
+                const date = dateFilter?.value || '';
+                const status = statusFilter?.value || 'all';
+
+                return allRows.filter(row => {
+                    const matchesSearch = !q || row.dataset.ref.includes(q) || row.dataset.goal.includes(q);
+                    const matchesDate = !date || row.dataset.date === date;
+                    const matchesStatus = status === 'all' || row.dataset.status === status;
+                    return matchesSearch && matchesDate && matchesStatus;
+                });
+            }
+
+            function renderPage() {
+                const filtered = getFilteredRows();
+                const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+                currentPage = Math.min(currentPage, totalPages);
+
+                // Hide every row first
+                allRows.forEach(row => row.style.display = 'none');
+
+                // Show only the current page's slice of the filtered set
+                const start = (currentPage - 1) * PAGE_SIZE;
+                const pageRows = filtered.slice(start, start + PAGE_SIZE);
+                pageRows.forEach(row => row.style.display = 'flex');
+
+                if (noResults) noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+
+                // Pagination info
+                if (paginationInfo) {
+                    paginationInfo.innerHTML = filtered.length === 0
+                        ? ''
+                        : `Showing <b>${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)}</b> of <b>${filtered.length}</b> Time Deposits`;
+                }
+
+                // Pagination buttons
+                if (paginationBtns) {
+                    paginationBtns.innerHTML = '';
+                    if (filtered.length > PAGE_SIZE) {
+                        const prevBtn = document.createElement('span');
+                        prevBtn.className = 'sm-page-btn' + (currentPage === 1 ? ' disabled' : '');
+                        prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+                        prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(); } };
+                        paginationBtns.appendChild(prevBtn);
+
+                        for (let i = 1; i <= totalPages; i++) {
+                            const btn = document.createElement('a');
+                            btn.href = '#';
+                            btn.className = 'sm-page-btn' + (i === currentPage ? ' active' : '');
+                            btn.textContent = i;
+                            btn.onclick = (e) => { e.preventDefault(); currentPage = i; renderPage(); };
+                            paginationBtns.appendChild(btn);
+                        }
+
+                        const nextBtn = document.createElement('span');
+                        nextBtn.className = 'sm-page-btn' + (currentPage === totalPages ? ' disabled' : '');
+                        nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+                        nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderPage(); } };
+                        paginationBtns.appendChild(nextBtn);
+                    }
+                }
+            }
+
+            function applyTdFilters() {
+                currentPage = 1;
+                renderPage();
+            }
+
+            searchInput?.addEventListener('input', applyTdFilters);
+            dateFilter?.addEventListener('change', applyTdFilters);
+            statusFilter?.addEventListener('change', applyTdFilters);
+            clearBtn?.addEventListener('click', function (e) {
+                e.preventDefault();
+                searchInput.value = '';
+                dateFilter.value = '';
+                statusFilter.value = 'all';
+                applyTdFilters();
+            });
+
+            // Re-render fresh every time the modal opens (in case data changed)
+            document.getElementById('tdHistoryModal')?.addEventListener('show.bs.modal', () => {
+                currentPage = 1;
+                renderPage();
+            });
+
+            renderPage();
+        })();
     </script>
 
 </body>
