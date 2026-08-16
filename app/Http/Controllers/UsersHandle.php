@@ -906,7 +906,7 @@ class UsersHandle extends Controller
         if ($account) {
             $depositAmount = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
+                ->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
@@ -920,7 +920,7 @@ class UsersHandle extends Controller
 
             $deposits = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $account->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
+                ->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('shares') ?? 0;
 
@@ -1240,7 +1240,7 @@ class UsersHandle extends Controller
             ->where('share_capital_account_id', $account->id)
             ->get()
             ->map(function ($row) {
-                $isDeposit = in_array($row->type, ['Deposit', 'Subscription']);
+                $isDeposit = in_array($row->type, ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE]);
                 $statusRaw = strtolower($row->status ?? '');
                 $statusClass = str_contains($statusRaw, 'complet') ? 'completed'
                     : (str_contains($statusRaw, 'pend') ? 'pending' : 'pending');
@@ -1766,10 +1766,11 @@ class UsersHandle extends Controller
 
         $typeLabels = [
             'pmes' => 'PMES',
-            'fundamentals' => 'Cooperative Fundamentals',
+            'fundamentals' => 'Fundamentals of Coops',
             'finance' => 'Cooperative Finance',
         ];
 
+<<<<<<< HEAD
         // ── Completion summary — moved up so it can filter Upcoming below ──
         $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
         $completedFlags = [
@@ -1777,6 +1778,12 @@ class UsersHandle extends Controller
             'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
             'finance' => (bool) ($completion->finance_completed ?? false),
         ];
+=======
+        $typeLabels = \App\Models\SeminarTypes_tbl::all()
+            ->pluck('label', 'slug')
+            ->union($typeLabels)
+            ->all();
+>>>>>>> 9fda94d578359d3a406ae18146d4ea1b160176a1
 
         // ── All of this member's attendee records, with their seminar info ──
         $attendeeRecords = \App\Models\SeminarAttendees_tbl::with('seminar')
@@ -1827,7 +1834,19 @@ class UsersHandle extends Controller
             })
             ->values();
 
+<<<<<<< HEAD
         $totalSeminars = count($typeLabels);
+=======
+        // ── Completion summary (drives hero card) ──
+        $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
+        $completedFlags = [
+            'pmes' => (bool) ($completion->pmes_completed ?? false),
+            'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
+            'finance' => (bool) ($completion->finance_completed ?? false),
+        ];
+
+        $totalSeminars = count($completedFlags);
+>>>>>>> 9fda94d578359d3a406ae18146d4ea1b160176a1
         $completedCount = collect($completedFlags)->filter()->count();
         $remainingCount = $totalSeminars - $completedCount;
         $isFullyComplete = $remainingCount === 0;
@@ -1865,6 +1884,12 @@ class UsersHandle extends Controller
             }
         }
 
+        $passcodeTypes = collect($completedFlags)
+            ->filter(fn($done) => !$done)
+            ->map(fn($done, $slug) => ['slug' => $slug, 'label' => $typeLabels[$slug]])
+            ->values()
+            ->all();
+
         return view('members_components.seminars', [
             'username' => $username,
             'email' => $email,
@@ -1877,7 +1902,59 @@ class UsersHandle extends Controller
             'heroTitle' => $heroTitle,
             'heroSubtitle' => $heroSubtitle,
             'heroNextLine' => $heroNextLine,
+            'passcodeTypes' => $passcodeTypes,
         ]);
+    }
+
+    public function verifySeminarPasscode(Request $request)
+    {
+        $request->validate([
+            'seminar_type' => 'required|in:pmes,fundamentals,finance',
+            'passcode' => 'required|string|max:64',
+        ]);
+
+        $user = Auth::user();
+        $passcode = \App\Models\SeminarPasscodes_tbl::where('seminar_type', $request->seminar_type)->first();
+
+        if (!$passcode) {
+            return redirect()->route('Seminars')->with('error', 'No passcode has been set for this seminar yet.');
+        }
+
+        if ($passcode->expires_at && now()->gt($passcode->expires_at)) {
+            return redirect()->route('Seminars')->with('error', 'This passcode has already expired.');
+        }
+
+        if (!hash_equals((string) $passcode->passcode, (string) $request->passcode)) {
+            return redirect()->route('Seminars')->with('error', 'The passcode you entered is incorrect.');
+        }
+
+        $completion = \App\Models\SeminarCompletions_tbl::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'pmes_completed' => false,
+                'fundamentals_completed' => false,
+                'finance_completed' => false,
+            ]
+        );
+
+        $column = $request->seminar_type . '_completed';
+        if ($completion->$column) {
+            return redirect()->route('Seminars')->with('info', 'You have already completed this seminar.');
+        }
+
+        $completion->$column = true;
+        $completion->save();
+
+        \App\Http\Controllers\SeminarController::autoUpgradeIfComplete($user->id, $completion);
+
+        \App\Models\AuditLog::log(
+            'Verified Seminar Passcode',
+            "User #{$user->id} verified passcode for {$request->seminar_type}",
+            'seminar_passcode',
+            $user->id
+        );
+
+        return redirect()->route('Seminars')->with('success', 'Passcode accepted! Seminar marked as completed.');
     }
 
     public function ProfileMember()
@@ -1981,7 +2058,7 @@ class UsersHandle extends Controller
                         'date' => $item->transaction_date,
                         'type' => ucfirst($item->type),
                         'description' => 'Share Capital - ' . ucfirst($item->type),
-                        'amount' => in_array($item->type, ['Subscription', 'Deposit']) ? $item->total_amount : -$item->total_amount,
+                        'amount' => in_array($item->type, ['Subscription', 'Deposit', ShareCapital::CONVERSION_TYPE]) ? $item->total_amount : -$item->total_amount,
                         'status' => $item->status ?? 'Completed',
                     ];
                 });
@@ -2295,7 +2372,7 @@ class UsersHandle extends Controller
         if ($scAccount) {
             $paidUp = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $scAccount->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
+                ->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 

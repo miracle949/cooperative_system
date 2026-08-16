@@ -33,14 +33,12 @@
                 <select id="statusFilter" class="btn btn-outline cursor-pointer" onchange="filterByStatus(this.value)">
                     <option value="all" {{ ($statusFilter ?? 'all') === 'all' ? 'selected' : '' }}>All Status</option>
                     <option value="pending" {{ ($statusFilter ?? '') === 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="approved" {{ ($statusFilter ?? '') === 'approved' ? 'selected' : '' }}>Approved</option>
+                    <option value="approved" {{ ($statusFilter ?? '') === 'approved' ? 'selected' : '' }}>On-going</option>
                     <option value="declined" {{ ($statusFilter ?? '') === 'declined' ? 'selected' : '' }}>Declined</option>
+                    <option value="completed" {{ ($statusFilter ?? '') === 'completed' ? 'selected' : '' }}>Completed</option>
                 </select>
             </div>
-            <button onclick="openModal('newLoanModal')" class="btn btn-primary">
-                <i data-lucide="plus" class="w-4 h-4"></i>
-                New Loan
-            </button>
+
         </div>
     </div>
 
@@ -88,7 +86,7 @@
                     <tr>
                         <th>Member</th>
                         <th>Loan Amount</th>
-                        <th>Purpose</th>
+                        <th>Loan Type</th>
                         <th>Duration</th>
                         <th>Date Requested</th>
                         <th>Status</th>
@@ -114,14 +112,16 @@
                                 </div>
                             </td>
                             <td class="text-sm font-semibold text-gray-900">₱{{ number_format($loan->lending_amount, 0) }}</td>
-                            <td class="text-sm text-gray-600">{{ Str::limit($loan->purpose_loan, 30) }}</td>
+                            <td class="text-sm text-gray-600">{{ $loan->lending_type }}</td>
                             <td class="text-sm text-gray-600">{{ $loan->lending_type_term }}</td>
                             <td class="text-sm text-gray-600">{{ $loan->created_at->format('M d, Y') }}</td>
                             <td>
                                 @if($loan->status === 'Pending')
                                     <span class="badge badge-warning">Pending</span>
                                 @elseif($loan->status === 'Approved')
-                                    <span class="badge badge-success">Approved</span>
+                                    <span class="badge badge-success">On-going</span>
+                                @elseif($loan->status === 'Completed')
+                                    <span class="badge badge-primary">Completed</span>
                                 @else
                                     <span class="badge badge-danger">Declined</span>
                                 @endif
@@ -132,14 +132,7 @@
                                         onclick="event.stopPropagation(); openLoanModal({{ $loop->index }})">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </button>
-                                    @if($loan->status === 'Approved' || $loan->status === 'Declined')
-                                    <form method="POST" action="{{ route('loan.archive', $loan->id) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline text-sm px-2 py-1" title="Archive">
-                                            <i data-lucide="archive" class="w-4 h-4"></i>
-                                        </button>
-                                    </form>
-                                    @endif
+                                    <!-- archive action removed -->
                                 </div>
                             </td>
                         </tr>
@@ -432,10 +425,9 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1.5">Loan Type <span class="text-red-500">*</span></label>
                             <select name="lending_type" class="input w-full" onchange="updateTermOptions()" required>
                                 <option value="">Select loan type</option>
-                                <option value="Personal Loan">Personal Loan</option>
-                                <option value="Emergency Loan">Emergency Loan</option>
-                                <option value="Business Loan">Business Loan</option>
-                                <option value="Education Loan">Education Loan</option>
+                                @foreach(array_keys($loanSettings) as $lt)
+                                    <option value="{{ $lt }}">{{ $lt }}</option>
+                                @endforeach
                             </select>
                         </div>
 

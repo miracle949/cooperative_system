@@ -24,6 +24,7 @@ class ShareCapital extends Controller
     const INSTALLMENT_SLOTS = 8;       // 8 quarters = 2 years
     const ISC_SPLIT = 0.60;    // 60% Interest on Share Capital
     const PATRONAGE_SPLIT = 0.40;    // 40% Patronage Refund
+    const CONVERSION_TYPE = 'Savings to Share Capital Conversion'; // ledger type for savings → share capital conversions
 
     /**
      * Show the Share Capital form (first-time subscription only).
@@ -727,7 +728,7 @@ class ShareCapital extends Controller
     {
         $depositAmount = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id)
-            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('type', ['Deposit', 'Subscription', self::CONVERSION_TYPE])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('total_amount') ?? 0;
 
@@ -741,7 +742,7 @@ class ShareCapital extends Controller
 
         $deposits = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id)
-            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('type', ['Deposit', 'Subscription', self::CONVERSION_TYPE])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
 
@@ -787,7 +788,7 @@ class ShareCapital extends Controller
         }
 
         $paid = collect($contributions)
-            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('type', ['Deposit', 'Subscription', self::CONVERSION_TYPE])
             ->filter(fn($c) => strtolower($c->status ?? '') === 'completed')
             ->map(fn($c) => (object) [
                 'amount' => (float) $c->total_amount,

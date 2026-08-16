@@ -227,8 +227,10 @@
 }
 
 .container-fluid .table-filter {
-    display: flex;
-    align-items: center;
+    /* display: flex;
+    align-items: center; */
+    display: grid;
+    grid-template-colums: repeat(3, 1fr);
     gap: 1rem;
     padding: 20px 20px 20px;
     width: 100%;

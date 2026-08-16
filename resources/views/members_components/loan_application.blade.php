@@ -2684,18 +2684,9 @@
                                             <select class="p-select np" name="lending_type" id="lending_type"
                                                 onchange="mUpdateTermOptions(); mCompute(); mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }} required>
                                                 <option value="">Select type</option>
-                                                <option value="Personal Loan" {!! $mOptData('Personal Loan') !!}>
-                                                    Personal
-                                                    Loan</option>
-                                                <option value="Business Loan" {!! $mOptData('Business Loan') !!}>
-                                                    Business
-                                                    Loan</option>
-                                                <option value="Emergency Loan" {!! $mOptData('Emergency Loan') !!}>
-                                                    Emergency
-                                                    Loan</option>
-                                                <option value="Education Loan" {!! $mOptData('Education Loan') !!}>
-                                                    Education
-                                                    Loan</option>
+                                                @foreach($loanSettings as $dbType => $s)
+                                                    <option value="{{ $dbType }}" {!! $mOptData($dbType) !!}>{{ $dbType }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="p-field-error" id="err-lending_type">

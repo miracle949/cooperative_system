@@ -134,45 +134,6 @@
                             <div id="passwordSuccess" class="hidden p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700"></div>
                         </form>
                     </div>
-
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="font-medium text-gray-900 mb-4">Two-Factor Authentication</h3>
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-success-100 rounded-lg flex items-center justify-center">
-                                    <i data-lucide="shield-check" class="w-5 h-5 text-success-500"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-900">Two-Factor Authentication</p>
-                                    <p class="text-sm text-gray-500">Add an extra layer of security to your account</p>
-                                </div>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer">
-                                <div
-                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600">
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="font-medium text-gray-900 mb-4">Active Sessions</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <i data-lucide="monitor" class="w-5 h-5 text-primary-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-medium text-gray-900">Current Device</p>
-                                        <p class="text-sm text-gray-500">This session</p>
-                                    </div>
-                                </div>
-                                <span class="badge badge-success">Active</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="mt-6 flex justify-end">
@@ -378,7 +339,6 @@
                                     'dividends'           => ['label' => 'Dividends',              'icon' => 'gift'],
                                     'reports'             => ['label' => 'Reports',                'icon' => 'bar-chart-3'],
                                     'finance'             => ['label' => 'Finance',                'icon' => 'wallet'],
-                                    'archives'            => ['label' => 'Archives',               'icon' => 'archive'],
                                     'officers-committees' => ['label' => 'Officers & Committees',  'icon' => 'briefcase'],
                                     'settings'            => ['label' => 'Settings',               'icon' => 'settings'],
                                 ];

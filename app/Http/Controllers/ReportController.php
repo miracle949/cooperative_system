@@ -59,7 +59,7 @@ class ReportController extends Controller
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
 
-            $depositCap = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
+            $depositCap = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
                 ->where('status', 'Completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
@@ -225,7 +225,6 @@ class ReportController extends Controller
             ->leftJoin('savings_account_tbls as sa', 'st.savings_account_id', '=', 'sa.id')
             ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
             ->whereDate('st.created_at', $date)
-            ->where('st.archived', '!=', 1)
             ->orderBy('st.created_at', 'desc')
             ->get();
 
@@ -244,7 +243,6 @@ class ReportController extends Controller
             ->leftJoin('share_capital_account_tbls as sca', 'sct.share_capital_account_id', '=', 'sca.id')
             ->leftJoin('users_tbls as u', 'sca.user_id', '=', 'u.id')
             ->whereDate('sct.created_at', $date)
-            ->where('sct.archived', '!=', 1)
             ->orderBy('sct.created_at', 'desc')
             ->get();
 
@@ -281,7 +279,7 @@ class ReportController extends Controller
         $savingsDeposits = $savingsTransactions->where('type', 'deposit');
         $savingsWithdrawals = $savingsTransactions->where('type', 'withdrawal');
 
-        $scDeposits = $shareCapitalTransactions->whereIn('type', ['Deposit', 'Subscription']);
+        $scDeposits = $shareCapitalTransactions->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE]);
         $scWithdrawals = $shareCapitalTransactions->where('type', 'Withdrawal');
 
         $cooperativeTransactions = CooperativeTransaction::whereDate('transaction_date', $date)
@@ -516,7 +514,6 @@ class ReportController extends Controller
             ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
             ->where('st.type', 'deposit')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
-            ->where('st.archived', '!=', 1)
             ->orderBy('st.created_at')
             ->get();
 
@@ -553,7 +550,6 @@ class ReportController extends Controller
             ->leftJoin('users_tbls as u', 'sa.user_id', '=', 'u.id')
             ->where('st.type', 'withdrawal')
             ->whereBetween('st.created_at', [$fromDate, $toDate . ' 23:59:59'])
-            ->where('st.archived', '!=', 1)
             ->orderBy('st.created_at')
             ->get();
 
@@ -588,10 +584,9 @@ class ReportController extends Controller
                 DB::raw("CONCAT(u.first_name, ' ', u.last_name) as member_name"))
             ->leftJoin('share_capital_account_tbls as sca', 'sct.share_capital_account_id', '=', 'sca.id')
             ->leftJoin('users_tbls as u', 'sca.user_id', '=', 'u.id')
-            ->whereIn('sct.type', ['Deposit', 'Subscription'])
+            ->whereIn('sct.type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
             ->whereIn('sct.status', ['Completed', 'Approved'])
             ->whereBetween('sct.created_at', [$fromDate, $toDate . ' 23:59:59'])
-            ->where('sct.archived', '!=', 1)
             ->orderBy('sct.created_at')
             ->get();
 
@@ -629,7 +624,6 @@ class ReportController extends Controller
             ->where('sct.type', 'Withdrawal')
             ->whereIn('sct.status', ['Approved', 'approved'])
             ->whereBetween('sct.created_at', [$fromDate, $toDate . ' 23:59:59'])
-            ->where('sct.archived', '!=', 1)
             ->orderBy('sct.created_at')
             ->get();
 

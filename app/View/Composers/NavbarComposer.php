@@ -123,7 +123,7 @@ class NavbarComposer
         if ($scAccount) {
             $paidUp = DB::table('share_capital_transaction_tbls')
                 ->where('share_capital_account_id', $scAccount->id)
-                ->whereIn('type', ['Deposit', 'Subscription'])
+                ->whereIn('type', ['Deposit', 'Subscription', \App\Http\Controllers\ShareCapital::CONVERSION_TYPE])
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 

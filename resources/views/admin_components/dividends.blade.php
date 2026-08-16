@@ -98,25 +98,30 @@
                     <h4 class="text-sm font-semibold text-gray-700 mb-3">Statutory Breakdown Preview (RA 9520)</h4>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
-                            <span>Reserve Fund (10%)</span>
+                            <span>Reserve Fund ({{ $reserveFundPercentage ?? 10 }}%)</span>
                             <span class="font-semibold" id="previewReserve">₱0.00</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>CETF (10%)</span>
+                            <span>CETF ({{ $cetfPercentage ?? 10 }}%)</span>
                             <span class="font-semibold" id="previewCETF">₱0.00</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Community Dev. Fund (3%)</span>
+                            <span>Community Dev. Fund ({{ $cdfPercentage ?? 3 }}%)</span>
                             <span class="font-semibold" id="previewCDF">₱0.00</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Optional Fund (7%)</span>
+                            <span>Optional Fund ({{ $optionalFundPercentage ?? 7 }}%)</span>
                             <span class="font-semibold" id="previewOptional">₱0.00</span>
                         </div>
                         <hr class="border-gray-300">
                         <div class="flex justify-between text-gray-500">
-                            <span>Statutory Total (30%)</span>
+                            <span>Statutory Total ({{ $statutoryTotalPercentage ?? 30 }}%)</span>
                             <span class="font-semibold" id="previewStatutoryTotal">₱0.00</span>
+                        </div>
+                        <hr class="border-gray-300">
+                        <div class="flex justify-between text-gray-500">
+                            <span>Remaining Surplus ({{ $remainingSurplusPercentage ?? 70 }}%)</span>
+                            <span class="font-semibold" id="previewRemaining">₱0.00</span>
                         </div>
                         <hr class="border-gray-300">
                         <div class="flex justify-between text-success-700 font-semibold">
@@ -206,22 +211,32 @@
             <div class="stat-card">
                 <p class="text-sm text-gray-500">Reserve Fund</p>
                 <p class="text-lg font-bold text-gray-900">₱{{ number_format($distribution->reserve_fund, 2) }}</p>
-                <p class="text-xs text-gray-400">10%</p>
+                <p class="text-xs text-gray-400">{{ $distribution->reserve_fund_percentage ?? 10 }}%</p>
             </div>
             <div class="stat-card">
                 <p class="text-sm text-gray-500">CETF</p>
                 <p class="text-lg font-bold text-gray-900">₱{{ number_format($distribution->education_fund, 2) }}</p>
-                <p class="text-xs text-gray-400">10%</p>
+                <p class="text-xs text-gray-400">{{ $distribution->cetf_percentage ?? 10 }}%</p>
             </div>
             <div class="stat-card">
                 <p class="text-sm text-gray-500">Community Dev.</p>
                 <p class="text-lg font-bold text-gray-900">₱{{ number_format($distribution->community_fund, 2) }}</p>
-                <p class="text-xs text-gray-400">3%</p>
+                <p class="text-xs text-gray-400">{{ $distribution->cdf_percentage ?? 3 }}%</p>
             </div>
             <div class="stat-card">
                 <p class="text-sm text-gray-500">Optional Fund</p>
                 <p class="text-lg font-bold text-gray-900">₱{{ number_format($distribution->optional_fund, 2) }}</p>
-                <p class="text-xs text-gray-400">7%</p>
+                <p class="text-xs text-gray-400">{{ $distribution->optional_fund_percentage ?? 7 }}%</p>
+            </div>
+            <div class="stat-card">
+                <p class="text-sm text-gray-500">Total Statutory Allocation</p>
+                <p class="text-lg font-bold text-gray-900">{{ $distribution->statutory_total_percentage ?? 30 }}%</p>
+                <p class="text-xs text-gray-400">of net surplus</p>
+            </div>
+            <div class="stat-card">
+                <p class="text-sm text-gray-500">Remaining Surplus</p>
+                <p class="text-lg font-bold text-success-700">₱{{ number_format($distribution->remaining_surplus, 2) }}</p>
+                <p class="text-xs text-gray-400">{{ number_format(100 - ($distribution->statutory_total_percentage ?? 30), 2) }}% of net surplus</p>
             </div>
         </div>
 
@@ -495,18 +510,19 @@
 
             if (val > 0) {
                 preview.classList.remove('hidden');
-                const reserve = val * 0.10, cetf = val * 0.10, cdf = val * 0.03, optional = val * 0.07;
+                const reserve = val * ({{ $reserveFundPercentage ?? 10 }}/100), cetf = val * ({{ $cetfPercentage ?? 10 }}/100), cdf = val * ({{ $cdfPercentage ?? 3 }}/100), optional = val * ({{ $optionalFundPercentage ?? 7 }}/100);
                 const statutoryTotal = reserve + cetf + cdf + optional;
                 const remaining = val - statutoryTotal;
                 const divPct = {{ $dividendFundPercentage / 100 }};
                 const dividendPool = remaining * divPct;
-                const patronage = remaining * (1 - divPct);
+                const patronage = remaining * ({{ $patronageFundPercentage / 100 }});
 
                 document.getElementById('previewReserve').textContent = '₱' + reserve.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewCETF').textContent = '₱' + cetf.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewCDF').textContent = '₱' + cdf.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewOptional').textContent = '₱' + optional.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewStatutoryTotal').textContent = '₱' + statutoryTotal.toLocaleString('en-PH', {minimumFractionDigits: 2});
+                document.getElementById('previewRemaining').textContent = '₱' + remaining.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewDividendPool').textContent = '₱' + dividendPool.toLocaleString('en-PH', {minimumFractionDigits: 2});
                 document.getElementById('previewPatronage').textContent = '₱' + patronage.toLocaleString('en-PH', {minimumFractionDigits: 2});
             } else {
@@ -718,20 +734,24 @@
                 if (!data.success) { content.innerHTML = '<p class="text-center text-red-500 py-4">Failed to load.</p>'; return; }
                 var r = data.record, t = data.totals;
                 document.getElementById('breakdown-member-name').textContent = r.member_name;
-                document.getElementById('breakdown-subtitle').textContent = 'FY ' + r.year + ' · ' + r.status.charAt(0).toUpperCase() + r.status.slice(1);
+                var basisLabel = data.basis === 'net_repayment' ? 'Net Repayment (excl. late fees)' : 'Total Repayment (incl. late fees)';
+                document.getElementById('breakdown-subtitle').textContent = 'FY ' + r.year + ' · ' + r.status.charAt(0).toUpperCase() + r.status.slice(1) + ' · Basis: ' + basisLabel;
                 var h = '<div class="grid grid-cols-3 gap-3 mb-6">';
                 h += '<div class="p-3 bg-primary-50 rounded-lg text-center"><p class="text-xs text-primary-600 font-medium">Total Patronage</p><p class="text-lg font-bold text-primary-700">₱' + formatBreakdownNum(r.total_patronage) + '</p></div>';
-                h += '<div class="p-3 bg-warning-50 rounded-lg text-center"><p class="text-xs text-warning-600 font-medium">Allocation Ratio</p><p class="text-lg font-bold text-warning-700">' + (r.allocation_ratio * 100).toFixed(2) + '</p></div>';
+                h += '<div class="p-3 bg-warning-50 rounded-lg text-center"><p class="text-xs text-warning-600 font-medium">Member Share</p><p class="text-lg font-bold text-warning-700">' + (r.allocation_ratio * 100).toFixed(2) + '%</p></div>';
                 h += '<div class="p-3 bg-success-50 rounded-lg text-center"><p class="text-xs text-success-600 font-medium">Refund Amount</p><p class="text-lg font-bold text-success-700">₱' + formatBreakdownNum(r.amount) + '</p></div></div>';
                 h += '<div class="mb-6"><h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="landmark" class="w-4 h-4 text-primary-600"></i> Loan Repayment Patronage</h3>';
                 if (data.loan_repayments.length > 0) {
-                    h += '<div class="border border-gray-200 rounded-lg overflow-hidden"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Date</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Type</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Amount Paid</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Principal</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Interest</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Service Fee</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Late Fee</th></tr></thead><tbody>';
+                    h += '<div class="border border-gray-200 rounded-lg overflow-hidden"><table class="w-full text-sm"><thead class="bg-gray-50"><tr><th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Date</th><th class="px-3 py-2 text-left text-xs font-medium text-gray-500">Type</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Amount Paid</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Principal</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Interest</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Service Fee</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Late Fee</th><th class="px-3 py-2 text-right text-xs font-medium text-gray-500">Patronage</th></tr></thead><tbody>';
                     data.loan_repayments.forEach(function(rep) {
-                        h += '<tr class="border-t border-gray-100"><td class="px-3 py-2 text-gray-700">' + rep.date + '</td><td class="px-3 py-2 text-gray-500">' + (rep.loan_type||'-') + '</td><td class="px-3 py-2 text-right text-gray-900">₱' + formatBreakdownNum(rep.amount_paid) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(rep.principal_paid) + '</td><td class="px-3 py-2 text-right text-success-600 font-medium">₱' + formatBreakdownNum(rep.interest_paid) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(rep.service_fee_paid) + '</td><td class="px-3 py-2 text-right ' + (rep.late_fee > 0 ? 'text-danger-600' : 'text-gray-500') + '">₱' + formatBreakdownNum(rep.late_fee) + '</td></tr>';
+                        var badge = rep.is_fallback ? '<span class="ml-1 text-[10px] font-semibold text-gray-400">legacy</span>' : '';
+                        h += '<tr class="border-t border-gray-100"><td class="px-3 py-2 text-gray-700">' + rep.date + '</td><td class="px-3 py-2 text-gray-500">' + (rep.loan_type||'-') + '</td><td class="px-3 py-2 text-right text-gray-900">₱' + formatBreakdownNum(rep.amount_paid) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(rep.principal_paid) + '</td><td class="px-3 py-2 text-right text-success-600 font-medium">₱' + formatBreakdownNum(rep.interest_paid) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(rep.service_fee_paid) + '</td><td class="px-3 py-2 text-right ' + (rep.late_fee > 0 ? 'text-danger-600' : 'text-gray-500') + '">₱' + formatBreakdownNum(rep.late_fee) + '</td><td class="px-3 py-2 text-right font-semibold text-primary-700">₱' + formatBreakdownNum(rep.patronage) + badge + '</td></tr>';
                     });
                     var totalAmt = data.loan_repayments.reduce(function(s,r){return s+r.amount_paid;},0);
-                    h += '<tr class="bg-gray-50 font-semibold"><td class="px-3 py-2" colspan="2">Totals</td><td class="px-3 py-2 text-right text-gray-900">₱' + formatBreakdownNum(totalAmt) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.interest+t.service_fee+t.late_fee) + '</td><td class="px-3 py-2 text-right text-success-600">₱' + formatBreakdownNum(t.interest) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.service_fee) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.late_fee) + '</td></tr>';
-                    h += '</tbody></table></div><p class="text-xs text-gray-500 mt-2">Patronage from loans = Interest + Service Fee + Late Fee (principal excluded)</p>';
+                    h += '<tr class="bg-gray-50 font-semibold"><td class="px-3 py-2" colspan="2">Totals</td><td class="px-3 py-2 text-right text-gray-900">₱' + formatBreakdownNum(totalAmt) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.interest+t.service_fee+t.late_fee) + '</td><td class="px-3 py-2 text-right text-success-600">₱' + formatBreakdownNum(t.interest) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.service_fee) + '</td><td class="px-3 py-2 text-right text-gray-500">₱' + formatBreakdownNum(t.late_fee) + '</td><td class="px-3 py-2 text-right text-primary-700">₱' + formatBreakdownNum(t.loan_patronage) + '</td></tr>';
+                    h += '</tbody></table></div>';
+                    var basisNote = data.basis === 'net_repayment' ? 'Interest + Service Fee (late fees excluded)' : 'Interest + Service Fee + Late Fee';
+                    h += '<p class="text-xs text-gray-500 mt-2">Patronage from loans = ' + basisNote + ' (principal excluded). Legacy records without an income breakdown count the full amount paid.</p>';
                 } else { h += '<p class="text-sm text-gray-500 py-3 px-4 bg-gray-50 rounded-lg">No loan repayments recorded for this year.</p>'; }
                 h += '</div>';
                 h += '<div class="mb-6"><h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-warning-600"></i> Additional Patronage Records</h3>';
@@ -744,7 +764,10 @@
                     h += '</tbody></table></div>';
                 } else { h += '<p class="text-sm text-gray-500 py-3 px-4 bg-gray-50 rounded-lg">No additional patronage records for this year.</p>'; }
                 h += '</div>';
-                h += '<div class="p-4 bg-primary-50 rounded-lg border border-primary-100"><div class="flex justify-between items-center"><p class="text-xs text-primary-600 font-medium">Total Patronage (Loan + Additional)</p><p class="text-lg font-bold text-primary-700">₱' + formatBreakdownNum(t.total_patronage) + '</p></div></div>';
+                h += '<div class="p-4 bg-primary-50 rounded-lg border border-primary-100"><div class="flex justify-between items-center"><p class="text-xs text-primary-600 font-medium">Total Patronage (Loan + Additional)</p><p class="text-lg font-bold text-primary-700">₱' + formatBreakdownNum(t.total_patronage) + '</p></div>';
+                if (data.fallback_count > 0) { h += '<p class="text-xs text-gray-400 mt-1">' + data.fallback_count + ' legacy repayment(s) used the amount-paid fallback.</p>'; }
+                if (!t.matches_record) { h += '<p class="text-xs text-danger-600 mt-1">Note: this total differs from the stored patronage (' + formatBreakdownNum(r.total_patronage) + ') — recalibrate the distribution to sync.</p>'; }
+                h += '</div>';
                 content.innerHTML = h;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }).catch(function() { content.innerHTML = '<p class="text-center text-red-500 py-4">Failed to load.</p>'; });

@@ -113,6 +113,17 @@
 @section('content')
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 
+    <style>
+        .ts-wrapper .ts-dropdown {
+            z-index: 2 !important;
+        }
+        .modal > .modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 10000 !important;
+        }
+    </style>
+
     <div class="mb-6">
         <nav class="text-sm text-gray-500">
             <ol class="list-none p-0 inline-flex">
@@ -151,34 +162,34 @@
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-primary-200 transition-all group" onclick="openWithdrawalBreakdownModal()">
+        <div class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Withdrawals</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($monthlyWithdrawals, 2) }}</p>
+                    <p class="text-sm text-gray-500 mb-1">Savings Balance</p>
+                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($totalSavingsBalance, 2) }}</p>
                     <p class="text-xs text-gray-500 mt-1 flex items-center">
-                        <i data-lucide="trending-down" class="w-3 h-3 mr-1"></i>
-                        {{ $monthlyWithdrawalsCount }} transaction{{ $monthlyWithdrawalsCount !== 1 ? 's' : '' }} this month
+                        <i data-lucide="piggy-bank" class="w-3 h-3 mr-1"></i>
+                        Total across all savings accounts
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                    <i data-lucide="trending-down" class="w-6 h-6 text-primary-600"></i>
+                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="piggy-bank" class="w-6 h-6 text-primary-600"></i>
                 </div>
             </div>
         </div>
 
-        <div class="stat-card cursor-pointer hover:shadow-lg hover:border-warning-200 transition-all group" onclick="openLastContributionModal()">
+        <div class="stat-card">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">Deposits Today</p>
-                    <p class="text-2xl font-bold text-gray-900">₱{{ number_format($lastContribution->amount ?? 0, 2) }}</p>
+                    <p class="text-sm text-gray-500 mb-1">Active Savings Account</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ number_format($activeSavingsAccounts) }}</p>
                     <p class="text-xs text-gray-500 mt-1 flex items-center">
-                        <i data-lucide="mouse-pointer-click" class="w-3 h-3 mr-1"></i>
-                        {{ $lastContribution ? $lastContribution->created_at->format('M d, Y g:i A') : 'No transactions' }}
+                        <i data-lucide="users" class="w-3 h-3 mr-1"></i>
+                        Member accounts in good standing
                     </p>
                 </div>
-                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center group-hover:bg-warning-200 transition-colors">
-                    <i data-lucide="calendar" class="w-6 h-6 text-warning-600"></i>
+                <div class="w-12 h-12 bg-warning-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="users" class="w-6 h-6 text-warning-600"></i>
                 </div>
             </div>
         </div>
@@ -266,12 +277,7 @@
                                 <button class="p-1.5 hover:bg-gray-100 rounded" title="View Receipt" onclick="viewReceipt('{{ $tx->reference_no }}')">
                                     <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
-                                <form method="POST" action="{{ route('savings.archive', $tx->id) }}" style="display: inline; margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="p-1.5 hover:bg-gray-100 rounded" title="Archive">
-                                        <i data-lucide="archive" class="w-4 h-4 text-gray-500"></i>
-                                    </button>
-                                </form>
+                                <!-- archive action removed -->
                             </div>
                         </td>
                     </tr>
@@ -332,7 +338,7 @@
     <div id="addContributionModal" class="modal-overlay hidden">
         <div class="modal max-w-lg" style="border-radius: 16px;">
             <!-- Header -->
-            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -368,12 +374,22 @@
                         <span id="currentBalance" style="font-size: 14px; font-weight: 700; color: #1E2A4A;">₱0.00</span>
                     </div>
 
+                    <!-- Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select name="type" id="savingsType" class="select" style="width: 100%;" onchange="toggleSavingsPaymentFields()">
+                            <option value="">Select type...</option>
+                            <option value="deposit">Deposit</option>
+                            <option value="withdrawal">Withdrawal</option>
+                        </select>
+                    </div>
+
                     <!-- Amount -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                            <input type="number" name="amount" id="savingsAmount" class="input pl-10" placeholder="0.00" style="width: 100%;">
+                            <input type="number" name="amount" id="savingsAmount" class="input pl-10" placeholder="0.00" style="width: 100%; padding-left: 2.5rem;">
                         </div>
                         <!-- Quick Amounts -->
                         <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
@@ -384,25 +400,17 @@
                         </div>
                     </div>
 
-                    <!-- Type -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select name="type" id="savingsType" class="select" style="width: 100%;">
-                            <option value="">Select type...</option>
-                            <option value="deposit">Deposit</option>
-                            <option value="withdrawal">Withdrawal</option>
-                        </select>
+                    <!-- Payment Method (deposit only) -->
+                    <div id="savingsPaymentField">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                        <input type="hidden" name="payment_method" id="savingsPaymentMethod" value="cash">
+                        <input type="text" value="Cash" readonly style="width: 100%; background: #f3f4f6; cursor: default; border: 1px solid #ddd; border-radius: 8px; padding: 8px; color: #555;">
                     </div>
 
-                    <!-- Payment Method -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method <span class="text-red-500">*</span></label>
-                        <select name="payment_method" id="savingsPaymentMethod" class="select" style="width: 100%;" onchange="checkSavingsPaymentMethodQr()" required>
-                            <option value="">Select payment method...</option>
-                            @foreach($paymentMethods as $pm)
-                                <option value="{{ strtolower($pm->method_name) }}" data-id="{{ $pm->id }}">{{ $pm->method_name }}</option>
-                            @endforeach
-                        </select>
+                    <!-- Mobile Number (withdrawal only, read-only) -->
+                    <div id="savingsMobileField" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <input type="tel" id="savingsMobileDisplay" class="input" readonly placeholder="No mobile number on record" style="width: 100%; background: #f3f4f6; cursor: default;">
                     </div>
 
                     <!-- QR Code Display -->
@@ -437,7 +445,7 @@
     <!-- Convert to Share Capital Modal -->
     <div id="convertToSCModal" class="modal-overlay hidden">
         <div class="modal max-w-lg" style="border-radius: 16px;">
-            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -490,7 +498,7 @@
                         </div>
                         <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
                             <button type="button" onclick="setConvertAmount(500)" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱500</button>
-                            <button type="button" onclick="setConvertAmount(1000)" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱1,000</button>
+                            <button type="button" onclick="setConvertAmount(200)" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱200</button>
                             <button type="button" onclick="setConvertAmount(2000)" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱2,000</button>
                             <button type="button" onclick="setConvertAmount(5000)" style="padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; background: #fff; color: #555; border: 1px solid #ddd;">₱5,000</button>
                         </div>
@@ -499,7 +507,7 @@
                     <div style="background: #f8f9f8; border-radius: 10px; padding: 0.75rem 1rem; border: 1px solid #e5e7eb;">
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
                             <span style="color: #666;">Share Price</span>
-                            <span style="font-weight: 600; color: #1E2A4A;">₱1,000.00 / share</span>
+                            <span style="font-weight: 600; color: #1E2A4A;">₱{{ number_format(\App\Http\Controllers\ShareCapital::PAR_VALUE, 2) }} / share</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 4px;">
                             <span style="color: #666;">Estimated Shares</span>
@@ -1094,9 +1102,11 @@
         window.updateMemberBalance = function() {
             const memberId = document.getElementById('memberSelect').value;
             const balanceEl = document.getElementById('currentBalance');
+            const mobileEl = document.getElementById('savingsMobileDisplay');
             
             if (!memberId) {
                 balanceEl.textContent = '₱0.00';
+                if (mobileEl) mobileEl.value = '';
                 return;
             }
             
@@ -1104,12 +1114,36 @@
                 .then(response => response.json())
                 .then(data => {
                     balanceEl.textContent = '₱' + parseFloat(data.balance || 0).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    if (mobileEl) mobileEl.value = data.contact_no || '';
                 })
                 .catch(error => {
                     console.error('Error fetching balance:', error);
                     balanceEl.textContent = '₱0.00';
+                    if (mobileEl) mobileEl.value = '';
                 });
         };
+
+        // Toggle between Payment Method (deposit) and Mobile Number (withdrawal)
+        function toggleSavingsPaymentFields() {
+            const type = document.getElementById('savingsType').value;
+            const paymentField = document.getElementById('savingsPaymentField');
+            const mobileField = document.getElementById('savingsMobileField');
+            const qrDisplay = document.getElementById('savingsQrCodeDisplay');
+            if (!paymentField || !mobileField) return;
+
+            if (type === 'withdrawal') {
+                paymentField.classList.add('hidden');
+                mobileField.classList.remove('hidden');
+                if (qrDisplay) qrDisplay.classList.add('hidden');
+            } else if (type === 'deposit') {
+                paymentField.classList.remove('hidden');
+                mobileField.classList.add('hidden');
+            } else {
+                paymentField.classList.remove('hidden');
+                mobileField.classList.add('hidden');
+                if (qrDisplay) qrDisplay.classList.add('hidden');
+            }
+        }
 
         function checkSavingsPaymentMethodQr() {
             const select = document.getElementById('savingsPaymentMethod');
@@ -1151,7 +1185,7 @@
                 showToast('Error', 'Please select transaction type');
                 return;
             }
-            if (!formData.get('payment_method')) {
+            if (formData.get('type') === 'deposit' && !formData.get('payment_method')) {
                 showToast('Error', 'Please select payment method');
                 return;
             }
@@ -1171,6 +1205,8 @@
                     // Reset form
                     form.reset();
                     document.getElementById('currentBalance').textContent = '₱0.00';
+                    document.getElementById('savingsMobileDisplay').value = '';
+                    toggleSavingsPaymentFields();
                     // Reload page to show new transaction
                     setTimeout(() => window.location.reload(), 1000);
                 } else {
@@ -1198,6 +1234,7 @@
             document.getElementById('convertAmount').value = '';
             document.getElementById('estimatedShares').textContent = '0';
             document.getElementById('convertRemainder').textContent = '₱0.00';
+            convertIdempotencyKey = generateConvertKey();
         };
 
         window.closeConvertToSCModal = function() {
@@ -1224,6 +1261,13 @@
                 });
         };
 
+        const scPerShareValue = {{ \App\Http\Controllers\ShareCapital::PAR_VALUE }};
+        let convertIdempotencyKey = null;
+
+        function generateConvertKey() {
+            return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+        }
+
         window.setConvertAmount = function(val) {
             document.getElementById('convertAmount').value = val;
             updateConvertEstimate();
@@ -1231,8 +1275,8 @@
 
         window.updateConvertEstimate = function() {
             const amount = parseFloat(document.getElementById('convertAmount').value) || 0;
-            const shares = Math.floor(amount / 1000);
-            const remainder = amount - (shares * 1000);
+            const shares = Math.floor(amount / scPerShareValue);
+            const remainder = amount - (shares * scPerShareValue);
             document.getElementById('estimatedShares').textContent = shares;
             document.getElementById('convertRemainder').textContent = '₱' + remainder.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         };
@@ -1243,7 +1287,7 @@
             const form = document.getElementById('convertToSCForm');
             const formData = new FormData(form);
             const amount = parseFloat(formData.get('amount')) || 0;
-            const shares = Math.floor(amount / 1000);
+            const shares = Math.floor(amount / scPerShareValue);
 
             if (!formData.get('member_id')) {
                 showToast('Error', 'Please select a member');
@@ -1254,9 +1298,11 @@
                 return;
             }
             if (shares < 1) {
-                showToast('Error', 'Minimum conversion amount is ₱1,000.00 (1 share)');
+                showToast('Error', 'Minimum conversion amount is ₱' + scPerShareValue.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (1 share)');
                 return;
             }
+
+            formData.append('idempotency_key', convertIdempotencyKey);
 
             fetch('/savings/convert-to-share-capital', {
                 method: 'POST',
@@ -1271,6 +1317,7 @@
                     closeConvertToSCModal();
                     showToast('Success', data.message);
                     form.reset();
+                    convertIdempotencyKey = null;
                     document.getElementById('convertSavingsBalance').textContent = '0.00';
                     document.getElementById('convertSCBalance').textContent = '0.00';
                     document.getElementById('estimatedShares').textContent = '0';

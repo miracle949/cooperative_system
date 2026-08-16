@@ -542,8 +542,7 @@
                                     @endif
                                 </div>
                                 <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $announcement->title }}</h3>
-                                <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                    {{ $announcement->content }}</p>
+                                <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ trim($announcement->content) }}</p>
 
 
                                 <div class="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100">

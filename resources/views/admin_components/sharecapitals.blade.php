@@ -5,6 +5,17 @@
 @section('content')
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 
+    <style>
+        .ts-wrapper .ts-dropdown {
+            z-index: 2 !important;
+        }
+        .modal > .modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 10000 !important;
+        }
+    </style>
+
     <!-- Breadcrumb -->
     <div class="mb-6">
         <nav class="text-sm text-gray-500">
@@ -182,12 +193,7 @@ Sell Shares
                                 <button class="p-1.5 hover:bg-gray-100 rounded" title="View Details" onclick="viewShareCapitalDetail('{{ $tx->id }}', '{{ $tx->type }}', '{{ $tx->status }}', '{{ $tx->shareCapitalAccount->user->first_name ?? '' }} {{ $tx->shareCapitalAccount->user->last_name ?? '' }}', '{{ $tx->shares }}', '{{ $tx->total_amount }}', '{{ $tx->payment_method ?? 'N/A' }}', '{{ $tx->reference_no ?? 'N/A' }}', '{{ $tx->transaction_date }}')">
                                     <i data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
                                 </button>
-                                <form method="POST" action="{{ route('sharecapital.archive', $tx->id) }}">
-                                    @csrf
-                                    <button type="submit" class="p-1.5 hover:bg-gray-100 rounded" title="Archive">
-                                        <i data-lucide="archive" class="w-4 h-4 text-gray-500"></i>
-                                    </button>
-                                </form>
+                                <!-- archive action removed -->
                             </div>
                         </td>
                     </tr>
@@ -313,7 +319,7 @@ Sell Shares
     <div id="addContributionModal" class="modal-overlay hidden">
         <div class="modal max-w-lg" style="border-radius: 16px;">
             <!-- Header -->
-            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -331,7 +337,7 @@ Sell Shares
             </div>
 
             <div style="padding: 1.25rem;">
-                <form id="adminShareCapitalForm">
+                <form id="adminShareCapitalForm" style="display: flex; flex-direction: column; gap: 1rem;">
                     @csrf
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member</label>
@@ -355,9 +361,19 @@ Sell Shares
                         <strong>Notice:</strong> Fully withdrawing this member's share capital is equivalent to resigning. This will auto-submit a resignation request subject to the 60-day holding period.
                     </div>
 
+                    <!-- Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required onchange="toggleAdminFullWithdrawalWarning(); toggleScPaymentFields(); syncAdminAmountForType()">
+                            <option value="">Select type...</option>
+                            <option value="Deposit">Deposit</option>
+                            <option value="Withdrawal">Withdrawal</option>
+                        </select>
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
-                        <input type="number" name="amount_input" id="adminAmountInput" value="{{ $perShareValue }}" min="500" step="100" style="width: 100%; text-align: center; font-size: 14px; font-weight: 600; color: #1E2A4A; border: 1px solid #ddd; border-radius: 8px; padding: 8px;" oninput="updateFromAmount()">
+                        <input type="number" name="amount_input" id="adminAmountInput" value="{{ $perShareValue }}" min="200" step="200" style="width: 100%; text-align: center; font-size: 14px; font-weight: 600; color: #1E2A4A; border: 1px solid #ddd; border-radius: 8px; padding: 8px;" oninput="updateFromAmount()">
                         <p style="font-size: 12px; color: #888; margin: 4px 0 0;">Equivalent to <strong id="adminSharesDisplay">1</strong> {{ Str::plural('share', 1) }} · ₱{{ number_format($perShareValue, 0) }}/share</p>
                     </div>
 
@@ -365,25 +381,17 @@ Sell Shares
                     <input type="hidden" name="shares" id="adminSharesInput" value="1">
                     <input type="hidden" name="amount" id="adminTotalAmount" value="{{ $perShareValue }}">
 
-                    <!-- Type -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                                    <select name="type" id="shareTypeSelect" class="select" style="width: 100%;" required onchange="toggleAdminFullWithdrawalWarning()">
-                                <option value="">Select type...</option>
-                                <option value="Deposit">Deposit</option>
-                                <option value="Withdrawal">Withdrawal</option>
-                            </select>
+                    <!-- Payment Method (deposit only) -->
+                    <div id="scPaymentField">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                        <input type="hidden" name="payment_method" id="scPaymentMethod" value="cash">
+                        <input type="text" value="Cash" readonly style="width: 100%; background: #f3f4f6; cursor: default; border: 1px solid #ddd; border-radius: 8px; padding: 8px; color: #555;">
                     </div>
 
-                    <!-- Payment Method -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method <span class="text-red-500">*</span></label>
-                        <select name="payment_method" id="scPaymentMethod" class="select" style="width: 100%;" onchange="checkScPaymentMethodQr()" required>
-                            <option value="">Select payment method...</option>
-                            @foreach($paymentMethods as $pm)
-                                <option value="{{ strtolower($pm->method_name) }}" data-id="{{ $pm->id }}">{{ $pm->method_name }}</option>
-                            @endforeach
-                        </select>
+                    <!-- Mobile Number (withdrawal only, read-only) -->
+                    <div id="scMobileField" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                        <input type="tel" id="scMobileDisplay" class="input" readonly placeholder="No mobile number on record" style="width: 100%; background: #f3f4f6; cursor: default;">
                     </div>
 
                     <!-- QR Code Display -->
@@ -583,17 +591,18 @@ Sell Shares
 
         // Show/hide full-withdrawal warning
         function toggleAdminFullWithdrawalWarning() {
-            const shares = parseFloat(document.getElementById('adminSharesInput')?.value) || 0;
             const type = document.getElementById('shareTypeSelect')?.value;
-            const display = document.getElementById('currentSharesDisplay');
-            const currentShares = parseFloat(display?.textContent?.split(' ')[0]) || 0;
-
             const warning = document.getElementById('adminFullWithdrawalWarning');
-            if (type === 'Withdrawal' && currentShares > 0) {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
+            warning.style.display = (type === 'Withdrawal') ? 'block' : 'none';
+        }
+
+        // Auto-fill amount with the member's full share capital on Withdrawal; default on Deposit
+        let currentMemberShareAmount = 0;
+        function syncAdminAmountForType() {
+            const type = document.getElementById('shareTypeSelect')?.value;
+            const amountInput = document.getElementById('adminAmountInput');
+            amountInput.value = (type === 'Withdrawal') ? currentMemberShareAmount : {{ $perShareValue }};
+            updateFromAmount();
         }
 
         // Update shares display when amount changes
@@ -611,10 +620,13 @@ Sell Shares
         window.updateMemberShares = function() {
             const memberId = document.getElementById('manage-share-member-select').value;
             const display = document.getElementById('currentSharesDisplay');
+            const mobileEl = document.getElementById('scMobileDisplay');
             
             if (!memberId) {
                 display.textContent = '0 shares · ₱0.00';
-                document.getElementById('adminFullWithdrawalWarning').style.display = 'none';
+                currentMemberShareAmount = 0;
+                if (mobileEl) mobileEl.value = '';
+                toggleAdminFullWithdrawalWarning();
                 return;
             }
 
@@ -623,15 +635,42 @@ Sell Shares
                 .then(data => {
                     const shares = data.total_shares || 0;
                     const amount = data.total_amount || 0;
+                    currentMemberShareAmount = amount;
                     display.textContent = shares + ' shares · ₱' + amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    if (mobileEl) mobileEl.value = data.contact_no || '';
+                    syncAdminAmountForType();
                     toggleAdminFullWithdrawalWarning();
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     display.textContent = '0 shares · ₱0.00';
-                    document.getElementById('adminFullWithdrawalWarning').style.display = 'none';
+                    currentMemberShareAmount = 0;
+                    if (mobileEl) mobileEl.value = '';
+                    toggleAdminFullWithdrawalWarning();
                 });
         };
+
+        // Toggle between Payment Method (Deposit) and Mobile Number (Withdrawal)
+        function toggleScPaymentFields() {
+            const type = document.getElementById('shareTypeSelect').value;
+            const paymentField = document.getElementById('scPaymentField');
+            const mobileField = document.getElementById('scMobileField');
+            const qrDisplay = document.getElementById('scQrCodeDisplay');
+            if (!paymentField || !mobileField) return;
+
+            if (type === 'Withdrawal') {
+                paymentField.classList.add('hidden');
+                mobileField.classList.remove('hidden');
+                if (qrDisplay) qrDisplay.classList.add('hidden');
+            } else if (type === 'Deposit') {
+                paymentField.classList.remove('hidden');
+                mobileField.classList.add('hidden');
+            } else {
+                paymentField.classList.remove('hidden');
+                mobileField.classList.add('hidden');
+                if (qrDisplay) qrDisplay.classList.add('hidden');
+            }
+        }
 
         // Submit admin share capital form
         window.submitAdminShareCapital = function() {
@@ -650,7 +689,7 @@ Sell Shares
                 showToast('Error', 'Please select transaction type');
                 return;
             }
-            if (!formData.get('payment_method')) {
+            if (formData.get('type') === 'Deposit' && !formData.get('payment_method')) {
                 showToast('Error', 'Please select payment method');
                 return;
             }
@@ -674,6 +713,9 @@ Sell Shares
                     document.getElementById('adminTotalAmount').value = {{ $perShareValue }};
                     document.getElementById('adminSharesInput').value = 1;
                     document.getElementById('adminSharesDisplay').textContent = 1;
+                    document.getElementById('scMobileDisplay').value = '';
+                    toggleScPaymentFields();
+                    toggleAdminFullWithdrawalWarning();
                     setTimeout(() => window.location.reload(), 1500);
                 } else {
                     showToast('Error', data.message || 'Transaction failed');

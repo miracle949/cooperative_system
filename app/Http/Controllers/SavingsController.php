@@ -13,6 +13,7 @@ use App\Models\TimeDeposit;
 use App\Models\Users_tbl;
 use App\Models\AuditLog;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class SavingsController extends Controller
 {
@@ -206,7 +207,7 @@ class SavingsController extends Controller
         $type = $request->query('type', 'all');
 
         $transactionsQuery = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
-            ->whereIn('type', ['deposit', 'withdrawal', 'td_release']) // ★ CHANGED: td_release (TD claims) now shown here too
+            ->whereIn('type', ['deposit', 'withdrawal', 'td_release', ShareCapital::CONVERSION_TYPE]) // ★ CHANGED: td_release (TD claims) and savings→share capital conversions shown here too
             ->orderBy('transaction_date', 'desc')
             ->orderBy('created_at', 'desc');
 
@@ -1033,7 +1034,7 @@ class SavingsController extends Controller
             'member_id' => 'required|exists:users_tbls,id',
             'amount' => 'required|numeric|min:1',
             'type' => 'required|string|in:deposit,withdrawal',
-            'payment_method' => 'required|string|in:cash,bank_transfer,gcash,check',
+            'payment_method' => ['nullable', 'string', Rule::requiredIf($request->type === 'deposit'), 'in:cash'],
             'note' => 'nullable|string|max:255',
         ]);
 
@@ -1190,7 +1191,11 @@ class SavingsController extends Controller
     {
         $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
         $balance = $savingsAccount ? $savingsAccount->balance : 0;
-        return response()->json(['balance' => $balance]);
+        $member = Users_tbl::with('otherinfo')->find($memberId);
+        return response()->json([
+            'balance' => $balance,
+            'contact_no' => $member?->otherinfo?->contact_no,
+        ]);
     }
 
     /**
@@ -1205,17 +1210,23 @@ class SavingsController extends Controller
 
     /**
      * Convert/transfer a portion of a member's Savings into Share Capital.
+     *
+     * Atomic: savings balance, share capital balance, and BOTH ledger records
+     * change together or not at all. Idempotent via idempotency_key (used to
+     * build the shared SCP-CONV- reference on both sides of the ledger).
      */
     public function convertToShareCapital(Request $request)
     {
         $request->validate([
             'member_id' => 'required|exists:users_tbls,id',
             'amount' => 'required|numeric|min:1',
+            'idempotency_key' => 'nullable|string|max:64',
         ]);
 
         $memberId = $request->member_id;
         $amount = (float) $request->amount;
-        $amountPerShare = 1000;
+        $amountPerShare = ShareCapital::PAR_VALUE;
+        $conversionType = ShareCapital::CONVERSION_TYPE;
 
         $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
 
@@ -1250,7 +1261,33 @@ class SavingsController extends Controller
         }
 
         $now = Carbon::now();
-        $referenceNo = 'SCV-' . strtoupper(bin2hex(random_bytes(4))) . '-' . $now->format('Ymd');
+
+        // Shared reference on BOTH ledger records so the two sides trace to one operation.
+        // When an idempotency key is supplied, reuse it to build the reference so a retry
+        // resolves to the same reference and is detected as already processed.
+        $referenceNo = $request->idempotency_key
+            ? 'SCP-CONV-' . strtoupper($request->idempotency_key)
+            : 'SCP-CONV-' . strtoupper(bin2hex(random_bytes(8)));
+
+        // Idempotency guard: a previous successful run already wrote both ledger rows
+        // with this reference. Replay without touching balances again.
+        $alreadyProcessed = share_capital_transaction_tbl::where('reference_no', $referenceNo)->exists()
+            || savings_transaction_tbl::where('reference_no', $referenceNo)->exists();
+
+        if ($alreadyProcessed) {
+            $existingSc = share_capital_transaction_tbl::where('reference_no', $referenceNo)->first();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'This conversion was already processed (Ref: ' . $referenceNo . '). No changes were made.',
+                'converted_amount' => $convertedAmount,
+                'shares' => $shares,
+                'reference_no' => $referenceNo,
+                'remainder' => $remainder,
+                'already_processed' => true,
+                'share_capital_account_id' => $existingSc ? $existingSc->share_capital_account_id : null,
+            ]);
+        }
 
         DB::beginTransaction();
 
@@ -1260,13 +1297,14 @@ class SavingsController extends Controller
 
             savings_transaction_tbl::create([
                 'savings_account_id' => $savingsAccount->id,
-                'type' => 'withdrawal',
+                'type' => $conversionType,
                 'amount' => $convertedAmount,
                 'payment_method' => 'Internal Transfer',
                 'balance_after' => $savingsNewBalance,
                 'note' => 'Transferred to Share Capital',
                 'reference_no' => $referenceNo,
                 'transaction_date' => $now->toDateString(),
+                'status' => 'Completed',
             ]);
 
             $scAccount = share_capital_account_tbl::where('user_id', $memberId)->first();
@@ -1290,7 +1328,7 @@ class SavingsController extends Controller
 
             share_capital_transaction_tbl::create([
                 'share_capital_account_id' => $scAccountId,
-                'type' => 'Deposit',
+                'type' => $conversionType,
                 'shares' => $shares,
                 'amount_per_share' => $amountPerShare,
                 'total_amount' => $convertedAmount,
@@ -1304,12 +1342,6 @@ class SavingsController extends Controller
             DB::commit();
 
             $member = Users_tbl::find($memberId);
-            AuditLog::log(
-                'Convert Savings to Share Capital',
-                "Converted ₱{$convertedAmount} ({$shares} shares) from savings to share capital for {$member?->first_name} {$member?->last_name} (Ref: {$referenceNo})",
-                'savings',
-                $savingsAccount->id
-            );
 
             return response()->json([
                 'success' => true,

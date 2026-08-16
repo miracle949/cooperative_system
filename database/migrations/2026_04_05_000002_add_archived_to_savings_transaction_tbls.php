@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('savings_transaction_tbls', function (Blueprint $table) {
-            $table->boolean('archived')->default(false)->after('transaction_date');
+
         });
     }
 
     public function down(): void
     {
         Schema::table('savings_transaction_tbls', function (Blueprint $table) {
-            $table->dropColumn('archived');
+
         });
     }
 };

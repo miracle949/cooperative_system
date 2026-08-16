@@ -413,18 +413,19 @@
             <div class="grid grid-cols-2 gap-3">
                 @php
                     $totalLoanCount = array_sum($loanTypeCounts);
-                    $colors = ['primary-600', 'success-500', 'warning-500', 'danger-500'];
-                    $types = ['Personal', 'Education', 'Emergency', 'Business'];
+                    $colors = ['primary-600', 'success-500', 'warning-500', 'danger-500', 'indigo-500', 'rose-500', 'cyan-500'];
                     $colorIndex = 0;
+                    $displayTypes = $loanTypes ?? array_keys($loanTypeCounts);
                 @endphp
-                @forelse($types as $type)
+                @forelse($displayTypes as $type)
                 <div class="bg-gray-50 rounded-lg p-4">
                     <div class="flex items-center justify-between">
                         <span class="text-sm text-gray-600">{{ $type }}</span>
                         <span class="text-lg font-bold text-gray-900">{{ $loanTypeCounts[$type] ?? 0 }}</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                        <div class="bg-{{ $colors[$colorIndex] }} h-2 rounded-full" style="width: {{ $totalLoanCount > 0 ? (($loanTypeCounts[$type] ?? 0) / $totalLoanCount) * 100 : 0 }}%"></div>
+                        @php $c = $colors[$colorIndex % count($colors)]; @endphp
+                        <div class="bg-{{ $c }} h-2 rounded-full" style="width: {{ $totalLoanCount > 0 ? (($loanTypeCounts[$type] ?? 0) / $totalLoanCount) * 100 : 0 }}%"></div>
                     </div>
                 </div>
                 @php $colorIndex++; @endphp

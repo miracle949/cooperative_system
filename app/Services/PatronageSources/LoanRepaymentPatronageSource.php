@@ -20,8 +20,11 @@ class LoanRepaymentPatronageSource implements PatronageSource
      *   - 'total_repayment': includes late fees (income components + late_fee)
      *   - 'net_repayment': excludes late fees (income components only)
      *
-     * Fallback: if all income columns are zero (old records before migration),
-     * falls back to amount_paid for backward compatibility.
+     * Fallback: only when the income breakdown is genuinely unavailable
+     * (interest_paid or service_fee_paid is NULL for legacy records) does the
+     * full amount_paid count as patronage. Legitimate zero-income repayments
+     * (columns present, value 0) are NOT treated as patronage, so principal
+     * repayment is never counted when an income breakdown exists.
      */
     public function getPatronageForYear(int $userId, int $year): float
     {
@@ -33,24 +36,23 @@ class LoanRepaymentPatronageSource implements PatronageSource
 
         if ($basis === 'net_repayment') {
             return (float) $query->sum(DB::raw(
-                'CASE WHEN (interest_paid + service_fee_paid) > 0 '
-                . 'THEN (interest_paid + service_fee_paid) '
-                . 'ELSE amount_paid END'
+                'CASE WHEN (interest_paid IS NULL OR service_fee_paid IS NULL) '
+                . 'THEN amount_paid '
+                . 'ELSE (COALESCE(interest_paid, 0) + COALESCE(service_fee_paid, 0)) END'
             ));
         }
 
         // Default: total_repayment (includes late fees)
         return (float) $query->sum(DB::raw(
-            'CASE WHEN (interest_paid + service_fee_paid) > 0 '
-            . 'THEN (interest_paid + service_fee_paid + COALESCE(late_fee, 0)) '
-            . 'ELSE amount_paid END'
+            'CASE WHEN (interest_paid IS NULL OR service_fee_paid IS NULL) '
+            . 'THEN amount_paid '
+            . 'ELSE (COALESCE(interest_paid, 0) + COALESCE(service_fee_paid, 0) + COALESCE(late_fee, 0)) END'
         ));
     }
 
     public function getTotalPatronageForYear(int $year): float
     {
-        return (float) $this->getAllPatronageForYear($year)
-            ->reduce(fn ($carry, $amount) => $carry + $amount, 0);
+        return (float) array_sum($this->getAllPatronageForYear($year));
     }
 
     public function getAllPatronageForYear(int $year): array
@@ -58,8 +60,8 @@ class LoanRepaymentPatronageSource implements PatronageSource
         $basis = $this->getPatronageBasis($year);
 
         $incomeExpr = $basis === 'net_repayment'
-            ? 'CASE WHEN (interest_paid + service_fee_paid) > 0 THEN (interest_paid + service_fee_paid) ELSE amount_paid END'
-            : 'CASE WHEN (interest_paid + service_fee_paid) > 0 THEN (interest_paid + service_fee_paid + COALESCE(late_fee, 0)) ELSE amount_paid END';
+            ? 'CASE WHEN (interest_paid IS NULL OR service_fee_paid IS NULL) THEN amount_paid ELSE (COALESCE(interest_paid, 0) + COALESCE(service_fee_paid, 0)) END'
+            : 'CASE WHEN (interest_paid IS NULL OR service_fee_paid IS NULL) THEN amount_paid ELSE (COALESCE(interest_paid, 0) + COALESCE(service_fee_paid, 0) + COALESCE(late_fee, 0)) END';
 
         $results = DB::table('lending_repayments_tbls')
             ->whereYear('payment_date', $year)
