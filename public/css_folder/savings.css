@@ -38,31 +38,28 @@
     --navy-soft: #2D3F6B;
 }
 
-.main-parent {
+/* .main-parent {
     width: 100%;
     height: calc(100vh - 70px);
     overflow-y: auto;
-    padding: 2rem;
-    /* background-color: var(--lavender-tint); */
-    /* background-color: #ffffff; */
     background-color: #FBFBFD;
-}
+} */
 
 .container-fluid .rightbar {
     width: calc(100% - 250px);
     margin-left: 250px;
 }
 
-.container-fluid main h3 {
+.container-fluid .main h3 {
     font-size: 18px;
     color: var(--muted);
 }
 
-.container-fluid main h2 {
+.container-fluid .main h2 {
     font-size: 25px;
 }
 
-.container-fluid main .main-intro p {
+.container-fluid .main .main-intro p {
     margin: 0px 48px 0px 0px;
     text-transform: uppercase;
     font-size: 15px;
@@ -70,19 +67,19 @@
     font-weight: 600;
 }
 
-.container-fluid main .main-intro h3 {
+.container-fluid .main .main-intro h3 {
     margin: 5px 48px 5px 0px;
     font-size: 32px;
     font-weight: 600;
     color: #1E4035;
 }
 
-.container-fluid main .main-intro span {
+.container-fluid .main .main-intro span {
     color: var(--muted);
     font-size: 14.5px;
 }
 
-.container-fluid main .card-box-parent {
+.container-fluid .main .card-box-parent {
     animation: slideIn 0.4s ease both;
     background-color: #ffffff;
     /* background-color: var(--teal); */

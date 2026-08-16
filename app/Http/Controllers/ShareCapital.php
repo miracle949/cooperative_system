@@ -219,7 +219,7 @@ class ShareCapital extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'shares' => ['required', 'integer', 'min:1'],
+            'shares' => 'required|numeric|min:0.01',
             'type' => ['required', 'in:Deposit,Withdrawal'],
             'payment_method' => ['required', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:500'],
@@ -232,7 +232,7 @@ class ShareCapital extends Controller
 
         $memberId = Auth::id();
         $amountPerShare = self::PAR_VALUE;
-        $shares = (int) $validated['shares'];
+        $shares = (float) $validated['shares'];
         $totalAmount = $shares * $amountPerShare;
         $now = Carbon::now();
         $referenceNo = $this->generateReferenceNo();
@@ -295,36 +295,30 @@ class ShareCapital extends Controller
         DB::beginTransaction();
 
         try {
+            // Every transaction — Deposit or Withdrawal — is held as Pending until
+            // an admin approves it. The account row's total_shares/total_amount are
+            // NEVER touched here; computeBalanceAndShares() only counts Completed
+            // deposits / Approved withdrawals, so nothing should be credited or
+            // debited at submission time. The admin-side approval action is what
+            // must actually increment/decrement total_shares and total_amount once
+            // it flips this transaction's status.
             if ($account) {
-                if ($type !== 'Withdrawal') {
-                    DB::table('share_capital_account_tbls')
-                        ->where('user_id', $memberId)
-                        ->update([
-                            'total_shares' => $account->total_shares + $shares,
-                            'total_amount' => $account->total_amount + $totalAmount,
-                            'status' => 'Active',
-                            'updated_at' => $now,
-                        ]);
-
-                    if ($type === 'Deposit') {
-                        DB::table('otherinfo_tbls')
-                            ->where('user_id', $memberId)
-                            ->update(['membership_status' => 'Active']);
-                    }
-                }
                 $accountId = $account->id;
             } else {
+                // First-ever transaction for this member — create an empty shell
+                // account so the transaction has somewhere to attach. Balance stays
+                // ₱0 / 0 shares until the admin approves the first deposit.
                 $accountId = DB::table('share_capital_account_tbls')->insertGetId([
                     'user_id' => $memberId,
-                    'total_shares' => $shares,
-                    'total_amount' => $totalAmount,
+                    'total_shares' => 0,
+                    'total_amount' => 0,
                     'status' => 'Active',
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
             }
 
-            $transactionStatus = ($type === 'Withdrawal') ? 'Pending' : 'Completed';
+            $transactionStatus = 'Pending';
 
             DB::table('share_capital_transaction_tbls')->insert([
                 'share_capital_account_id' => $accountId,
@@ -352,9 +346,8 @@ class ShareCapital extends Controller
             );
 
             $memberName = $this->resolveMemberName();
-            $redirectRoute = 'ShareCapitalMember';
 
-            return redirect()->route($redirectRoute)
+            return redirect()->route('Financial', ['tab' => 'share_capital'])
                 ->with('success', 'Share capital request submitted successfully!')
                 ->with('sc_receipt_shares', $shares)
                 ->with('sc_receipt_amount', $totalAmount)
@@ -381,7 +374,7 @@ class ShareCapital extends Controller
             return redirect()->back()->with('error', 'Payment gateway is not configured yet.');
         }
 
-        $shares = (int) $request->input('shares', 1);
+        $shares = (float) $request->input('shares', 1);
         $totalAmount = $shares * self::PAR_VALUE;
         $type = $request->input('type', 'Deposit');
 
@@ -493,36 +486,22 @@ class ShareCapital extends Controller
         DB::beginTransaction();
 
         try {
+            // Same rule as store(): GCash Deposit/Withdrawal requests stay Pending
+            // until admin approval — the account row is never credited/debited here.
             if ($account) {
-                if ($type !== 'Withdrawal') {
-                    DB::table('share_capital_account_tbls')
-                        ->where('user_id', $memberId)
-                        ->update([
-                            'total_shares' => $account->total_shares + $shares,
-                            'total_amount' => $account->total_amount + $totalAmount,
-                            'status' => 'Active',
-                            'updated_at' => $now,
-                        ]);
-
-                    if ($type === 'Deposit') {
-                        DB::table('otherinfo_tbls')
-                            ->where('user_id', $memberId)
-                            ->update(['membership_status' => 'Active']);
-                    }
-                }
                 $accountId = $account->id;
             } else {
                 $accountId = DB::table('share_capital_account_tbls')->insertGetId([
                     'user_id' => $memberId,
-                    'total_shares' => $shares,
-                    'total_amount' => $totalAmount,
+                    'total_shares' => 0,
+                    'total_amount' => 0,
                     'status' => 'Active',
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);
             }
 
-            $transactionStatus = ($type === 'Withdrawal') ? 'Pending' : 'Completed';
+            $transactionStatus = 'Pending';
 
             DB::table('share_capital_transaction_tbls')->insert([
                 'share_capital_account_id' => $accountId,
@@ -549,9 +528,8 @@ class ShareCapital extends Controller
             );
 
             $memberName = $this->resolveMemberName();
-            $redirectRoute = 'ShareCapitalMember';
 
-            return redirect()->route($redirectRoute)
+            return redirect()->route('Financial', ['tab' => 'share_capital'])
                 ->with('success', 'GCash payment successful!')
                 ->with('sc_receipt_shares', $shares)
                 ->with('sc_receipt_amount', $totalAmount)
@@ -745,7 +723,7 @@ class ShareCapital extends Controller
     /**
      * Compute balance/shares consistently (Completed deposits minus Approved withdrawals).
      */
-    private function computeBalanceAndShares($account): array
+    public function computeBalanceAndShares($account): array
     {
         $depositAmount = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id)
@@ -789,7 +767,7 @@ class ShareCapital extends Controller
      * "advance payment" rather than being silently dropped.
      * No new columns required — this is fully derived from transaction_date.
      */
-    private function buildInstallmentTimeline($account, $contributions): array
+    public function buildInstallmentTimeline($account, $contributions): array
     {
         if (!$account) {
             $slots = [];
@@ -877,7 +855,7 @@ class ShareCapital extends Controller
         return ['slots' => $slots, 'advance' => $advance];
     }
 
-    private function computeDividendDates(): array
+    public function computeDividendDates(): array
     {
         $today = Carbon::today();
         $jun15ThisYear = Carbon::create($today->year, 6, 15);
@@ -901,7 +879,7 @@ class ShareCapital extends Controller
         return compact('nextDividendDate', 'nextDividendPeriod', 'nextDividendSemester');
     }
 
-    private function getDividendRateRecord()
+    public function getDividendRateRecord()
     {
         if ($this->tableExists('dividend_rates_tbls')) {
             return DB::table('dividend_rates_tbls')
@@ -912,7 +890,7 @@ class ShareCapital extends Controller
         return null;
     }
 
-    private function getRateHistory()
+    public function getRateHistory()
     {
         if ($this->tableExists('dividend_rates_tbls')) {
             return DB::table('dividend_rates_tbls')
@@ -923,7 +901,7 @@ class ShareCapital extends Controller
         return collect();
     }
 
-    private function getDividendHistory($accountId)
+    public function getDividendHistory($accountId)
     {
         if ($this->tableExists('dividend_histories_tbls')) {
             return DB::table('dividend_histories_tbls')

@@ -14,14 +14,12 @@
     margin-left: 250px;
 }
 
-.main-sub-parent {
+/* .main-sub-parent {
     padding: 2rem;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 80px);
     overflow-y: auto;
-    /* background-color: var(--lavender-tint); */
     background-color: #FBFBFD;
-    /* background-color: #ffffff; */
-}
+} */
 
 .main-parent {
     width: 100%;
@@ -72,6 +70,7 @@ main p {
     color: var(--muted);
     margin: 5px 0 0;
     width: 100%;
+    font-weight: normal;
     max-width: 450px;
 }
 
@@ -82,8 +81,9 @@ main p {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
-    margin-bottom: 1.75rem;
-    margin-top: 1.75rem;
+    /* margin-bottom: 1.75rem;
+    margin-top: 1.75rem; */
+    margin: 1.5rem 0;
 }
 
 .sc-stat-card {
@@ -801,18 +801,14 @@ main .dividend-parent .table tbody tr td {
 /* ═══════════════════════════════════════════════════
    2-YEAR CAPITAL BUILD-UP JOURNEY
    ═══════════════════════════════════════════════════ */
-.sc-journey-card {
-    /* background: #fff; */
-    /* background-color: var(--bg); */
+/* .sc-journey-card {
     border: 1px solid var(--border);
     background-color: #ffffff;
-    /* border: 1px solid var(--border, #e5e0d6); */
     border-radius: 20px;
-    /* padding: 1.5rem 1.75rem; */
     padding: 18px 20px;
     margin-bottom: 1.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-}
+} */
 
 .sc-journey-header {
     display: flex;
@@ -1077,13 +1073,19 @@ main .dividend-parent .table tbody tr td {
     /* font-size: 15px;
     font-weight: 700;
     color: #1a1a1a; */
-    margin: 0 0 1rem;
+    /* margin: 0 0 1rem; */
+    margin: 1.5rem 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* padding: 18px 20px; */
+    /* background-color: #ffffff;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-radius: 20px; */
 }
 
-.sc-split-heading h4{
+.sc-split-heading h4 {
     font-size: 15px;
     font-weight: 700;
     color: #1a1a1a;
@@ -1495,7 +1497,7 @@ main .dividend-parent .table tbody tr td {
     /* flex-wrap: wrap; */
 }
 
-.sc-filter-stats{
+.sc-filter-stats {
     display: flex;
     justify-content: space-between;
     gap: 12px;
@@ -1572,12 +1574,12 @@ main .dividend-parent .table tbody tr td {
     }
 }
 
-@media only screen and (max-width: 937px){
+@media only screen and (max-width: 937px) {
     /* .sc-filter-bar {
         fle
     } */
 
-    main .contribution-parent .contribution-header{
+    main .contribution-parent .contribution-header {
         flex-direction: column;
     }
 }
@@ -1644,7 +1646,7 @@ main .dividend-parent .table tbody tr td {
 
 }
 
-@media only screen and (max-width: 465px){
+@media only screen and (max-width: 465px) {
     .sc-split-grid {
         grid-template-columns: repeat(1, 1fr);
     }

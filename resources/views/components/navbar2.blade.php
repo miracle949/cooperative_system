@@ -1,5 +1,5 @@
 <nav id="dashboard-nav"
-    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:px-[2rem] tw:h-[80px] tw:bg-[#ffffff] tw:p-[1rem]">
+    class="tw:flex justify-content-between align-items-center tw:w-[100%] tw:h-[80px] tw:bg-[#ffffff]">
     <div class="nav-logo">
         {{-- <h2 class="m-0" style="font-size: 25px">LOGO</h2> --}}
         <!-- <img src="images/logo2.png" width="50px" height="50px" style="border-radius: 50%" alt="">
@@ -58,25 +58,24 @@
 
     <div class="nav-acc2" id="nav-acc2">
         <ul class="m-0 p-0">
-            <div class="nb-notif-wrap" style="position: relative;">
+            <div class="nb-notif-wrap">
                 <button type="button" onclick="toggleNavNotif(event)"
                     style="background:none; border:none; cursor:pointer; position:relative; padding:4px; display:flex; align-items:center;">
                     <i class="fa-solid fa-bell" style="font-size: 17px; color: var(--muted);"></i>
                     @if($navNotifications->count() > 0)
                         <span
                             style="position:absolute; top:-4px; right:-4px; background:#dc2626; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; line-height:1;">
-                            {{ $navNotifications->count() > 9 ? '9+' : $navNotifications->count() }}
+                            {{ $navNotifications->count() }}
                         </span>
                     @endif
                 </button>
 
-                <div id="nb-notif-panel"
-                    style="display:none; position:absolute; top:calc(100% + 12px); right:0; width:340px; max-height:420px; overflow:hidden; background:#fff; border-radius:12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04); border:1px solid var(--border); z-index:1000;">
+                <div id="nb-notif-panel">
                     <div
                         style="padding:14px 16px; border-bottom:1px solid #f0f0f0; font-weight:700; font-size:14px; color:#1a1a1a;">
                         Notifications
                     </div>
-                    <div style="max-height:360px; overflow-y:auto;">
+                    <div style="max-height:360px; overflow-y: scroll;">
                         @forelse($navNotifications as $n)
                             <div style="display:flex; gap:10px; padding:12px 16px; border-bottom:1px solid #f5f5f5;">
                                 <div

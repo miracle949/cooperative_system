@@ -766,18 +766,41 @@ class lendingController extends Controller
             'Education Lending' => 'Education Loan',
         ];
 
-        // Show Approved AND Completed loans in the sidebar so members
-        // can still view their repayment history after fully paying.
-        $loans = lending_program_tbl::where('user_id', $memberId)
-            ->whereIn('status', ['Approved', 'Completed'])
-            ->orderBy('created_at', 'desc')
+        $today = now()->timezone('Asia/Manila')->toDateString();
+
+        // Show Approved AND Completed loans so members can browse everything,
+// including fully paid loans, from this one grid.
+        $loans = DB::table('lending_program_tbls as l')
+            ->leftJoin('lending_status_tbls as s', 's.lending_id', '=', 'l.id')
+            ->where('l.user_id', $memberId)
+            ->whereIn('l.status', ['Approved', 'Completed'])
+            ->orderBy('l.created_at', 'desc')
+            ->select('l.*', 's.remaining_balance', 's.payments_made', 's.total_payments', 's.due_date')
             ->get()
-            ->map(function ($loan) use ($typeMap) {
+            ->map(function ($loan) use ($typeMap, $today) {
                 $loan->display_type = $typeMap[$loan->lending_type] ?? $loan->lending_type;
+
+                if ($loan->status === 'Completed') {
+                    $loan->card_status = 'Completed';
+                } elseif ($loan->due_date && $loan->due_date < $today && ($loan->remaining_balance ?? 0) > 0) {
+                    $loan->card_status = 'Overdue';
+                } else {
+                    $loan->card_status = 'Active';
+                }
+
+                $totalPayments = (int) ($loan->total_payments ?? 0);
+                $paymentsMade = (int) ($loan->payments_made ?? 0);
+                $loan->progress_percent = $totalPayments > 0
+                    ? min(100, round(($paymentsMade / $totalPayments) * 100))
+                    : 0;
+
                 return $loan;
             });
 
+        // No auto-select — leave $selectedLoan null unless the URL explicitly
+// carries ?loan_id=, so the grid shows by default.
         $selectedId = $request->get('loan_id');
+
         $selectedLoan = $selectedId
             ? lending_program_tbl::where('id', $selectedId)->where('user_id', $memberId)->first()
             : null;

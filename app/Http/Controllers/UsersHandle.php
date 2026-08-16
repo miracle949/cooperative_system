@@ -371,53 +371,70 @@ class UsersHandle extends Controller
 
         $activeLoansCount = $loans->where('status', 'Approved')->count();
 
-        // ── Late Fee Penalties ────────────────────────────────────────────────────
-        $lateFeeSettings = Loan_settings_tbl::first();
-        $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
-        $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
+        // ── Loan status rows (holds the NEXT-INSTALLMENT due date, distinct from
+        // lending_program_tbls.due_date which is the loan's final maturity date) ──
+        $loanStatusByLoanId = DB::table('lending_status_tbls')
+            ->whereIn('lending_id', $loans->where('status', 'Approved')->pluck('id'))
+            ->get()
+            ->keyBy('lending_id');
+
         $today = Carbon::today();
         $penalizedLoans = [];
         $totalLateFees = 0;
 
-        foreach ($loans->where('status', 'Approved') as $loan) {
-            $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
+        $typeMapOverdue = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
 
-            if (!$loan->due_date && $loan->created_at) {
-                $dueDate = $loan->created_at->copy()->addMonths($termMonths);
-                $loan->due_date = $dueDate->format('Y-m-d');
-                $loan->save();
-            }
+        $overdueLoansDisplay = $loans->where('status', 'Approved')
+            ->map(function ($loan) use ($loanStatusByLoanId) {
+                $status = $loanStatusByLoanId->get($loan->id);
+                $loan->effective_due_date = $status->due_date ?? $loan->due_date;
+                $loan->status_row = $status;
+                return $loan;
+            })
+            ->filter(fn($loan) => !empty($loan->effective_due_date) && Carbon::parse($loan->effective_due_date)->isPast())
+            ->map(function ($loan) use ($typeMapOverdue, $today) {
+                $displayType = $typeMapOverdue[$loan->lending_type] ?? $loan->lending_type;
+                $dueDateCarbon = Carbon::parse($loan->effective_due_date);
+                $status = $loan->status_row;
 
-            if (!$loan->due_date) {
-                continue;
-            }
-
-            $dueDate = Carbon::parse($loan->due_date);
-            $penaltyStartDate = $dueDate->copy()->addMonths($gracePeriodMonths);
-
-            if ($today->gte($penaltyStartDate)) {
-                $monthsOverdue = $dueDate->diffInMonths($today) - $gracePeriodMonths;
-                $monthsOverdue = max(0, $monthsOverdue);
-
-                if ($monthsOverdue > 0) {
-                    $lateFee = $loan->lending_amount * ($lateFeePercentage / 100) * $monthsOverdue;
-
-                    $loan->late_fee = $lateFee;
-                    $loan->penalty_applied_at = now();
-                    $loan->save();
-
-                    $penalizedLoans[] = [
-                        'id' => $loan->id,
-                        'lending_type' => $loan->lending_type,
-                        'lending_amount' => $loan->lending_amount,
-                        'due_date' => $loan->due_date,
-                        'months_overdue' => $monthsOverdue,
-                        'late_fee' => $lateFee,
-                    ];
-                    $totalLateFees += $lateFee;
+                $diff = $dueDateCarbon->diff($today);
+                if ($diff->m > 0 || $diff->y > 0) {
+                    $unitsOverdue = $diff->y * 12 + $diff->m;
+                    $subtitle = $unitsOverdue . ' month' . ($unitsOverdue == 1 ? '' : 's') . ' overdue';
+                } else {
+                    $unitsOverdue = $diff->d;
+                    $subtitle = $unitsOverdue . ' day' . ($unitsOverdue == 1 ? '' : 's') . ' overdue';
                 }
-            }
-        }
+
+                // ── Live 2%-of-monthly-installment penalty preview ──────────────
+                // totalPayments/totalPaid come from lending_status_tbls when
+                // available, same source loanStatus() uses.
+                $totalPayments = (int) ($status->total_payments ?? 0);
+                $totalPayment = (float) ($loan->total_payment ?? $loan->lending_amount);
+                $monthlyDue = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : 0;
+
+                $alreadyPenalizedForThis = $status && $status->last_penalty_date
+                    && Carbon::parse($status->last_penalty_date)->gte($dueDateCarbon);
+
+                $penaltyPreview = $alreadyPenalizedForThis ? 0 : round($monthlyDue * 0.02, 2);
+
+                return [
+                    'sort_at' => $dueDateCarbon,
+                    'icon' => 'coral',
+                    'icon_fa' => 'fa-triangle-exclamation',
+                    'title' => "{$displayType}",
+                    'subtitle' => $subtitle,
+                    'date_display' => $dueDateCarbon->format('M d, Y'),
+                    'amount' => $penaltyPreview,
+                ];
+            })
+            ->sortByDesc('sort_at')
+            ->values();
 
         // ── Net Standing "as of" selected month (drives Net Standing modal) ──────
         $standingMonth = $request->query('standing_month', Carbon::now()->format('Y-m'));
@@ -475,11 +492,18 @@ class UsersHandle extends Controller
         $netStandingTotal = $shareCapitalBalance + (float) $savingsAccount->balance - $loanBalance;
 
         // ── Next due date across active, non-overdue loans (Active Loans subtext) ──
+        // Uses the NEXT-INSTALLMENT due date from lending_status_tbls when available,
+        // falling back to the loan's own due_date (final maturity) otherwise — keeps
+        // this in sync with the Upcoming Dues card/modal below and with Notifications.
         $nextDueLoan = $loans->where('status', 'Approved')
-            ->filter(fn($loan) => !empty($loan->due_date) && Carbon::parse($loan->due_date)->isFuture())
-            ->sortBy(fn($loan) => Carbon::parse($loan->due_date))
+            ->map(function ($loan) use ($loanStatusByLoanId) {
+                $loan->effective_due_date = $loanStatusByLoanId->get($loan->id)->due_date ?? $loan->due_date;
+                return $loan;
+            })
+            ->filter(fn($loan) => !empty($loan->effective_due_date) && Carbon::parse($loan->effective_due_date)->isFuture())
+            ->sortBy(fn($loan) => Carbon::parse($loan->effective_due_date))
             ->first();
-        $nextDueDisplay = $nextDueLoan ? Carbon::parse($nextDueLoan->due_date)->format('M d') : null;
+        $nextDueDisplay = $nextDueLoan ? Carbon::parse($nextDueLoan->effective_due_date)->format('M d') : null;
 
         // ── Earliest overdue date (Overdue Loans subtext) ─────────────────────────
         $earliestOverdue = collect($penalizedLoans)->sortBy('due_date')->first();
@@ -625,6 +649,9 @@ class UsersHandle extends Controller
             ->values();
 
         // ── Upcoming Dues (next payment per active loan) ─────────────────────────
+        // Uses the NEXT-INSTALLMENT due date from lending_status_tbls (falls back to
+        // the loan's own due_date/maturity if no status row exists yet), so this
+        // matches what the Loan Application page and Notifications bell show.
         $typeMapDues = [
             'Personal Lending' => 'Personal Loan',
             'Emergency Lending' => 'Emergency Loan',
@@ -634,37 +661,84 @@ class UsersHandle extends Controller
 
         $upcomingDues = collect();
         foreach ($loans->where('status', 'Approved') as $loan) {
-            if (empty($loan->due_date)) {
+            $statusRow = $loanStatusByLoanId->get($loan->id);
+            $rawDueDate = $statusRow->due_date ?? $loan->due_date;
+
+            if (empty($rawDueDate)) {
                 continue;
             }
 
-            $dueDateCarbon = Carbon::parse($loan->due_date);
+            $dueDateCarbon = Carbon::parse($rawDueDate);
             if ($dueDateCarbon->isPast()) {
                 continue; // already overdue — handled separately by penalty logic
             }
 
             $termMonths = (int) filter_var($loan->lending_type_term, FILTER_SANITIZE_NUMBER_INT);
-            $monthlyDue = $termMonths > 0
-                ? (float) $loan->lending_amount / $termMonths
+            $totalPayments = (int) ($statusRow->total_payments ?? $termMonths);
+            $monthlyDue = $totalPayments > 0
+                ? (float) $loan->lending_amount / $totalPayments
                 : (float) $loan->lending_amount;
 
             $displayType = $typeMapDues[$loan->lending_type] ?? $loan->lending_type;
-            $daysLeft = (int) Carbon::today()->diffInDays($dueDateCarbon, false);
 
             $upcomingDues->push([
                 'sort_at' => $dueDateCarbon,
                 'icon' => 'gold',
                 'icon_fa' => 'fa-calendar-day',
                 'title' => "{$displayType} Payment",
-                'subtitle' => $daysLeft === 0
-                    ? 'Due today'
-                    : ($daysLeft === 1 ? 'Due tomorrow' : "Due in {$daysLeft} days"),
+                'subtitle' => $this->formatDueIn(Carbon::today(), $dueDateCarbon),
                 'date_display' => $dueDateCarbon->format('M d, Y'),
                 'amount' => $monthlyDue,
             ]);
         }
 
-        $upcomingDues = $upcomingDues->sortBy('sort_at')->take(6)->values();
+        $upcomingDues = $upcomingDues->sortBy('sort_at')->values();
+
+        // ── Seminars summary (drives the Seminars card + modal) ──────────────────
+        // Simple attended/not-attended status only — no scheduling details here,
+        // that belongs on the dedicated Seminars page.
+        $seminarTypeLabels = [
+            'pmes' => 'PMES',
+            'fundamentals' => 'Cooperative Fundamentals',
+            'finance' => 'Cooperative Finance',
+        ];
+
+        $seminarCompletion = \App\Models\SeminarCompletions_tbl::where('user_id', $user->id)->first();
+        $seminarCompletedFlags = [
+            'pmes' => (bool) ($seminarCompletion->pmes_completed ?? false),
+            'fundamentals' => (bool) ($seminarCompletion->fundamentals_completed ?? false),
+            'finance' => (bool) ($seminarCompletion->finance_completed ?? false),
+        ];
+
+        $seminarAttendeeRecords = \App\Models\SeminarAttendees_tbl::with('seminar')
+            ->where('user_id', $user->id)
+            ->get()
+            ->filter(fn($a) => $a->seminar);
+
+        $seminarsSummary = collect($seminarTypeLabels)->map(function ($label, $key) use ($seminarCompletedFlags, $seminarAttendeeRecords) {
+            // A session the admin has actually marked "attended" for this type
+            $attendedSession = $seminarAttendeeRecords
+                ->filter(fn($a) => $a->seminar->seminar_type === $key && $a->status === 'attended')
+                ->sortByDesc(fn($a) => $a->seminar->schedule_datetime)
+                ->first();
+
+            // Completed if either the admin's checklist flag is set, OR an actual
+            // attendance record exists — covers the gap where attendance was marked
+            // per-session but the type-level checklist hasn't been ticked yet.
+            $isCompleted = ($seminarCompletedFlags[$key] ?? false) || (bool) $attendedSession;
+
+            return [
+                'key' => $key,
+                'label' => $label,
+                'completed' => $isCompleted,
+                'attended_datetime' => $attendedSession ? $attendedSession->seminar->schedule_datetime : null,
+            ];
+        })
+            ->filter(fn($s) => $s['completed']) // only show ones actually attended
+            ->values();
+
+        $seminarsCompletedCount = $seminarsSummary->count();
+        $seminarsTotalCount = count($seminarTypeLabels);
 
         return view('members_components.member_portal', [
             'username' => $username,
@@ -704,6 +778,8 @@ class UsersHandle extends Controller
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
 
+            'overdueLoansDisplay' => $overdueLoansDisplay,
+
             // Loans
             'loans' => $loans,
             'activeLoansCount' => $activeLoansCount,
@@ -715,8 +791,6 @@ class UsersHandle extends Controller
             'penalizedLoans' => $penalizedLoans,
             'totalLateFees' => $totalLateFees,
             'overdueCount' => $overdueCount,
-            'lateFeePercentage' => $lateFeePercentage,
-            'gracePeriodMonths' => $gracePeriodMonths,
 
             'netSavingsThisMonth' => $netSavingsThisMonth,
             'netStandingTotal' => $netStandingTotal,
@@ -730,7 +804,48 @@ class UsersHandle extends Controller
             'savingsStandingAsOf' => $savingsStandingAsOf,
             'loanStandingAsOf' => $loanStandingAsOf,
             'netStandingAsOf' => $netStandingAsOf,
+
+            // Seminars
+            'seminarsSummary' => $seminarsSummary,
+            'seminarsCompletedCount' => $seminarsCompletedCount,
+            'seminarsTotalCount' => $seminarsTotalCount,
         ]);
+    }
+
+    /**
+     * Turns a target date into a human "Due in..." string, scaling the unit
+     * automatically: days when close, months when further out, years+months
+     * when very far out. Uses Carbon's calendar-accurate diff() so month
+     * lengths (28/30/31 days) are handled correctly, not a flat ÷30.
+     */
+    private function formatDueIn(Carbon $today, Carbon $dueDate): string
+    {
+        if ($dueDate->isSameDay($today)) {
+            return 'Due today';
+        }
+
+        $diff = $today->diff($dueDate); // calendar-accurate y/m/d breakdown
+
+        // Years out (with leftover months, if any)
+        if ($diff->y > 0) {
+            $parts = [$diff->y . ' year' . ($diff->y === 1 ? '' : 's')];
+            if ($diff->m > 0) {
+                $parts[] = $diff->m . ' month' . ($diff->m === 1 ? '' : 's');
+            }
+            return 'Due in ' . implode(' ', $parts);
+        }
+
+        // Months out (with leftover days, if any)
+        if ($diff->m > 0) {
+            $parts = [$diff->m . ' month' . ($diff->m === 1 ? '' : 's')];
+            if ($diff->d > 0) {
+                $parts[] = $diff->d . ' day' . ($diff->d === 1 ? '' : 's');
+            }
+            return 'Due in ' . implode(' ', $parts);
+        }
+
+        // Just days out
+        return $diff->d === 1 ? 'Due tomorrow' : "Due in {$diff->d} days";
     }
 
     // public function LoanApplication()
@@ -1361,145 +1476,285 @@ class UsersHandle extends Controller
         $user = Auth::user();
         $username = $user->username ?? null;
         $email = $user->email ?? null;
-        $userId = $user->id;
+        $memberId = $user->id;
 
-        $currentYear = (int) now()->year;
-        $year = (int) $request->query('year', $currentYear);
-        $activeTab = $request->query('tab', 'dividends'); // 'dividends' | 'patronage' | 'records'
-        $search = trim($request->query('search', ''));
+        $activeTab = $request->query('tab', 'share_capital'); // 'share_capital' | 'savings'
 
-        // ★ NEW: shared filter inputs
-        $statusFilter = $request->query('status', 'all');
-        $dateFilter = $request->query('date'); // Y-m-d or null
+        $scController = new \App\Http\Controllers\ShareCapital();
 
-        $availableYears = \App\Models\Dividend::where('user_id', $userId)
-            ->pluck('year')
-            ->merge(
-                \App\Models\PatronageRefundDistribution::where('user_id', $userId)->pluck('year')
-            )
-            ->push($currentYear)
+        // ═══════════════════════════════════════════════════════════════
+        // SHARE CAPITAL DATA  (same source logic as ShareCapital::memberIndex)
+        // ═══════════════════════════════════════════════════════════════
+        $account = DB::table('share_capital_account_tbls')
+            ->where('user_id', $memberId)
+            ->first();
+
+        if ($account) {
+            [$currentBalance, $currentShares] = $scController->computeBalanceAndShares($account);
+        } else {
+            $currentBalance = 0;
+            $currentShares = 0;
+        }
+
+        $contributions = DB::table('share_capital_transaction_tbls')
+            ->where('share_capital_account_id', $account->id ?? 0)
+            ->where('status', '!=', 'failed')
+            ->orderByDesc('transaction_date')
+            ->get();
+
+        $targetAmount = \App\Http\Controllers\ShareCapital::TARGET_AMOUNT;
+        $targetShares = \App\Http\Controllers\ShareCapital::TARGET_SHARES;
+        $parValue = \App\Http\Controllers\ShareCapital::PAR_VALUE;
+        $paidUpPercent = $targetAmount > 0 ? min(100, round(($currentBalance / $targetAmount) * 100)) : 0;
+        $remainingToTarget = max(0, $targetAmount - $currentBalance);
+        $certificateEligible = $currentBalance >= $targetAmount;
+
+        $timelineData = $scController->buildInstallmentTimeline($account, $contributions);
+        $installmentTimeline = $timelineData['slots'];
+        $advancePayment = $timelineData['advance'];
+        $nextDueSlot = collect($installmentTimeline)->firstWhere('status', 'due')
+            ?? collect($installmentTimeline)->firstWhere('status', 'upcoming');
+
+        $dividendRateRecord = $scController->getDividendRateRecord();
+        $dividendRate = $dividendRateRecord->rate ?? 8.5;
+        $dividendRateYear = $dividendRateRecord->effective_year ?? now()->year;
+        $rateHistory = $scController->getRateHistory();
+        $dividendHistory = $account ? $scController->getDividendHistory($account->id) : collect();
+
+        // Approximate Average Monthly Balance (AMB) as current paid-up balance,
+        // same estimate used on the standalone Share Capital page.
+        $averageMonthlyBalance = $currentBalance;
+        $projectedNextDividend = round($averageMonthlyBalance * ($dividendRate / 100) / 2, 2);
+        $iscAmount = round($projectedNextDividend * \App\Http\Controllers\ShareCapital::ISC_SPLIT, 2);
+        $patronageAmount = round($projectedNextDividend * \App\Http\Controllers\ShareCapital::PATRONAGE_SPLIT, 2);
+
+        // ═══════════════════════════════════════════════════════════════
+        // SAVINGS DATA  (same source logic as SavingsController::index)
+        // ═══════════════════════════════════════════════════════════════
+        $ref = trim((string) $request->query('ref', ''));
+        $date = $request->query('date', '');
+        $status = strtolower(trim((string) $request->query('status', 'all')));
+        $growthYear = (int) $request->query('growth_year', Carbon::now()->year);
+
+        $savingsAccount = savings_account_tbl::where('user_id', $memberId)->first();
+
+        if (!$savingsAccount) {
+            $savingsAccount = savings_account_tbl::create([
+                'user_id' => $memberId,
+                'balance' => 0.00,
+                'status' => 'active',
+                'opened_at' => Carbon::today(),
+            ]);
+        }
+
+        $activeTd = \App\Models\TimeDeposit::where('savings_account_id', $savingsAccount->id)
+            ->where('status', 'active')
+            ->latest('opened_at')
+            ->first();
+
+        $regularSavingsBalance = (float) $savingsAccount->balance;
+        $timeDepositBalance = (float) ($activeTd->balance ?? 0);
+        $interestAccruedBalance = (float) ($activeTd->interest_accrued_balance ?? 0);
+        $totalSavingsBalance = $regularSavingsBalance + $timeDepositBalance + $interestAccruedBalance;
+
+        $regularSavingsSetting = \App\Models\Savings_settings_tbl::where('savings_type', 'Regular Savings')->first();
+        $regularSavingsRate = $regularSavingsSetting->interest_rate ?? 4.00;
+        $regularSavingsFrequency = $regularSavingsSetting->crediting_frequency ?? 'Monthly';
+
+        $quarterStartMonth = (intdiv(Carbon::now()->month - 1, 3)) * 3 + 1;
+        $quarterStart = Carbon::create(Carbon::now()->year, $quarterStartMonth, 1)->startOfDay();
+        $daysElapsedInQuarter = $quarterStart->diffInDays(Carbon::now()) + 1;
+
+        $estimatedQuarterInterest = round(
+            $regularSavingsBalance * ($regularSavingsRate / 100) * ($daysElapsedInQuarter / 365),
+            2
+        );
+
+        $availableGrowthYears = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->selectRaw('DISTINCT YEAR(transaction_date) as yr')
+            ->pluck('yr')
+            ->push(Carbon::now()->year)
             ->unique()
             ->sortDesc()
             ->values();
 
-        // ── My Dividends for the selected year (paginated + filtered) ────
-        $dividendsQuery = \App\Models\Dividend::where('user_id', $userId)
-            ->where('year', $year);
+        $isCurrentYear = $growthYear === Carbon::now()->year;
 
-        if ($statusFilter !== 'all') {
-            $dividendsQuery->where('status', $statusFilter);
+        if ($isCurrentYear) {
+            $growthStart = Carbon::now()->startOfMonth()->subMonths(5);
+            $growthMonths = collect(range(5, 0))->map(fn($i) => Carbon::now()->subMonths($i));
+        } else {
+            $growthStart = Carbon::createFromDate($growthYear, 1, 1)->startOfMonth();
+            $growthMonths = collect(range(0, 11))->map(fn($i) => Carbon::createFromDate($growthYear, 1, 1)->addMonths($i));
         }
-        if ($dateFilter) {
-            $dividendsQuery->whereDate('updated_at', $dateFilter);
+
+        $growthTxs = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->where('transaction_date', '>=', $growthStart)
+            ->when(!$isCurrentYear, fn($q) => $q->whereYear('transaction_date', $growthYear))
+            ->whereIn('type', ['deposit', 'withdrawal'])
+            ->get()
+            ->groupBy(fn($tx) => Carbon::parse($tx->transaction_date)->format('Y-m'));
+
+        $savingsGrowth = collect();
+        foreach ($growthMonths as $month) {
+            $key = $month->format('Y-m');
+            $monthTxs = $growthTxs->get($key, collect());
+            $net = $monthTxs->sum(fn($tx) => $tx->type === 'deposit' ? (float) $tx->amount : -(float) $tx->amount);
+
+            $savingsGrowth->push([
+                'label' => $month->format('M'),
+                'net' => $net,
+                'is_current' => $month->isSameMonth(Carbon::now()),
+            ]);
         }
-        if ($search !== '') {
-            $dividendsQuery->where(function ($q) use ($search) {
-                $q->where('approved_amount', 'like', "%{$search}%")
-                    ->orWhere('recommended_amount', 'like', "%{$search}%")
-                    ->orWhere('share_capital_amount', 'like', "%{$search}%");
+
+        $maxGrowth = $savingsGrowth->max(fn($m) => max($m['net'], 0)) ?: 1;
+        $savingsGrowth = $savingsGrowth->map(function ($m) use ($maxGrowth) {
+            $m['height_percent'] = $m['net'] > 0
+                ? max(6, round(($m['net'] / $maxGrowth) * 78))
+                : 4;
+            return $m;
+        });
+
+        $tdHistory = \App\Models\TimeDeposit::where('savings_account_id', $savingsAccount->id)
+            ->orderByRaw("CASE WHEN status = 'claimed' THEN 1 ELSE 0 END")
+            ->orderBy('opened_at')
+            ->orderBy('created_at')
+            ->get()
+            ->map(function ($td) {
+                $isMatured = Carbon::parse($td->maturity_date)->lte(Carbon::today());
+                $isFullyFunded = (float) $td->balance >= (float) $td->goal_amount && (float) $td->goal_amount > 0;
+
+                if ($td->status === 'claimed') {
+                    $td->display_status = 'completed';
+                } elseif ($td->status === 'active' && $isMatured) {
+                    $td->display_status = 'matured';
+                } elseif ($td->status === 'active' && $isFullyFunded) {
+                    $td->display_status = 'goal_reached';
+                } else {
+                    $td->display_status = 'in_progress';
+                }
+
+                $td->display_balance = $td->status === 'claimed'
+                    ? (float) ($td->claimed_amount ?? 0)
+                    : (float) $td->balance;
+                return $td;
             });
+
+        // Reuses the exact same rule the standalone Savings page uses to gate
+        // Deposit/Withdraw behind an active Share Capital subscription.
+        $hasShareCapital = DB::table('share_capital_account_tbls')
+            ->where('user_id', $memberId)
+            ->where('status', 'Active')
+            ->where('total_shares', '>', 0)
+            ->exists();
+
+        $type = $request->query('type', 'all');
+
+        $transactionsQuery = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->whereIn('type', ['deposit', 'withdrawal', 'td_release'])
+            ->orderBy('transaction_date', 'desc')
+            ->orderBy('created_at', 'desc');
+
+        if (in_array($type, ['deposit', 'withdrawal', 'td_release'])) {
+            $transactionsQuery->where('type', $type);
+        }
+        if ($ref !== '') {
+            $transactionsQuery->where('reference_no', 'like', '%' . $ref . '%');
+        }
+        if ($status !== 'all') {
+            $transactionsQuery->where('status', $status);
         }
 
-        $myDividends = $dividendsQuery
-            ->orderByDesc('created_at')
-            ->paginate(10, ['*'], 'dividends_page')
-            ->withQueryString();
+        $transactions = $transactionsQuery->paginate(10)->withQueryString();
 
-        $totalDividendsApproved = \App\Models\Dividend::where('user_id', $userId)
-            ->where('year', $year)
-            ->whereIn('status', ['approved', 'disbursed'])
-            ->sum('approved_amount');
+        $totalMonths = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->groupByRaw("DATE_FORMAT(transaction_date, '%Y-%m')")
+            ->count();
 
-        $totalDividendsDisbursed = \App\Models\Dividend::where('user_id', $userId)
-            ->where('year', $year)
-            ->where('status', 'disbursed')
-            ->sum('approved_amount');
+        $monthlyAverage = $totalMonths > 0
+            ? $savingsAccount->balance / $totalMonths
+            : 0;
 
-        // ── My Patronage Refunds for the selected year (paginated + filtered) ──
-        $patronageQuery = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
-            ->where('year', $year);
+        $lastUpdated = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->orderBy('transaction_date', 'desc')
+            ->value('transaction_date');
 
-        if ($statusFilter !== 'all') {
-            $patronageQuery->where('status', $statusFilter);
-        }
-        if ($dateFilter) {
-            $patronageQuery->whereDate('updated_at', $dateFilter);
-        }
-        if ($search !== '') {
-            $patronageQuery->where(function ($q) use ($search) {
-                $q->where('amount', 'like', "%{$search}%")
-                    ->orWhere('total_patronage', 'like', "%{$search}%");
-            });
-        }
+        $lastUpdated = $lastUpdated
+            ? Carbon::parse($lastUpdated)->diffForHumans()
+            : 'No transactions yet';
 
-        $myPatronageRefunds = $patronageQuery
-            ->orderByDesc('created_at')
-            ->paginate(10, ['*'], 'patronage_page')
-            ->withQueryString();
+        $monthsActive = (int) ceil(
+            Carbon::parse($savingsAccount->opened_at)->floatDiffInMonths(Carbon::today())
+        );
 
-        $totalPatronageApproved = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
-            ->where('year', $year)
-            ->whereIn('status', ['approved', 'disbursed'])
-            ->sum('amount');
+        $availableStatuses = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->whereNotNull('status')
+            ->pluck('status')
+            ->map(fn($s) => ucfirst($s))
+            ->unique()
+            ->sortBy(fn($s) => strtolower($s))
+            ->values();
 
-        $totalPatronageDisbursed = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
-            ->where('year', $year)
-            ->where('status', 'disbursed')
-            ->sum('amount');
+        // ═══════════════════════════════════════════════════════════════
+        // SHARED
+        // ═══════════════════════════════════════════════════════════════
+        $gcashPaymentMethod = \App\Models\PaymentMethod::where('method_name', 'GCash')
+            ->where('is_active', true)
+            ->first();
 
-        // ── Additional Patronage Records (date filter only — no status field) ──
-        $recordsQuery = \App\Models\PatronageRecord::where('user_id', $userId)
-            ->where('year', $year);
-
-        if ($dateFilter) {
-            $recordsQuery->whereDate('created_at', $dateFilter);
-        }
-        if ($search !== '') {
-            $recordsQuery->where(function ($q) use ($search) {
-                $q->where('source', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('amount', 'like', "%{$search}%");
-            });
-        }
-
-        $myPatronageRecords = $recordsQuery
-            ->orderByDesc('created_at')
-            ->paginate(10, ['*'], 'records_page')
-            ->withQueryString();
-
-        $totalAdditionalPatronage = \App\Models\PatronageRecord::where('user_id', $userId)
-            ->where('year', $year)
-            ->sum('amount');
-
-        $lifetimeDividends = \App\Models\Dividend::where('user_id', $userId)
-            ->where('status', 'disbursed')
-            ->sum('approved_amount');
-
-        $lifetimePatronage = \App\Models\PatronageRefundDistribution::where('user_id', $userId)
-            ->where('status', 'disbursed')
-            ->sum('amount');
-
-        return view('members_components.Financial', [
-            'username' => $username,
-            'email' => $email,
-            'year' => $year,
-            'currentYear' => $currentYear,
-            'availableYears' => $availableYears,
-            'activeTab' => $activeTab,
-            'statusFilter' => $statusFilter,   // ★ NEW
-            'search' => $search,
-            'dateFilter' => $dateFilter,       // ★ NEW
-            'myDividends' => $myDividends,
-            'totalDividendsApproved' => $totalDividendsApproved,
-            'totalDividendsDisbursed' => $totalDividendsDisbursed,
-            'myPatronageRefunds' => $myPatronageRefunds,
-            'totalPatronageApproved' => $totalPatronageApproved,
-            'totalPatronageDisbursed' => $totalPatronageDisbursed,
-            'myPatronageRecords' => $myPatronageRecords,
-            'totalAdditionalPatronage' => $totalAdditionalPatronage,
-            'lifetimeDividends' => $lifetimeDividends,
-            'lifetimePatronage' => $lifetimePatronage,
-        ]);
+        return view('members_components.Financial', array_merge(
+            ['username' => $username, 'email' => $email, 'activeTab' => $activeTab],
+            compact(
+                // Share Capital
+                'currentBalance',
+                'currentShares',
+                'contributions',
+                'targetAmount',
+                'targetShares',
+                'parValue',
+                'paidUpPercent',
+                'remainingToTarget',
+                'certificateEligible',
+                'installmentTimeline',
+                'nextDueSlot',
+                'advancePayment',
+                'dividendRate',
+                'dividendRateYear',
+                'rateHistory',
+                'dividendHistory',
+                'averageMonthlyBalance',
+                'projectedNextDividend',
+                'iscAmount',
+                'patronageAmount',
+                // Savings
+                'savingsAccount',
+                'transactions',
+                'type',
+                'ref',
+                'date',
+                'status',
+                'availableStatuses',
+                'growthYear',
+                'availableGrowthYears',
+                'totalMonths',
+                'monthlyAverage',
+                'lastUpdated',
+                'monthsActive',
+                'hasShareCapital',
+                'regularSavingsBalance',
+                'timeDepositBalance',
+                'interestAccruedBalance',
+                'totalSavingsBalance',
+                'regularSavingsRate',
+                'regularSavingsFrequency',
+                'tdHistory',
+                'savingsGrowth',
+                'estimatedQuarterInterest',
+                // Shared
+                'gcashPaymentMethod'
+            )
+        ));
     }
 
     public function Seminars()
@@ -1515,15 +1770,26 @@ class UsersHandle extends Controller
             'finance' => 'Cooperative Finance',
         ];
 
+        // ── Completion summary — moved up so it can filter Upcoming below ──
+        $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
+        $completedFlags = [
+            'pmes' => (bool) ($completion->pmes_completed ?? false),
+            'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
+            'finance' => (bool) ($completion->finance_completed ?? false),
+        ];
+
         // ── All of this member's attendee records, with their seminar info ──
         $attendeeRecords = \App\Models\SeminarAttendees_tbl::with('seminar')
             ->where('user_id', $userId)
             ->get()
             ->filter(fn($a) => $a->seminar); // guard against orphaned rows
 
-        // ── Upcoming: scheduled sessions this member is registered for ──
+        // ── Upcoming: scheduled sessions this member is registered for,
+        // EXCLUDING any seminar type already marked attended/completed ──
         $upcomingSeminars = $attendeeRecords
-            ->filter(fn($a) => $a->seminar->schedule_datetime >= now() && $a->status === 'pending')
+            ->filter(fn($a) => $a->seminar->schedule_datetime >= now()
+                && $a->status === 'pending'
+                && !($completedFlags[$a->seminar->seminar_type] ?? false))
             ->sortBy(fn($a) => $a->seminar->schedule_datetime)
             ->map(function ($a) use ($typeLabels) {
                 $s = $a->seminar;
@@ -1560,14 +1826,6 @@ class UsersHandle extends Controller
                 ];
             })
             ->values();
-
-        // ── Completion summary (drives hero card) ──
-        $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
-        $completedFlags = [
-            'pmes' => (bool) ($completion->pmes_completed ?? false),
-            'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
-            'finance' => (bool) ($completion->finance_completed ?? false),
-        ];
 
         $totalSeminars = count($typeLabels);
         $completedCount = collect($completedFlags)->filter()->count();
@@ -1999,7 +2257,8 @@ class UsersHandle extends Controller
             ->where('user_id', $userId)
             ->where('status', 'Approved')
             ->whereNotNull('due_date')
-            ->get();
+            ->get()
+            ->unique('id');
 
         foreach ($loans as $loan) {
             $due = Carbon::parse($loan->due_date);
@@ -2023,6 +2282,8 @@ class UsersHandle extends Controller
                     'message' => "{$displayType} is due on {$due->format('M d, Y')}"
                         . ($daysLeft === 0 ? ' (today)' : " (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ")") . ".",
                     'time' => $due->diffForHumans(),
+                    // Live reminder — use the exact current moment so it's never
+                    // outranked by a real past event that happened later today.
                     'sort_at' => $due,
                 ]);
             }
@@ -2038,11 +2299,10 @@ class UsersHandle extends Controller
                 ->whereIn('status', ['Completed', 'completed'])
                 ->sum('total_amount') ?? 0;
 
-            $targetAmount = 10000; // full CBU subscription target
+            $targetAmount = 10000;
             $deadline = Carbon::parse($scAccount->created_at)->addYears(2);
             $daysLeft = (int) $today->diffInDays($deadline, false);
 
-            // Only surface it once we're within 90 days of the deadline (or past it), and only if unpaid
             if ($paidUp < $targetAmount && $daysLeft <= 90) {
                 $remaining = $targetAmount - $paidUp;
 
@@ -2054,7 +2314,7 @@ class UsersHandle extends Controller
                         ? "Your 2-year window to complete your ₱" . number_format($targetAmount, 2) . " share capital subscription ended on {$deadline->format('M d, Y')}. ₱" . number_format($remaining, 2) . " remains unpaid."
                         : "You have ₱" . number_format($remaining, 2) . " remaining to complete your ₱" . number_format($targetAmount, 2) . " share capital subscription by {$deadline->format('M d, Y')} ({$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . " left).",
                     'time' => $deadline->diffForHumans(),
-                    'sort_at' => $today,
+                    'sort_at' => $deadline,
                 ]);
             }
         }
@@ -2081,7 +2341,7 @@ class UsersHandle extends Controller
             }
 
             // ── 4) Time Deposit maturity ─────────────────────────────────
-            $activeTd = TimeDeposit::where('savings_account_id', $savingsAccount->id)
+            $activeTd = \App\Models\TimeDeposit::where('savings_account_id', $savingsAccount->id)
                 ->where('status', 'active')
                 ->latest('opened_at')
                 ->first();
@@ -2112,7 +2372,77 @@ class UsersHandle extends Controller
             }
         }
 
-        return $notifications->sortByDesc('sort_at')->values();
+        // ── 5) Seminars — upcoming sessions due soon + recent attendance ────
+        $seminarTypeLabelsNotif = [
+            'pmes' => 'PMES',
+            'fundamentals' => 'Cooperative Fundamentals',
+            'finance' => 'Cooperative Finance',
+        ];
+
+        $seminarAttendeeRecordsNotif = \App\Models\SeminarAttendees_tbl::with('seminar')
+            ->where('user_id', $userId)
+            ->get()
+            ->filter(fn($a) => $a->seminar);
+
+        $upcomingSeminarNotifs = $seminarAttendeeRecordsNotif
+            ->filter(fn($a) => $a->status === 'pending'
+                && $a->seminar->schedule_datetime >= $today
+                && $a->seminar->schedule_datetime <= $today->copy()->addDays(7));
+
+        foreach ($upcomingSeminarNotifs as $a) {
+            $s = $a->seminar;
+            $sessionDate = Carbon::parse($s->schedule_datetime);
+            $daysLeft = (int) $today->diffInDays($sessionDate, false);
+            $displayLabel = $seminarTypeLabelsNotif[$s->seminar_type] ?? ucfirst($s->seminar_type);
+            $deliveryText = $s->delivery_type === 'online'
+                ? 'Online'
+                : 'F2F · ' . ($s->meetup_place ?? 'Venue TBA');
+
+            $notifications->push([
+                'icon' => 'fa-graduation-cap',
+                'color' => 'gold',
+                'title' => 'Seminar Coming Up',
+                'message' => "{$displayLabel} is scheduled on {$sessionDate->format('M d, Y')}"
+                    . ($daysLeft === 0 ? ' (today)' : ($daysLeft === 1 ? ' (tomorrow)' : " (in {$daysLeft} days)"))
+                    . " · {$deliveryText}.",
+                'time' => $sessionDate->diffForHumans(),
+                'sort_at' => $sessionDate,
+            ]);
+        }
+
+        $recentlyAttended = $seminarAttendeeRecordsNotif
+            ->filter(fn($a) => $a->status === 'attended'
+                && $a->seminar->schedule_datetime >= $today->copy()->subDays(14));
+
+        foreach ($recentlyAttended as $a) {
+            $s = $a->seminar;
+            $sessionDate = Carbon::parse($s->schedule_datetime);
+            $displayLabel = $seminarTypeLabelsNotif[$s->seminar_type] ?? ucfirst($s->seminar_type);
+
+            $notifications->push([
+                'icon' => 'fa-circle-check',
+                'color' => 'mint',
+                'title' => 'Seminar Attendance Confirmed',
+                'message' => "You've been marked as attended for {$displayLabel} on {$sessionDate->format('M d, Y')}.",
+                'time' => $sessionDate->diffForHumans(),
+                'sort_at' => $sessionDate,
+            ]);
+        }
+
+        \Log::info('SORT CHECK', $notifications->map(fn($n) => [
+            'title' => $n['title'],
+            'sort_at' => $n['sort_at']->toDateTimeString(),
+            'distance_seconds' => abs(Carbon::now()->diffInSeconds($n['sort_at'], false)),
+        ])->toArray());
+
+        return $notifications
+            ->unique(fn($n) => $n['title'] . '|' . $n['message'])
+            ->sortBy(function ($n) {
+                // Smallest distance from "now" wins — "16 hours ago" (16h gap)
+                // ranks above "due in 3 days" (72h gap), regardless of past/future.
+                return abs(Carbon::now()->diffInSeconds($n['sort_at'], false));
+            })
+            ->values();
     }
 
     public function logout()

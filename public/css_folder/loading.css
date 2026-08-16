@@ -129,14 +129,37 @@
     gap: 0.5rem;
 } */
 
+.nb-notif-wrap {
+    position: relative;
+}
+
+#nb-notif-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: -100px;
+    width: 340px;
+    max-height: 420px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border);
+    z-index: 1000;
+}
+
 .name p {
     margin: 0;
     font-size: 12px;
 }
 
-::-webkit-scrollbar {
-    scrollbar-width: none;
+.footer-parent {
+    display: none;
 }
+
+/* ::-webkit-scrollbar {
+    scrollbar-width: none;
+} */
 
 .container-fluid .loading-screen {
     position: absolute;
@@ -447,6 +470,7 @@
     justify-content: space-between;
     /* gap: 4rem; */
     gap: 2rem;
+    height: 100%;
 }
 
 .container-fluid .sidebar .sidebar-menu ul .navigation {
@@ -726,6 +750,7 @@
 .container-fluid #dashboard-nav {
     border-bottom: 1.5px solid var(--line);
     background-color: #ffffff;
+    padding: 16px 32px;
 }
 
 .container-fluid nav .nav-parent {
@@ -1462,6 +1487,110 @@
     .container-fluid nav .nav-logo button {
         display: flex;
         font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .container-fluid main .parent-main {
+        padding: 1.5rem 1.5rem 6.5rem;
+    }
+
+    #nb-notif-panel {
+        right: -50px;
+    }
+
+    .loan-grid-pagination-bar {
+        font-size: 14.5px;
+        justify-content: end;
+        margin: 20px 0 0;
+    }
+
+    #loan-grid-count {
+        display: none;
+    }
+
+    .pg-controls {
+        gap: 10px;
+    }
+
+    .pg-btn {
+        font-size: 15.5px;
+    }
+
+    .container-fluid .nav-acc2 .name-email {
+        display: none;
+    }
+
+    .container-fluid #dashboard-nav {
+        border-bottom: 1.5px solid var(--line);
+        background-color: #ffffff;
+        padding: 16px 25px;
+    }
+
+    .container-fluid .rightbar {
+        position: relative;
+    }
+
+    .footer-parent {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        background-color: #ffffff;
+        padding: 1rem 1.5rem;
+        border-top: 1.5px solid var(--border);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        z-index: 999;
+
+    }
+
+    /* .footer-parent .footer-nav {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    } */
+
+    .footer-parent .footer-nav.active {
+        background-color: var(--teal);
+        color: #ffffff;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        border-radius: 20px;
+    }
+
+    .footer-parent .footer-nav.active .fa {
+        /* color: var(--teal); */
+        color: #ffffff;
+    }
+
+    .footer-parent .footer-nav.active a span {
+        display: flex;
+        color: #ffffff;
+    }
+
+    .footer-parent .footer-nav a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* flex-direction: column; */
+        font-size: 20px;
+        text-decoration: none;
+        color: var(--teal);
+        gap: 0.5rem;
+    }
+
+    .footer-parent .footer-nav a .fa {
+        color: var(--muted);
+    }
+
+    .footer-parent .footer-nav a span {
+        display: none;
+        font-size: 12px;
+        font-weight: 600;
     }
 }
 

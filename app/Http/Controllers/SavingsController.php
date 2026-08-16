@@ -689,7 +689,6 @@ class SavingsController extends Controller
 
         $user = Auth::user();
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
-        $newBalance = $savingsAccount->balance + $request->amount;
         $referenceNo = $this->generateReferenceNo('deposit');
 
         $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
@@ -699,37 +698,39 @@ class SavingsController extends Controller
             ->exists();
 
         if (!$hasShareCapital) {
-            return redirect()->route('savings.index')
+            return redirect()->route('Financial', ['tab' => 'savings'])
                 ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
         }
 
-        $savingsAccount->update(['balance' => $newBalance]);
-
+        // Balance is NOT touched here — it only changes once an admin approves this
+// transaction. balance_after reflects the current (unchanged) balance so
+// the receipt/history row is accurate while the request is still pending.
         savings_transaction_tbl::create([
             'savings_account_id' => $savingsAccount->id,
             'type' => 'deposit',
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
             'gcash_proof_path' => $gcashProofPath,
-            'balance_after' => $newBalance,
+            'balance_after' => $savingsAccount->balance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
             'transaction_date' => Carbon::today(),
-            'status' => 'completed',
+            'status' => 'pending',
         ]);
 
         AuditLog::log(
-            'Member Savings Deposit',
-            "Deposited ₱{$request->amount} to savings (Ref: {$referenceNo})",
+            'Member Savings Deposit Request',
+            "Requested deposit of ₱{$request->amount} to savings, pending approval (Ref: {$referenceNo})",
             'savings',
             $savingsAccount->id
         );
 
-        return redirect()->route('savings.index')
+        return redirect()->route('Financial', ['tab' => 'savings'])
             ->with('deposit_success', true)
             ->with('deposit_amount', $request->amount)
             ->with('deposit_reference', $referenceNo)
-            ->with('deposit_balance', $newBalance);
+            ->with('deposit_balance', $savingsAccount->balance)
+            ->with('deposit_pending', true);
     }
 
     /**
@@ -758,7 +759,7 @@ class SavingsController extends Controller
             ->exists();
 
         if (!$hasShareCapital) {
-            return redirect()->route('savings.index')
+            return redirect()->route('Financial', ['tab' => 'savings'])
                 ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
         }
 
@@ -766,36 +767,35 @@ class SavingsController extends Controller
             return back()->withErrors(['amount' => 'Insufficient balance. Available: ₱ ' . number_format($savingsAccount->balance, 2)]);
         }
 
-        $newBalance = $savingsAccount->balance - $request->amount;
         $referenceNo = $this->generateReferenceNo('withdrawal');
 
-        $savingsAccount->update(['balance' => $newBalance]);
-
+        // Balance is NOT deducted here — only once an admin approves the request.
         savings_transaction_tbl::create([
             'savings_account_id' => $savingsAccount->id,
             'type' => 'withdrawal',
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
             'gcash_proof_path' => $gcashProofPath,
-            'balance_after' => $newBalance,
+            'balance_after' => $savingsAccount->balance,
             'note' => $request->note,
             'reference_no' => $referenceNo,
             'transaction_date' => Carbon::today(),
-            'status' => 'released',
+            'status' => 'pending',
         ]);
 
         AuditLog::log(
-            'Member Savings Withdrawal',
-            "Withdrew ₱{$request->amount} from savings (Ref: {$referenceNo})",
+            'Member Savings Withdrawal Request',
+            "Requested withdrawal of ₱{$request->amount} from savings, pending approval (Ref: {$referenceNo})",
             'savings',
             $savingsAccount->id
         );
 
-        return redirect()->route('savings.index')
+        return redirect()->route('Financial', ['tab' => 'savings'])
             ->with('withdraw_success', true)
             ->with('withdraw_amount', $request->amount)
             ->with('withdraw_reference', $referenceNo)
-            ->with('withdraw_balance', $newBalance);
+            ->with('withdraw_balance', $savingsAccount->balance)
+            ->with('withdraw_pending', true);
     }
 
     public function payViaGcash(Request $request)

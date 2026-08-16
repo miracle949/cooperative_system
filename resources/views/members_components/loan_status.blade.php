@@ -43,6 +43,30 @@
         #repay-backdrop.show {
             opacity: 1;
         }
+
+        .mobile-modal {
+            display: none;
+        }
+
+        .mobile-modal .modal-dialog {
+            opacity: 0;
+            transform: translateY(-24px) scale(0.96);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .mobile-modal.show .modal-dialog {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        #repay-backdrop {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        #repay-backdrop.show {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -55,14 +79,19 @@
 
         <div class="rightbar">
             @include("components.navbar2")
+            @include("components.footer")
 
             <main>
                 <div class="parent-main">
-                    <div class="header-main">
-                        <h3>Loan Repayments</h3>
-                        <p>Manage your loan repayments by tracking payment history, upcoming due dates, and outstanding balances.</p>
-                    </div>
+                    @if(!$selectedLoan && $loans->isNotEmpty())
+                        <div class="header-main">
+                            <h3>Loan Repayments</h3>
+                            <p>Manage your loan repayments by tracking payment history, upcoming due dates, and outstanding
+                                balances.</p>
+                        </div>
+                    @endif
 
+                    {{-- @if(!$selectedLoan && $loans->isNotEmpty())
                     <div class="parent-header">
                         <div class="filter-parent">
 
@@ -71,97 +100,203 @@
                                 <input type="search" id="loan-search" placeholder="Search by reference or type of loan">
                             </div>
 
-                            <div class="loan-type">
-                                <select id="loan-type-filter" class="form-select">
-                                    <option value="" disabled {{ !$selectedLoan ? 'selected' : '' }}>-- Select Loan Type --</option>
-                                    @foreach($loans->pluck('display_type')->unique() as $type)
-                                        <option value="{{ $type }}"
-                                            {{ $selectedLoan && $selectedLoan->display_type === $type ? 'selected' : '' }}>
-                                            {{ $type }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <div class="filters-parent">
+                                <div class="loan-type">
+                                    <select id="loan-type-filter" class="form-select">
+                                        <option value="" selected>-- Select Loan Type --</option>
+                                        @foreach($loans->pluck('display_type')->unique() as $type)
+                                        <option value="{{ $type }}">{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div class="reference">
-                                <select id="loan-reference-filter" class="form-select">
-                                    <option value="" disabled {{ !$selectedLoan ? 'selected' : '' }}>-- Select Reference --</option>
-                                    @foreach($loans as $loan)
-                                        <option value="{{ $loan->reference_no }}"
-                                            data-id="{{ $loan->id }}"
-                                            data-type="{{ $loan->display_type }}"
-                                            {{ $selectedLoan && $selectedLoan->id === $loan->id ? 'selected' : '' }}
-                                            {{ (!$selectedLoan || $selectedLoan->display_type !== $loan->display_type) ? 'hidden' : '' }}>
-                                            {{ $loan->reference_no }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="reference">
+                                    <input type="date" id="loan-date-filter" class="form-select"
+                                        title="Filter by date applied" style="font-size: 13.5px;">
+                                </div>
                             </div>
                         </div>
                     </div>
+                    @endif --}}
 
                     @if($loans->isEmpty())
                         <!-- <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
-                            <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
-                        </div> -->
+                                                    <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
+                                                </div> -->
+                        <div class="header-main">
+                            <h3>Loan Repayments</h3>
+                            <p>Manage your loan repayments by tracking payment history, upcoming due dates, and outstanding
+                                balances.</p>
+                        </div>
                         <div class="no-approved-loans" style=" ">
-                            <div style="width:56px;height:56px;border-radius:50%;background: #EDF0F5;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                            <div
+                                style="width:56px;height:56px;border-radius:50%;background: #EDF0F5;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
                                 <i class="fa fa-hourglass-half" style="color:var(--teal);font-size:22px;"></i>
                             </div>
                             <p style="color:var(--muted);margin:0; font-size: 14px;">You have no approved loans yet.</p>
                         </div>
                     @elseif(!$selectedLoan)
-                        <div class="no-selected-loans" style=" ">
-                            <div style="width:56px;height:56px;border-radius:50%;background:#EDF0F5;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                                <i class="fa fa-hand-pointer" style="color:var(--teal);font-size:22px;"></i>
+                        <div class="loan-select-section">
+                            {{-- <div class="loan-grid-pagination-bar">
+                                <span id="loan-grid-count">Showing {{ $loans->count() }} of {{ $loans->count() }}
+                                    loans</span>
+                                <div class="pg-controls" id="loan-grid-pg"></div>
+                            </div> --}}
+                            <div class="loan-tabs-bar">
+                                <div class="loan-tabs">
+                                    <button type="button" class="loan-tab-btn active" data-status-filter="all"
+                                        onclick="filterLoanStatusTab('all', this)">All</button>
+                                    <button type="button" class="loan-tab-btn" data-status-filter="active"
+                                        onclick="filterLoanStatusTab('active', this)">Active</button>
+                                    <button type="button" class="loan-tab-btn" data-status-filter="completed"
+                                        onclick="filterLoanStatusTab('completed', this)">Completed</button>
+                                    <button type="button" class="loan-tab-btn" data-status-filter="overdue"
+                                        onclick="filterLoanStatusTab('overdue', this)">Overdue</button>
+                                </div>
+                                {{-- <div class="pg-controls" id="loan-grid-pg"></div> --}}
                             </div>
-                            <h5 style="color: var(--teal);margin:0 0 10px;font-weight:600;">No loan selected</h5>
-                            <p style="color:#8a8f98;margin:0;max-width:360px;font-size:14px;line-height:1.5;">
-                                Choose a <strong>Loan Type</strong> above first, then pick the matching
-                                <strong>Reference</strong> number to view its repayment details.
-                            </p>
+
+                            <div class="loan-select-grid" id="loan-select-grid">
+                                @foreach($loans as $loan)
+                                    <div class="loan-select-card" data-ref="{{ strtolower($loan->reference_no) }}"
+                                        data-type="{{ $loan->display_type }}"
+                                        data-date="{{ \Carbon\Carbon::parse($loan->created_at)->format('Y-m-d') }}"
+                                        data-status="{{ strtolower($loan->card_status) }}"
+                                        onclick="navigateToLoan('{{ $loan->id }}')">
+                                        <div class="lsc-top">
+                                            <div class="lsc-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+                                            <span class="lsc-status lsc-status-{{ strtolower($loan->card_status) }}">
+                                                {{ $loan->card_status }}
+                                            </span>
+                                        </div>
+
+                                        <div class="parent-type-status">
+                                            <div>
+                                                <h6 class="lsc-type">{{ $loan->display_type }}</h6>
+                                                <p class="lsc-ref">{{ $loan->reference_no }}</p>
+                                            </div>
+                                            <div>
+                                                <span class="lsc-status lsc-status-{{ strtolower($loan->card_status) }}">
+                                                    {{ $loan->card_status }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="lsc-amount">
+                                            <span>Principal</span>
+                                            <p>₱{{ number_format($loan->lending_amount, 2) }}</p>
+                                        </div>
+
+                                        <div class="lsc-progress">
+                                            <div class="lsc-progress-bar">
+                                                <div class="lsc-progress-fill"
+                                                    style="width:{{ $loan->progress_percent ?? 0 }}%;"></div>
+                                            </div>
+                                            <div class="amount-to-paid">
+                                                <span>{{ $loan->payments_made ?? 0 }}/{{ $loan->total_payments ?? 0 }} paid</span>
+                                                <i class="fa fa-arrow-right lsc-arrow"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="lsc-footer">
+                                            <span><i class="fa fa-calendar"></i>
+                                                {{ \Carbon\Carbon::parse($loan->created_at)->format('M d, Y') }}</span>
+                                            <i class="fa fa-arrow-right lsc-arrow"></i>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div id="loan-grid-empty" class="no-selected-loans" style="display:none;">
+                                <div
+                                    style="width:56px;height:56px;border-radius:50%;background:#EDF0F5;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                                    <i class="fa fa-inbox" style="color:var(--teal);font-size:22px;"></i>
+                                </div>
+                                <p id="loan-grid-empty-text" style="color:var(--muted);margin:0;font-size:14px;"></p>
+                            </div>
+
+                            <div class="loan-grid-pagination-bar">
+
+                                <span id="loan-grid-count">Showing {{ $loans->count() }} of {{ $loans->count() }}
+                                    loans</span>
+                                <div class="pg-controls" id="loan-grid-pg"></div>
+
+                            </div>
                         </div>
                     @else
                         {{-- HERO --}}
+                        <div class="back-loan-status">
+                            <a href="{{ route('LoanStatus') }}">
+                                <i class="fa fa-arrow-left"></i>
+                            </a>
+                        </div>
                         <div class="loan-hero" id="loan-hero-section">
                             <div class="loan-hero-parent">
                                 <div class="left-hero">
                                     <div class="left-text">
-                                        <div class="status status-{{ strtolower($loanStatusLabel) }}">{{ $loanStatusLabel }}</div>
+                                        <div class="status status-{{ strtolower($loanStatusLabel) }}">{{ $loanStatusLabel }}
+                                        </div>
                                         <h3>{{ $selectedLoan->display_type }}</h3>
                                         <p><b>{{ $selectedLoan->reference_no }}</b> · Active
                                             {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}
                                         </p>
                                     </div>
-    
+
+                                    <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
+
                                 </div>
                                 <div class="right-hero">
-                                    <div class="payment-button">
+                                    <div class="payment-button payment-desktop">
                                         <button onclick="handleMakePaymentClick('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
                                             <i class="fa fa-peso-sign"></i>
                                             <span>Make a Payment</span>
                                         </button>
 
                                         <!-- @if($selectedLoan->disbursed_at)
-                                            <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
-                                                <i class="fa fa-circle-check"></i>
-                                                <span>Disbursed</span>
-                                            </button>
-                                        @else
-                                            <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
-                                                @csrf
-                                                <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
-                                                <button type="submit">
-                                                    <i class="fa fa-hand-holding-dollar"></i>
-                                                    <span>Disburse Loan</span>
-                                                </button>
-                                            </form>
-                                        @endif -->
+                                                                    <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
+                                                                        <i class="fa fa-circle-check"></i>
+                                                                        <span>Disbursed</span>
+                                                                    </button>
+                                                                @else
+                                                                    <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
+                                                                        @csrf
+                                                                        <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                                                                        <button type="submit">
+                                                                            <i class="fa fa-hand-holding-dollar"></i>
+                                                                            <span>Disburse Loan</span>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif -->
                                     </div>
+                                </div>
+                            </div>
+                            <div class="parent-progress">
+                                <div class="progress-header">
+                                    {{-- <p>Repayment Progress</p>
+                                    <span>{{ $lendingStatus->payments_made ?? 0 }} of
+                                        {{ $lendingStatus->total_payments ?? 0 }} payments made</span> --}}
+                                </div>
+                                <div class="progress-body">
+                                    <div class="progress-sub">
+                                        <div class="progress" style="width: {{ $progressPercent }}%;"></div>
+                                    </div>
+                                </div>
+                                <div class="progress-footer">
+                                    {{-- <span>₱{{ number_format($selectedLoan->lending_amount, 0) }} principal</span> --}}
+                                    <span>{{ $lendingStatus->payments_made ?? 0 }} of
+                                        {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
+                                    <span><strong>₱{{ number_format($remainingPrincipal, 0) }}</strong> remaining </span>
                                 </div>
                             </div>
                             <div class="perforation"></div>
                             <div class="alh-parent">
+                                <div class="alh-stat">
+                                    <span>Principal Amount</span>
+                                    <h5>₱{{ number_format($selectedLoan->lending_amount, 2) }}</h5>
+                                    <p>Applied
+                                        {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}
+                                    </p>
+                                </div>
                                 <div class="alh-stat" id="due-date-stat">
                                     <span>Due Date</span>
                                     @if($overdueDate)
@@ -179,50 +314,55 @@
 
                                 <div class="alh-stat" id="next-due-stat">
                                     <span>Next Due</span>
-                                    <h5 class="stat-value">{{ $displayNextDueDate ? $displayNextDueDate->format('F d') : '—' }}</h5>
+                                    <h5 class="stat-value">
+                                        {{ $displayNextDueDate ? $displayNextDueDate->format('F d') : '—' }}
+                                    </h5>
                                     @if($displayDaysAway === null)
                                         <p class="stat-sub">Fully paid</p>
                                     @elseif($displayDaysAway == 0)
                                         <p class="stat-sub badge-upcoming-next" style="padding: 0;">Due today</p>
                                     @else
-                                        <p class="stat-sub badge-upcoming-next" style="padding: 0;">{{ $displayDaysAway }} days away</p>
+                                        <p class="stat-sub badge-upcoming-next" style="padding: 0;">{{ $displayDaysAway }} days
+                                            away</p>
                                     @endif
                                 </div>
 
                                 <div class="alh-stat">
                                     <span>Monthly Due</span>
-                                    <h5 id="monthly-due-value">₱{{ number_format($monthlyDue + $currentOverduePenalty, 2) }}</h5>
+                                    <h5 id="monthly-due-value">₱{{ number_format($monthlyDue + $currentOverduePenalty, 2) }}
+                                    </h5>
                                     <p>Every {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('jS') }}</p>
                                 </div>
 
-                                <div class="alh-stat">
-                                    <span>Balance</span>
-                                    <h5>₱{{ number_format($fullBalanceRemaining, 2) }}</h5>
-                                    <p>{{ $monthsRemaining }} payment{{ $monthsRemaining == 1 ? '' : 's' }} remaining</p>
-                                </div>
+                            </div>
+                            <div class="payment-button payment-mobile">
+                                <button onclick="handleMakePaymentClick('monthly')" {{ $fullBalanceRemaining <= 0 ? 'disabled style=opacity:.5;cursor:not-allowed;' : '' }}>
+                                    <i class="fa fa-peso-sign"></i>
+                                    <span>Make a Payment</span>
+                                </button>
+
+                                <!-- @if($selectedLoan->disbursed_at)
+                                                            <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
+                                                                <i class="fa fa-circle-check"></i>
+                                                                <span>Disbursed</span>
+                                                            </button>
+                                                        @else
+                                                            <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
+                                                                @csrf
+                                                                <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                                                                <button type="submit">
+                                                                    <i class="fa fa-hand-holding-dollar"></i>
+                                                                    <span>Disburse Loan</span>
+                                                                </button>
+                                                            </form>
+                                                        @endif -->
                             </div>
 
-                            <div class="parent-progress">
-                                <div class="progress-header">
-                                    <p>Repayment Progress</p>
-                                    <span>{{ $lendingStatus->payments_made ?? 0 }} of
-                                        {{ $lendingStatus->total_payments ?? 0 }} payments made</span>
-                                </div>
-                                <div class="progress-body">
-                                    <div class="progress-sub">
-                                        <div class="progress" style="width: {{ $progressPercent }}%;"></div>
-                                    </div>
-                                </div>
-                                <div class="progress-footer">
-                                    <span>₱{{ number_format($selectedLoan->lending_amount, 0) }} principal</span>
-                                    <span><strong>₱{{ number_format($remainingPrincipal, 0) }}</strong> remaining </span>
-                                </div>
-                            </div>
                         </div>
 
                         {{-- 3 SUMMARY BOXES --}}
-                        <div class="loan-parent-box">
-                            <div class="loan-box">
+                        <div class="loan-parent-box" style="padding: 0">
+                            {{-- <div class="loan-box">
                                 <div class="loan-header">
                                     <h5>Principal Amount</h5>
                                     <div class="loan-icon"><i class="fa fa-file-lines"></i></div>
@@ -230,7 +370,7 @@
                                 <p>₱{{ number_format($selectedLoan->lending_amount, 2) }}</p>
                                 <span>Applied
                                     {{ \Carbon\Carbon::parse($selectedLoan->created_at)->format('F d, Y') }}</span>
-                            </div>
+                            </div> --}}
                             <div class="loan-box">
                                 <div class="loan-header">
                                     <h5>Total Interest</h5>
@@ -252,7 +392,8 @@
                                     <h5>Penalty</h5>
                                     <div class="loan-icon"><i class="fa fa-triangle-exclamation"></i></div>
                                 </div>
-                                <p class="penalty-value" style="{{ $penaltyAmount > 0 ? 'color: var(--coral);' : '' }}">₱{{ number_format($penaltyAmount, 2) }}</p>
+                                <p class="penalty-value" style="{{ $penaltyAmount > 0 ? 'color: var(--coral);' : '' }}">
+                                    ₱{{ number_format($penaltyAmount, 2) }}</p>
                                 <span class="penalty-caption">
                                     @if($penaltyAmount > 0 && ($lendingStatus->penalty_amount ?? 0) == 0)
                                         Will apply on next payment
@@ -268,26 +409,27 @@
                         {{-- SCHEDULE & CHARGES --}}
                         <div class="schedule-charges">
                             <div class="schedule-parent">
-                                <div class="schedule-header">
+                                <div class="schedule-header" onclick="openScheduleModal()" style="cursor:pointer;">
                                     <!-- <div class="header-tag">
-                                        <div class="header-icon">
-                                            <i class="fa fa-calendar-check"></i> 
-                                        </div>
-                                        
-                                    Payment Schedule</div> -->
+                                                                <div class="header-icon">
+                                                                    <i class="fa fa-calendar-check"></i> 
+                                                                </div>
+
+                                                            Payment Schedule</div> -->
                                     <div>
                                         <div class="header-tag">Payment Schedule</div>
                                         <p>View your upcoming loan payment</p>
                                     </div>
                                     <span>{{ $lendingStatus->payments_made ?? 0 }} of
                                         {{ $lendingStatus->total_payments ?? 0 }} paid</span>
+
+                                    <i class="fa fa-arrow-right"></i>
                                 </div>
                                 <div class="schedule-body">
                                     @forelse($paymentSchedule as $row)
                                         <div class="pay-item schedule-row"
                                             data-status="{{ $row['paid'] ? 'paid' : ($row['overdue'] ? 'overdue' : ($row['is_next'] ? 'active' : 'upcoming')) }}"
-                                            data-number="{{ $row['number'] }}"
-                                            data-date="{{ $row['date'] }}"
+                                            data-number="{{ $row['number'] }}" data-date="{{ $row['date'] }}"
                                             data-amount="{{ $row['amount'] + ($row['penalty'] ?? 0) }}"
                                             onclick="selectScheduleRow(this)">
                                             <div class="item">
@@ -301,13 +443,15 @@
                                                 @if($row['paid'])
                                                     <p class="paid"><i class="fa fa-check"></i> Paid</p>
                                                 @elseif($row['overdue'])
-                                                    <p class="badge-overdue-item"><i class="fa fa-triangle-exclamation"></i> Overdue</p>
+                                                    <p class="badge-overdue-item"><i class="fa fa-triangle-exclamation"></i> Overdue
+                                                    </p>
                                                 @else
                                                     <p class="badge-upcoming"><i class="fa fa-clock"></i> Upcoming</p>
                                                 @endif
 
                                                 @if(($row['penalty'] ?? 0) > 0)
-                                                    <p style="margin:2px 0 0; font-size:12px; color:var(--red); background-color: var(--red-tint);">
+                                                    <p
+                                                        style="margin:2px 0 0; font-size:12px; color:var(--red); background-color: var(--red-tint);">
                                                         + ₱{{ number_format($row['penalty'], 2) }}
                                                     </p>
                                                 @endif
@@ -319,16 +463,19 @@
                                 </div>
                             </div>
                             <div class="charges-parent">
-                                <div class="charges-header">
+                                <div class="charges-header" onclick="openChargesModal()" style="cursor:pointer;">
                                     <!-- <div class="header-tag">
-                                        <div class="header-icon">
-                                            <i class="fa fa-money-check-dollar"></i> 
-                                        </div>
-                                        
-                                        Loan Charges</div> -->
+                                                                <div class="header-icon">
+                                                                    <i class="fa fa-money-check-dollar"></i> 
+                                                                </div>
+
+                                                                Loan Charges</div> -->
                                     <div>
                                         <div class="header-tag">Loan Charges</div>
                                         <p>View your breakdown loan charges</p>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-arrow-right"></i>
                                     </div>
                                 </div>
                                 <div class="charges-body">
@@ -427,13 +574,69 @@
                                 <div class="charges-footer">
                                     <div class="total-charges">
                                         <span>Total Charges</span>
-                                        <p>₱{{ number_format($totalInterest + $processingFee + $serviceFee + $loanProtectionFee + $retentionFee, 2) }}</p>
+                                        <p>₱{{ number_format($totalInterest + $processingFee + $serviceFee + $loanProtectionFee + $retentionFee, 2) }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- PAYMENT HISTORY --}}
+                        {{-- PAYMENT HISTORY Table--}}
+                        <div class="loan-history-mobile">
+                            <div class="loan-header-mobile">
+                                <div class="header-tag">Payment History</div>
+                            </div>
+                            <div class="loan-body-mobile">
+                                <div class="loan-history-mobile-list" id="ph-mobile-list">
+                                    @forelse($paymentHistory as $payment)
+                                        @php
+                                            $wasLate = $payment->due_date && \Carbon\Carbon::parse($payment->payment_date)->gt(\Carbon\Carbon::parse($payment->due_date));
+                                        @endphp
+                                        <div class="ph-card ph-row-mobile">
+                                            <div class="ph-card-top">
+                                                <div class="ph-card-icon"><i class="fa fa-receipt"></i></div>
+                                                <div class="ph-card-info">
+                                                    <p class="ph-card-ref">{{ $payment->reference_no }}</p>
+                                                    <p class="ph-card-meta">
+                                                        {{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }} ·
+                                                        {{ \Carbon\Carbon::parse($payment->created_at)->format('h:i A') }}
+                                                    </p>
+                                                </div>
+                                                @if($wasLate)
+                                                    <span class="badge-overdue"><i class="fa fa-triangle-exclamation"></i>
+                                                        Overdue</span>
+                                                @else
+                                                    <span class="badge-paid">Paid</span>
+                                                @endif
+                                            </div>
+                                            <div class="ph-card-bottom">
+                                                <div class="ph-card-detail">
+                                                    <span>Amount</span>
+                                                    <p>₱{{ number_format($payment->amount_paid, 2) }}</p>
+                                                </div>
+                                                <div class="ph-card-detail">
+                                                    <span>Penalty</span>
+                                                    <p>
+                                                        @if(($payment->late_fee ?? 0) > 0)
+                                                            <span
+                                                                style="color:var(--coral);font-weight:600;">₱{{ number_format($payment->late_fee, 2) }}</span>
+                                                        @else
+                                                            —
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                                <div class="ph-card-detail">
+                                                    <span>Method</span>
+                                                    <p>{{ $payment->payment_method }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p style="color:#999;padding:1.5rem;text-align:center;">No payment history yet.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
                         <div class="loan-history">
                             <div class="loan-header">
                                 <div class="header-tag">Payment History</div>
@@ -458,7 +661,8 @@
                                             @forelse($paymentHistory as $payment)
                                                 <tr class="ph-row">
                                                     <td>{{ $payment->reference_no }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}
+                                                    </td>
                                                     <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('h:i A') }}</td>
                                                     <td>₱{{ number_format($payment->amount_paid, 2) }}</td>
                                                     <td>
@@ -483,15 +687,17 @@
                                                             $wasLate = $payment->due_date && \Carbon\Carbon::parse($payment->payment_date)->gt(\Carbon\Carbon::parse($payment->due_date));
                                                         @endphp
                                                         @if($wasLate)
-                                                            <span class="badge-overdue"><i class="fa fa-triangle-exclamation"></i> Paid (Overdue)</span>
+                                                            <span class="badge-overdue"><i class="fa fa-triangle-exclamation"></i>
+                                                                Paid (Overdue)</span>
                                                         @else
-                                                            <span class="badge-paid"><i class="fa fa-check"></i> Paid</span>
+                                                            <span class="badge-paid"> Paid</span>
                                                         @endif
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8" style="text-align:center;color:#999;padding:1.5rem;">No payment history yet.</td>
+                                                    <td colspan="8" style="text-align:center;color:#999;padding:1.5rem;">No
+                                                        payment history yet.</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -500,7 +706,8 @@
 
                                 @if($paymentHistory->isNotEmpty())
                                     <div class="sc-table-footer">
-                                        <span id="ph-footer-count">Showing {{ min(10, $paymentHistory->count()) }} of {{ $paymentHistory->count() }} payments</span>
+                                        <span id="ph-footer-count">Showing {{ min(10, $paymentHistory->count()) }} of
+                                            {{ $paymentHistory->count() }} payments</span>
                                         <div class="sc-pagination" id="ph-pagination"></div>
                                     </div>
                                 @endif
@@ -512,19 +719,21 @@
         </div>
 
         {{-- REPAYMENT MODAL --}}
-        <div class="modal fade" id="repayModal" tabindex="-1">
+        <div class="modal fade mobile-modal" id="repayModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
                 <div class="modal-content"
                     style="border: none; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
 
                     {{-- Modal Header --}}
-                    <div class="modal-header" style="background: #ffffff; padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--line);">
+                    <div class="modal-header"
+                        style="background: #ffffff; padding: 1.4rem 1.6rem; border-bottom: 1px solid var(--line);">
                         <div class="modal-parent">
                             <div class="modal-icon">
                                 <i class="fa fa-money-bill-wave"></i>
                             </div>
                             <div>
-                                <h5 class="modal-title" style="color: #1a1a1a; font-size: 17px; font-weight: 600; margin: 0;">
+                                <h5 class="modal-title"
+                                    style="color: #1a1a1a; font-size: 17px; font-weight: 600; margin: 0;">
                                     Make a Payment
                                 </h5>
                                 <p style="color: var(--muted); font-size: 13.5px; margin: 3.2px 0 0;">
@@ -533,7 +742,8 @@
                                 </p>
                             </div>
                         </div>
-                        <button type="button" class="btn-close" style="color: var(--muted); font-size: 16px;" onclick="closeRepayModal()"></button>
+                        <button type="button" class="btn-close" style="color: var(--muted); font-size: 16px;"
+                            onclick="closeRepayModal()"></button>
                     </div>
 
                     <div class="modal-body" style="padding: 1.6rem; background: #fff;">
@@ -553,20 +763,24 @@
                             </select>
                         </div>
 
-                        <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form" enctype="multipart/form-data">
+                        <form action="{{ route('repayment.store') }}" method="POST" id="cash-repay-form"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="lending_id" value="{{ $selectedLoan->id ?? '' }}">
                             <input type="hidden" name="member_id" value="{{ auth()->id() }}">
-                            <input type="hidden" name="payment_number" value="{{ ($lendingStatus->payments_made ?? 0) + 1 }}">
+                            <input type="hidden" name="payment_number"
+                                value="{{ ($lendingStatus->payments_made ?? 0) + 1 }}">
                             <input type="hidden" name="payment_type" id="cash-payment-type" value="monthly">
 
                             {{-- Amount --}}
                             <div style="margin-bottom: 1.1rem;">
-                                <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
                                     Amount to Pay (₱)
                                 </label>
                                 <div style="position: relative;">
-                                    <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--teal); font-weight: 500; font-size: 15px;">₱</span>
+                                    <span
+                                        style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--teal); font-weight: 500; font-size: 15px;">₱</span>
                                     <input type="number" name="amount_paid" id="repay-amount-input" class="form-control"
                                         value="{{ $monthlyDue }}"
                                         style="padding-left: 28px; border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 14px; font-weight: 500; color: var(--teal); height: 46px;"
@@ -576,10 +790,12 @@
 
                             {{-- Payment Method --}}
                             <div style="margin-bottom: 1.1rem;">
-                                <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
                                     Payment Method
                                 </label>
-                                <select name="payment_method" id="repay-method" class="form-select" onchange="handleMethodChange(this.value)"
+                                <select name="payment_method" id="repay-method" class="form-select"
+                                    onchange="handleMethodChange(this.value)"
                                     style="border-radius: 10px; border: 1.5px solid #e0e0e0; height: 46px; font-size: 14px; color: #333;">
                                     <option value="Cash">Cash</option>
                                     <option value="GCash">GCash</option>
@@ -591,46 +807,62 @@
                                 <div style="border-top: 1.5px dashed #e8e8e8; margin: 1.2rem 0;"></div>
 
                                 @if($gcashPaymentMethod && $gcashPaymentMethod->has_qr_code && $gcashPaymentMethod->qr_code_image_path)
-                                    <div style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem; text-align: center;">
+                                    <div
+                                        style="background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%); border: 1.5px solid #c2deff; border-radius: 12px; padding: 1rem 1.2rem; text-align: center;">
                                         <p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: #0056b3;">
                                             <i class="fa-solid fa-mobile-screen-button"></i> Scan to Pay via GCash
                                         </p>
-                                        <img src="{{ asset('storage/' . $gcashPaymentMethod->qr_code_image_path) }}" alt="GCash QR Code" style="width: 320px; height: 320px; max-width: 100%; object-fit: contain; border-radius: 10px; border: 1px solid #c2deff; background: #fff; padding: 14px; display: block; margin: 0 auto;" ondblclick="openQrLightbox(this.src)">
+                                        <img src="{{ asset('storage/' . $gcashPaymentMethod->qr_code_image_path) }}"
+                                            alt="GCash QR Code" loading="lazy"
+                                            style="width: 320px; height: 320px; max-width: 100%; object-fit: contain; border-radius: 10px; border: 1px solid #c2deff; background: #fff; padding: 14px; display: block; margin: 0 auto;"
+                                            ondblclick="openQrLightbox(this.src)">
                                         <p style="margin: 10px 0 0; font-size: 11px; color: #5a8ac4;">
                                             Scan this using your GCash app, then upload your payment screenshot below.
                                         </p>
                                         <p style="margin: 6px 0 0; font-size: 11px;">
-                                            <a href="#" onclick="openQrLightbox('{{ asset('storage/' . $gcashPaymentMethod->qr_code_image_path) }}'); return false;" style="color: #0056b3; font-weight: 600;">
+                                            <a href="#"
+                                                onclick="openQrLightbox('{{ asset('storage/' . $gcashPaymentMethod->qr_code_image_path) }}'); return false;"
+                                                style="color: #0056b3; font-weight: 600;">
                                                 <i class="fa fa-up-right-and-down-left-from-center"></i> View full-size QR
                                             </a>
                                         </p>
                                     </div>
-                                    
+
                                 @else
-                                    <div style="background: #fff3cd; border: 1.5px solid #ffe08a; border-radius: 12px; padding: 1rem 1.2rem;">
+                                    <div
+                                        style="background: #fff3cd; border: 1.5px solid #ffe08a; border-radius: 12px; padding: 1rem 1.2rem;">
                                         <p style="margin: 0; font-size: 13px; color: #856404;">
-                                            <i class="fa fa-triangle-exclamation"></i> No GCash QR code has been set up yet. Please contact the admin.
+                                            <i class="fa fa-triangle-exclamation"></i> No GCash QR code has been set up yet.
+                                            Please contact the admin.
                                         </p>
                                     </div>
                                 @endif
 
                                 <div style="margin-top: 1.1rem;">
-                                    <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
-                                        Upload Payment Screenshot <span style="color:#aaa; font-weight:400; text-transform:none;">(GCash proof)</span>
+                                    <label
+                                        style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                        Upload Payment Screenshot <span
+                                            style="color:#aaa; font-weight:400; text-transform:none;">(GCash
+                                            proof)</span>
                                     </label>
-                                    <input type="file" name="gcash_proof" id="gcash-proof-input" accept="image/png,image/jpeg,image/jpg"
-                                        class="form-control" style="border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 14px; padding: 8px;">
+                                    <input type="file" name="gcash_proof" id="gcash-proof-input"
+                                        accept="image/png,image/jpeg,image/jpg" class="form-control"
+                                        style="border-radius: 10px; border: 1.5px solid #e0e0e0; font-size: 14px; padding: 8px;">
                                     <div id="gcash-proof-preview" style="display:none; margin-top:10px;">
-                                        <img id="gcash-proof-preview-img" style="width:100%; height:180px; object-fit:cover; border-radius:8px; border:1px solid #e0e0e0;">
+                                        <img id="gcash-proof-preview-img"
+                                            style="width:100%; height:180px; object-fit:cover; border-radius:8px; border:1px solid #e0e0e0;">
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Reference No --}}
                             <div id="ref-no-section" style="margin-top: 1.1rem;">
-                                <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
                                     Reference / Receipt No.
-                                    <span style="color: #aaa; font-weight: 400; font-size: 11px; text-transform: none;">(optional — auto-generated if blank)</span>
+                                    <span
+                                        style="color: #aaa; font-weight: 400; font-size: 11px; text-transform: none;">(optional
+                                        — auto-generated if blank)</span>
                                 </label>
                                 <input type="text" name="reference_no" id="repay-reference-input" class="form-control"
                                     placeholder="Leave blank to auto-generate"
@@ -639,7 +871,8 @@
 
                             {{-- Notes --}}
                             <div id="notes-section" style="margin-top: 1.1rem;">
-                                <label style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
+                                <label
+                                    style="font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">
                                     Notes (optional)
                                 </label>
                                 <textarea name="notes" id="repay-notes-input" class="form-control" rows="2"
@@ -651,7 +884,8 @@
                     </div>
 
                     {{-- Modal Footer --}}
-                    <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.1); padding: 1rem 1.6rem; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 8px;">
+                    <div class="modal-footer"
+                        style="background: #f8f9fa; border-top: 1px solid rgba(0,0,0,0.1); padding: 1rem 1.6rem; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 8px;">
                         <button type="submit" form="cash-repay-form" id="confirm-pay-btn" class="btn w-100"
                             style="background: var(--teal); color: white; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 10px 22px; border: none; display: flex; align-items: center; gap: 6px; justify-content: center;">
                             <i class="fa-solid fa-check" style="font-size: 12px;"></i>
@@ -663,6 +897,186 @@
                         </button>
                     </div>
 
+                </div>
+            </div>
+        </div>
+
+        {{-- Payment Schedule Modal (mobile) --}}
+        <div class="modal fade mobile-modal" id="scheduleModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+                <div class="modal-content"
+                    style="border:none;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+                    <div class="modal-header"
+                        style="background:#fff;padding:1.4rem 1.6rem;border-bottom:1px solid var(--line);">
+                        <div class="modal-parent">
+                            <div class="modal-icon"><i class="fa fa-calendar-check"></i></div>
+                            <div>
+                                <h5 class="modal-title" style="color:#1a1a1a;font-size:17px;font-weight:600;margin:0;">
+                                    Payment Schedule</h5>
+                                <p style="color:var(--muted);font-size:13.5px;margin:3.2px 0 0;">
+                                    {{ $lendingStatus->payments_made ?? 0 }} of
+                                    {{ $lendingStatus->total_payments ?? 0 }} paid
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" style="color:var(--muted);font-size:16px;"
+                            onclick="closeModal('scheduleModal')"></button>
+                    </div>
+                    <div class="modal-body" style="padding:0;background:#fff;max-height:70vh;overflow-y:auto;">
+                        @forelse($paymentSchedule as $row)
+                            <div class="pay-item schedule-row"
+                                data-status="{{ $row['paid'] ? 'paid' : ($row['overdue'] ? 'overdue' : ($row['is_next'] ? 'active' : 'upcoming')) }}"
+                                data-number="{{ $row['number'] }}" data-date="{{ $row['date'] }}"
+                                data-amount="{{ $row['amount'] + ($row['penalty'] ?? 0) }}"
+                                onclick="selectScheduleRow(this); closeModal('scheduleModal');">
+                                <div class="item">
+                                    <div class="item-icon"><span>{{ $row['number'] }}</span></div>
+                                    <p>{{ $row['date'] }}</p>
+                                </div>
+                                <div class="item-amount">
+                                    <p>₱{{ number_format($row['amount'] + ($row['penalty'] ?? 0), 2) }}</p>
+                                    @if($row['paid'])
+                                        <p class="paid"><i class="fa fa-check"></i> Paid</p>
+                                    @elseif($row['overdue'])
+                                        <p class="badge-overdue-item"><i class="fa fa-triangle-exclamation"></i> Overdue</p>
+                                    @else
+                                        <p class="badge-upcoming"><i class="fa fa-clock"></i> Upcoming</p>
+                                    @endif
+                                    @if(($row['penalty'] ?? 0) > 0)
+                                        <p
+                                            style="margin:2px 0 0;font-size:12px;color:var(--red);background-color:var(--red-tint);">
+                                            + ₱{{ number_format($row['penalty'], 2) }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <p style="color:#999;padding:1rem;">No schedule available.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Loan Charges Modal (mobile) --}}
+        <div class="modal fade mobile-modal" id="chargesModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+                <div class="modal-content"
+                    style="border:none;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15);">
+                    <div class="modal-header"
+                        style="background:#fff;padding:1.4rem 1.6rem;border-bottom:1px solid var(--line);">
+                        <div class="modal-parent">
+                            <div class="modal-icon"><i class="fa fa-money-check-dollar"></i></div>
+                            <div>
+                                <h5 class="modal-title" style="color:#1a1a1a;font-size:17px;font-weight:600;margin:0;">
+                                    Loan Charges</h5>
+                                <p style="color:var(--muted);font-size:13.5px;margin:3.2px 0 0;">Breakdown of your loan
+                                    charges</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" style="color:var(--muted);font-size:16px;"
+                            onclick="closeModal('chargesModal')"></button>
+                    </div>
+                    <div class="modal-body" style="padding:0;background:#fff;max-height:70vh;overflow-y:auto;">
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-coins"></i></div>
+                                    <div><span>Interest Rate</span>
+                                        <p>Total interest applied</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>{{ number_format($interestRate, 2) }}%</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-receipt"></i></div>
+                                    <div><span>Total Interest</span>
+                                        <p>Cost of borrowing</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($totalInterest, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-calculator"></i></div>
+                                    <div><span>Processing Fee</span>
+                                        <p>Processing & collection</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($processingFee, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-file-contract"></i></div>
+                                    <div><span>Service & Legal Fee</span>
+                                        <p>One-time fee</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($serviceFee, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-shield-halved"></i></div>
+                                    <div><span>Loan Protection Plan</span>
+                                        <p>Per month of term</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($loanProtectionFee, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-piggy-bank"></i></div>
+                                    <div><span>Retention / CBU</span>
+                                        <p>Held as capital build-up</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($retentionFee, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="pay-item">
+                            <div class="parent-item">
+                                <div class="item">
+                                    <div class="icon"><i class="fa fa-hand-holding-dollar"></i></div>
+                                    <div><span>Net Proceeds</span>
+                                        <p>Amount released to you</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-amount">
+                                <p>₱{{ number_format($netProceeds, 2) }}</p>
+                            </div>
+                        </div>
+                        <div class="total-charges"
+                            style="padding:18px 20px;display:flex;justify-content:space-between;align-items:center;background-color:var(--lavender-tint);">
+                            <span style="color:#1a1a1a;font-weight:600;font-size:13.5px;">Total Charges</span>
+                            <p style="color:var(--coral);font-weight:700;font-size:13.5px;margin:0;">
+                                ₱{{ number_format($totalInterest + $processingFee + $serviceFee + $loanProtectionFee + $retentionFee, 2) }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -701,12 +1115,14 @@
     </div>
 
     {{-- QR Lightbox --}}
-    <div id="qr-lightbox-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100000; align-items:center; justify-content:center;">
+    <div id="qr-lightbox-overlay"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100000; align-items:center; justify-content:center;">
         <button type="button" onclick="closeQrLightbox()"
             style="position:absolute; top:20px; right:24px; background:#fff; border:none; width:40px; height:40px; border-radius:50%; font-size:20px; color:#333; cursor:pointer; display:flex; align-items:center; justify-content:center;">
             <i class="fa fa-times"></i>
         </button>
-        <img id="qr-lightbox-img" src="" alt="GCash QR Code" style="max-width:90%; max-height:85vh; border-radius:12px;">
+        <img id="qr-lightbox-img" src="" alt="GCash QR Code"
+            style="max-width:90%; max-height:85vh; border-radius:12px;">
     </div>
 
     {{-- AOS animation link js --}}
@@ -796,45 +1212,144 @@
             window.location.href = url.toString();
         }
 
-        function applyLoanFilters() {
-            const search = document.getElementById('loan-search').value.toLowerCase().trim();
-            const type = document.getElementById('loan-type-filter').value;
-            const refSelect = document.getElementById('loan-reference-filter');
+        // ══════════════════════════════════════════════════════════
+        //  LOAN GRID — search / type / date filtering + pagination
+        //  (only relevant on the "no loan selected" grid view)
+        // ══════════════════════════════════════════════════════════
+        const LOAN_GRID_PAGE_SIZE = 10;
+        let loanGridPage = 1;
 
-            // Only filter which references are shown — never auto-select or navigate.
-            Array.from(refSelect.options).forEach(opt => {
-                if (!opt.value) return; // skip the placeholder option
-
-                if (!type) {
-                    // No loan type chosen yet — no reference should be visible.
-                    opt.hidden = true;
-                    return;
-                }
-
-                const optType = opt.dataset.type || '';
-                const matchesType = optType === type;
-                const matchesSearch = !search || opt.value.toLowerCase().includes(search);
-                opt.hidden = !(matchesType && matchesSearch);
-            });
-
-            // If the currently selected reference no longer matches the type/search,
-            // reset the dropdown back to the placeholder rather than showing a stale pick.
-            const selectedOption = refSelect.options[refSelect.selectedIndex];
-            if (selectedOption && selectedOption.hidden) {
-                refSelect.value = '';
-            }
+        function getLoanGridCards() {
+            const grid = document.getElementById('loan-select-grid');
+            return grid ? Array.from(grid.querySelectorAll('.loan-select-card')) : [];
         }
 
-        document.getElementById('loan-search').addEventListener('input', applyLoanFilters);
-        document.getElementById('loan-type-filter').addEventListener('change', applyLoanFilters);
+        let loanStatusFilter = 'all';
 
-        // Loan only loads once the person explicitly picks a reference.
-        document.getElementById('loan-reference-filter').addEventListener('change', function () {
-            const opt = this.options[this.selectedIndex];
-            if (opt && opt.dataset.id) navigateToLoan(opt.dataset.id);
-        });
+        function filterLoanStatusTab(status, btn) {
+            document.querySelectorAll('.loan-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loanStatusFilter = status;
+            applyLoanFilters();
+        }
 
-        // Keep the reference list correctly filtered on initial page load
+        function applyLoanFilters() {
+            const cards = getLoanGridCards();
+            if (cards.length === 0) return;
+
+            const search = (document.getElementById('loan-search')?.value || '').toLowerCase().trim();
+            const type = document.getElementById('loan-type-filter')?.value || '';
+            const date = document.getElementById('loan-date-filter')?.value || '';
+
+            cards.forEach(card => {
+                const cardType = card.dataset.type || '';
+                const cardRef = (card.dataset.ref || '').toLowerCase();
+                const cardDate = card.dataset.date || '';
+                const cardStatus = card.dataset.status || '';
+
+                const matchesSearch = !search || cardRef.includes(search) || cardType.toLowerCase().includes(search);
+                const matchesType = !type || cardType === type;
+                const matchesDate = !date || cardDate === date;
+                const matchesStatus = loanStatusFilter === 'all' || cardStatus === loanStatusFilter;
+
+                card.dataset.filteredOut = (matchesSearch && matchesType && matchesDate && matchesStatus) ? 'false' : 'true';
+            });
+
+            loanGridPage = 1;
+            paginateLoanGrid();
+        }
+
+        function paginateLoanGrid() {
+            const cards = getLoanGridCards();
+            if (cards.length === 0) return;
+
+            const filtered = cards.filter(card => card.dataset.filteredOut !== 'true');
+            const totalPages = Math.max(1, Math.ceil(filtered.length / LOAN_GRID_PAGE_SIZE));
+            if (loanGridPage > totalPages) loanGridPage = totalPages;
+
+            cards.forEach(card => {
+                if (card.dataset.filteredOut === 'true') card.style.display = 'none';
+            });
+
+            filtered.forEach((card, i) => {
+                const onPage = Math.floor(i / LOAN_GRID_PAGE_SIZE) + 1 === loanGridPage;
+                card.style.display = onPage ? '' : 'none';
+            });
+
+            // ── Empty state ──
+            const grid = document.getElementById('loan-select-grid');
+            const emptyBlock = document.getElementById('loan-grid-empty');
+            const emptyText = document.getElementById('loan-grid-empty-text');
+            const paginationBar = document.querySelector('.loan-grid-pagination-bar');
+
+            if (filtered.length === 0) {
+                if (grid) grid.style.display = 'none';
+                if (paginationBar) paginationBar.style.display = 'none';
+                if (emptyBlock) emptyBlock.style.display = 'flex';
+
+                const messages = {
+                    all: 'You have no loans yet.',
+                    active: 'You have no active loans.',
+                    completed: 'You have no completed loans yet.',
+                    overdue: 'You have no overdue loans. Great job staying on track!'
+                };
+                if (emptyText) emptyText.textContent = messages[loanStatusFilter] || 'No loans found.';
+            } else {
+                if (grid) grid.style.display = '';
+                if (paginationBar) paginationBar.style.display = '';
+                if (emptyBlock) emptyBlock.style.display = 'none';
+            }
+
+            renderLoanGridPagination(loanGridPage, totalPages, filtered.length);
+        }
+
+        function renderLoanGridPagination(page, totalPages, total) {
+            const countEl = document.getElementById('loan-grid-count');
+
+            if (countEl) {
+                const shown = total === 0 ? 0 : Math.min(LOAN_GRID_PAGE_SIZE, total - (page - 1) * LOAN_GRID_PAGE_SIZE);
+                countEl.textContent = `Showing ${shown} of ${total} loan${total == 1 ? '' : 's'}`;
+            }
+
+            const container = document.getElementById('loan-grid-pg');
+            if (!container) return;
+            container.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            const makeBtn = (label, targetPage, opts = {}) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pg-btn' + (opts.active ? ' active' : '');
+                btn.innerHTML = label;
+                btn.disabled = !!opts.disabled;
+                btn.addEventListener('click', () => { loanGridPage = targetPage; paginateLoanGrid(); });
+                return btn;
+            };
+
+            container.appendChild(makeBtn('<i class="fa fa-chevron-left"></i>', page - 1, { disabled: page === 1 }));
+
+            const addEllipsis = () => {
+                const span = document.createElement('span');
+                span.className = 'pg-ellipsis';
+                span.textContent = '…';
+                container.appendChild(span);
+            };
+
+            const pages = new Set([1, totalPages, page, page - 1, page + 1]);
+            let prev = 0;
+            Array.from(pages).filter(p => p >= 1 && p <= totalPages).sort((a, b) => a - b).forEach(p => {
+                if (prev && p - prev > 1) addEllipsis();
+                container.appendChild(makeBtn(String(p), p, { active: p === page }));
+                prev = p;
+            });
+
+            container.appendChild(makeBtn('<i class="fa fa-chevron-right"></i>', page + 1, { disabled: page === totalPages }));
+        }
+
+        document.getElementById('loan-search')?.addEventListener('input', applyLoanFilters);
+        document.getElementById('loan-type-filter')?.addEventListener('change', applyLoanFilters);
+        document.getElementById('loan-date-filter')?.addEventListener('change', applyLoanFilters);
+
         document.addEventListener('DOMContentLoaded', applyLoanFilters);
     </script>
 
@@ -905,6 +1420,7 @@
         }
 
         function openRepayModal(type = 'monthly') {
+            activeModalId = 'repayModal';
             document.getElementById('payment-type-select').value = type;
             document.getElementById('repay-amount-input').value = (type === 'full')
                 ? FULL_BALANCE
@@ -1027,9 +1543,68 @@
                 backdrop.style.display = 'none';
                 document.body.classList.remove('modal-open');
             }, 250);
+
+            activeModalId = null;
         }
 
-        document.getElementById('repay-backdrop').addEventListener('click', closeRepayModal);
+        let activeModalId = null;
+
+        function openModal(modalId) {
+            // Only meaningful on the collapsed (mobile/tablet) breakpoint —
+            // matches the 880px max-width media query that hides the inline body.
+            if (window.innerWidth > 880) return;
+
+            const modal = document.getElementById(modalId);
+            const backdrop = document.getElementById('repay-backdrop');
+            if (!modal || !backdrop) return;
+
+            activeModalId = modalId;
+
+            modal.style.display = 'block';
+            backdrop.style.display = 'block';
+            document.body.classList.add('modal-open');
+
+            void modal.offsetWidth; // force reflow so the transition plays
+
+            modal.classList.add('show');
+            backdrop.classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const backdrop = document.getElementById('repay-backdrop');
+            if (!modal || !backdrop) return;
+
+            modal.classList.remove('show');
+            backdrop.classList.remove('show');
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                backdrop.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }, 250);
+
+            activeModalId = null;
+        }
+
+        function openScheduleModal() { openModal('scheduleModal'); }
+        function openChargesModal() { openModal('chargesModal'); }
+
+        // Click-outside-to-close for both new modals
+        document.getElementById('scheduleModal')?.addEventListener('click', function (e) {
+            if (e.target === this) closeModal('scheduleModal');
+        });
+        document.getElementById('chargesModal')?.addEventListener('click', function (e) {
+            if (e.target === this) closeModal('chargesModal');
+        });
+
+        document.getElementById('repay-backdrop').addEventListener('click', function () {
+            if (activeModalId === 'repayModal') {
+                closeRepayModal();
+            } else if (activeModalId) {
+                closeModal(activeModalId);
+            }
+        });
 
         document.getElementById('repayModal').addEventListener('click', function (e) {
             if (e.target === this) closeRepayModal();

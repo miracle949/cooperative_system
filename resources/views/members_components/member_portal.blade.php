@@ -201,6 +201,7 @@
         <div id="page-content" @if(session('just_logged_in')) style="opacity:0;" @endif>
             <div class="rightbar">
                 @include("components.navbar2")
+                @include("components.footer")
 
                 <div class="main-parent">
                     <main>
@@ -259,26 +260,33 @@
                                 </div>
                             </div>
 
-                            {{-- Overdue Loans --}}
-                            <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
+                            {{-- Upcoming Dues --}}
+                            <div class="card-box" onclick="document.getElementById('upcomingDuesModal').style.display='flex'">
                                 <div class="card-header">
-                                    <p>Overdue Loans</p>
-                                    <div class="update"><i class="fa fa-triangle-exclamation"></i></div>
+                                    <p>Upcoming Dues</p>
+                                    <div class="update"><i class="fa fa-calendar-day"></i></div>
                                 </div>
                                 <div class="card-body">
-                                    <h5>{{ $overdueCount }} Loan(s)</h5>
-                                    <p>{{ $earliestOverdueDisplay ? "⚠ Due {$earliestOverdueDisplay}" : 'No overdue' }}</p>
+                                    <h5>{{ $upcomingDues->count() }} Due(s)</h5>
+                                    <p>{{ $nextDueDisplay ? "Next due {$nextDueDisplay}" : 'No upcoming dues' }}</p>
                                 </div>
                             </div>
 
-                            <div class="card-box" onclick="document.getElementById('netStandingModal').style.display='flex'">
+                            {{-- Seminars --}}
+                            <div class="card-box" onclick="document.getElementById('seminarsModal').style.display='flex'">
                                 <div class="card-header">
-                                    <p>Net Standing</p>
-                                    <div class="update"><i class="fa fa-wallet"></i></div>
+                                    <p>Seminars</p>
+                                    <div class="update"><i class="fa fa-graduation-cap"></i></div>
                                 </div>
                                 <div class="card-body">
-                                    <h5>₱{{ number_format($netStandingTotal, 2) }}</h5>
-                                    <p>Overall financial position</p>
+                                    <h5>{{ $seminarsCompletedCount }} Attended</h5>
+                                    <p>
+                                        @if ($seminarsCompletedCount === $seminarsTotalCount)
+                                            All seminars attended
+                                        @else
+                                            {{ $seminarsTotalCount - $seminarsCompletedCount }} remaining
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
 
@@ -301,18 +309,61 @@
                     <h3>Quick Summary</h3> -->
 
                     <section>
-                        <div class="parent-panel panel-1">
-                            <div class="panel graph" style="width:100%;">
-                                <div class="panel-head"
-                                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                        <div class="card-box-summary">
+                            <div class="loan-overview">
+                                <div class="loan-header">
                                     <div>
-                                        <h3>Savings Growth</h3>
-                                        <p>Net deposits over the last 6 months</p>
+                                        <h4>Overdue Loans</h4>
+                                        <p>Loans past due across all accounts</p>
                                     </div>
-                                    <div class="year-filter">
-                                        <select onchange="window.location='{{ url()->current() }}?year='+this.value">
+                                    <div>
+                                        <a href="{{ route('LoanStatus') }}">View all</a>
+                                    </div>
+                                </div>
+                                <div class="recent-body">
+                                    <div class="tx-list">
+                                        @forelse ($overdueLoansDisplay as $overdue)
+                                            <div class="tx-list-item">
+                                                <div class="tx-icon {{ $overdue['icon'] }}"><i class="fa-solid {{ $overdue['icon_fa'] }}"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $overdue['title'] }}</strong>
+                                                    <span>{{ $overdue['date_display'] }} · {{ $overdue['subtitle'] }}</span>
+                                                </div>
+                                                <div class="tx-list-amt down">
+                                                    +₱{{ number_format($overdue['amount'], 2) }}
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No overdue loans.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="panel graph announcements">
+                                <div class="panel-head"
+                                style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Announcements</h3>
+                                        <p>Latest updates</p>
+                                    </div>
+                                    <div class="balance-date">
+                                        <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
+                                            @foreach (range(1, 12) as $m)
+                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                    {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
                                             @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
+                                                <option value="{{ $year }}"
+                                                    {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
                                                     {{ $year }}
                                                 </option>
                                             @endforeach
@@ -320,66 +371,93 @@
                                     </div>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="chart-wrap">
-                                        @foreach ($savingsGrowth as $month)
-                                            <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
-                                                <div class="bar" style="height:{{ $month['height_percent'] }}%">
-                                                    <div class="bar-tooltip">
-                                                        <div class="bar-tooltip-title">{{ $month['label'] }}</div>
-                                                        <div class="bar-tooltip-row">
-                                                            <span
-                                                                class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
-                                                            <span class="bar-tooltip-label">Net Savings:</span>
-                                                            <span class="bar-tooltip-value">
-                                                                {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{ number_format(abs($month['net']), 2) }}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <span class="bar-month">{{ $month['label'] }}</span>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                    <!-- <div class="chart-legend">
-                                        <div class="legend-item"><span class="legend-dot"
-                                                style="background:var(--blue);"></span>Prior months</div>
-                                        <div class="legend-item"><span class="legend-dot"
-                                                style="background:var(--gold);"></span>Current month</div>
-                                    </div> -->
+
                                 </div>
                             </div>
+                            
+
+                        
+                        </div>
+                        <div class="parent-panel panel-1">
 
                             <div class="panel graph announcements">
                                 <div class="panel-head"
                                 style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                                <div>
-                                    <h3>Announcements</h3>
-                                    <p>Latest updates from your cooperative</p>
-                                </div>
-                                <div class="balance-date">
-                                    <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
-                                        @foreach (range(1, 12) as $m)
-                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
-                                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
-                                        @foreach ($availableYears as $year)
-                                            <option value="{{ $year }}"
-                                                {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
-                                                {{ $year }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div>
+                                        <h3>Announcements</h3>
+                                        <p>Latest updates</p>
+                                    </div>
+                                    <div class="balance-date">
+                                        <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
+                                            @foreach (range(1, 12) as $m)
+                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                    {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}"
+                                                    {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="recent-transaction">
+                                <div class="recent-header">
+                                    <div>
+                                        <h3>Recent Transactions</h3>
+                                        <p>Latest account activity across all accounts</p>
+                                    </div>
+                                    <div>
+                                        <a href="{{ route('transactions') }}">View all</a>
+                                    </div>
+                                </div>
+
+                                <div style="display:flex; gap:8px; padding:14px 20px 14px; border-bottom: 1px solid var(--border)">
+                                    <button type="button" class="tx-tab-btn active" data-tx-filter="all" onclick="filterRecentTx('all', this)">All</button>
+                                    <button type="button" class="tx-tab-btn" data-tx-filter="loans" onclick="filterRecentTx('loans', this)">Loans</button>
+                                    <button type="button" class="tx-tab-btn" data-tx-filter="savings" onclick="filterRecentTx('savings', this)">Savings</button>
+                                    <button type="button" class="tx-tab-btn" data-tx-filter="share_capital" onclick="filterRecentTx('share_capital', this)">Share Capital</button>
+                                </div>
+
+                                <div class="recent-body">
+                                    <div class="tx-list" id="recentTxList">
+                                        @forelse ($recentTransactions as $tx)
+                                            <div class="tx-list-item" data-category="{{ $tx['category'] }}">
+                                                <div class="tx-icon {{ $tx['icon'] }}"><i class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $tx['title'] }}</strong>
+                                                    <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
+                                                </div>
+                                                <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
+                                                    {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No transactions found.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                    <div id="recentTxEmpty" style="display:none; text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                        <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                        No transactions in this category.
+                                    </div>
+                                </div>
                             </div>
+
+                            
                             
                         </div>
 
-                        <div class="parent-panel panel-2" style="margin-top:1.5rem;">
+                        {{-- <div class="parent-panel panel-2" style="margin-top:1.5rem;">
                             <div class="panel graph">
                                 <div class="panel-head"
                                     style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
@@ -466,76 +544,8 @@
                                     </div> -->
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="card-box-summary">
-
-                            <div class="recent-transaction">
-                                <div class="recent-header">
-                                    <div>
-                                        <h4>Recent Transactions</h4>
-                                        <p>Latest account activity across all accounts</p>
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('transactions') }}">View all</a>
-                                    </div>
-                                </div>
-                                <div class="recent-body">
-                                    <div class="tx-list">
-                                        @forelse ($recentTransactions as $tx)
-                                            <div class="tx-list-item">
-                                                <div class="tx-icon {{ $tx['icon'] }}"><i class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
-                                                <div class="tx-list-info">
-                                                    <strong>{{ $tx['title'] }}</strong>
-                                                    <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
-                                                </div>
-                                                <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
-                                                    {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
-                                                <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-                                                No transactions found.
-                                            </div>
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="loan-overview">
-                                <div class="loan-header">
-                                    <div>
-                                        <h4>Upcoming Dues</h4>
-                                        <p>Your next loan payments across all accounts</p>
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('LoanStatus') }}">View all</a>
-                                    </div>
-                                </div>
-                                <div class="recent-body">
-                                    <div class="tx-list">
-                                        @forelse ($upcomingDues as $due)
-                                            <div class="tx-list-item">
-                                                <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
-                                                <div class="tx-list-info">
-                                                    <strong>{{ $due['title'] }}</strong>
-                                                    <span>{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
-                                                </div>
-                                                <div class="tx-list-amt down">
-                                                    ₱{{ number_format($due['amount'], 2) }}
-                                                </div>
-                                            </div>
-                                        @empty
-                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
-                                                <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-                                                No upcoming dues.
-                                            </div>
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         {{-- ═══════════════════════════════════════════════
                         FINANCIAL TRENDS CHART
@@ -700,6 +710,108 @@
             </div>
         </div>{{-- end #page-content --}}
     </div>{{-- end .container-fluid --}}
+
+    <!-- Upcoming Dues Modal -->
+    <div id="upcomingDuesModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
+        onclick="if(event.target===this)this.style.display='none'">
+        <div
+            style="background:#fff; border-radius:16px; max-width:480px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3); max-height:80vh; display:flex; flex-direction:column;">
+            <div
+                style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Upcoming Dues</h3>
+                    <p style="margin:3.2px 0 0; font-size:13.5px; color:var(--muted);">Your next loan payments across all accounts</p>
+                </div>
+                <button onclick="document.getElementById('upcomingDuesModal').style.display='none'"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+            </div>
+
+            <div style="padding: 0 24px; overflow-y:auto; height: 368px;">
+                @forelse ($upcomingDues as $due)
+                    <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border);">
+                        <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
+                        <div style="flex:1;">
+                            <strong style="display:block; font-size:14px; color:#111827;">{{ $due['title'] }}</strong>
+                            <span style="font-size:12.5px; color:var(--muted);">{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
+                        </div>
+                        <div style="font-size: 14px;font-weight:700; color:#DC2626;">
+                            ₱{{ number_format($due['amount'], 2) }}
+                        </div>
+                    </div>
+                @empty
+                    <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                        <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                        No upcoming dues.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Seminars Modal -->
+    <div id="seminarsModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
+        onclick="if(event.target===this)this.style.display='none'">
+        <div
+            style="background:#fff; border-radius:16px; max-width:460px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3);">
+            <div
+                style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Seminars</h3>
+                    <p style="margin:3.2px 0 0; font-size:13.5px; color:var(--muted);">Your membership training progress</p>
+                </div>
+                <button onclick="document.getElementById('seminarsModal').style.display='none'"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+            </div>
+
+            <div style="padding: 0 24px; overflow-y:auto; height: 368px;">
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    @forelse ($seminarsSummary as $s)
+                        <div
+                            style="display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--border);">
+                            <div
+                                style="width:40px; height:40px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:#EDF0F5;">
+                                <i class="fa-solid fa-circle-check" style="font-size:14px; color:var(--teal);"></i>
+                            </div>
+                            <div style="flex:1;">
+                                <strong style="display:block; font-size:14px; color:#111827;">{{ $s['label'] }}</strong>
+                                <span style="font-size:12.5px; color:var(--muted);">
+                                    Attended{{ $s['attended_datetime'] ? ' · ' . \Carbon\Carbon::parse($s['attended_datetime'])->format('M d, Y') : '' }}
+                                </span>
+                            </div>
+                            <div style="padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap;flex-shrink: 0; background-color: #EDF0F5; color: var(--teal);">
+                                Attended
+                            </div>
+                        </div>
+                    @empty
+                        <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                            <i class="fa fa-hourglass-half" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                            No seminars attended yet.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterRecentTx(category, btn) {
+            document.querySelectorAll('.tx-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const items = document.querySelectorAll('#recentTxList .tx-list-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const match = category === 'all' || item.dataset.category === category;
+                item.style.display = match ? 'flex' : 'none';
+                if (match) visibleCount++;
+            });
+
+            document.getElementById('recentTxEmpty').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
 
     <script>
         function updateBalanceMonth() {

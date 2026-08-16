@@ -1808,6 +1808,8 @@
 
         <div class="rightbar">
             @include("components.navbar2")
+            @include("components.footer")
+            
             <div class="main-sub-parent">
                 <main>
                     <div class="main-parent">
@@ -3057,7 +3059,7 @@
                                                 <div
                                                     style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:8px;">
                                                     <span>Used: ₱{{ number_format($totalActiveLoan, 2) }}</span>
-                                                    <span>Limit: ₱25,000.00</span>
+                                                    <span>Up to: ₱25,000.00</span>
                                                 </div>
                                                 <div
                                                     style="background:#fff;border:1.5px solid #ffe082;border-radius:8px;padding:7px 12px;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color: var(--teal);">
@@ -4043,13 +4045,13 @@
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'pg-btn' + (opts.active ? ' active' : '');
-                btn.textContent = label;
+                btn.innerHTML = label;
                 btn.disabled = !!opts.disabled;
-                btn.onclick = () => { pgState[listId] = targetPage; paginateList(listId); };
+                btn.addEventListener('click', () => { loanGridPage = targetPage; paginateLoanGrid(); });
                 return btn;
             };
 
-            container.appendChild(makeBtn('‹', page - 1, { disabled: page === 1 }));
+            container.appendChild(makeBtn('<i class="fa fa-chevron-left"></i>', page - 1, { disabled: page === 1 }));
 
             const addEllipsis = () => {
                 const span = document.createElement('span');
@@ -4066,7 +4068,7 @@
                 prev = p;
             });
 
-            container.appendChild(makeBtn('›', page + 1, { disabled: page === totalPages }));
+            container.appendChild(makeBtn('<i class="fa fa-chevron-right"></i>', page + 1, { disabled: page === totalPages }));
         }
 
         function filterCards(listId, query) {

@@ -308,7 +308,7 @@ line-height: 25px;
 .main-text .slide h2 em {
     /* font-family: "Playfair Display", serif; */
     font-family: Georgia, "Times New Roman", serif;
-    color: var(--accent);
+    color: var(--teal);
     font-weight: 600;
 }
 

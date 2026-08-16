@@ -27,6 +27,7 @@
 .container-fluid .rightbar {
     width: calc(100% - 250px);
     margin-left: 250px;
+    position: relative;
     /* width: calc(100% - 220px); */
     /* margin-top: 70px; */
     /* padding: 2rem 3rem 2rem; */
@@ -555,7 +556,7 @@
 .container-fluid main .card-box .card-body p {
     font-size: 12.5px;
     margin: 5px 0 0;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--muted);
 }
 
@@ -843,7 +844,7 @@
     grid-template-columns: repeat(2, 1fr);
     /* align-items: center; */
     gap: 1rem;
-    margin: 1.5rem 0 0;
+    /* margin: 1.5rem 0 0; */
 }
 
 .container-fluid section .card-box-summary h4 {
@@ -885,8 +886,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 20px 0;
-    /* border-bottom: 1px solid var(--border); */
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
 }
 
 .container-fluid section .card-box-summary .loan-overview .loan-body table thead tr th {
@@ -1029,7 +1030,7 @@
     color: #808080;
 }
 
-.container-fluid section .card-box-summary .recent-transaction {
+.container-fluid section .recent-transaction {
     border: 1px solid var(--border);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     width: 100%;
@@ -1037,7 +1038,7 @@
     background-color: #ffffff;
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-header {
+.container-fluid section .recent-transaction .recent-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1045,41 +1046,48 @@
     /* border-bottom: 1px solid var(--border); */
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-header p {
+.container-fluid section .recent-transaction .recent-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0px;
+}
+
+.container-fluid section .recent-transaction .recent-header p {
     font-size: 13.5px;
     margin: 5px 0 0;
     color: var(--muted);
     /* width: 280px; */
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-header a {
+.container-fluid section .recent-transaction .recent-header a {
     font-size: 12.5px;
     text-decoration: none;
     color: var(--teal);
     font-weight: 600;
 }
 
-.container-fluid section .card-box-summary .recent-transaction {
+.container-fluid section .recent-transaction {
     max-width: 100%;
     overflow: hidden;
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body {
+.container-fluid section .recent-transaction .recent-body {
     overflow-x: auto;
     width: 100%;
     /* max-height: 485px; */
-    max-height: 400px;
+    max-height: 350px;
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table {
+.container-fluid section .recent-transaction .recent-body table {
     min-width: 600px;
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table thead {
+.container-fluid section .recent-transaction .recent-body table thead {
     border-bottom: 1px solid var(--border);
 }
 
-.container-fluid section .card-box-summary .recent-transaction .recent-body table thead tr th {
+.container-fluid section .recent-transaction .recent-body table thead tr th {
     font-size: 10.5px;
     color: var(--muted);
     background-color: #f7f9fc;
@@ -1136,7 +1144,7 @@
 .tx-list {
     display: flex;
     flex-direction: column;
-    padding: 10px 20px 12px;
+    padding: 0 20px 12px;
     max-height: 400px;
     overflow-y: auto;
 }
@@ -1165,11 +1173,11 @@
 .tx-list-info strong {
     font-size: 13px;
     font-weight: 600;
-    color: var(--muted);
+    color: #111827;
 }
 
 .tx-list-info span {
-    font-size: 11.5px;
+    font-size: 12.5px;
     color: var(--muted);
 }
 
@@ -1909,12 +1917,33 @@
     grid-template-columns: repeat(2, 1fr);
     /* align-items: center; */
     gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .panel-1 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* grid-template-columns: 1.5fr 1fr; */
+}
+
+.tx-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 12.5px;
+    padding: 6px 16px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #808080;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+}
+
+.tx-tab-btn.active {
+    background-color: var(--teal);
+    color: #ffffff;
+    border-color: var(--teal);
 }
 
 .panel {
@@ -1927,8 +1956,8 @@
 }
 
 .panel-head {
-    padding: 18px 20px 0px;
-    /* border-bottom: 1px solid var(--line); */
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
 }
 
 .panel-head h3 {
@@ -1949,8 +1978,13 @@
 }
 
 .panel-body {
-    padding: 0 20px 20px;
-    height: calc(100% - 62px);
+    /* padding: 0 20px 20px; */
+    /* height: calc(100% - 62px); */
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 12px;
+    height: 400px;
+    overflow-y: auto;
 }
 
 .container-fluid .loan-application .buttons-parent {
@@ -2122,9 +2156,9 @@
     /* background-color: #ffffff; */
 }
 
-.container-fluid section .card-box-parent .loan-application .parent-loan::-webkit-scrollbar {
+/* .container-fluid section .card-box-parent .loan-application .parent-loan::-webkit-scrollbar {
     display: none;
-}
+} */
 
 .container-fluid section .card-box-parent .loan-application .parent-loan-empty {
     margin-top: 2rem;
@@ -2143,9 +2177,9 @@
     align-items: center;
 }
 
-.container-fluid section .card-box-parent .loan-application .parent-loan-empty::-webkit-scrollbar {
+/* .container-fluid section .card-box-parent .loan-application .parent-loan-empty::-webkit-scrollbar {
     display: none;
-}
+} */
 
 .container-fluid section .card-box-parent .loan-application .parent-loan-empty h3 {
     font-size: 16px;
@@ -2913,6 +2947,7 @@
 }
 
 @media only screen and (max-width: 500px) {
+
     .container-fluid main .main-intro .main-intro-text {
         width: 290px;
         top: -45px;
@@ -2925,6 +2960,11 @@
     .container-fluid main .main-intro p {
         font-size: 13px;
     }
+
+    .container-fluid .rightbar {
+        position: relative;
+    }
+
 }
 
 @media only screen and (max-width: 480px) {
@@ -2943,6 +2983,7 @@
         left: -20px;
     }
 }
+
 
 @media only screen and (max-width: 460px) {
 
