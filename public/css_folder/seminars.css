@@ -471,3 +471,68 @@
     }
 
 }
+
+/* ── Passcode entry + flash messages ── */
+.container-fluid .rightbar .main-parent .sem-flash-success,
+.container-fluid .rightbar .main-parent .sem-flash-error,
+.container-fluid .rightbar .main-parent .sem-flash-info {
+    margin-top: 1rem;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+.container-fluid .rightbar .main-parent .sem-flash-success {
+    background: var(--mint-pale);
+    color: #0f7a55;
+    border: 1px solid var(--mint);
+}
+
+.container-fluid .rightbar .main-parent .sem-flash-error {
+    background: var(--coral-pale);
+    color: var(--coral);
+    border: 1px solid var(--coral);
+}
+
+.container-fluid .rightbar .main-parent .sem-flash-info {
+    background: var(--gold-pale);
+    color: #a1690b;
+    border: 1px solid var(--gold);
+}
+
+.container-fluid .rightbar .main-parent .sem-passcode-input {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 340px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.container-fluid .rightbar .main-parent .sem-passcode-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-pale);
+}
+
+.container-fluid .rightbar .main-parent .sem-passcode-btn {
+    border: none;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--teal);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+}
+
+.container-fluid .rightbar .main-parent .sem-passcode-btn:hover {
+    background: var(--teal-dark);
+}

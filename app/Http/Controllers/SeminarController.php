@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Seminars_tbl;
 use App\Models\SeminarAttendees_tbl;
 use App\Models\SeminarCompletions_tbl;
+use App\Models\SeminarPasscodes_tbl;
+use App\Models\SeminarTypes_tbl;
 use App\Models\Users_tbl;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class SeminarController extends Controller
 {
-    public function index()
+    public const CORE_TYPES = ['pmes', 'fundamentals', 'finance'];
+
+    public function index(Request $request)
     {
         $upcomingSeminars = Seminars_tbl::with(['attendees.user'])
             ->where('schedule_datetime', '>=', now())
@@ -24,27 +29,125 @@ class SeminarController extends Controller
             ->orderBy('schedule_datetime', 'desc')
             ->get();
 
-        $users = Users_tbl::where('role', '!=', 'admin')
-            ->orderBy('first_name')
-            ->get()
-            ->map(function ($user) {
-                $completion = SeminarCompletions_tbl::where('user_id', $user->id)->first();
-                $user->completion = $completion ?: (object) [
-                    'pmes_completed' => false,
-                    'fundamentals_completed' => false,
-                    'finance_completed' => false,
-                    'completed_at' => null,
-                ];
-                return $user;
-            });
+        $seminarTypes = SeminarTypes_tbl::orderBy('id')->get();
+        $passcodes = SeminarPasscodes_tbl::all()->keyBy('seminar_type');
 
-        return view('admin_components.seminars', compact('upcomingSeminars', 'pastSeminars', 'users'));
+        $search = $request->input('search', '');
+        $statusFilter = $request->input('status', 'all');
+
+        $query = Users_tbl::leftJoin('seminar_completions_tbls', 'seminar_completions_tbls.user_id', '=', 'users_tbls.id')
+            ->where('users_tbls.role', '!=', 'admin')
+            ->select(
+                'users_tbls.*',
+                'seminar_completions_tbls.pmes_completed',
+                'seminar_completions_tbls.fundamentals_completed',
+                'seminar_completions_tbls.finance_completed',
+                'seminar_completions_tbls.completed_at as completion_completed_at'
+            );
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('users_tbls.first_name', 'like', "%{$search}%")
+                    ->orWhere('users_tbls.last_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($statusFilter === 'completed') {
+            $query->whereRaw('(COALESCE(seminar_completions_tbls.pmes_completed,0) + COALESCE(seminar_completions_tbls.fundamentals_completed,0) + COALESCE(seminar_completions_tbls.finance_completed,0)) = 3');
+        } elseif ($statusFilter === 'incomplete') {
+            $query->whereRaw('(COALESCE(seminar_completions_tbls.pmes_completed,0) + COALESCE(seminar_completions_tbls.fundamentals_completed,0) + COALESCE(seminar_completions_tbls.finance_completed,0)) < 3');
+        }
+
+        $query->orderByRaw('(COALESCE(seminar_completions_tbls.pmes_completed,0) + COALESCE(seminar_completions_tbls.fundamentals_completed,0) + COALESCE(seminar_completions_tbls.finance_completed,0)) asc')
+            ->orderBy('users_tbls.first_name');
+
+        $users = $query->paginate(15)->withQueryString();
+
+        $userIds = $users->pluck('id');
+        $attendedMap = DB::table('seminar_attendees_tbls')
+            ->join('seminars_tbls', 'seminars_tbls.id', '=', 'seminar_attendees_tbls.seminar_id')
+            ->whereIn('seminar_attendees_tbls.user_id', $userIds)
+            ->where('seminar_attendees_tbls.status', 'attended')
+            ->get(['seminar_attendees_tbls.user_id', 'seminars_tbls.seminar_type'])
+            ->groupBy('user_id')
+            ->map(fn($rows) => $rows->pluck('seminar_type')->unique()->values()->all());
+
+        $users->getCollection()->transform(function ($user) use ($attendedMap) {
+            $user->completion = (object) [
+                'pmes_completed' => (bool) $user->pmes_completed,
+                'fundamentals_completed' => (bool) $user->fundamentals_completed,
+                'finance_completed' => (bool) $user->finance_completed,
+                'completed_at' => $user->completion_completed_at,
+            ];
+            $user->attended_types = $attendedMap[$user->id] ?? [];
+            return $user;
+        });
+
+        return view('admin_components.seminars', compact(
+            'upcomingSeminars',
+            'pastSeminars',
+            'users',
+            'seminarTypes',
+            'passcodes',
+            'search',
+            'statusFilter'
+        ));
+    }
+
+    public function storeSeminarType(Request $request)
+    {
+        $validated = $request->validate([
+            'label' => 'required|string|max:100|unique:seminar_types_tbls,label',
+        ]);
+
+        $slug = Str::slug($validated['label'], '_');
+
+        if (SeminarTypes_tbl::where('slug', $slug)->exists()) {
+            return redirect()->back()->with('error', 'A seminar type with a similar name already exists.')->withInput();
+        }
+
+        SeminarTypes_tbl::create([
+            'slug' => $slug,
+            'label' => $validated['label'],
+        ]);
+
+        AuditLog::log('Created Seminar Type', "Created seminar type '{$validated['label']}'", 'seminar_type', null);
+
+        return redirect()->route('seminars.index')->with('success', "Seminar type '{$validated['label']}' created.");
+    }
+
+    public function savePasscode(Request $request)
+    {
+        $validated = $request->validate([
+            'seminar_type' => 'required|in:pmes,fundamentals,finance',
+            'passcode' => 'required|string|max:64',
+            'valid_days' => 'nullable|integer|min:1|max:365',
+        ]);
+
+        $validDays = $validated['valid_days'] ?? 1;
+
+        SeminarPasscodes_tbl::updateOrCreate(
+            ['seminar_type' => $validated['seminar_type']],
+            [
+                'passcode' => $validated['passcode'],
+                'expires_at' => now()->addDays($validDays),
+            ]
+        );
+
+        AuditLog::log(
+            'Set Seminar Passcode',
+            "Set passcode for {$validated['seminar_type']} valid for {$validDays} day(s)",
+            'seminar_passcode',
+            null
+        );
+
+        return redirect()->route('seminars.index')->with('success', 'Passcode set successfully.');
     }
 
     public function scheduleSeminar(Request $request)
     {
         $validated = $request->validate([
-            'seminar_type' => 'required|in:pmes,fundamentals,finance',
+            'seminar_type' => 'required|exists:seminar_types_tbls,slug',
             'schedule_datetime' => 'required|date|after:now',
             'delivery_type' => 'required|in:online,f2f',
             'online_link' => 'nullable|url|required_if:delivery_type,online',
@@ -117,7 +220,7 @@ class SeminarController extends Controller
             $validated['seminar_id']
         );
 
-        if ($validated['status'] === 'attended') {
+        if ($validated['status'] === 'attended' && in_array($seminar->seminar_type, self::CORE_TYPES)) {
             $completion = SeminarCompletions_tbl::firstOrCreate(
                 ['user_id' => $validated['user_id']],
                 [
@@ -127,11 +230,10 @@ class SeminarController extends Controller
                 ]
             );
 
-            $column = $seminar->seminar_type . '_completed';
-            $completion->$column = true;
+            $completion->{$seminar->seminar_type . '_completed'} = true;
             $completion->save();
 
-            $this->autoUpgradeIfComplete($validated['user_id'], $completion);
+            self::autoUpgradeIfComplete($validated['user_id'], $completion);
         }
 
         return response()->json([
@@ -140,58 +242,7 @@ class SeminarController extends Controller
         ]);
     }
 
-    public function toggleManualCompletion(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users_tbls,id',
-            'field' => 'required|in:pmes_completed,fundamentals_completed,finance_completed',
-        ]);
-
-        $completion = SeminarCompletions_tbl::firstOrCreate(
-            ['user_id' => $validated['user_id']],
-            [
-                'pmes_completed' => false,
-                'fundamentals_completed' => false,
-                'finance_completed' => false,
-            ]
-        );
-
-        $completion->{$validated['field']} = !$completion->{$validated['field']};
-        $completion->save();
-
-        AuditLog::log(
-            'Toggled Seminar Completion',
-            "Toggled {$validated['field']} for user #{$validated['user_id']} to " . ($completion->{$validated['field']} ? 'completed' : 'incomplete'),
-            'seminar_completion',
-            $validated['user_id']
-        );
-
-        $allComplete = $completion->pmes_completed && $completion->fundamentals_completed && $completion->finance_completed;
-
-        if ($allComplete) {
-            $completion->completed_at = $completion->completed_at ?: now();
-            $completion->save();
-            $this->autoUpgradeIfComplete($validated['user_id'], $completion);
-        } else {
-            $completion->completed_at = null;
-            $completion->save();
-
-            $user = Users_tbl::find($validated['user_id']);
-            if ($user->role === 'member' && !$allComplete) {
-                // Optionally downgrade - but spec says upgrade only; leave role as-is
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'field' => $validated['field'],
-            'value' => $completion->{$validated['field']},
-            'all_complete' => $allComplete,
-            'completed_at' => $completion->completed_at ? $completion->completed_at->format('M d, Y h:i A') : null,
-        ]);
-    }
-
-    private function autoUpgradeIfComplete($userId, $completion)
+    public static function autoUpgradeIfComplete($userId, $completion)
     {
         if ($completion->pmes_completed && $completion->fundamentals_completed && $completion->finance_completed) {
             $user = Users_tbl::find($userId);

@@ -489,6 +489,8 @@
                                                                 <div class="deposit">Deposit</div>
                                                             @elseif($tx->type === 'td_release')
                                                                 <div class="deposit">Time Deposit Claimed</div>
+                                                            @elseif($tx->type === \App\Http\Controllers\ShareCapital::CONVERSION_TYPE)
+                                                                <div class="withdraw">Savings to Share Capital Conversion</div>
                                                             @elseif(str_starts_with($tx->reference_no ?? '', 'LNPAY'))
                                                                 <div class="withdraw">Loan Repay</div>
                                                             @else
@@ -506,8 +508,8 @@
                                                             {{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
                                                         </td>
                                                         <td class="text-start"
-                                                            style="font-weight:700; color:{{ $tx->type === 'withdrawal' ? 'var(--red)' : 'var(--green)' }}">
-                                                            {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
+                                                            style="font-weight:700; color:{{ in_array($tx->type, ['withdrawal', \App\Http\Controllers\ShareCapital::CONVERSION_TYPE]) ? 'var(--red)' : 'var(--green)' }}">
+                                                            {{ in_array($tx->type, ['withdrawal', \App\Http\Controllers\ShareCapital::CONVERSION_TYPE]) ? '-' : '+' }} ₱
                                                             {{ number_format($tx->amount, 2) }}
                                                         </td>
                                                         <td>

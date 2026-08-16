@@ -13,6 +13,10 @@ class DividendSetting extends Model
         'dividend_fund_percentage',
         'patronage_fund_percentage',
         'patronage_basis',
+        'reserve_fund_percentage',
+        'cetf_percentage',
+        'cdf_percentage',
+        'optional_fund_percentage',
         'updated_by',
     ];
 
@@ -29,6 +33,10 @@ class DividendSetting extends Model
                 'dividend_fund_percentage' => 60.00,
                 'patronage_fund_percentage' => 40.00,
                 'patronage_basis' => 'total_repayment',
+                'reserve_fund_percentage' => 10.00,
+                'cetf_percentage' => 10.00,
+                'cdf_percentage' => 3.00,
+                'optional_fund_percentage' => 7.00,
             ]
         );
     }

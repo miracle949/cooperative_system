@@ -26,9 +26,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use App\Mail\ApprovedMail;
-use App\Mail\ShareCapital;
+use App\Mail\ShareCapital as ShareCapitalMail;
 use App\Mail\DeclinedMail;
 
 class UserController extends Controller
@@ -138,7 +139,7 @@ class UserController extends Controller
             $id
         );
 
-        Mail::to($user->email)->sendNow(new ShareCapital($user));
+        Mail::to($user->email)->sendNow(new ShareCapitalMail($user));
 
         return redirect()->back()->with('success', 'Share capital invitation sent!');
     }
@@ -298,7 +299,7 @@ class UserController extends Controller
             'user',
             $id
         );
-        Mail::to($user->email)->sendNow(new ShareCapital($user));
+        Mail::to($user->email)->sendNow(new ShareCapitalMail($user));
         return redirect()->back()->with('success', 'Share capital email sent to member!');
     }
 
@@ -600,35 +601,25 @@ class UserController extends Controller
             'inactive' => 0
         ];
 
-        // Loans by Type (for loan distribution)
-        $allLoans = lending_program_tbl::where('status', 'Approved')->with('user')->get();
-        
-        $loanTypeCounts = [
-            'Personal' => 0,
-            'Education' => 0,
-            'Emergency' => 0,
-            'Business' => 0
-        ];
-        
-        $loansByTypeDetails = [
-            'Personal' => [],
-            'Education' => [],
-            'Emergency' => [],
-            'Business' => []
-        ];
-        
+        // Loans by Type (for loan distribution) — dynamic from loan_settings_tbls
+        $allLoans = lending_program_tbl::whereIn('status', ['Approved', 'Completed'])->with('user')->get();
+
+        $loanSettingsList = Loan_settings_tbl::where('is_active', true)->orderBy('loan_type')->get();
+        $loanTypes = $loanSettingsList->pluck('loan_type')->toArray();
+
+        $loanTypeCounts = array_fill_keys($loanTypes, 0);
+
+        $loansByTypeDetails = array_fill_keys($loanTypes, []);
+
         foreach ($allLoans as $loan) {
-            $type = $loan->lending_type ?? '';
-            $normalizedType = match ($type) {
-                'Personal Lending', 'Personal Loan' => 'Personal',
-                'Education Lending', 'Education Loan' => 'Education',
-                'Emergency Lending', 'Emergency Loan' => 'Emergency',
-                'Business Lending', 'Business Loan' => 'Business',
-                default => 'Personal'
-            };
-            
-            $loanTypeCounts[$normalizedType]++;
-            $loansByTypeDetails[$normalizedType][] = $loan;
+            $loanTypeValue = $loan->lending_type ?? '';
+            foreach ($loanTypes as $lt) {
+                if ($lt && (stripos($loanTypeValue, $lt) !== false || stripos($lt, $loanTypeValue) !== false || strtolower($loanTypeValue) === strtolower($lt))) {
+                    $loanTypeCounts[$lt] = ($loanTypeCounts[$lt] ?? 0) + 1;
+                    $loansByTypeDetails[$lt][] = $loan;
+                    break;
+                }
+            }
         }
 
         // Audit Logs
@@ -678,6 +669,7 @@ class UserController extends Controller
             'memberActivity',
             'loanTypeCounts',
             'loansByTypeDetails',
+            'loanTypes',
             'auditLogs'
         ));
     }
@@ -830,8 +822,7 @@ class UserController extends Controller
         $typeFilter = $request->get('type', 'all');
         $statusFilter = $request->get('status', 'all');
 
-        $query = savings_transaction_tbl::with('savingsAccount.user')
-            ->where('archived', '!=', 1);
+        $query = savings_transaction_tbl::with('savingsAccount.user');
 
         if ($search) {
             $query->whereHas('savingsAccount.user', function ($q) use ($search) {
@@ -886,6 +877,9 @@ class UserController extends Controller
 
         $totalDeposits = savings_transaction_tbl::where('type', 'deposit')->sum('amount') ?? 0;
         $totalWithdrawals = savings_transaction_tbl::where('type', 'withdrawal')->sum('amount') ?? 0;
+
+        $totalSavingsBalance = savings_account_tbl::sum('balance') ?? 0;
+        $activeSavingsAccounts = savings_account_tbl::where('status', 'active')->count();
 
         $allMembers = Users_tbl::whereIn('role', ['member', 'pending'])
             ->select('id', 'first_name', 'last_name')
@@ -1007,50 +1001,21 @@ class UserController extends Controller
              'todayDeposits',
              'monthlyWithdrawals',
              'monthlyWithdrawalsCount',
+             'totalSavingsBalance',
+             'activeSavingsAccounts',
              'monthlyWithdrawalAvg',
              'paymentMethods',
          ));
     }
 
-    public function archiveSavings($id)
-    {
-        $transaction = savings_transaction_tbl::findOrFail($id);
-        $transaction->archived = 1;
-        $transaction->save();
-
-        AuditLog::log(
-            'Archived Savings Transaction',
-            "Archived savings transaction (ID: {$id}, Ref: {$transaction->reference_no})",
-            'savings',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Transaction archived successfully.');
-    }
-
-    public function unarchiveSavings($id)
-    {
-        $transaction = savings_transaction_tbl::findOrFail($id);
-        $transaction->archived = 0;
-        $transaction->save();
-
-        AuditLog::log(
-            'Unarchived Savings Transaction',
-            "Unarchived savings transaction (ID: {$id}, Ref: {$transaction->reference_no})",
-            'savings',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Transaction restored successfully.');
-    }
+    
 
     public function dashboard_lendings(Request $request)
     {
         $statusFilter = $request->get('status', 'all');
         $search = $request->get('search', '');
 
-        $query = lending_program_tbl::with(['user', 'repayments' => function($q) { $q->select('id', 'lending_id', 'payment_number'); }])
-            ->where('status', '!=', 'Archived');
+        $query = lending_program_tbl::with(['user', 'repayments' => function($q) { $q->select('id', 'lending_id', 'payment_number'); }]);
 
         if ($statusFilter !== 'all') {
             $query->where('status', ucfirst($statusFilter));
@@ -1258,37 +1223,7 @@ class UserController extends Controller
         return redirect()->back()->with('error', 'Loan application declined.');
     }
 
-    public function archiveLoan($id)
-    {
-        $loan = lending_program_tbl::findOrFail($id);
-        $loan->status = 'Archived';
-        $loan->save();
-
-        AuditLog::log(
-            'Archived Loan',
-            "Archived loan (ID: {$id}, Ref: {$loan->reference_no})",
-            'loan',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Loan archived successfully.');
-    }
-
-    public function unarchiveLoan($id)
-    {
-        $loan = lending_program_tbl::findOrFail($id);
-        $loan->status = 'Approved';
-        $loan->save();
-
-        AuditLog::log(
-            'Unarchived Loan',
-            "Unarchived loan (ID: {$id}, Ref: {$loan->reference_no})",
-            'loan',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Loan restored successfully.');
-    }
+    
 
     public function dashboard_sharecapitals(Request $request)
     {
@@ -1297,7 +1232,6 @@ class UserController extends Controller
         $statusFilter = $request->get('status', 'all');
 
         $query = share_capital_transaction_tbl::with('shareCapitalAccount.user')
-            ->where('archived', '!=', 1)
             ->where('status', '!=', 'failed');
 
         if ($search) {
@@ -1317,7 +1251,7 @@ class UserController extends Controller
 
         $transactions = $query->orderBy('created_at', 'desc')->paginate(10);
 
-        $totalContributions = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
+        $totalContributions = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
             ->where('status', 'Completed')
             ->sum('total_amount') ?? 0;
 
@@ -1327,9 +1261,9 @@ class UserController extends Controller
             ->sum('total_amount') ?? 0
         );
 
-        $perShareValue = 1000;
+        $perShareValue = ShareCapital::PAR_VALUE;
         
-        $deposits = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
+        $deposits = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
         
@@ -1368,37 +1302,7 @@ class UserController extends Controller
         ));
     }
 
-    public function archiveShareCapital($id)
-    {
-        $transaction = share_capital_transaction_tbl::findOrFail($id);
-        $transaction->archived = 1;
-        $transaction->save();
-
-        AuditLog::log(
-            'Archived Share Capital Transaction',
-            "Archived share capital transaction (ID: {$id}, Ref: {$transaction->reference_no})",
-            'share_capital',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Share capital transaction archived successfully.');
-    }
-
-    public function unarchiveShareCapital($id)
-    {
-        $transaction = share_capital_transaction_tbl::findOrFail($id);
-        $transaction->archived = 0;
-        $transaction->save();
-
-        AuditLog::log(
-            'Unarchived Share Capital Transaction',
-            "Unarchived share capital transaction (ID: {$id}, Ref: {$transaction->reference_no})",
-            'share_capital',
-            $id
-        );
-
-        return redirect()->back()->with('success', 'Share capital transaction restored successfully.');
-    }
+    
 
     public function adminStoreShareCapital(Request $request)
     {
@@ -1406,16 +1310,16 @@ class UserController extends Controller
             'member_id' => 'required|exists:users_tbls,id',
             'shares' => 'required|numeric|min:0.5',
             'type' => 'required|string|in:Deposit,Withdrawal',
-            'payment_method' => 'required|string',
+            'payment_method' => ['nullable', 'string', Rule::requiredIf($request->type === 'Deposit')],
             'note' => 'nullable|string|max:255',
         ]);
 
         $memberId = $request->member_id;
         $shares = (float) $request->shares;
-        $amountPerShare = 1000;
+        $amountPerShare = ShareCapital::PAR_VALUE;
         $totalAmount = $shares * $amountPerShare;
         $type = $request->type;
-        $perShareValue = 1000;
+        $perShareValue = ShareCapital::PAR_VALUE;
 
         $account = share_capital_account_tbl::where('user_id', $memberId)->first();
 
@@ -1518,10 +1422,12 @@ class UserController extends Controller
     public function getMemberShareCapitalBalance($memberId)
     {
         $account = share_capital_account_tbl::where('user_id', $memberId)->first();
-        
+        $member = Users_tbl::with('otherinfo')->find($memberId);
+
         return response()->json([
             'total_shares' => $account ? $account->total_shares : 0,
             'total_amount' => $account ? $account->total_amount : 0,
+            'contact_no' => $member?->otherinfo?->contact_no,
         ]);
     }
 
@@ -1647,7 +1553,7 @@ class UserController extends Controller
                 ->whereMonth('created_at', $monthNum)
                 ->sum('lending_amount') ?? 0;
 
-            $depositCap = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription'])
+            $depositCap = share_capital_transaction_tbl::whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
                 ->where('status', 'Completed')
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $monthNum)
@@ -2129,38 +2035,120 @@ class UserController extends Controller
 
     public function dashboard_financial_activity(Request $request)
     {
-        $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+        $loanSettingsList = Loan_settings_tbl::orderBy('loan_type')->get();
+        $loanSettings = $loanSettingsList->pluck('interest_rate', 'loan_type')->toArray();
 
         $lateFeeSettings = Loan_settings_tbl::first();
         $lateFeePercentage = $lateFeeSettings->late_fee_percentage ?? 2.00;
         $gracePeriodMonths = $lateFeeSettings->grace_period_months ?? 1;
 
         if ($request->isMethod('POST')) {
-            $request->validate([
-                'interest_personal' => 'nullable|numeric|min:0|max:20',
-                'interest_emergency' => 'nullable|numeric|min:0|max:20',
-                'interest_business' => 'nullable|numeric|min:0|max:20',
-                'interest_education' => 'nullable|numeric|min:0|max:20',
-            ]);
+            // Dynamic interest updates for any loan types
+            $inputs = $request->all();
 
-            if ($request->has('interest_personal')) {
-                Loan_settings_tbl::where('loan_type', 'Personal Loan')->update(['interest_rate' => $request->interest_personal]);
-            }
-            if ($request->has('interest_emergency')) {
-                Loan_settings_tbl::where('loan_type', 'Emergency Loan')->update(['interest_rate' => $request->interest_emergency]);
-            }
-            if ($request->has('interest_business')) {
-                Loan_settings_tbl::where('loan_type', 'Business Loan')->update(['interest_rate' => $request->interest_business]);
-            }
-            if ($request->has('interest_education')) {
-                Loan_settings_tbl::where('loan_type', 'Education Loan')->update(['interest_rate' => $request->interest_education]);
+            foreach ($loanSettingsList as $setting) {
+                $field = 'interest_' . $setting->id;
+                if (array_key_exists($field, $inputs)) {
+                    $val = $inputs[$field];
+                    if (is_numeric($val)) {
+                        Loan_settings_tbl::where('id', $setting->id)->update(['interest_rate' => $val]);
+                    }
+                }
             }
 
-            $loanSettings = Loan_settings_tbl::pluck('interest_rate', 'loan_type')->toArray();
+            // Save dividend/patronage percentages if provided
+            if ($request->has('dividend_fund_percentage') || $request->has('patronage_fund_percentage')) {
+                $year = $request->get('dividend_year', $request->get('year', now()->year));
+                $ds = \App\Models\DividendSetting::getForYear($year);
+                if ($request->has('dividend_fund_percentage')) {
+                    $ds->dividend_fund_percentage = $request->dividend_fund_percentage;
+                }
+                if ($request->has('patronage_fund_percentage')) {
+                    $ds->patronage_fund_percentage = $request->patronage_fund_percentage;
+                }
+                if ($request->has('patronage_basis')) {
+                    $ds->patronage_basis = $request->patronage_basis;
+                }
+                $ds->updated_by = auth()->id();
+                $ds->save();
+
+                $distributionForYear = DB::table('dividend_distributions')->where('year', $year)->first();
+                if ($distributionForYear) {
+                    $dividendPct = (float) $ds->dividend_fund_percentage;
+                    $patronagePct = (float) $ds->patronage_fund_percentage;
+                    $netSurplus = (float) $distributionForYear->net_surplus;
+                    $totalStatutory = (float) $distributionForYear->reserve_fund
+                        + (float) $distributionForYear->education_fund
+                        + (float) $distributionForYear->community_fund
+                        + (float) $distributionForYear->optional_fund;
+                    $remainingSurplus = isset($distributionForYear->remaining_surplus)
+                        ? (float) $distributionForYear->remaining_surplus
+                        : round($netSurplus - $totalStatutory, 2);
+                    $newDividendPool = round($remainingSurplus * ($dividendPct / 100), 2);
+                    $newPatronageRefund = round($remainingSurplus * ($patronagePct / 100), 2);
+
+                    DB::table('dividend_distributions')->where('year', $year)->update([
+                        'dividend_pool' => $newDividendPool,
+                        'patronage_refund_pool' => $newPatronageRefund,
+                        'updated_at' => now(),
+                    ]);
+
+                    $totalShareCapital = Dividend::where('year', $year)->sum('share_capital_amount');
+                    if ($totalShareCapital > 0) {
+                        Dividend::where('year', $year)->where('status', 'pending')->each(function ($dividend) use ($newDividendPool, $totalShareCapital) {
+                            $recommended = round(($dividend->share_capital_amount / $totalShareCapital) * $newDividendPool, 2);
+                            $dividend->update([
+                                'recommended_amount' => $recommended,
+                                'approved_amount' => $recommended,
+                            ]);
+                        });
+                    }
+                }
+            }
+
+            // Save statutory fund allocation percentages if provided
+            if ($request->hasAny(['reserve_fund_percentage', 'cetf_percentage', 'cdf_percentage', 'optional_fund_percentage'])) {
+                $statYear = $request->get('statutory_year', $request->get('dividend_year', $request->get('year', now()->year)));
+
+                $reserve = round((float) $request->reserve_fund_percentage, 2);
+                $cetf = round((float) $request->cetf_percentage, 2);
+                $cdf = round((float) $request->cdf_percentage, 2);
+                $optional = round((float) $request->optional_fund_percentage, 2);
+                $statutoryTotal = $reserve + $cetf + $cdf + $optional;
+
+                $statutoryValues = [$reserve, $cetf, $cdf, $optional];
+                $hasInvalid = count(array_filter($statutoryValues, fn($value) => $value < 0 || $value > 100)) > 0;
+
+                if ($hasInvalid) {
+                    session()->now('error', 'Each statutory fund percentage must be between 0 and 100.');
+                } elseif ($statutoryTotal > 100) {
+                    session()->now('error', 'Statutory fund allocations cannot exceed 100% of net surplus.');
+                } else {
+                    $statDs = \App\Models\DividendSetting::getForYear($statYear);
+                    $statDs->reserve_fund_percentage = $reserve;
+                    $statDs->cetf_percentage = $cetf;
+                    $statDs->cdf_percentage = $cdf;
+                    $statDs->optional_fund_percentage = $optional;
+                    $statDs->updated_by = auth()->id();
+                    $statDs->save();
+
+                    session()->now('success', 'Statutory fund allocation percentages updated successfully. These settings apply to newly generated annual distributions.');
+
+                    AuditLog::log(
+                        'Updated Statutory Fund Percentages',
+                        "Changed statutory allocations for year {$statYear}: Reserve {$reserve}%, CETF {$cetf}%, CDF {$cdf}%, Optional {$optional}%.",
+                        'settings',
+                        null
+                    );
+                }
+            }
+
+            $loanSettingsList = Loan_settings_tbl::orderBy('loan_type')->get();
+            $loanSettings = $loanSettingsList->pluck('interest_rate', 'loan_type')->toArray();
 
             AuditLog::log(
-                'Updated Interest Rates',
-                "Updated loan interest rates: Personal={$request->interest_personal}%, Emergency={$request->interest_emergency}%, Business={$request->interest_business}%, Education={$request->interest_education}%",
+                'Updated Financial Settings',
+                'Updated loan interest rates and dividend/patronage settings',
                 'settings',
                 null
             );
@@ -2168,11 +2156,7 @@ class UserController extends Controller
 
         // Dividend data
         $year = $request->get('year', now()->year);
-        $distribution = DB::table('dividend_distributions')
-            ->where('year', $year)
-            ->first();
-
-        $dividends = collect();
+        $distribution = DB::table('dividend_distributions')->where('year', $year)->first();
         $approvedCount = 0;
         $disbursedCount = 0;
         $totalSumShareCapital = 0;
@@ -2185,6 +2169,8 @@ class UserController extends Controller
 
         $dividendSetting = \App\Models\DividendSetting::where('year', $year)->first();
         $dividendFundPercentage = $dividendSetting ? $dividendSetting->dividend_fund_percentage : 60.00;
+
+        $dividends = collect();
 
         if ($distribution) {
             $dividends = Dividend::with('user')
@@ -2203,6 +2189,12 @@ class UserController extends Controller
         // Patronage data
         $patronageFundPercentage = $dividendSetting ? $dividendSetting->patronage_fund_percentage : 40.00;
         $patronageBasis = $dividendSetting ? $dividendSetting->patronage_basis : 'total_repayment';
+        $reserveFundPercentage = $dividendSetting ? $dividendSetting->reserve_fund_percentage : 10.00;
+        $cetfPercentage = $dividendSetting ? $dividendSetting->cetf_percentage : 10.00;
+        $cdfPercentage = $dividendSetting ? $dividendSetting->cdf_percentage : 3.00;
+        $optionalFundPercentage = $dividendSetting ? $dividendSetting->optional_fund_percentage : 7.00;
+        $statutoryTotalPercentage = $reserveFundPercentage + $cetfPercentage + $cdfPercentage + $optionalFundPercentage;
+        $remainingSurplusPercentage = 100 - $statutoryTotalPercentage;
         $patronageApprovedCount = 0;
         $patronageDisbursedCount = 0;
         $totalSumPatronageApproved = 0;
@@ -2226,7 +2218,10 @@ class UserController extends Controller
             'totalSumShareCapital', 'totalSumRecommended', 'totalSumApproved',
             'cooperativeTransactions', 'cooperativeStats',
             'dividendFundPercentage', 'patronageFundPercentage', 'patronageBasis',
-            'patronageApprovedCount', 'patronageDisbursedCount', 'totalSumPatronageApproved'
+            'reserveFundPercentage', 'cetfPercentage', 'cdfPercentage', 'optionalFundPercentage',
+            'statutoryTotalPercentage', 'remainingSurplusPercentage',
+            'patronageApprovedCount', 'patronageDisbursedCount', 'totalSumPatronageApproved',
+            'loanSettingsList'
         ));
     }
 
@@ -2251,21 +2246,102 @@ class UserController extends Controller
         return view("admin_components.payments", compact('payments', 'method', 'allMembers', 'paymentMethods'));
     }
 
+    public function createLoanSetting(Request $request)
+    {
+        $request->validate([
+            'loan_type' => 'required|string|max:191',
+            'interest_rate' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $exists = Loan_settings_tbl::where('loan_type', $request->loan_type)->first();
+        if ($exists) {
+            return redirect()->back()->with('error', 'Loan type already exists');
+        }
+
+        $ls = new Loan_settings_tbl();
+        $ls->loan_type = $request->loan_type;
+        $ls->interest_rate = $request->interest_rate;
+        $ls->is_active = true;
+        $ls->save();
+
+        AuditLog::log('Created Loan Type', "Created loan type {$ls->loan_type} with interest {$ls->interest_rate}%", 'settings', null);
+
+        return redirect()->back()->with('success', 'Loan type created');
+    }
+
+    public function deleteLoanSetting(Request $request, $id)
+    {
+        $setting = Loan_settings_tbl::find($id);
+        if (!$setting) {
+            return response()->json(['success' => false, 'message' => 'Loan type not found'], 404);
+        }
+
+        $inUse = lending_program_tbl::where('lending_type', $setting->loan_type)->count();
+        if ($inUse > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "Cannot delete {$setting->loan_type}. It is currently used by {$inUse} loan(s)."
+            ]);
+        }
+
+        $name = $setting->loan_type;
+        $setting->delete();
+
+        AuditLog::log('Deleted Loan Type', "Deleted loan type {$name}", 'settings', null);
+
+        return response()->json(['success' => true, 'message' => "Loan type \"{$name}\" deleted"]);
+    }
+
+    public function getLoanPayable($id)
+    {
+        $loan = lending_program_tbl::find($id);
+        if (!$loan) {
+            return response()->json(['success' => false, 'message' => 'Loan not found'], 404);
+        }
+
+        $status = lending_status_tbl::where('lending_id', $id)->first();
+
+        $totalPayments = (int) ($status->total_payments ?? $loan->total_payments ?? 0);
+        $totalPayment = (float) ($loan->total_payment ?? $loan->lending_amount);
+
+        $monthlyAmortization = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : 0;
+
+        $remaining = $status ? (float) ($status->remaining_balance ?? $loan->total_payment ?? $loan->lending_amount) : (float) ($loan->total_payment ?? $loan->lending_amount);
+
+        $base = min($monthlyAmortization > 0 ? $monthlyAmortization : $remaining, $remaining);
+
+        $today = now()->timezone('Asia/Manila')->toDateString();
+        $penalty = 0;
+        if ($status && $status->due_date && $status->due_date < $today && $remaining > 0) {
+            $penalty = round($monthlyAmortization * 0.02, 2); // 2% of amortization
+        }
+
+        $total = round($base + $penalty, 2);
+
+        return response()->json([
+            'success' => true,
+            'base' => $base,
+            'penalty' => $penalty,
+            'total' => $total,
+            'remaining' => round($remaining, 2),
+            'full_total' => round($remaining + $penalty, 2),
+        ]);
+    }
+
     public function adminStoreRepayment(Request $request)
     {
         $request->validate([
             'member_id' => 'required|exists:users_tbls,id',
             'lending_id' => 'required|exists:lending_program_tbls,id',
             'amount_paid' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
+            'payment_method' => 'nullable|string',
             'reference_no' => 'nullable|string|max:255',
-            'payment_date' => 'required|date',
+            'payment_date' => 'nullable|date',
             'late_fee' => 'nullable|numeric|min:0',
         ]);
 
         $loan = lending_program_tbl::findOrFail($request->lending_id);
         $interestRatio = ($loan->total_payment > 0) ? ($loan->total_interest / $loan->total_payment) : 0;
-        $lateFee = $request->input('late_fee', 0) ?: 0;
 
         $status = lending_status_tbl::firstOrCreate(
             ['lending_id' => $request->lending_id],
@@ -2289,6 +2365,15 @@ class UserController extends Controller
             $interestPaid = round($request->amount_paid * $interestRatio, 2);
             $principalPaid = round($request->amount_paid - $interestPaid, 2);
 
+            $totalPayments = max(1, (int) ($status->total_payments ?? $loan->total_payments ?? 0));
+            $totalPayment = (float) ($loan->total_payment ?? $loan->lending_amount);
+            $monthlyAmortization = $totalPayments > 0 ? round($totalPayment / $totalPayments, 2) : 0;
+            $today = now()->timezone('Asia/Manila')->toDateString();
+            $lateFee = 0;
+            if ($status->due_date && $status->due_date < $today && $status->remaining_balance > 0) {
+                $lateFee = round($monthlyAmortization * 0.02, 2);
+            }
+
             $repayment = lending_repayments_tbl::create([
                 'lending_id' => $request->lending_id,
                 'user_id' => $request->member_id,
@@ -2298,8 +2383,8 @@ class UserController extends Controller
                 'interest_paid' => $interestPaid,
                 'service_fee_paid' => 0,
                 'late_fee' => $lateFee > 0 ? $lateFee : null,
-                'payment_date' => $request->payment_date,
-                'payment_method' => $request->payment_method,
+                'payment_date' => $request->payment_date ?: now()->toDateString(),
+                'payment_method' => $request->payment_method ?: 'Admin',
                 'reference_no' => $request->reference_no ?: 'ADMIN-' . now()->format('YmdHis'),
                 'notes' => 'Recorded by admin',
                 'recorded_by' => auth()->id(),
@@ -2387,53 +2472,7 @@ class UserController extends Controller
         return response()->json(['success' => true, 'message' => 'Officer removed successfully.']);
     }
 
-    public function dashboard_archives(Request $request)
-    {
-        $activeTab = $request->get('tab', 'savings');
-        $fromDate = $request->get('from_date', '');
-        $toDate = $request->get('to_date', '');
-
-        $savingsQuery = savings_transaction_tbl::with('savingsAccount.user')
-            ->where('archived', 1);
-
-        $shareCapitalQuery = share_capital_transaction_tbl::with('shareCapitalAccount.user')
-            ->where('archived', 1);
-
-        $lendingQuery = lending_program_tbl::with('user')
-            ->where('status', 'Archived');
-
-        if ($fromDate) {
-            $savingsQuery->whereDate('created_at', '>=', $fromDate);
-            $shareCapitalQuery->whereDate('created_at', '>=', $fromDate);
-            $lendingQuery->whereDate('created_at', '>=', $fromDate);
-        }
-
-        if ($toDate) {
-            $savingsQuery->whereDate('created_at', '<=', $toDate);
-            $shareCapitalQuery->whereDate('created_at', '<=', $toDate);
-            $lendingQuery->whereDate('created_at', '<=', $toDate);
-        }
-
-        $savingsArchives = (clone $savingsQuery)->orderBy('created_at', 'desc')->paginate(15);
-        $shareCapitalArchives = (clone $shareCapitalQuery)->orderBy('created_at', 'desc')->paginate(15);
-        $lendingArchives = (clone $lendingQuery)->orderBy('created_at', 'desc')->paginate(15);
-
-        $savingsCount = (clone $savingsQuery)->count();
-        $shareCapitalCount = (clone $shareCapitalQuery)->count();
-        $lendingCount = (clone $lendingQuery)->count();
-
-        return view("admin_components.archives", compact(
-            'activeTab',
-            'fromDate',
-            'toDate',
-            'savingsArchives',
-            'shareCapitalArchives',
-            'lendingArchives',
-            'savingsCount',
-            'shareCapitalCount',
-            'lendingCount'
-        ));
-    }
+    
 
     public function auditLogsIndex(Request $request)
     {
@@ -2604,3 +2643,4 @@ class UserController extends Controller
         ]);
     }
 }
+

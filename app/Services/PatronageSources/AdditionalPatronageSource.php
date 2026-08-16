@@ -25,8 +25,7 @@ class AdditionalPatronageSource implements PatronageSource
 
     public function getTotalPatronageForYear(int $year): float
     {
-        return (float) $this->getAllPatronageForYear($year)
-            ->reduce(fn ($carry, $amount) => $carry + $amount, 0);
+        return (float) array_sum($this->getAllPatronageForYear($year));
     }
 
     public function getAllPatronageForYear(int $year): array

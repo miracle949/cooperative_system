@@ -94,6 +94,8 @@ Route::get('/savings', [SavingsController::class, 'index'])->name('savings.index
 
 Route::get("/Seminars", [UsersHandle::class, "Seminars"])->name("Seminars");
 
+Route::post("/seminars/verify-passcode", [UsersHandle::class, "verifySeminarPasscode"])->name("Seminars.verifyPasscode");
+
 Route::get("/Time-Deposit", [SavingsController::class, "TimeDeposit"])->name("TimeDeposit");
 
 Route::post('/savings/time-deposit/deposit', [SavingsController::class, 'depositToTimeDeposit'])
@@ -169,8 +171,6 @@ Route::post("/lending-program", [lendingController::class, "lendingProgram"])
 
 Route::get("/Financial", [UsersHandle::class, "Financial"])->name("Financial");
 
-Route::get('/Financial', [UsersHandle::class, 'Financial'])->name('Financial');
-
 Route::get('/savings/receipt/{referenceNo}', [SavingsController::class, 'downloadReceipt'])
     ->name('savings.receipt');
 
@@ -226,8 +226,6 @@ Route::post("/dashboard-members/store", [UserController::class, "storeMember"])-
 Route::get("/dashboard-members/send-share-email/{id}", [UserController::class, "sendShareCapitalEmail"])->name("send.share.capital.email");
 Route::delete("/dashboard-members/decline/{id}", [UserController::class, "declineUser"])->name("decline.user");
 Route::get("/dashboard-savings", [UserController::class, "dashboard_savings"])->name("savings");
-Route::post("/savings/archive/{id}", [UserController::class, "archiveSavings"])->name("savings.archive");
-Route::post("/savings/unarchive/{id}", [UserController::class, "unarchiveSavings"])->name("savings.unarchive");
 Route::get("/dashboard-lendings", [UserController::class, "dashboard_lendings"])->name("lendings");
 
 // API to get payment count for a loan
@@ -238,14 +236,10 @@ Route::get('/loan/{id}/payments-count', function ($id) {
 Route::post("/loan/approve/{id}", [UserController::class, "approveLoan"])->name("loan.approve");
 Route::post("/loan/decline/{id}", [UserController::class, "declineLoan"])->name("loan.decline");
 Route::post("/loan/create-admin", [UserController::class, "createLoanAdmin"])->name("loan.create-admin");
-Route::post("/loan/archive/{id}", [UserController::class, "archiveLoan"])->name("loan.archive");
-Route::post("/loan/unarchive/{id}", [UserController::class, "unarchiveLoan"])->name("loan.unarchive");
 Route::post("/loan/settings/update", [UserController::class, "updateLoanSettings"])->name("loan.settings.update");
 Route::get("/dashboard-sharecapitals", [UserController::class, "dashboard_sharecapitals"])->name("sharecapitals");
 Route::post("/sharecapital/admin/store", [UserController::class, "adminStoreShareCapital"])->name("sharecapital.admin.store");
 Route::get("/sharecapital/member/{id}/balance", [UserController::class, "getMemberShareCapitalBalance"])->name("sharecapital.member.balance");
-Route::post("/sharecapital/archive/{id}", [UserController::class, "archiveShareCapital"])->name("sharecapital.archive");
-Route::post("/sharecapital/unarchive/{id}", [UserController::class, "unarchiveShareCapital"])->name("sharecapital.unarchive");
 Route::post("/sharecapital/withdrawal/{id}/status", [UserController::class, "updateWithdrawalStatus"])->name("sharecapital.withdrawal.status");
 Route::post("/sharecapital/sell", [ShareCapital::class, "sellShares"])->name("sharecapital.sell");
 Route::get("/dashboard-reports", [ReportController::class, "index"])->name("reports");
@@ -261,8 +255,11 @@ Route::post("/admin/delete", [UserController::class, "deleteAdmin"])->name("admi
 Route::post("/admin/toggle-status", [UserController::class, "toggleAdminStatus"])->name("admin.toggle-status");
 Route::post("/roles/store", [UserController::class, "storeRole"])->name("roles.store");
 Route::post("/roles/delete", [UserController::class, "deleteRole"])->name("roles.delete");
-Route::get("/dashboard-archives", [UserController::class, "dashboard_archives"])->name("archives");
+// archives route removed
 Route::match(["get", "post"], "/dashboard-financial-activity", [UserController::class, "dashboard_financial_activity"])->name("financial.activity");
+Route::post('/loan-settings/create', [UserController::class, 'createLoanSetting'])->name('loan.settings.create');
+Route::post('/loan-settings/update', [UserController::class, 'updateLoanSettings'])->name('loan.settings.update');
+Route::delete('/loan-settings/{id}', [UserController::class, 'deleteLoanSetting'])->name('loan.settings.delete');
 
 Route::get("/loan-stats", [UsersHandle::class, "loanStats"])->name("loan_stats");
 
@@ -276,6 +273,7 @@ Route::get("/loans/member/{id}/active", function ($id) {
         ->get();
     return response()->json($loans);
 })->name("loans.member.active");
+Route::get('/loans/{id}/payable', [App\Http\Controllers\UserController::class, 'getLoanPayable'])->name('loans.payable');
 Route::get("/admin/audit-logs", [UserController::class, "auditLogsIndex"])->name("admin.audit-logs.index");
 Route::get("/dashboard-officers-committees", [UserController::class, "dashboard_officers_committees"])->name("officers.committees");
 Route::post("/officers/store", [UserController::class, "storeOfficer"])->name("officers.store");
@@ -300,7 +298,8 @@ Route::middleware('auth')->group(function () {
 Route::get("/admin/seminars", [App\Http\Controllers\SeminarController::class, "index"])->name("seminars.index");
 Route::post("/admin/seminars/schedule", [App\Http\Controllers\SeminarController::class, "scheduleSeminar"])->name("seminars.schedule");
 Route::post("/admin/seminars/attendance", [App\Http\Controllers\SeminarController::class, "updateAttendanceAndCompletion"])->name("seminars.attendance");
-Route::post("/admin/seminars/manual-toggle", [App\Http\Controllers\SeminarController::class, "toggleManualCompletion"])->name("seminars.manual-toggle");
+Route::post("/admin/seminars/store-type", [App\Http\Controllers\SeminarController::class, "storeSeminarType"])->name("seminars.store-type");
+Route::post("/admin/seminars/save-passcode", [App\Http\Controllers\SeminarController::class, "savePasscode"])->name("seminars.save-passcode");
 
 // Resignation routes
 Route::post("/member/resign", [App\Http\Controllers\ResignationController::class, "requestResignation"])->name("resignation.request")->middleware("auth");

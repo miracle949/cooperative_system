@@ -430,7 +430,7 @@
                     <a href="{{ route('dashboard.members') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('dashboard.members') ? 'active' : '' }}">
                         <i data-lucide="users" class="w-5 h-5"></i>
-                        <span>Members</span>
+                        <span>Accounts</span>
                     </a>
                     @endif
                     @if($hasFullAccess || in_array('seminars', $perms))
@@ -475,13 +475,7 @@
                         <span>Finance</span>
                     </a>
                     @endif
-                    @if($hasFullAccess || in_array('archives', $perms))
-                    <a href="{{ route('archives') }}"
-                        class="sidebar-link justify-start {{ request()->routeIs('archives') ? 'active' : '' }}">
-                        <i data-lucide="archive" class="w-5 h-5"></i>
-                        <span>Archives</span>
-                    </a>
-                    @endif
+                    
                     @if($hasFullAccess || in_array('audit-logs', $perms))
                     <a href="{{ route('admin.audit-logs.index') }}"
                         class="sidebar-link justify-start {{ request()->routeIs('admin.audit-logs.index') ? 'active' : '' }}">

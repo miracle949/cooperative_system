@@ -4,6 +4,34 @@
         <p class="text-sm text-gray-500">{{ $patronageDistributions->total() }} members · Click a member name to view breakdown</p>
     </div>
 
+    @if(isset($distribution) && $distribution)
+    <div class="p-4 border-b border-gray-100 bg-primary-50/50">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Annual Distribution Formula</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+                <span class="text-gray-500 block">Patronage Fund Rate</span>
+                <p class="font-bold text-gray-900">{{ number_format($patronageFundPercentage, 2) }}%</p>
+                <p class="text-xs text-gray-400">of remaining surplus</p>
+            </div>
+            <div>
+                <span class="text-gray-500 block">Patronage Refund Pool</span>
+                <p class="font-bold text-warning-700">₱{{ number_format($distribution->patronage_refund_pool, 2) }}</p>
+                <p class="text-xs text-gray-400">remaining surplus × {{ number_format($patronageFundPercentage, 2) }}%</p>
+            </div>
+            <div>
+                <span class="text-gray-500 block">Total Cooperative Patronage</span>
+                <p class="font-bold text-gray-900">₱{{ number_format($totalSumPatronage, 2) }}</p>
+                <p class="text-xs text-gray-400">sum of all member patronage</p>
+            </div>
+            <div>
+                <span class="text-gray-500 block">Patronage Basis</span>
+                <p class="font-bold text-gray-900">{{ $patronageBasis === 'net_repayment' ? 'Net Repayment' : 'Total Repayment' }}</p>
+                <p class="text-xs text-gray-400">{{ $patronageBasis === 'net_repayment' ? 'excludes late fees' : 'includes late fees' }}</p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="table-container">
         <table class="table">
             <thead>
@@ -11,7 +39,7 @@
                     <th>#</th>
                     <th>Member</th>
                     <th>Total Patronage</th>
-                    <th>Allocation Ratio</th>
+                    <th>Member Share</th>
                     <th>Refund Amount</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -105,7 +133,7 @@
     <div class="p-4 border-t border-gray-100 bg-gray-50">
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-4">
             <div>
-                <span class="text-gray-500">Total Patronage</span>
+                <span class="text-gray-500">Total Cooperative Patronage</span>
                 <p class="font-bold text-gray-900">₱{{ number_format($totalSumPatronage, 2) }}</p>
             </div>
             <div>

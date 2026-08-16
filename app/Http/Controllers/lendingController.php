@@ -240,24 +240,15 @@ class lendingController extends Controller
         // Pull the FULL settings row per loan type, not just interest_rate
         $dbSettings = DB::table('loan_settings_tbls')
             ->where('is_active', true)
-            ->get()
-            ->keyBy('loan_type'); // keyed by 'Personal Loan', 'Business Loan', etc.
-
-        $typeMap = [
-            'Personal Lending' => 'Personal Loan',
-            'Emergency Lending' => 'Emergency Loan',
-            'Business Lending' => 'Business Loan',
-            'Education Lending' => 'Education Loan',
-        ];
+            ->orderBy('loan_type')
+            ->get();
 
         $loanSettings = [];
-        foreach ($typeMap as $formType => $dbType) {
-            $s = $dbSettings[$dbType] ?? null;
-
-            // Key by $dbType — this MUST match the <option value="..."> used
-            // in $mOptData() inside the blade (it calls $mOptData('Personal Loan'), etc.)
-            $loanSettings[$dbType] = [
-                'interest_rate' => $s ? ((float) $s->interest_rate / 100) : 0.02,
+        foreach ($dbSettings as $s) {
+            // Key by loan_type — this MUST match the <option value="..."> used
+            // in $mOptData() inside the blade
+            $loanSettings[$s->loan_type] = [
+                'interest_rate' => ((float) ($s->interest_rate ?? 2.00)) / 100,
                 'processing_fee_rate' => $s->processing_fee_rate ?? 0,
                 'service_fee_rate' => $s->service_fee_rate ?? 0,
                 'loan_protection_fee' => $s->loan_protection_fee ?? 0,
@@ -287,7 +278,7 @@ class lendingController extends Controller
 
         $deposits = DB::table('share_capital_transaction_tbls')
             ->where('share_capital_account_id', $account->id ?? 0)
-            ->whereIn('type', ['Deposit', 'Subscription'])
+            ->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
             ->whereIn('status', ['Completed', 'completed'])
             ->sum('shares') ?? 0;
 

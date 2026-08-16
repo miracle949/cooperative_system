@@ -336,8 +336,8 @@
                     <tbody>
                         @forelse($transactions as $tx)
                         <tr>
-                            <td class="text-sm text-gray-900">{{ $tx->created_at->format('M d, Y') }}</td>
-                            <td class="text-sm text-gray-600">{{ $tx->created_at->format('g:i A') }}</td>
+                            <td class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($tx->created_at)->format('M d, Y') }}</td>
+                            <td class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($tx->created_at)->format('g:i A') }}</td>
                             <td class="text-sm text-gray-600">{{ $tx->reference_no ?? 'N/A' }}</td>
                             <td class="text-sm text-gray-900">{{ $tx->member_name ?? 'Unknown' }}</td>
                             <td>

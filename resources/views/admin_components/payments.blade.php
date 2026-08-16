@@ -49,7 +49,7 @@
                         <th>Loan Reference</th>
                         <th>Loan Type</th>
                         <th>Payment #</th>
-                        <th>Amount Paid</th>
+                        <th>Amount Payables</th>
                         <th>Payment Date</th>
                         <th>Method</th>
                         <th>Reference No.</th>
@@ -106,7 +106,37 @@
                 Showing {{ $payments->firstItem() ?? 0 }}-{{ $payments->lastItem() ?? 0 }} of {{ $payments->total() }} payments
             </p>
             <div>
-                {{ $payments->appends(['method' => $method])->links() }}
+                @if($payments->hasPages())
+                    <div class="flex items-center gap-1">
+                        @if($payments->onFirstPage())
+                            <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                        @else
+                            <a href="{{ $payments->appends(['method' => $method])->previousPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </a>
+                        @endif
+
+                        @foreach($payments->appends(['method' => $method])->getUrlRange(max(1, $payments->currentPage() - 2), min($payments->lastPage(), $payments->currentPage() + 2)) as $page => $url)
+                            @if($page == $payments->currentPage())
+                                <span class="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium">{{ $page }}</span>
+                            @else
+                                <a href="{{ $url }}" class="px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">{{ $page }}</a>
+                            @endif
+                        @endforeach
+
+                        @if($payments->hasMorePages())
+                            <a href="{{ $payments->appends(['method' => $method])->nextPageUrl() }}" class="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </a>
+                        @else
+                            <button class="p-2 rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed" disabled>
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -134,6 +164,7 @@
             <div style="padding: 1.25rem;">
                 <form id="recordPaymentForm" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="reference_no" id="rpReferenceNo">
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member <span class="text-red-500">*</span></label>
@@ -154,51 +185,23 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount Paid <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Amount Payables</label>
+                        <div class="mb-2">
+                            <select id="rpPaymentType" class="select" style="width: 100%;" onchange="updatePayableAmount()">
+                                <option value="monthly">Monthly Bill Only</option>
+                                <option value="full">Full Payment</option>
+                            </select>
+                        </div>
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                            <input type="number" name="amount_paid" id="rpAmount" class="input pl-10" placeholder="0.00" step="0.01" min="1" style="width: 100%; padding-left: 2.5rem;" required>
+                            <input type="number" name="amount_paid" id="rpAmount" class="input pl-10" placeholder="0.00" step="0.01" min="0" style="width: 100%; padding-left: 2.5rem;" readonly>
                         </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Late Fee (optional)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₱</span>
-                            <input type="number" name="late_fee" class="input pl-10" placeholder="0.00" step="0.01" min="0" value="0" style="width: 100%; padding-left: 2.5rem;">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method <span class="text-red-500">*</span></label>
-                        <select name="payment_method" id="rpPaymentMethod" class="select" style="width: 100%;" required onchange="checkPaymentMethodQr()">
-                            <option value="">Select method...</option>
-                            @foreach($paymentMethods as $pm)
-                                <option value="{{ $pm->method_name }}" data-id="{{ $pm->id }}">{{ $pm->method_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div id="rpQrCodeDisplay" class="hidden">
-                        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-center">
-                            <p class="text-xs text-gray-500 mb-2 font-medium">Scan QR Code to Pay</p>
-                            <img id="rpQrCodeImg" class="w-40 h-40 mx-auto rounded-lg object-cover border border-gray-200" src="" alt="Payment QR Code">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Reference No.</label>
-                        <input type="text" name="reference_no" class="input" placeholder="e.g. OR-12345 (optional)" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Date <span class="text-red-500">*</span></label>
-                        <input type="date" name="payment_date" class="input" value="{{ date('Y-m-d') }}" style="width: 100%;" required>
+                        <p id="rpAmountBreakdown" class="text-xs text-gray-400 mt-1" style="display:none;"></p>
                     </div>
                 </form>
 
                 <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
-                    <button onclick="submitRecordPayment()"
+                    <button onclick="openRecordPaymentConfirm()"
                         style="width: 100%; padding: 0.7rem; background: #1E2A4A; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <i data-lucide="check-circle" class="w-4 h-4"></i> Record Payment
                     </button>
@@ -211,34 +214,61 @@
         </div>
     </div>
 
+    <!-- Confirm Payment Modal -->
+    <div id="confirmPaymentModal" class="modal-overlay hidden">
+        <div class="modal max-w-md" style="border-radius: 16px;">
+            <div style="background: linear-gradient(135deg, #14532D 0%, #166534 100%); padding: 1.25rem 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="shield-check" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold" style="color: #fff; margin: 0;">Confirm Payment</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Please review the payment details</p>
+                        </div>
+                    </div>
+                    <button onclick="closeConfirmPaymentModal()" style="background: none; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div style="padding: 1.25rem;">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Member</span>
+                        <span id="cfMember" class="text-sm font-semibold text-gray-900"></span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Amount Payable</span>
+                        <span id="cfAmount" class="text-sm font-bold text-gray-900"></span>
+                    </div>
+                    <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                        <span class="text-sm text-gray-500">Payment Date</span>
+                        <span id="cfDate" class="text-sm font-semibold text-gray-900"></span>
+                    </div>
+                    <div class="flex items-center justify-between py-2">
+                        <span class="text-sm text-gray-500">Reference Number</span>
+                        <span id="cfReference" class="text-sm font-mono font-semibold text-gray-900"></span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 8px;">
+                    <button id="rpConfirmBtn" onclick="confirmRecordPayment()"
+                        style="width: 100%; padding: 0.7rem; background: #15803D; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Payment
+                    </button>
+                    <button onclick="closeConfirmPaymentModal()"
+                        style="width: 100%; padding: 0.65rem; background: #fff; color: #666; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function checkPaymentMethodQr() {
-            const select = document.getElementById('rpPaymentMethod');
-            const qrDisplay = document.getElementById('rpQrCodeDisplay');
-            const qrImg = document.getElementById('rpQrCodeImg');
-            const selected = select.options[select.selectedIndex];
-            const pmId = selected ? selected.dataset.id : null;
-
-            if (!pmId) {
-                qrDisplay.classList.add('hidden');
-                return;
-            }
-
-            fetch('/admin/payment-methods/' + pmId + '/qr')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success && data.has_qr) {
-                        qrImg.src = data.qr_url;
-                        qrDisplay.classList.remove('hidden');
-                    } else {
-                        qrDisplay.classList.add('hidden');
-                    }
-                })
-                .catch(() => {
-                    qrDisplay.classList.add('hidden');
-                });
-        }
-
         function openRecordPaymentModal() {
             const modal = document.getElementById('recordPaymentModal');
             modal.classList.remove('hidden');
@@ -252,7 +282,9 @@
             document.getElementById('rpLoanSelect').innerHTML = '<option value="">Select a member first</option>';
             document.getElementById('rpLoanInfo').style.display = 'none';
             document.getElementById('rpAmount').value = '';
-            document.getElementById('rpQrCodeDisplay').classList.add('hidden');
+            document.getElementById('rpAmountBreakdown').style.display = 'none';
+            document.getElementById('rpReferenceNo').value = '';
+            rpPayable = null;
         }
 
         function closeRecordPaymentModal() {
@@ -303,12 +335,67 @@
                 const monthly = parseFloat(selected.dataset.monthly || 0).toLocaleString('en-PH', {minimumFractionDigits: 2});
                 loanInfo.textContent = 'Loan Amount: ₱' + amount + ' · Monthly Due: ₱' + monthly;
                 loanInfo.style.display = 'block';
+
+                // fetch computed payable (includes penalty if overdue)
+                fetch('/loans/' + selected.value + '/payable')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            rpPayable = data;
+                            updatePayableAmount();
+                        } else {
+                            rpPayable = null;
+                            document.getElementById('rpAmount').value = '';
+                            document.getElementById('rpAmountBreakdown').style.display = 'none';
+                        }
+                    })
+                    .catch(() => {
+                        rpPayable = null;
+                        document.getElementById('rpAmount').value = '';
+                        document.getElementById('rpAmountBreakdown').style.display = 'none';
+                    });
             } else {
                 loanInfo.style.display = 'none';
+                rpPayable = null;
+                document.getElementById('rpAmount').value = '';
+                document.getElementById('rpAmountBreakdown').style.display = 'none';
             }
         });
 
-        function submitRecordPayment() {
+        let rpPayable = null;
+
+        function updatePayableAmount() {
+            const type = document.getElementById('rpPaymentType').value;
+            const amountEl = document.getElementById('rpAmount');
+            const bdEl = document.getElementById('rpAmountBreakdown');
+
+            if (!rpPayable) {
+                amountEl.value = '';
+                bdEl.style.display = 'none';
+                return;
+            }
+
+            const isFull = type === 'full';
+            const amount = isFull ? rpPayable.full_total : rpPayable.total;
+            amountEl.value = amount;
+
+            const baseLabel = isFull ? 'Remaining Balance' : 'Base';
+            const baseValue = isFull ? rpPayable.remaining : rpPayable.base;
+            let breakdown = baseLabel + ': ₱' + parseFloat(baseValue).toLocaleString(undefined, { minimumFractionDigits: 2 });
+            if (rpPayable.penalty > 0) {
+                breakdown += ' · Penalty: ₱' + parseFloat(rpPayable.penalty).toLocaleString(undefined, { minimumFractionDigits: 2 });
+            }
+            bdEl.textContent = breakdown;
+            bdEl.style.display = 'block';
+        }
+
+        function generateReferenceNumber() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return 'ADMIN-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+        }
+
+        function openRecordPaymentConfirm() {
             const form = document.getElementById('recordPaymentForm');
             const formData = new FormData(form);
 
@@ -320,22 +407,46 @@
                 showToast('Error', 'Please select an active loan');
                 return;
             }
-            if (!formData.get('amount_paid') || parseFloat(formData.get('amount_paid')) <= 0) {
-                showToast('Error', 'Please enter a valid amount');
-                return;
-            }
-            if (!formData.get('payment_method')) {
-                showToast('Error', 'Please select a payment method');
-                return;
-            }
-            if (!formData.get('payment_date')) {
-                showToast('Error', 'Please select a payment date');
+            if (!formData.get('amount_paid') || parseFloat(formData.get('amount_paid')) < 0) {
+                showToast('Error', 'Invalid amount payable');
                 return;
             }
 
-            const btn = document.querySelector('#recordPaymentModal button:first-of-type');
+            const memberSel = document.getElementById('rpMemberSelect');
+            const memberName = memberSel.options[memberSel.selectedIndex]?.text || '';
+            const reference = generateReferenceNumber();
+
+            document.getElementById('rpReferenceNo').value = reference;
+
+            const amount = parseFloat(formData.get('amount_paid'));
+            document.getElementById('cfMember').textContent = memberName;
+            document.getElementById('cfAmount').textContent = '₱' + amount.toLocaleString('en-PH', { minimumFractionDigits: 2 });
+            document.getElementById('cfDate').textContent = new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cfReference').textContent = reference;
+
+            const modal = document.getElementById('confirmPaymentModal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            if (typeof lucide !== 'undefined') {
+                setTimeout(() => lucide.createIcons(), 50);
+            }
+        }
+
+        function closeConfirmPaymentModal() {
+            const modal = document.getElementById('confirmPaymentModal');
+            modal.classList.add('hidden');
+            modal.style.display = '';
+            document.body.style.overflow = '';
+        }
+
+        function confirmRecordPayment() {
+            const form = document.getElementById('recordPaymentForm');
+            const formData = new FormData(form);
+
+            const btn = document.getElementById('rpConfirmBtn');
             btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Recording...';
+            btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Processing...';
 
             fetch('{{ route("payments.record") }}', {
                 method: 'POST',
@@ -357,13 +468,15 @@
             })
             .then(data => {
                 btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> Record Payment';
+                btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Payment';
                 if (data.success) {
                     closeRecordPaymentModal();
+                    closeConfirmPaymentModal();
                     showToast('Success', data.message);
                     form.reset();
                     document.getElementById('rpLoanSelect').innerHTML = '<option value="">Select a member first</option>';
                     document.getElementById('rpLoanInfo').style.display = 'none';
+                    document.getElementById('rpReferenceNo').value = '';
                     setTimeout(() => window.location.reload(), 1000);
                 } else {
                     showToast('Error', data.message || 'Failed to record payment');
@@ -371,7 +484,7 @@
             })
             .catch(error => {
                 btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> Record Payment';
+                btn.innerHTML = '<i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Payment';
                 showToast('Error', 'Something went wrong. Please try again.');
             });
         }

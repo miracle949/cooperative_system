@@ -24,6 +24,22 @@
             @include("components.navbar2")
 
             <div class="main-parent">
+                @if(session('success'))
+                    <div class="sem-flash-success">
+                        <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="sem-flash-error">
+                        <i class="fa-solid fa-circle-xmark"></i> {{ session('error') }}
+                    </div>
+                @endif
+                @if(session('info'))
+                    <div class="sem-flash-info">
+                        <i class="fa-solid fa-circle-info"></i> {{ session('info') }}
+                    </div>
+                @endif
+
                 <div class="main-header">
                     <h3>Seminars</h3>
                     <p>Your path to full membership — complete all three sessions to unlock upgrade.</p>
@@ -171,6 +187,8 @@
                         </div>
                     @endif
                 </div>
+
+                {{-- ══ ENTER SEMINAR PASSCODE (removed) ══ --}}
 
             </div>
         </div>

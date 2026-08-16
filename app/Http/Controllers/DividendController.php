@@ -75,6 +75,12 @@ class DividendController extends Controller
         $dividendFundPercentage = $dividendSetting ? $dividendSetting->dividend_fund_percentage : 60.00;
         $patronageFundPercentage = $dividendSetting ? $dividendSetting->patronage_fund_percentage : 40.00;
         $patronageBasis = $dividendSetting ? $dividendSetting->patronage_basis : 'total_repayment';
+        $reserveFundPercentage = $dividendSetting ? $dividendSetting->reserve_fund_percentage : 10.00;
+        $cetfPercentage = $dividendSetting ? $dividendSetting->cetf_percentage : 10.00;
+        $cdfPercentage = $dividendSetting ? $dividendSetting->cdf_percentage : 3.00;
+        $optionalFundPercentage = $dividendSetting ? $dividendSetting->optional_fund_percentage : 7.00;
+        $statutoryTotalPercentage = $reserveFundPercentage + $cetfPercentage + $cdfPercentage + $optionalFundPercentage;
+        $remainingSurplusPercentage = 100 - $statutoryTotalPercentage;
 
         return compact(
             'distribution',
@@ -94,7 +100,13 @@ class DividendController extends Controller
             'totalSumPatronage',
             'totalSumPatronageApproved',
             'patronageFundPercentage',
-            'patronageBasis'
+            'patronageBasis',
+            'reserveFundPercentage',
+            'cetfPercentage',
+            'cdfPercentage',
+            'optionalFundPercentage',
+            'statutoryTotalPercentage',
+            'remainingSurplusPercentage'
         );
     }
 
@@ -161,16 +173,28 @@ class DividendController extends Controller
             DB::table('dividend_distributions')->where('year', $year)->delete();
         }
 
-        $reserveFund = round($netSurplus * 0.10, 2);
-        $educationFund = round($netSurplus * 0.10, 2);
-        $communityFund = round($netSurplus * 0.03, 2);
-        $optionalFund = round($netSurplus * 0.07, 2);
+        $dividendSetting = DividendSetting::getForYear($year);
+
+        $reserveFundPct = (float) $dividendSetting->reserve_fund_percentage;
+        $cetfPct = (float) $dividendSetting->cetf_percentage;
+        $cdfPct = (float) $dividendSetting->cdf_percentage;
+        $optionalPct = (float) $dividendSetting->optional_fund_percentage;
+        $statutoryTotalPct = $reserveFundPct + $cetfPct + $cdfPct + $optionalPct;
+
+        if ($statutoryTotalPct > 100) {
+            return redirect()->route('dividends.index', ['year' => $year])
+                ->with('error', 'Statutory fund allocations cannot exceed 100% of net surplus. Adjust the statutory percentages in Finance settings first.');
+        }
+
+        $reserveFund = round($netSurplus * $reserveFundPct / 100, 2);
+        $educationFund = round($netSurplus * $cetfPct / 100, 2);
+        $communityFund = round($netSurplus * $cdfPct / 100, 2);
+        $optionalFund = round($netSurplus * $optionalPct / 100, 2);
         $totalStatutory = $reserveFund + $educationFund + $communityFund + $optionalFund;
         $remainingSurplus = round($netSurplus - $totalStatutory, 2);
 
-        $dividendSetting = DividendSetting::getForYear($year);
         $dividendFundPct = $dividendSetting->dividend_fund_percentage / 100;
-        $patronageRefundPct = 1 - $dividendFundPct;
+        $patronageRefundPct = $dividendSetting->patronage_fund_percentage / 100;
 
         $dividendPool = round($remainingSurplus * $dividendFundPct, 2);
         $patronageRefundPool = round($remainingSurplus * $patronageRefundPct, 2);
@@ -196,6 +220,12 @@ class DividendController extends Controller
                 'education_fund' => $educationFund,
                 'community_fund' => $communityFund,
                 'optional_fund' => $optionalFund,
+                'reserve_fund_percentage' => $reserveFundPct,
+                'cetf_percentage' => $cetfPct,
+                'cdf_percentage' => $cdfPct,
+                'optional_fund_percentage' => $optionalPct,
+                'statutory_total_percentage' => $statutoryTotalPct,
+                'remaining_surplus' => $remainingSurplus,
                 'dividend_pool' => $dividendPool,
                 'patronage_refund_pool' => $patronageRefundPool,
                 'status' => 'draft',
@@ -1038,7 +1068,9 @@ class DividendController extends Controller
 
             $netSurplus = $distribution->net_surplus;
             $totalStatutory = $distribution->reserve_fund + $distribution->education_fund + $distribution->community_fund + $distribution->optional_fund;
-            $remainingSurplus = round($netSurplus - $totalStatutory, 2);
+            $remainingSurplus = isset($distribution->remaining_surplus)
+                ? (float) $distribution->remaining_surplus
+                : round($netSurplus - $totalStatutory, 2);
 
             $dividendFundPct = $percentage / 100;
             $patronageFundPct = $patronagePercentage / 100;
@@ -1075,7 +1107,7 @@ class DividendController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Fund percentages updated and allocations recalculated.',
+                'message' => 'Fund percentages updated and allocations recalculated. Regenerate patronage refunds to apply the new pool to member refunds.',
                 'dividend_fund_percentage' => $percentage,
                 'patronage_fund_percentage' => $patronagePercentage,
                 'dividend_pool' => number_format($newDividendPool, 2),
@@ -1128,6 +1160,8 @@ class DividendController extends Controller
     {
         $record = PatronageRefundDistribution::with('user')->findOrFail($id);
 
+        $basis = DividendSetting::where('year', $record->year)->value('patronage_basis') ?? 'total_repayment';
+
         $loanRepayments = DB::table('lending_repayments_tbls')
             ->join('lending_program_tbls', 'lending_repayments_tbls.lending_id', '=', 'lending_program_tbls.id')
             ->where('lending_repayments_tbls.user_id', $record->user_id)
@@ -1150,14 +1184,51 @@ class DividendController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        $totalInterest = $loanRepayments->sum('interest_paid');
-        $totalServiceFee = $loanRepayments->sum('service_fee_paid');
-        $totalLateFee = $loanRepayments->sum('late_fee');
-        $totalLoanPatronage = $totalInterest + $totalServiceFee + $totalLateFee;
+        $totalInterest = 0;
+        $totalServiceFee = 0;
+        $totalLateFee = 0;
+        $totalLoanPatronage = 0;
+        $fallbackCount = 0;
+
+        $repayments = $loanRepayments->map(function ($r) use (&$totalInterest, &$totalServiceFee, &$totalLateFee, &$totalLoanPatronage, &$fallbackCount, $basis) {
+            $interest = (float) $r->interest_paid;
+            $serviceFee = (float) $r->service_fee_paid;
+            $lateFee = (float) $r->late_fee;
+            $isFallback = $r->interest_paid === null || $r->service_fee_paid === null;
+
+            $patronage = $isFallback
+                ? (float) $r->amount_paid
+                : ($basis === 'net_repayment'
+                    ? $interest + $serviceFee
+                    : $interest + $serviceFee + $lateFee);
+
+            $totalInterest += $interest;
+            $totalServiceFee += $serviceFee;
+            $totalLateFee += $lateFee;
+            $totalLoanPatronage += $patronage;
+            if ($isFallback) {
+                $fallbackCount++;
+            }
+
+            return [
+                'date' => $r->payment_date,
+                'amount_paid' => $r->amount_paid,
+                'principal_paid' => $r->principal_paid,
+                'interest_paid' => $r->interest_paid,
+                'service_fee_paid' => $r->service_fee_paid,
+                'late_fee' => $r->late_fee,
+                'loan_type' => $r->lending_type,
+                'patronage' => round($patronage, 2),
+                'is_fallback' => $isFallback,
+            ];
+        });
+
         $totalAdditionalPatronage = $additionalRecords->sum('amount');
+        $totalPatronage = round($totalLoanPatronage + $totalAdditionalPatronage, 2);
 
         return response()->json([
             'success' => true,
+            'basis' => $basis,
             'record' => [
                 'member_name' => trim(($record->user->first_name ?? 'Unknown') . ' ' . ($record->user->last_name ?? '')),
                 'year' => $record->year,
@@ -1166,15 +1237,8 @@ class DividendController extends Controller
                 'amount' => $record->amount,
                 'status' => $record->status,
             ],
-            'loan_repayments' => $loanRepayments->map(fn($r) => [
-                'date' => $r->payment_date,
-                'amount_paid' => $r->amount_paid,
-                'principal_paid' => $r->principal_paid,
-                'interest_paid' => $r->interest_paid,
-                'service_fee_paid' => $r->service_fee_paid,
-                'late_fee' => $r->late_fee,
-                'loan_type' => $r->lending_type,
-            ]),
+            'loan_repayments' => $repayments,
+            'fallback_count' => $fallbackCount,
             'additional_records' => $additionalRecords->map(fn($r) => [
                 'source' => $r->source,
                 'description' => $r->description,
@@ -1186,7 +1250,8 @@ class DividendController extends Controller
                 'service_fee' => round($totalServiceFee, 2),
                 'late_fee' => round($totalLateFee, 2),
                 'additional_patronage' => round($totalAdditionalPatronage, 2),
-                'total_patronage' => round($totalLoanPatronage + $totalAdditionalPatronage, 2),
+                'total_patronage' => $totalPatronage,
+                'matches_record' => abs($totalPatronage - (float) $record->total_patronage) < 0.01,
             ],
         ]);
     }

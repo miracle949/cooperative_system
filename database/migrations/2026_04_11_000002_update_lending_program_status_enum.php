@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('lending_program_tbls', function (Blueprint $table) {
-            $table->enum('status', ['Pending', 'Approved', 'Declined', 'Archived'])->change();
+            $table->enum('status', ['Pending', 'Approved', 'Declined'])->change();
         });
     }
 

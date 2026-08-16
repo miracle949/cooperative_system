@@ -385,7 +385,6 @@
                                     'dividends'           => ['label' => 'Dividends',              'icon' => 'gift'],
                                     'reports'             => ['label' => 'Reports',                'icon' => 'bar-chart-3'],
                                     'finance'             => ['label' => 'Finance',                'icon' => 'wallet'],
-                                    'archives'            => ['label' => 'Archives',               'icon' => 'archive'],
                                     'officers-committees' => ['label' => 'Officers & Committees',  'icon' => 'briefcase'],
                                     'settings'            => ['label' => 'Settings',               'icon' => 'settings'],
                                 ];

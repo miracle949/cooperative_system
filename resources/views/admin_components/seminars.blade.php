@@ -39,6 +39,10 @@
             <p class="text-sm text-gray-500">Manage pre-membership seminars and completion tracking</p>
         </div>
         <div class="flex items-center gap-3">
+            <button onclick="openModal('createTypeModal')" class="btn btn-primary">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                Create Seminar Type
+            </button>
             <button onclick="openModal('scheduleSeminarModal')" class="btn btn-primary">
                 <i data-lucide="calendar-plus" class="w-4 h-4"></i>
                 Schedule Seminar
@@ -46,30 +50,41 @@
         </div>
     </div>
 
-    <!-- Seminar Completion Checker Table -->
+    <!-- Member Seminar Progress Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <i data-lucide="graduation-cap" class="w-5 h-5 text-primary-500"></i>
-                Seminar Completion Checker
+                Member Seminar Progress
             </h2>
-            <p class="text-sm text-gray-500">Toggle checkboxes to manually mark seminars as complete. All three must be completed for membership upgrade.</p>
+            <p class="text-sm text-gray-500">Click a member to view the seminars they have attended and not attended yet.</p>
         </div>
+
+        <form method="GET" action="{{ route('seminars.index') }}" class="px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3 sm:items-center">
+            <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" name="search" value="{{ $search }}" placeholder="Search member name..." class="input pl-10">
+            </div>
+            <select name="status" class="input sm:w-52">
+                <option value="all" {{ ($statusFilter ?? 'all') === 'all' ? 'selected' : '' }}>All</option>
+                <option value="completed" {{ ($statusFilter ?? 'all') === 'completed' ? 'selected' : '' }}>Completed</option>
+                <option value="incomplete" {{ ($statusFilter ?? 'all') === 'incomplete' ? 'selected' : '' }}>Incomplete</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+
         <div class="table-container">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Member</th>
-                        <th class="text-center">PMES</th>
-                        <th class="text-center">Fundamentals of Coops</th>
-                        <th class="text-center">Cooperative Finance</th>
-                        <th class="text-center">Completed At</th>
-                        <th class="text-center">Membership Status</th>
+                        <th class="text-center">Completed</th>
+                        <th class="text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($users as $user)
-                    <tr>
+                    <tr class="cursor-pointer hover:bg-gray-50 transition-colors" onclick="openMemberModal({{ $user->id }})">
                         <td>
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full {{ $user->role === 'pending' ? 'bg-gradient-to-br from-yellow-400 to-orange-400' : 'bg-gradient-to-br from-primary-400 to-primary-600' }} flex items-center justify-center">
@@ -84,58 +99,111 @@
                             </div>
                         </td>
                         <td class="text-center">
-                            <button onclick="toggleCompletion({{ $user->id }}, 'pmes_completed', this)"
-                                class="w-8 h-8 rounded-lg border-2 transition-all duration-200 flex items-center justify-center mx-auto
-                                {{ $user->completion->pmes_completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-green-300' }}">
-                                <i data-lucide="{{ $user->completion->pmes_completed ? 'check' : 'minus' }}" class="w-4 h-4"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button onclick="toggleCompletion({{ $user->id }}, 'fundamentals_completed', this)"
-                                class="w-8 h-8 rounded-lg border-2 transition-all duration-200 flex items-center justify-center mx-auto
-                                {{ $user->completion->fundamentals_completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-green-300' }}">
-                                <i data-lucide="{{ $user->completion->fundamentals_completed ? 'check' : 'minus' }}" class="w-4 h-4"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button onclick="toggleCompletion({{ $user->id }}, 'finance_completed', this)"
-                                class="w-8 h-8 rounded-lg border-2 transition-all duration-200 flex items-center justify-center mx-auto
-                                {{ $user->completion->finance_completed ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-green-300' }}">
-                                <i data-lucide="{{ $user->completion->finance_completed ? 'check' : 'minus' }}" class="w-4 h-4"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            @if($user->completion->completed_at)
-                                <span class="text-xs text-gray-600">{{ \Carbon\Carbon::parse($user->completion->completed_at)->format('M d, Y') }}</span>
-                            @else
-                                <span class="text-xs text-gray-400">--</span>
-                            @endif
+                            <span class="text-sm font-semibold text-gray-700">
+                                {{ ($user->completion->pmes_completed ? 1 : 0) + ($user->completion->fundamentals_completed ? 1 : 0) + ($user->completion->finance_completed ? 1 : 0) }}
+                            </span>
                         </td>
                         <td class="text-center">
                             @if($user->completion->pmes_completed && $user->completion->fundamentals_completed && $user->completion->finance_completed)
-                                <span class="badge badge-success">Upgraded</span>
-                            @elseif($user->role === 'pending')
-                                <span class="badge badge-warning">Pending</span>
-                            @elseif($user->role === 'member')
-                                <span class="badge badge-success">Member</span>
+                                <span class="badge badge-success">Complete</span>
                             @else
-                                <span class="badge badge-gray">{{ ucfirst($user->role) }}</span>
+                                <span class="badge badge-warning">Incomplete</span>
                             @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-12">
+                        <td colspan="3" class="text-center py-12">
                             <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
                                 <i data-lucide="users" class="w-8 h-8 text-gray-300"></i>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-1">No users found</h3>
-                            <p class="text-sm text-gray-500">There are no members or applicants in the system.</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">No members found</h3>
+                            <p class="text-sm text-gray-500">Try adjusting your search or filter.</p>
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+        </div>
+
+        @if($users->hasPages())
+        @php
+            $paginator = $users->appends([
+                'status' => $statusFilter ?? 'all',
+                'search' => $search ?? '',
+            ]);
+            $currentPage = $users->currentPage();
+            $lastPage = $users->lastPage();
+        @endphp
+        <div class="px-5 py-4 border-t border-gray-200 flex items-center justify-between rounded-b-xl bg-white">
+            <p class="text-sm text-gray-500">
+                Showing <span class="font-medium text-gray-700">{{ $users->firstItem() ?? 0 }}</span>
+                to <span class="font-medium text-gray-700">{{ $users->lastItem() ?? 0 }}</span>
+                of <span class="font-medium text-gray-700">{{ $users->total() }}</span> members
+            </p>
+            <div class="flex items-center gap-1.5">
+                @if($users->onFirstPage())
+                    <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-300 border border-gray-200 rounded-lg cursor-not-allowed select-none">&lt;</span>
+                @else
+                    <a href="{{ $paginator->previousPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">&lt;</a>
+                @endif
+
+                @for($i = 1; $i <= $lastPage; $i++)
+                    @if($i == $currentPage)
+                        <span class="w-9 h-9 flex items-center justify-center text-sm font-bold text-white rounded-lg select-none" style="background-color: #1E2A4A;">{{ $i }}</span>
+                    @else
+                        <a href="{{ $paginator->url($i) }}"
+                           class="w-9 h-9 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                @if($users->hasMorePages())
+                    <a href="{{ $paginator->nextPageUrl() }}"
+                       class="w-9 h-9 flex items-center justify-center text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-all no-underline">&gt;</a>
+                @else
+                    <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-300 border border-gray-200 rounded-lg cursor-not-allowed select-none">&gt;</span>
+                @endif
+            </div>
+        </div>
+        @endif
+    </div>
+
+    <!-- Seminar Passcodes -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <i data-lucide="key-round" class="w-5 h-5 text-amber-500"></i>
+                Seminar Passcodes
+            </h2>
+            <p class="text-sm text-gray-500">Share the code with members after the session — they enter it on their Seminars page to mark it complete. Codes expire automatically.</p>
+        </div>
+        <div class="divide-y divide-gray-100">
+            @php
+                $coreTypeLabels = ['pmes' => 'PMES', 'fundamentals' => 'Fundamentals of Coops', 'finance' => 'Cooperative Finance'];
+            @endphp
+            @foreach(['pmes', 'fundamentals', 'finance'] as $coreSlug)
+            @php $pc = $passcodes[$coreSlug] ?? null; @endphp
+            <div class="px-6 py-4 flex items-center justify-between gap-4">
+                <div>
+                    <span class="text-sm font-semibold text-gray-900">{{ $coreTypeLabels[$coreSlug] }}</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        @if($pc)
+                            <code class="text-sm font-mono bg-gray-100 px-2 py-0.5 rounded">{{ $pc->passcode }}</code>
+                            <span class="text-xs {{ $pc->expires_at && now()->gt(\Carbon\Carbon::parse($pc->expires_at)) ? 'text-red-500' : 'text-gray-500' }}">
+                                expires {{ \Carbon\Carbon::parse($pc->expires_at)->format('M d, Y h:i A') }}
+                            </span>
+                        @else
+                            <span class="text-xs text-gray-400">No passcode set</span>
+                        @endif
+                    </div>
+                </div>
+                <button onclick="openPasscodeModal('{{ $coreSlug }}', '{{ $coreTypeLabels[$coreSlug] }}')" class="btn btn-secondary btn-sm">
+                    <i data-lucide="{{ $pc ? 'refresh-cw' : 'key-round' }}" class="w-4 h-4"></i>
+                    {{ $pc ? 'Regenerate' : 'Set Passcode' }}
+                </button>
+            </div>
+            @endforeach
         </div>
     </div>
 
@@ -273,9 +341,9 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Seminar Type <span class="text-red-500">*</span></label>
                         <select name="seminar_type" class="input" required>
                             <option value="">Select...</option>
-                            <option value="pmes">PMES</option>
-                            <option value="fundamentals">Fundamentals of Coops</option>
-                            <option value="finance">Cooperative Finance</option>
+                            @foreach($seminarTypes as $type)
+                                <option value="{{ $type->slug }}">{{ $type->label }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
@@ -377,6 +445,124 @@
         </div>
     </div>
 
+    <!-- Member Seminar Details Modal -->
+    <div id="memberSeminarModal" class="modal-overlay hidden">
+        <div class="modal max-w-lg">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="graduation-cap" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold" style="color: #fff; margin: 0;">Member Seminars</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Attended and not-yet-attended seminars</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('memberSeminarModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div id="memberSeminarBody">
+                    <div class="text-center py-8 text-gray-400">
+                        <i data-lucide="loader" class="w-8 h-8 mx-auto mb-2 animate-spin"></i>
+                        <p class="text-sm">Loading member seminars...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 flex justify-end">
+                <button onclick="closeModal('memberSeminarModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Seminar Type Modal -->
+    <div id="createTypeModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="layers" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold" style="color: #fff; margin: 0;">Create Seminar Type</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Add an additional seminar type beyond the core three</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('createTypeModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
+                    </button>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('seminars.store-type') }}" class="p-6 space-y-5">
+                @csrf
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Seminar Type Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="label" class="input" placeholder="e.g. Leadership Training" required maxlength="100">
+                    <p class="text-xs text-gray-400 mt-1">A unique name for the new seminar type.</p>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <button type="button" onclick="closeModal('createTypeModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Create Seminar Type
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Set Passcode Modal -->
+    <div id="passcodeModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div style="background: linear-gradient(135deg, #1E2A4A 0%, #25335A 100%); padding: 1.25rem 1.5rem;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i data-lucide="key-round" class="w-5 h-5" style="color: #fff;"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold" style="color: #fff; margin: 0;">Set Seminar Passcode</h2>
+                            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">Create a one-time code members enter to complete this seminar</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal('passcodeModal')" style="background: rgba(255,255,255,0.1); border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="x" class="w-5 h-5" style="color: #fff;"></i>
+                    </button>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('seminars.save-passcode') }}" class="p-6 space-y-5">
+                @csrf
+                <input type="hidden" name="seminar_type" id="passcodeSeminarType">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Seminar Type</label>
+                    <p id="passcodeSeminarLabel" class="text-sm font-semibold text-gray-900">--</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Passcode <span class="text-red-500">*</span></label>
+                        <input type="text" name="passcode" class="input" placeholder="e.g. COOP2026" required maxlength="64">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Valid Days <span class="text-red-500">*</span></label>
+                        <input type="number" name="valid_days" class="input" value="1" required min="1" max="365">
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500">Validity defaults to 1 day. The code expires automatically after the set number of days and can be regenerated anytime.</p>
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <button type="button" onclick="closeModal('passcodeModal')" class="px-5 py-2.5 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                        <i data-lucide="key-round" class="w-4 h-4"></i>
+                        Save Passcode
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function toggleDeliveryFields() {
             const online = document.querySelector('input[name="delivery_type"][value="online"]').checked;
@@ -391,38 +577,58 @@
             exactVenue.required = !online;
         }
 
-        function toggleCompletion(userId, field, btn) {
-            fetch('{{ route("seminars.manual-toggle") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({ user_id: userId, field: field }),
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.value) {
-                        btn.classList.remove('border-gray-300', 'hover:border-green-300');
-                        btn.classList.add('bg-green-500', 'border-green-500', 'text-white');
-                        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
-                    } else {
-                        btn.classList.remove('bg-green-500', 'border-green-500', 'text-white');
-                        btn.classList.add('border-gray-300', 'hover:border-green-300');
-                        btn.innerHTML = '<i data-lucide="minus" class="w-4 h-4"></i>';
-                    }
-                    lucide.createIcons();
+        function openMemberModal(userId) {
+            const users = @json($users->items());
+            const types = @json($seminarTypes);
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
 
-                    if (data.all_complete) {
-                        showToast('Success', 'All seminars complete! User upgraded to member.', 'success');
-                        location.reload();
-                    }
-                }
-            })
-            .catch(() => {
-                showToast('Error', 'Failed to update completion status.', 'error');
+            const modal = document.getElementById('memberSeminarModal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+
+            const completion = user.completion || {};
+            const attendedTypes = user.attended_types || [];
+            const coreSlugs = ['pmes', 'fundamentals', 'finance'];
+
+            let html = '';
+            html += `
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+                        <span class="text-white font-bold text-base">${(user.first_name?.[0] || '') + (user.last_name?.[0] || '')}</span>
+                    </div>
+                    <div>
+                        <span class="text-base font-semibold text-gray-900">${user.first_name} ${user.last_name || ''}</span>
+                        <p class="text-xs text-gray-400">${user.email}</p>
+                    </div>
+                </div>`;
+
+            types.forEach(t => {
+                const attended = coreSlugs.includes(t.slug)
+                    ? completion[t.slug + '_completed'] === true
+                    : attendedTypes.includes(t.slug);
+                const boxClass = attended ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+                const icon = attended ? 'check-circle' : 'x-circle';
+                const iconClass = attended ? 'text-green-600' : 'text-red-500';
+                const label = attended ? 'Attended' : 'Not attended';
+
+                html += `
+                    <div class="flex items-center justify-between p-3 border rounded-lg ${boxClass} mb-2">
+                        <span class="text-sm font-medium text-gray-800">${t.label}</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold ${iconClass}">
+                            <i data-lucide="${icon}" class="w-4 h-4"></i>${label}
+                        </span>
+                    </div>`;
             });
+
+            document.getElementById('memberSeminarBody').innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function openPasscodeModal(slug, label) {
+            document.getElementById('passcodeSeminarType').value = slug;
+            document.getElementById('passcodeSeminarLabel').textContent = label;
+            openModal('passcodeModal');
         }
 
         function openAttendanceModal(seminarId) {
