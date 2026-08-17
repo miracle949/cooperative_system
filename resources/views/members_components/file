@@ -1,620 +1,610 @@
 <main class="p-5">
-                <div class="card-box-parent pt-5 ps-5 pe-5 pb-0">
-                    <div class="card-box">
-                        <ul class="nav nav-pills d-flex justify-content-center align-items" id="pills-tab"
-                            role="tablist">
-                            <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
-                                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
-                                    aria-selected="true">Personal Info</button>
-                            </li>
-                            <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
-                                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-profile" type="button" role="tab"
-                                    aria-controls="pills-profile" aria-selected="false">Membership</button>
-                            </li>
-                            <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
-                                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-contact" type="button" role="tab"
-                                    aria-controls="pills-contact" aria-selected="false">Transaction</button>
-                            </li>
-                            <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
-                                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-settings" type="button" role="tab"
-                                    aria-controls="pills-contact" aria-selected="false">Settings</button>
-                            </li>
-                        </ul>
+    <div class="card-box-parent pt-5 ps-5 pe-5 pb-0">
+        <div class="card-box">
+            <ul class="nav nav-pills d-flex justify-content-center align-items" id="pills-tab" role="tablist">
+                <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
+                    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                        aria-selected="true">Personal Info</button>
+                </li>
+                <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
+                    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
+                        aria-selected="false">Membership</button>
+                </li>
+                <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
+                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact"
+                        aria-selected="false">Transaction</button>
+                </li>
+                <li class="nav-item d-flex justify-content-center align-items-center" role="presentation">
+                    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-settings" type="button" role="tab" aria-controls="pills-contact"
+                        aria-selected="false">Settings</button>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
+                tabindex="0">
+
+                <div class="mt-5">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="d-flex justify-content-left align-items-center gap-4">
+                                <div>
+                                    <img src="images/unnamed.png" width="150px" height="150px" alt=""
+                                        style="border-radius: 50%">
+                                </div>
+
+                                <div>
+                                    <h4 style="font-size: 20px">{{ $user->first_name }}
+                                        {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
+                                    </h4>
+
+                                    <p class="tw:text-[#808080]">Member ID: COOP-{{ $user->id }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 text-end d-flex justify-content-end align-items-center edit">
+                            @php
+                            $missingCount = 0;
+                            if ($otherinfo && empty($otherinfo->contact_no))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->present_address))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->permanent_address))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->date_of_birth))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->place_of_birth))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->sex))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->civil_status))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->citizenship))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->blood_type))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->height))
+                            $missingCount++;
+                            if ($otherinfo && empty($otherinfo->weight))
+                            $missingCount++;
+                            if ($membergovernIds && empty($membergovernIds->sss_id))
+                            $missingCount++;
+                            if ($membergovernIds && empty($membergovernIds->philhealth_id))
+                            $missingCount++;
+                            if ($membergovernIds && empty($membergovernIds->pagibig_id))
+                            $missingCount++;
+                            if ($membergovernIds && empty($membergovernIds->tin_id))
+                            $missingCount++;
+                            @endphp
+                            <button
+                                style="padding: 10px 30px; background-color: #1E4035; color: #ffffff; font-weight: 600;"
+                                type="button" class="btn position-relative" data-bs-toggle="modal"
+                                data-bs-target="#editProfileModal">
+                                <i class="fa fa-edit"></i> Edit Profile
+                                @if($missingCount > 0)
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 12px; padding: 4px 8px;">
+                                    {{ $missingCount }}
+                                </span>
+                                @endif
+                            </button>
+                        </div>
                     </div>
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                            aria-labelledby="pills-home-tab" tabindex="0">
+                </div>
 
-                            <div class="mt-5">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex justify-content-left align-items-center gap-4">
-                                            <div>
-                                                <img src="images/unnamed.png" width="150px" height="150px" alt=""
-                                                    style="border-radius: 50%">
-                                            </div>
+                <div class="mt-5">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4" style="">
+                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5; ">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-user-circle" style="color: #1E4035;"></i> Personal
+                                    Details
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Fullname</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $user->first_name }}
+                                        {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Skills</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->skills ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Email</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">{{ $email }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Date of Birth</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->date_of_birth ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Member Since</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $memberSince }}</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                            <div>
-                                                <h4 style="font-size: 20px">{{ $user->first_name }}
-                                                    {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
-                                                </h4>
+                        <div class="col-lg-4 col-md-6 mb-4" style="">
+                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5; ">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-map-marker" style="color: #1E4035;"></i> Location
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Present Address</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->present_address ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Permanent Address</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->permanent_address ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                                <p class="tw:text-[#808080]">Member ID: COOP-{{ $user->id }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-venus-mars" style="color: #1E4035;"></i> Personal Info
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Sex</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->sex ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Civil Status</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->civil_status ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Citizenship</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->citizenship ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Blood Type</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->blood_type ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div class="col-6 text-end d-flex justify-content-end align-items-center edit">
-                                        @php
-                                            $missingCount = 0;
-                                            if ($otherinfo && empty($otherinfo->contact_no))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->present_address))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->permanent_address))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->date_of_birth))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->place_of_birth))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->sex))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->civil_status))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->citizenship))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->blood_type))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->height))
-                                                $missingCount++;
-                                            if ($otherinfo && empty($otherinfo->weight))
-                                                $missingCount++;
-                                            if ($membergovernIds && empty($membergovernIds->sss_id))
-                                                $missingCount++;
-                                            if ($membergovernIds && empty($membergovernIds->philhealth_id))
-                                                $missingCount++;
-                                            if ($membergovernIds && empty($membergovernIds->pagibig_id))
-                                                $missingCount++;
-                                            if ($membergovernIds && empty($membergovernIds->tin_id))
-                                                $missingCount++;
-                                        @endphp
-                                        <button
-                                            style="padding: 10px 30px; background-color: #1E4035; color: #ffffff; font-weight: 600;"
-                                            type="button" class="btn position-relative" data-bs-toggle="modal"
-                                            data-bs-target="#editProfileModal">
-                                            <i class="fa fa-edit"></i> Edit Profile
-                                            @if($missingCount > 0)
-                                                <span
-                                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                                    style="font-size: 12px; padding: 4px 8px;">
-                                                    {{ $missingCount }}
-                                                </span>
-                                            @endif
-                                        </button>
-                                    </div>
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1px solid #E2E8E5;">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-ruler-vertical" style="color: #1E4035;"></i> Body Info
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Height</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->height ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Weight</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $otherinfo->weight ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($membergovernIds)
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                                        border: 1px solid #E2E8E5;">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-id-card" style="color: #1E4035;"></i> Government IDs
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">SSS ID</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $membergovernIds->sss_id ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">PhilHealth ID</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $membergovernIds->philhealth_id ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Pag-IBIG ID</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $membergovernIds->pagibig_id ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">TIN ID</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $membergovernIds->tin_id ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($family)
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card"
+                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8E5; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
+                                    <i class="fa fa-users" style="color: #1E4035;"></i> Family
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Spouse Name</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $family->spouse_name ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Spouse Birthdate</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $family->spouse_date_birth ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Sons / Daughters</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $family->number_son ?? 0 }} / {{ $family->number_daughter ?? 0 }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($vehicles->count() > 0)
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card"
+                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #1E4035; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
+                                    <i class="fa fa-car" style="color: #3b82f6;"></i> Vehicles
+                                </h5>
+                                @foreach($vehicles as $vehicle)
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">{{ $vehicle->vehicle_type ?? 'Vehicle' }}</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $vehicle->plate_no ?? 'N/A' }} (x{{ $vehicle->quantity ?? 0 }})
+                                    </p>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+
+                        @if($educational)
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="profile-card"
+                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8E5;">
+                                <h5
+                                    style="margin-bottom: 20px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
+                                    <i class="fa fa-graduation-cap" style="color: #3b82f6;"></i> Education
+                                </h5>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Level</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $educational->educational_level ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Status</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $educational->status ?? 'N/A' }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <small style="color: #6b7280;">Specify</small>
+                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
+                                        {{ $educational->specify ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"
+                tabindex="0">
+
+                <div class="mt-5 mb-5">
+                    <div class="d-flex justify-content-center align-items-center gap-5">
+                        <div class="card-tab">
+                            <div class="d-flex justify-content-left align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center"
+                                    style="width: 55px; height: 55px; background-color: #5295FF; border-radius: 10px;">
+                                    <i class="fa fa-check-circle" style="color: white; font-size: 25px;"></i>
+                                </div>
+
+                                <div>
+                                    <p style="margin: 0">Membership Status</p>
                                 </div>
                             </div>
 
-                            <div class="mt-5">
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-6 mb-4" style="">
-                                        <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5; ">
-                                            <h5
-                                                style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                <i class="fa fa-user-circle" style="color: #1E4035;"></i> Personal
-                                                Details</h5>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Fullname</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $user->first_name }}
-                                                    {{ $user->middle_name ? $user->middle_name . ' ' : '' }}{{ $user->last_name }}
+
+                            <div class="row" style="margin-top: 2rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Status</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>{{ $otherinfo->membership_status ?? 'Active' }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Member ID</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>COOP-{{ $user->id }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Member Since</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>{{ $memberSince }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Membership Type</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>{{ $user->role }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-tab">
+                            <div class="d-flex justify-content-left align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center"
+                                    style="width: 55px; height: 55px; background-color: #00A63E; border-radius: 10px;">
+                                    <i class="fa fa-wallet" style="color: white; font-size: 25px;"></i>
+                                </div>
+
+                                <div>
+                                    <p style="margin: 0">Share Capital</p>
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="margin-top: 2rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Total Shares</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>{{ $shareCapitalAccount->total_shares ?? 0 }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Share Value</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>₱ 1000 per share</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Total Value</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>₱
+                                        {{ number_format($shareCapitalAccount->total_amount ?? 0, 2) }}</span>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-top: 0.5rem">
+                                <div class="col-6">
+                                    <p class="tw:text-[#808080]">Dividend Rate</p>
+                                </div>
+
+                                <div class="col-6 text-end">
+                                    <span>{{ $dividendRate->rate ?? 0 }}% per annum</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <div class="d-flex justify-content-center align-items-center pb-5">
+                        <div class="card-tab-benefits">
+                            <h4>Membership Benefits</h4>
+
+                            <div class="row mt-4">
+                                <div class="col-5">
+                                    <div class="d-flex justify-content-left align-items-center gap-2">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Access to all loan products</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Annual patronage refund</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Member discount programs</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Emergency loan assistance</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="d-flex justify-content-left align-items-center gap-2">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Competitive savings dividends</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Free financial consultation</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Educational seminars</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
+                                        <i class="fa fa-check-circle" style="color: #128B4A; font-size: 20px;"></i>
+                                        <p style="margin: 0">Insurance coverage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab"
+                tabindex="0">
+
+                <div class="mt-5">
+                    <div class="transaction-tab">
+                        <h4>Transaction History</h4>
+
+                        <p class="tw:text-[#808080]">View all your account transactions</p>
+
+                        <div class="mt-4">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($transactions as $transaction)
+                                    <tr>
+                                        <td>{{ \Carbon\Carbon::parse($transaction['date'])->format('m/d/Y') }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
+                                                style="background-color: #DBEAFE; border-radius: 28px; color: #1447E6; padding: 0.5rem; border: 1px solid rgba(0,0,0,0.3); width: 120px;">
+                                                <p style="margin: 0; font-size: 13px; font-weight: semibold;">
+                                                    {{ $transaction['type'] }}
                                                 </p>
                                             </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Skills</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->skills ?? 'N/A' }}</p>
+                                        </td>
+                                        <td style="width: 250px; line-height: 35px;">
+                                            {{ $transaction['description'] }}</td>
+                                        <td style="color: {{ $transaction['amount'] >= 0 ? '#00A63E' : '#E7000B' }}">
+                                            {{ $transaction['amount'] >= 0 ? '+' : '' }}₱
+                                            {{ number_format(abs($transaction['amount']), 2) }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
+                                                style="background-color: #DBFCE7; border-radius: 28px; color: #128B4A; padding: 0.5rem; border: 1px solid rgba(0,0,0,0.3); width: 100px;">
+                                                <p style="margin: 0; font-size: 13px; font-weight: semibold;">
+                                                    {{ $transaction['status'] }}
+                                                </p>
                                             </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Email</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">{{ $email }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Date of Birth</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->date_of_birth ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Member Since</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $memberSince }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6 mb-4" style="">
-                                        <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5; ">
-                                            <h5
-                                                style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                <i class="fa fa-map-marker" style="color: #1E4035;"></i> Location</h5>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Present Address</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->present_address ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Permanent Address</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->permanent_address ?? 'N/A' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5;">
-                                            <h5
-                                                style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                <i class="fa fa-venus-mars" style="color: #1E4035;"></i> Personal Info
-                                            </h5>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Sex</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->sex ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Civil Status</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->civil_status ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Citizenship</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->citizenship ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Blood Type</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->blood_type ?? 'N/A' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    border: 1px solid #E2E8E5;">
-                                            <h5
-                                                style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                <i class="fa fa-ruler-vertical" style="color: #1E4035;"></i> Body Info
-                                            </h5>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Height</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->height ?? 'N/A' }}</p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <small style="color: #6b7280;">Weight</small>
-                                                <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                    {{ $otherinfo->weight ?? 'N/A' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    @if($membergovernIds)
-                                                                        <div class="col-lg-4 col-md-6 mb-4">
-                                                                            <div class="profile-card" style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-                                        border: 1px solid #E2E8E5;">
-                                                                                <h5
-                                                                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                                                    <i class="fa fa-id-card" style="color: #1E4035;"></i> Government IDs
-                                                                                </h5>
-                                                                                <div class="mb-3">
-                                                                                    <small style="color: #6b7280;">SSS ID</small>
-                                                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                                                        {{ $membergovernIds->sss_id ?? 'N/A' }}</p>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <small style="color: #6b7280;">PhilHealth ID</small>
-                                                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                                                        {{ $membergovernIds->philhealth_id ?? 'N/A' }}</p>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <small style="color: #6b7280;">Pag-IBIG ID</small>
-                                                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                                                        {{ $membergovernIds->pagibig_id ?? 'N/A' }}</p>
-                                                                                </div>
-                                                                                <div class="mb-3">
-                                                                                    <small style="color: #6b7280;">TIN ID</small>
-                                                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                                                        {{ $membergovernIds->tin_id ?? 'N/A' }}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                    @endif
-
-                                    @if($family)
-                                        <div class="col-lg-4 col-md-6 mb-4">
-                                            <div class="profile-card"
-                                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8E5; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);">
-                                                <h5
-                                                    style="margin-bottom: 20px; color: #1E4035; border-bottom: 2px solid #1E4035; padding-bottom: 10px;">
-                                                    <i class="fa fa-users" style="color: #1E4035;"></i> Family</h5>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Spouse Name</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $family->spouse_name ?? 'N/A' }}</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Spouse Birthdate</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $family->spouse_date_birth ?? 'N/A' }}</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Sons / Daughters</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $family->number_son ?? 0 }} / {{ $family->number_daughter ?? 0 }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    @if($vehicles->count() > 0)
-                                        <div class="col-lg-4 col-md-6 mb-4">
-                                            <div class="profile-card"
-                                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #1E4035; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);">
-                                                <h5
-                                                    style="margin-bottom: 20px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
-                                                    <i class="fa fa-car" style="color: #3b82f6;"></i> Vehicles</h5>
-                                                @foreach($vehicles as $vehicle)
-                                                    <div class="mb-3">
-                                                        <small
-                                                            style="color: #6b7280;">{{ $vehicle->vehicle_type ?? 'Vehicle' }}</small>
-                                                        <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                            {{ $vehicle->plate_no ?? 'N/A' }} (x{{ $vehicle->quantity ?? 0 }})
-                                                        </p>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    @if($educational)
-                                        <div class="col-lg-4 col-md-6 mb-4">
-                                            <div class="profile-card"
-                                                style="background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8E5;">
-                                                <h5
-                                                    style="margin-bottom: 20px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
-                                                    <i class="fa fa-graduation-cap" style="color: #3b82f6;"></i> Education
-                                                </h5>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Level</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $educational->educational_level ?? 'N/A' }}</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Status</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $educational->status ?? 'N/A' }}</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <small style="color: #6b7280;">Specify</small>
-                                                    <p style="margin: 0; font-weight: 600; color: #1f2937;">
-                                                        {{ $educational->specify ?? 'N/A' }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center">No transactions yet</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="tab-pane fade" id="pills-profile" role="tabpanel"
-                            aria-labelledby="pills-profile-tab" tabindex="0">
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="pills-settings" role="tabpanel" aria-labelledby="pills-disabled-tab"
+                    tabindex="0">
 
-                            <div class="mt-5 mb-5">
-                                <div class="d-flex justify-content-center align-items-center gap-5">
-                                    <div class="card-tab">
-                                        <div class="d-flex justify-content-left align-items-center gap-3">
-                                            <div class="d-flex justify-content-center align-items-center"
-                                                style="width: 55px; height: 55px; background-color: #5295FF; border-radius: 10px;">
-                                                <i class="fa fa-check-circle"
-                                                    style="color: white; font-size: 25px;"></i>
-                                            </div>
+                    <div class="mt-5 mb-5">
+                        <div class="settings-tab">
+                            <h4>Notification Preferences</h4>
 
-                                            <div>
-                                                <p style="margin: 0">Membership Status</p>
-                                            </div>
-                                        </div>
+                            <div class="row">
+                                <div class="mt-4">
+                                    <div class="col-6">
+                                        <p>Email Notifications</p>
 
-
-                                        <div class="row" style="margin-top: 2rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Status</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>{{ $otherinfo->membership_status ?? 'Active' }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Member ID</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>COOP-{{ $user->id }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Member Since</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>{{ $memberSince }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Membership Type</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>{{ $user->role }}</span>
-                                            </div>
-                                        </div>
+                                        <span>Receive updates via Email</span>
                                     </div>
+                                </div>
 
-                                    <div class="card-tab">
-                                        <div class="d-flex justify-content-left align-items-center gap-3">
-                                            <div class="d-flex justify-content-center align-items-center"
-                                                style="width: 55px; height: 55px; background-color: #00A63E; border-radius: 10px;">
-                                                <i class="fa fa-wallet" style="color: white; font-size: 25px;"></i>
-                                            </div>
+                                <div class="mt-3">
+                                    <div class="col-6">
+                                        <p>SMS Notifications</p>
 
-                                            <div>
-                                                <p style="margin: 0">Share Capital</p>
-                                            </div>
-                                        </div>
+                                        <span>Receive updates via SMS</span>
+                                    </div>
+                                </div>
 
+                                <div class="mt-3">
+                                    <div class="col-6">
+                                        <p>Monthly Statements</p>
 
-                                        <div class="row" style="margin-top: 2rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Total Shares</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>{{ $shareCapitalAccount->total_shares ?? 0 }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Share Value</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>₱ 1000 per share</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Total Value</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>₱
-                                                    {{ number_format($shareCapitalAccount->total_amount ?? 0, 2) }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-top: 0.5rem">
-                                            <div class="col-6">
-                                                <p class="tw:text-[#808080]">Dividend Rate</p>
-                                            </div>
-
-                                            <div class="col-6 text-end">
-                                                <span>{{ $dividendRate->rate ?? 0 }}% per annum</span>
-                                            </div>
-                                        </div>
+                                        <span>Receive monthly account statements</span>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="mt-5">
-                                <div class="d-flex justify-content-center align-items-center pb-5">
-                                    <div class="card-tab-benefits">
-                                        <h4>Membership Benefits</h4>
-
-                                        <div class="row mt-4">
-                                            <div class="col-5">
-                                                <div class="d-flex justify-content-left align-items-center gap-2">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Access to all loan products</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Annual patronage refund</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Member discount programs</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Emergency loan assistance</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <div class="d-flex justify-content-left align-items-center gap-2">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Competitive savings dividends</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Free financial consultation</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Educational seminars</p>
-                                                </div>
-
-                                                <div class="d-flex justify-content-left align-items-center gap-2 mt-3">
-                                                    <i class="fa fa-check-circle"
-                                                        style="color: #128B4A; font-size: 20px;"></i>
-                                                    <p style="margin: 0">Insurance coverage</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel"
-                            aria-labelledby="pills-contact-tab" tabindex="0">
 
-                            <div class="mt-5">
-                                <div class="transaction-tab">
-                                    <h4>Transaction History</h4>
+                        <div class="security-tab mt-4">
+                            <h4>Security</h4>
 
-                                    <p class="tw:text-[#808080]">View all your account transactions</p>
+                            <div class="mt-4 security-box">
+                                <span>Change Password</span>
 
-                                    <div class="mt-4">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Type</th>
-                                                    <th>Description</th>
-                                                    <th>Amount</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($transactions as $transaction)
-                                                    <tr>
-                                                        <td>{{ \Carbon\Carbon::parse($transaction['date'])->format('m/d/Y') }}
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
-                                                                style="background-color: #DBEAFE; border-radius: 28px; color: #1447E6; padding: 0.5rem; border: 1px solid rgba(0,0,0,0.3); width: 120px;">
-                                                                <p
-                                                                    style="margin: 0; font-size: 13px; font-weight: semibold;">
-                                                                    {{ $transaction['type'] }}
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                        <td style="width: 250px; line-height: 35px;">
-                                                            {{ $transaction['description'] }}</td>
-                                                        <td
-                                                            style="color: {{ $transaction['amount'] >= 0 ? '#00A63E' : '#E7000B' }}">
-                                                            {{ $transaction['amount'] >= 0 ? '+' : '' }}₱
-                                                            {{ number_format(abs($transaction['amount']), 2) }}
-                                                        </td>
-                                                        <td>
-                                                            <div class="d-flex justify-content-center align-items-center gap-1 card-icon"
-                                                                style="background-color: #DBFCE7; border-radius: 28px; color: #128B4A; padding: 0.5rem; border: 1px solid rgba(0,0,0,0.3); width: 100px;">
-                                                                <p
-                                                                    style="margin: 0; font-size: 13px; font-weight: semibold;">
-                                                                    {{ $transaction['status'] }}
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="5" class="text-center">No transactions yet</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                <p class="tw:text-[#808080]" style="margin: 0">Update your account password
+                                </p>
                             </div>
-                            <div class="tab-pane fade" id="pills-settings" role="tabpanel"
-                                aria-labelledby="pills-disabled-tab" tabindex="0">
 
-                                <div class="mt-5 mb-5">
-                                    <div class="settings-tab">
-                                        <h4>Notification Preferences</h4>
+                            <div class="mt-3 security-box">
+                                <span>Two-Factor Authentication</span>
 
-                                        <div class="row">
-                                            <div class="mt-4">
-                                                <div class="col-6">
-                                                    <p>Email Notifications</p>
-
-                                                    <span>Receive updates via Email</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-3">
-                                                <div class="col-6">
-                                                    <p>SMS Notifications</p>
-
-                                                    <span>Receive updates via SMS</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-3">
-                                                <div class="col-6">
-                                                    <p>Monthly Statements</p>
-
-                                                    <span>Receive monthly account statements</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="security-tab mt-4">
-                                        <h4>Security</h4>
-
-                                        <div class="mt-4 security-box">
-                                            <span>Change Password</span>
-
-                                            <p class="tw:text-[#808080]" style="margin: 0">Update your account password
-                                            </p>
-                                        </div>
-
-                                        <div class="mt-3 security-box">
-                                            <span>Two-Factor Authentication</span>
-
-                                            <p class="tw:text-[#808080]" style="margin: 0">Add extra security to your
-                                                account</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p class="tw:text-[#808080]" style="margin: 0">Add extra security to your
+                                    account</p>
                             </div>
                         </div>
                     </div>
-            </main>
+                </div>
+            </div>
+        </div>
+</main>
 
 
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -768,44 +758,44 @@
     SKELETON OVERLAY — only shown right after login
     ═══════════════════════════════════════════════ --}}
     @if (session('just_logged_in'))
-        <div id="skeleton-overlay" aria-hidden="true">
+    <div id="skeleton-overlay" aria-hidden="true">
 
-            {{-- Navbar bar --}}
-            <div class="sk sk-card" style="height:70px; margin-bottom:28px;"></div>
+        {{-- Navbar bar --}}
+        <div class="sk sk-card" style="height:70px; margin-bottom:28px;"></div>
 
-            {{-- Welcome banner --}}
-            <div class="sk sk-card" style="height:150px; margin-bottom:28px;"></div>
+        {{-- Welcome banner --}}
+        <div class="sk sk-card" style="height:150px; margin-bottom:28px;"></div>
 
-            {{-- 3 summary cards --}}
-            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;">
-                <div class="sk sk-card" style="height:165px;"></div>
-                <div class="sk sk-card" style="height:165px;"></div>
-                <div class="sk sk-card" style="height:165px;"></div>
-            </div>
-
-            {{-- Apply banner --}}
-            <div class="sk sk-card" style="height:114px; margin-bottom:24px;"></div>
-
-            {{-- Loans + right sidebar --}}
-            <div style="display:grid; grid-template-columns:1fr 300px; gap:18px;">
-                <div>
-                    <div style="display:flex; gap:8px; margin-bottom:14px;">
-                        <div class="sk sk-pill" style="width:64px; height:34px;"></div>
-                        <div class="sk sk-pill" style="width:84px; height:34px;"></div>
-                        <div class="sk sk-pill" style="width:74px; height:34px;"></div>
-                        <div class="sk sk-pill" style="width:78px; height:34px;"></div>
-                    </div>
-                    <div class="sk sk-card" style="height:170px; margin-bottom:14px;"></div>
-                    <div class="sk sk-card" style="height:170px;"></div>
-                </div>
-                <div style="display:flex; flex-direction:column; gap:14px;">
-                    <div class="sk sk-card" style="height:148px;"></div>
-                    <div class="sk sk-card" style="height:168px;"></div>
-                    <div class="sk sk-card" style="height:148px;"></div>
-                </div>
-            </div>
-
+        {{-- 3 summary cards --}}
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;">
+            <div class="sk sk-card" style="height:165px;"></div>
+            <div class="sk sk-card" style="height:165px;"></div>
+            <div class="sk sk-card" style="height:165px;"></div>
         </div>
+
+        {{-- Apply banner --}}
+        <div class="sk sk-card" style="height:114px; margin-bottom:24px;"></div>
+
+        {{-- Loans + right sidebar --}}
+        <div style="display:grid; grid-template-columns:1fr 300px; gap:18px;">
+            <div>
+                <div style="display:flex; gap:8px; margin-bottom:14px;">
+                    <div class="sk sk-pill" style="width:64px; height:34px;"></div>
+                    <div class="sk sk-pill" style="width:84px; height:34px;"></div>
+                    <div class="sk sk-pill" style="width:74px; height:34px;"></div>
+                    <div class="sk sk-pill" style="width:78px; height:34px;"></div>
+                </div>
+                <div class="sk sk-card" style="height:170px; margin-bottom:14px;"></div>
+                <div class="sk sk-card" style="height:170px;"></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+                <div class="sk sk-card" style="height:148px;"></div>
+                <div class="sk sk-card" style="height:168px;"></div>
+                <div class="sk sk-card" style="height:148px;"></div>
+            </div>
+        </div>
+
+    </div>
     @endif
 
 
@@ -824,9 +814,9 @@
                         <h2>Good day, {{ $username }}! <span>Here's your overview</span></h2>
 
                         @if ($username)
-                            <div class="main-header">
-                                <div class="main-intro">
-                                    <!-- <div class="main-left">
+                        <div class="main-header">
+                            <div class="main-intro">
+                                <!-- <div class="main-left">
                                         <div class="left-icon">
 
                                         </div>
@@ -839,14 +829,14 @@
                                     <div class="main-right">
 
                                     </div> -->
-                                    <div class="main-intro-icon"></div>
-                                    <div class="main-intro-text">
-                                        <span>Member Cooperative Assistant</span>
-                                        <p>Your money are growing steadily. Every peso you save today builds a stronger
-                                            tomorrow for you.</p>
-                                    </div>
+                                <div class="main-intro-icon"></div>
+                                <div class="main-intro-text">
+                                    <span>Member Cooperative Assistant</span>
+                                    <p>Your money are growing steadily. Every peso you save today builds a stronger
+                                        tomorrow for you.</p>
                                 </div>
                             </div>
+                        </div>
                         @endif
 
                         <div class="card-parent">
@@ -859,7 +849,8 @@
                                 </div>
                                 <div class="card-body">
                                     <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
-                                    <p>{{ $netSavingsThisMonth >= 0 ? '↑ +' : '↓ -' }}₱{{ number_format(abs($netSavingsThisMonth), 2) }} this month</p>
+                                    <p>{{ $netSavingsThisMonth >= 0 ? '↑ +' : '↓ -' }}₱{{
+                                        number_format(abs($netSavingsThisMonth), 2) }} this month</p>
                                 </div>
                             </div>
 
@@ -876,7 +867,8 @@
                             </div>
 
                             {{-- Upcoming Dues --}}
-                            <div class="card-box" onclick="document.getElementById('upcomingDuesModal').style.display='flex'">
+                            <div class="card-box"
+                                onclick="document.getElementById('upcomingDuesModal').style.display='flex'">
                                 <div class="card-header">
                                     <p>Upcoming Dues</p>
                                     <div class="update"><i class="fa fa-calendar-day"></i></div>
@@ -887,7 +879,8 @@
                                 </div>
                             </div>
 
-                            <div class="card-box" onclick="document.getElementById('netStandingModal').style.display='flex'">
+                            <div class="card-box"
+                                onclick="document.getElementById('netStandingModal').style.display='flex'">
                                 <div class="card-header">
                                     <p>Net Standing</p>
                                     <div class="update"><i class="fa fa-wallet"></i></div>
@@ -928,9 +921,9 @@
                                     <div class="year-filter">
                                         <select onchange="window.location='{{ url()->current() }}?year='+this.value">
                                             @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
+                                            <option value="{{ $year }}" {{ $year==$selectedYear ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -938,22 +931,23 @@
                                 <div class="panel-body">
                                     <div class="chart-wrap">
                                         @foreach ($savingsGrowth as $month)
-                                            <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
-                                                <div class="bar" style="height:{{ $month['height_percent'] }}%">
-                                                    <div class="bar-tooltip">
-                                                        <div class="bar-tooltip-title">{{ $month['label'] }}</div>
-                                                        <div class="bar-tooltip-row">
-                                                            <span
-                                                                class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
-                                                            <span class="bar-tooltip-label">Net Savings:</span>
-                                                            <span class="bar-tooltip-value">
-                                                                {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{ number_format(abs($month['net']), 2) }}
-                                                            </span>
-                                                        </div>
+                                        <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
+                                            <div class="bar" style="height:{{ $month['height_percent'] }}%">
+                                                <div class="bar-tooltip">
+                                                    <div class="bar-tooltip-title">{{ $month['label'] }}</div>
+                                                    <div class="bar-tooltip-row">
+                                                        <span
+                                                            class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
+                                                        <span class="bar-tooltip-label">Net Savings:</span>
+                                                        <span class="bar-tooltip-value">
+                                                            {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{
+                                                            number_format(abs($month['net']), 2) }}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <span class="bar-month">{{ $month['label'] }}</span>
                                             </div>
+                                            <span class="bar-month">{{ $month['label'] }}</span>
+                                        </div>
                                         @endforeach
                                     </div>
                                     <!-- <div class="chart-legend">
@@ -967,32 +961,32 @@
 
                             <div class="panel graph announcements">
                                 <div class="panel-head"
-                                style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                                <div>
-                                    <h3>Announcements</h3>
-                                    <p>Latest updates from your cooperative</p>
-                                </div>
-                                <div class="balance-date">
-                                    <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
-                                        @foreach (range(1, 12) as $m)
-                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
+                                    style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Announcements</h3>
+                                        <p>Latest updates from your cooperative</p>
+                                    </div>
+                                    <div class="balance-date">
+                                        <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
+                                            @foreach (range(1, 12) as $m)
+                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}" {{ (int)
+                                                explode('-', $announcementMonth)[1]===$m ? 'selected' : '' }}>
                                                 {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                             </option>
-                                        @endforeach
-                                    </select>
-                                    <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
-                                        @foreach ($availableYears as $year)
-                                            <option value="{{ $year }}"
-                                                {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
+                                            @endforeach
+                                        </select>
+                                        <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
+                                            @foreach ($availableYears as $year)
+                                            <option value="{{ $year }}" {{ (int) explode('-',
+                                                $announcementMonth)[0]===$year ? 'selected' : '' }}>
                                                 {{ $year }}
                                             </option>
-                                        @endforeach
-                                    </select>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
-                            
+
                         </div>
 
                         {{-- <div class="parent-panel panel-2" style="margin-top:1.5rem;">
@@ -1006,18 +1000,18 @@
                                     <div class="balance-date">
                                         <select id="balanceMonthSelect" onchange="updateBalanceMonth()">
                                             @foreach (range(1, 12) as $m)
-                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                    {{ (int) explode('-', $balanceMonth)[1] === $m ? 'selected' : '' }}>
-                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                                </option>
+                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}" {{ (int)
+                                                explode('-', $balanceMonth)[1]===$m ? 'selected' : '' }}>
+                                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                            </option>
                                             @endforeach
                                         </select>
                                         <select id="balanceYearSelect" onchange="updateBalanceMonth()">
                                             @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}"
-                                                    {{ (int) explode('-', $balanceMonth)[0] === $year ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
+                                            <option value="{{ $year }}" {{ (int) explode('-', $balanceMonth)[0]===$year
+                                                ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -1046,9 +1040,9 @@
                                     <div class="year-filter">
                                         <select onchange="window.location='{{ url()->current() }}?year='+this.value">
                                             @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
+                                            <option value="{{ $year }}" {{ $year==$selectedYear ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -1056,22 +1050,23 @@
                                 <div class="panel-body">
                                     <div class="chart-wrap">
                                         @foreach ($shareCapitalGrowth as $month)
-                                            <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
-                                                <div class="bar" style="height:{{ $month['height_percent'] }}%">
-                                                    <div class="bar-tooltip">
-                                                        <div class="bar-tooltip-title">{{ $month['label'] }}</div>
-                                                        <div class="bar-tooltip-row">
-                                                            <span
-                                                                class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
-                                                            <span class="bar-tooltip-label">Net Contribution:</span>
-                                                            <span class="bar-tooltip-value">
-                                                                {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{ number_format(abs($month['net']), 2) }}
-                                                            </span>
-                                                        </div>
+                                        <div class="bar-col {{ $month['is_current'] ? 'active' : '' }}">
+                                            <div class="bar" style="height:{{ $month['height_percent'] }}%">
+                                                <div class="bar-tooltip">
+                                                    <div class="bar-tooltip-title">{{ $month['label'] }}</div>
+                                                    <div class="bar-tooltip-row">
+                                                        <span
+                                                            class="bar-tooltip-dot {{ $month['is_current'] ? 'dot-gold' : 'dot-blue' }}"></span>
+                                                        <span class="bar-tooltip-label">Net Contribution:</span>
+                                                        <span class="bar-tooltip-value">
+                                                            {{ $month['net'] >= 0 ? '₱' : '-₱' }}{{
+                                                            number_format(abs($month['net']), 2) }}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <span class="bar-month">{{ $month['label'] }}</span>
                                             </div>
+                                            <span class="bar-month">{{ $month['label'] }}</span>
+                                        </div>
                                         @endforeach
                                     </div>
                                     <!-- <div class="chart-legend">
@@ -1099,21 +1094,24 @@
                                 <div class="recent-body">
                                     <div class="tx-list">
                                         @forelse ($recentTransactions as $tx)
-                                            <div class="tx-list-item">
-                                                <div class="tx-icon {{ $tx['icon'] }}"><i class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
-                                                <div class="tx-list-info">
-                                                    <strong>{{ $tx['title'] }}</strong>
-                                                    <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
-                                                </div>
-                                                <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
-                                                    {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
-                                                </div>
+                                        <div class="tx-list-item">
+                                            <div class="tx-icon {{ $tx['icon'] }}"><i
+                                                    class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
+                                            <div class="tx-list-info">
+                                                <strong>{{ $tx['title'] }}</strong>
+                                                <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
                                             </div>
+                                            <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
+                                                {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{
+                                                number_format(abs($tx['amount']), 2) }}
+                                            </div>
+                                        </div>
                                         @empty
-                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
-                                                <i class="fa fa-inbox" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-                                                No transactions found.
-                                            </div>
+                                        <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                            <i class="fa fa-inbox"
+                                                style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                            No transactions found.
+                                        </div>
                                         @endforelse
                                     </div>
                                 </div>
@@ -1132,21 +1130,23 @@
                                 <div class="recent-body">
                                     <div class="tx-list">
                                         @forelse ($upcomingDues as $due)
-                                            <div class="tx-list-item">
-                                                <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
-                                                <div class="tx-list-info">
-                                                    <strong>{{ $due['title'] }}</strong>
-                                                    <span>{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
-                                                </div>
-                                                <div class="tx-list-amt down">
-                                                    ₱{{ number_format($due['amount'], 2) }}
-                                                </div>
+                                        <div class="tx-list-item">
+                                            <div class="tx-icon {{ $due['icon'] }}"><i
+                                                    class="fa-solid {{ $due['icon_fa'] }}"></i></div>
+                                            <div class="tx-list-info">
+                                                <strong>{{ $due['title'] }}</strong>
+                                                <span>{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
                                             </div>
+                                            <div class="tx-list-amt down">
+                                                ₱{{ number_format($due['amount'], 2) }}
+                                            </div>
+                                        </div>
                                         @empty
-                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
-                                                <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-                                                No upcoming dues.
-                                            </div>
+                                        <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                            <i class="fa fa-circle-check"
+                                                style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                            No upcoming dues.
+                                        </div>
                                         @endforelse
                                     </div>
                                 </div>
@@ -1178,7 +1178,7 @@
                             </button>
                         </div>
                     </div> -->
-                    
+
 
                         <!-- Resignation Modal -->
                         <div id="resignModal"
@@ -1245,8 +1245,10 @@
                                 <div
                                     style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
                                     <div>
-                                        <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Net Standing</h3>
-                                        <p style="margin: 3.2px 0 0; font-size: 13.5px;color: var(--muted);">Overall Financial Position</p>
+                                        <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Net
+                                            Standing</h3>
+                                        <p style="margin: 3.2px 0 0; font-size: 13.5px;color: var(--muted);">Overall
+                                            Financial Position</p>
                                     </div>
                                     <button onclick="document.getElementById('netStandingModal').style.display='none'"
                                         style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
@@ -1255,56 +1257,79 @@
                                 <div style="padding:24px;">
 
                                     <div style="display:flex; gap:8px; margin-bottom:15px;">
-                                        <select id="standingMonthSelect" class="form-select" onchange="updateStandingMonth()" style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
+                                        <select id="standingMonthSelect" class="form-select"
+                                            onchange="updateStandingMonth()"
+                                            style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
                                             @foreach (range(1, 12) as $m)
-                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                    {{ (int) explode('-', $standingMonth)[1] === $m ? 'selected' : '' }}>
-                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                                </option>
+                                            <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}" {{ (int)
+                                                explode('-', $standingMonth)[1]===$m ? 'selected' : '' }}>
+                                                {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                            </option>
                                             @endforeach
                                         </select>
-                                        <select id="standingYearSelect" class="form-select" onchange="updateStandingMonth()" style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
+                                        <select id="standingYearSelect" class="form-select"
+                                            onchange="updateStandingMonth()"
+                                            style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:13px; font-weight:600; color:#111827;">
                                             @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}"
-                                                    {{ (int) explode('-', $standingMonth)[0] === $year ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
+                                            <option value="{{ $year }}" {{ (int) explode('-', $standingMonth)[0]===$year
+                                                ? 'selected' : '' }}>
+                                                {{ $year }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>
 
-                                    <div style="text-align:center; padding:16px 0 20px; border-bottom:1px dashed var(--border); margin-bottom:16px;">
-                                        <p style="margin:0; font-size:12.5px; color:#808080; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">Net Standing</p>
-                                        <h2 style="margin:6px 0 0; font-size:32px; font-weight:800; color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">
+                                    <div
+                                        style="text-align:center; padding:16px 0 20px; border-bottom:1px dashed var(--border); margin-bottom:16px;">
+                                        <p
+                                            style="margin:0; font-size:12.5px; color:#808080; font-weight:600; text-transform:uppercase; letter-spacing:.5px;">
+                                            Net Standing</p>
+                                        <h2
+                                            style="margin:6px 0 0; font-size:32px; font-weight:800; color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">
                                             ₱{{ number_format($netStandingAsOf, 2) }}
                                         </h2>
                                     </div>
 
                                     <div style="display:flex; flex-direction:column; gap:12px;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
-                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
-                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--gold);"></span>
+                                        <div
+                                            style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
+                                            <span
+                                                style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span
+                                                    style="width:10px; height:10px; border-radius:50%; background:var(--gold);"></span>
                                                 Share Capital
                                             </span>
-                                            <strong style="color:#1a1a1a;">₱{{ number_format($shareCapitalStandingAsOf, 2) }}</strong>
+                                            <strong style="color:#1a1a1a;">₱{{ number_format($shareCapitalStandingAsOf,
+                                                2) }}</strong>
                                         </div>
-                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
-                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
-                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--blue);"></span>
+                                        <div
+                                            style="display:flex; justify-content:space-between; align-items:center; font-size:14px;">
+                                            <span
+                                                style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span
+                                                    style="width:10px; height:10px; border-radius:50%; background:var(--blue);"></span>
                                                 Savings
                                             </span>
-                                            <strong style="color:#1a1a1a;">+ ₱{{ number_format($savingsStandingAsOf, 2) }}</strong>
+                                            <strong style="color:#1a1a1a;">+ ₱{{ number_format($savingsStandingAsOf, 2)
+                                                }}</strong>
                                         </div>
-                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14px; padding-bottom:12px; border-bottom:1px solid #f0f0f0;">
-                                            <span style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
-                                                <span style="width:10px; height:10px; border-radius:50%; background:var(--coral);"></span>
+                                        <div
+                                            style="display:flex; justify-content:space-between; align-items:center; font-size:14px; padding-bottom:12px; border-bottom:1px solid #f0f0f0;">
+                                            <span
+                                                style="display:flex; align-items:center; gap:8px; color:var(--muted); font-weight: 600;">
+                                                <span
+                                                    style="width:10px; height:10px; border-radius:50%; background:var(--coral);"></span>
                                                 Loan Balance
                                             </span>
-                                            <strong style="color:#DC2626;">− ₱{{ number_format($loanStandingAsOf, 2) }}</strong>
+                                            <strong style="color:#DC2626;">− ₱{{ number_format($loanStandingAsOf, 2)
+                                                }}</strong>
                                         </div>
-                                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:14.5px;">
+                                        <div
+                                            style="display:flex; justify-content:space-between; align-items:center; font-size:14.5px;">
                                             <span style="font-weight:700; color:#1a1a1a;">Total</span>
-                                            <strong style="color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">₱{{ number_format($netStandingAsOf, 2) }}</strong>
+                                            <strong
+                                                style="color:{{ $netStandingAsOf >= 0 ? 'var(--teal)' : '#DC2626' }};">₱{{
+                                                number_format($netStandingAsOf, 2) }}</strong>
                                         </div>
                                     </div>
 
@@ -1327,7 +1352,8 @@
                 style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Upcoming Dues</h3>
-                    <p style="margin:3.2px 0 0; font-size:13.5px; color:var(--muted);">Your next loan payments across all accounts</p>
+                    <p style="margin:3.2px 0 0; font-size:13.5px; color:var(--muted);">Your next loan payments across
+                        all accounts</p>
                 </div>
                 <button onclick="document.getElementById('upcomingDuesModal').style.display='none'"
                     style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
@@ -1335,21 +1361,23 @@
 
             <div style="padding: 0 24px; overflow-y:auto; max-height: 368px;">
                 @forelse ($upcomingDues as $due)
-                    <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f0f0f0;">
-                        <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
-                        <div style="flex:1;">
-                            <strong style="display:block; font-size:14px; color:#111827;">{{ $due['title'] }}</strong>
-                            <span style="font-size:12.5px; color:var(--muted);">{{ $due['date_display'] }} · {{ $due['subtitle'] }}</span>
-                        </div>
-                        <div style="font-size: 14px;font-weight:700; color:#DC2626;">
-                            ₱{{ number_format($due['amount'], 2) }}
-                        </div>
+                <div
+                    style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid #f0f0f0;">
+                    <div class="tx-icon {{ $due['icon'] }}"><i class="fa-solid {{ $due['icon_fa'] }}"></i></div>
+                    <div style="flex:1;">
+                        <strong style="display:block; font-size:14px; color:#111827;">{{ $due['title'] }}</strong>
+                        <span style="font-size:12.5px; color:var(--muted);">{{ $due['date_display'] }} · {{
+                            $due['subtitle'] }}</span>
                     </div>
+                    <div style="font-size: 14px;font-weight:700; color:#DC2626;">
+                        ₱{{ number_format($due['amount'], 2) }}
+                    </div>
+                </div>
                 @empty
-                    <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
-                        <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-                        No upcoming dues.
-                    </div>
+                <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                    <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                    No upcoming dues.
+                </div>
                 @endforelse
             </div>
         </div>
@@ -1382,84 +1410,84 @@
 
     {{-- Toast --}}
     @if (session("message"))
-        <div class="toast-message">
-            <i class="fa fa-check-circle"></i>
-            <div>
-                <p>{{ session("message") }}</p>
-            </div>
+    <div class="toast-message">
+        <i class="fa fa-check-circle"></i>
+        <div>
+            <p>{{ session("message") }}</p>
         </div>
-        <script>
-            setTimeout(() => {
-                const msg = document.querySelector(".toast-message");
-                if (msg) {
-                    msg.classList.add("hide");
-                    msg.addEventListener("animationend", () => msg.remove());
-                }
-            }, 3000);
-        </script>
+    </div>
+    <script>
+        setTimeout(() => {
+            const msg = document.querySelector(".toast-message");
+            if (msg) {
+                msg.classList.add("hide");
+                msg.addEventListener("animationend", () => msg.remove());
+            }
+        }, 3000);
+    </script>
     @endif
 
     @if (request('open_standing_modal'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.getElementById('netStandingModal').style.display = 'flex';
-            });
-        </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('netStandingModal').style.display = 'flex';
+        });
+    </script>
     @endif
 
 
     {{-- ─── Skeleton dismiss logic — only runs after login ─── --}}
     @if (session('just_logged_in'))
-        <script>
-            (function () {
-                var MIN_DISPLAY = 2000;
-                var startTime = Date.now();
-                var pageLoaded = false;
-                var dismissed = false;
+    <script>
+        (function () {
+            var MIN_DISPLAY = 2000;
+            var startTime = Date.now();
+            var pageLoaded = false;
+            var dismissed = false;
 
-                function dismissSkeleton() {
-                    if (dismissed) return;
-                    dismissed = true;
+            function dismissSkeleton() {
+                if (dismissed) return;
+                dismissed = true;
 
-                    var overlay = document.getElementById('skeleton-overlay');
-                    var content = document.getElementById('page-content');
+                var overlay = document.getElementById('skeleton-overlay');
+                var content = document.getElementById('page-content');
 
-                    if (overlay) {
-                        overlay.classList.add('sk-hide');
-                        overlay.addEventListener('transitionend', function () {
-                            overlay.remove();
-                        }, { once: true });
-                    }
-
-                    if (content) {
-                        content.classList.add('sk-ready');
-                    }
+                if (overlay) {
+                    overlay.classList.add('sk-hide');
+                    overlay.addEventListener('transitionend', function () {
+                        overlay.remove();
+                    }, { once: true });
                 }
 
-                function tryDismiss() {
-                    if (!pageLoaded) return;
-                    var elapsed = Date.now() - startTime;
-                    var remaining = MIN_DISPLAY - elapsed;
-                    if (remaining <= 0) {
-                        dismissSkeleton();
-                    } else {
-                        setTimeout(dismissSkeleton, remaining);
-                    }
+                if (content) {
+                    content.classList.add('sk-ready');
                 }
+            }
 
-                if (document.readyState === 'complete') {
+            function tryDismiss() {
+                if (!pageLoaded) return;
+                var elapsed = Date.now() - startTime;
+                var remaining = MIN_DISPLAY - elapsed;
+                if (remaining <= 0) {
+                    dismissSkeleton();
+                } else {
+                    setTimeout(dismissSkeleton, remaining);
+                }
+            }
+
+            if (document.readyState === 'complete') {
+                pageLoaded = true;
+                tryDismiss();
+            } else {
+                window.addEventListener('load', function () {
                     pageLoaded = true;
                     tryDismiss();
-                } else {
-                    window.addEventListener('load', function () {
-                        pageLoaded = true;
-                        tryDismiss();
-                    });
-                }
+                });
+            }
 
-                setTimeout(dismissSkeleton, 6000);
-            })();
-        </script>
+            setTimeout(dismissSkeleton, 6000);
+        })();
+    </script>
     @endif
 
     <script>
@@ -1479,21 +1507,21 @@
                         labels: ['Share Capital', 'Savings', 'Loan Balance'],
                         datasets: [{
                             data: [
-                            {{ $accountBalanceChart[0]['value'] ?? 0 }},
-                            {{ $accountBalanceChart[1]['value'] ?? 0 }},
+                                {{ $accountBalanceChart[0]['value'] ?? 0 }},
+                        {{ $accountBalanceChart[1]['value'] ?? 0 }},
                             {{ $accountBalanceChart[2]['value'] ?? 0 }},
                             ],
-                            backgroundColor: [colors.gold, colors.blue, colors.coral],
-                            borderWidth: 0,
+            backgroundColor: [colors.gold, colors.blue, colors.coral],
+                borderWidth: 0,
                         }],
                     },
-                    options: {
-                        plugins: { legend: { display: false } },
-                        responsive: false,
+        options: {
+            plugins: { legend: { display: false } },
+            responsive: false,
                     },
                 });
             }
-        })();
+        }) ();
     </script>
 
 

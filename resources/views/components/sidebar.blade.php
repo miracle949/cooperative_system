@@ -117,6 +117,22 @@
                         <span>Logout</span>
                     </a>
                 </li> --}}
+                <div class="menu" style="padding: 10px 10px 8px;">
+                    <p>Account</p>
+                </div>
+
+                <li class="{{ request()->routeIs('ProfileMember') ? 'active' : '' }}">
+                    <a href="{{ route('ProfileMember') }}">
+                        <i class="fa fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('logout') }}">
+                        <i class="fa fa-sign-out"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
             </div>
 
             {{-- <div class="logout">

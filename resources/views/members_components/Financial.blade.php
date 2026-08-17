@@ -563,7 +563,10 @@
                                                 style="border-radius: 10px;border: 1.5px solid #e0e0e0;height: 46px;font-size: 14px;color: #333;">
                                                 <option value="">Select account</option>
                                                 <option value="share_capital">🪙 Share Capital</option>
-                                                <option value="savings">🐷 Savings</option>
+                                                <option value="savings" {{ !$hasShareCapital ? 'disabled' : '' }}>
+                                                    🐷 Savings
+                                                    {{ !$hasShareCapital ? '(Locked — subscribe to Share Capital first)' : '' }}
+                                                </option>
                                             </select>
                                         </div>
 
@@ -866,8 +869,8 @@
                             ═══════════════════════════════════════ --}}
                             <h3 class="sc-split-heading">
                                 <!-- Dividend Earnings — The 60/40 Split
-                                    <span class="sc-split-note">Distributed once a year, after audited annual surplus is
-                                        approved by the General Assembly</span> -->
+                                                <span class="sc-split-note">Distributed once a year, after audited annual surplus is
+                                                    approved by the General Assembly</span> -->
                                 <div>
                                     <h4>Dividend Earnings — The 60/40 Split</h4>
                                     <p>Distributed once a year, after audited annual surplus is approved by the General
@@ -1080,86 +1083,87 @@
                             ═══════════════════════════════════════════════════════════ --}}
                             @if($activeTab === 'savings')
 
-                                        <main class="main">
-                                            <div class="card-box-parent">
-                                                <div class="card-box-text">
-                                                    <h3>My Savings Balance</h3>
-                                                    <h2>₱ <b>{{ number_format($totalSavingsBalance, 2) }}</b></h2>
-                                                    <div class="hero-sub">
-                                                        Last updated {{ $lastUpdated }} ·
-                                                        {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
-                                                        active
+                                <main class="main">
+                                    <div class="card-box-parent">
+                                        <div class="card-box-text">
+                                            <h3>My Savings Balance</h3>
+                                            <h2>₱ <b>{{ number_format($totalSavingsBalance, 2) }}</b></h2>
+                                            <div class="hero-sub">
+                                                Last updated {{ $lastUpdated }} ·
+                                                {{ $monthsActive == 0 ? 'Less than a month' : $monthsActive . ' ' . ($monthsActive == 1 ? 'month' : 'months') }}
+                                                active
+                                            </div>
+                                        </div>
+                                    </div>
+                                </main>
+
+                                <div class="{{ !$hasShareCapital ? 'gated' : '' }}">
+                                    <section id="section1">
+                                        <div class="main-card-box">
+                                            <div class="card-box tw:bg-white">
+                                                <div class="card-header-icon">
+                                                    <p>Interest Accrued</p>
+                                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                                        <i class="fa-solid fa-percent"></i>
                                                     </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h4>₱ {{ number_format($estimatedQuarterInterest, 2) }}</h4>
+                                                    <span>{{ number_format($regularSavingsRate, 2) }}% p.a. · credited
+                                                        {{ $regularSavingsFrequency }}</span>
                                                 </div>
                                             </div>
-                                        </main>
 
-                                        <div class="{{ !$hasShareCapital ? 'gated' : '' }}">
-                                            <section id="section1">
-                                                <div class="main-card-box">
-                                                    <div class="card-box tw:bg-white">
-                                                        <div class="card-header-icon">
-                                                            <p>Interest Accrued</p>
-                                                            <div class="card-icon d-flex justify-content-center align-items-center">
-                                                                <i class="fa-solid fa-percent"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h4>₱ {{ number_format($estimatedQuarterInterest, 2) }}</h4>
-                                                            <span>{{ number_format($regularSavingsRate, 2) }}% p.a. · credited
-                                                                {{ $regularSavingsFrequency }}</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-box tw:bg-white">
-                                                        <div class="card-header-icon">
-                                                            <p>Monthly Average</p>
-                                                            <div class="card-icon d-flex justify-content-center align-items-center">
-                                                                <i class="fa-solid fa-arrow-trend-up"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
-                                                            <span>Per month average</span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card-box tw:bg-white">
-                                                        <div class="card-header-icon">
-                                                            <p>Total Months</p>
-                                                            <div class="card-icon d-flex justify-content-center align-items-center">
-                                                                <i class="fa-solid fa-calendar-days"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h4>{{ $totalMonths }} Months</h4>
-                                                            <span>Months saving</span>
-                                                        </div>
+                                            <div class="card-box tw:bg-white">
+                                                <div class="card-header-icon">
+                                                    <p>Monthly Average</p>
+                                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                                        <i class="fa-solid fa-arrow-trend-up"></i>
                                                     </div>
                                                 </div>
-                                            </section>
+                                                <div class="card-body">
+                                                    <h4>₱ {{ number_format($monthlyAverage, 2) }}</h4>
+                                                    <span>Per month average</span>
+                                                </div>
+                                            </div>
 
-                                            @if(!$hasShareCapital)
-                                                <div class="gate-shield">
-                                                    <div class="gate-lock"><i class="fa-solid fa-lock"></i></div>
-                                                    <div class="gate-msg">Savings stats are locked</div>
-                                                    <div class="gate-sub">
-                                                        Please subscribe to Share Capital first to unlock your savings stats — use the
-                                                        <a href="{{ route('Financial', ['tab' => 'share_capital']) }}">Share Capital
-                                                            tab</a> above.
+                                            <div class="card-box tw:bg-white">
+                                                <div class="card-header-icon">
+                                                    <p>Total Months</p>
+                                                    <div class="card-icon d-flex justify-content-center align-items-center">
+                                                        <i class="fa-solid fa-calendar-days"></i>
                                                     </div>
                                                 </div>
-                                            @endif
+                                                <div class="card-body">
+                                                    <h4>{{ $totalMonths }} Months</h4>
+                                                    <span>Months saving</span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </section>
+
+                                    @if(!$hasShareCapital)
+                                        <div class="gate-shield">
+                                            <div class="gate-lock"><i class="fa-solid fa-lock"></i></div>
+                                            <div class="gate-msg">Savings stats are locked</div>
+                                            <div class="gate-sub">
+                                                Please subscribe to Share Capital first to unlock your savings stats — use the
+                                                <a href="{{ route('Financial', ['tab' => 'share_capital']) }}">Share Capital
+                                                    tab</a> above.
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
 
 
 
-                                        <div class="ask-box">
+                                <div class="ask-box">
                                     <div class="ask-body">
                                         <div class="ask-card">
                                             <div class="ask-card-text">
                                                 <h3>Secure your savings with Time Deposit</h3>
-                                                <p>Grow your money with higher returns and guaranteed earnings over a fixed term.
+                                                <p>Grow your money with higher returns and guaranteed earnings over a fixed
+                                                    term.
                                                 </p>
                                             </div>
                                             <div class="{{ !$hasShareCapital ? 'gated' : '' }}">
@@ -1186,7 +1190,8 @@
                                                     <p>Time Deposit history</p>
                                                 </div>
                                                 <div class="panel-view">
-                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#tdHistoryModal">
+                                                    <button type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#tdHistoryModal">
                                                         View all
                                                     </button>
                                                 </div>
@@ -1209,7 +1214,8 @@
                                                             <div class="text">
                                                                 <h4>₱{{ number_format($td->goal_amount, 2) }} Goal</h4>
                                                                 <p>
-                                                                    Opened {{ \Carbon\Carbon::parse($td->opened_at)->format('M d, Y') }}
+                                                                    Opened
+                                                                    {{ \Carbon\Carbon::parse($td->opened_at)->format('M d, Y') }}
                                                                     · {{ number_format($td->interest_rate, 2) }}% p.a.
                                                                 </p>
                                                             </div>
@@ -1218,9 +1224,11 @@
                                                                 @if ($td->display_status === 'completed')
                                                                     <p style="color:var(--green);font-weight:700;">Completed</p>
                                                                 @elseif ($td->display_status === 'matured')
-                                                                    <p style="color:var(--green);font-weight:700;">Ready to Claim</p>
+                                                                    <p style="color:var(--green);font-weight:700;">Ready to Claim
+                                                                    </p>
                                                                 @elseif ($td->display_status === 'goal_reached')
-                                                                    <p style="color:var(--blue, #1e56a0);font-weight:700;">Fully Funded</p>
+                                                                    <p style="color:var(--blue, #1e56a0);font-weight:700;">Fully
+                                                                        Funded</p>
                                                                 @else
                                                                     <p style="color:#AB7817;font-weight:700;">In Progress</p>
                                                                 @endif
@@ -1250,7 +1258,8 @@
                                                 <select class="sm-filter-select" id="growthYearSelect"
                                                     onchange="changeGrowthYear(this.value)">
                                                     @foreach($availableGrowthYears as $y)
-                                                        <option value="{{ $y }}" {{ $growthYear == $y ? 'selected' : '' }}>{{ $y }}
+                                                        <option value="{{ $y }}" {{ $growthYear == $y ? 'selected' : '' }}>
+                                                            {{ $y }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -1291,218 +1300,219 @@
                                             <div class="gate-lock"><i class="fa-solid fa-lock"></i></div>
                                             <div class="gate-msg">Savings breakdown is locked</div>
                                             <div class="gate-sub">
-                                                Please <a href="{{ route('ShareCapitalMember') }}">subscribe to Share Capital</a>
+                                                Please <a href="{{ route('ShareCapitalMember') }}">subscribe to Share
+                                                    Capital</a>
                                                 first to unlock your breakdown and growth chart.
                                             </div>
                                         </div>
                                     @endif
                                 </div>
 
-                                            <div class="{{ !$hasShareCapital ? 'gated' : '' }}">
-                                                <section id="section2">
-                                                    <div class="card-box-parent">
-                                                        <div class="d-flex justify-content-between align-items-center card-box-title">
-                                                            <div class="title">
-                                                                <h3>Transaction History</h3>
-                                                                <p>View your monthly transactions breakdown</p>
-                                                            </div>
-                                                            <div class="gap-3 print">
-                                                                <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
-                                                                    <i class="fa-solid fa-download"></i> CSV
-                                                                </button>
-                                                                <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
-                                                                    <i class="fa fa-solid fa-download"></i> PDF
-                                                                </button>
-                                                            </div>
+                                <div class="{{ !$hasShareCapital ? 'gated' : '' }}">
+                                    <section id="section2">
+                                        <div class="card-box-parent">
+                                            <div class="d-flex justify-content-between align-items-center card-box-title">
+                                                <div class="title">
+                                                    <h3>Transaction History</h3>
+                                                    <p>View your monthly transactions breakdown</p>
+                                                </div>
+                                                <div class="gap-3 print">
+                                                    <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
+                                                        <i class="fa-solid fa-download"></i> CSV
+                                                    </button>
+                                                    <button class="py-2 px-3 tw:text-white" style="border-radius: 10px">
+                                                        <i class="fa fa-solid fa-download"></i> PDF
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="sm-tab-group">
+                                                <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'all'])) }}"
+                                                    class="sm-tab {{ $type === 'all' ? 'active' : '' }}">All</a>
+                                                <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'deposit'])) }}"
+                                                    class="sm-tab {{ $type === 'deposit' ? 'active' : '' }}">Deposits</a>
+                                                <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'withdrawal'])) }}"
+                                                    class="sm-tab {{ $type === 'withdrawal' ? 'active' : '' }}">Withdrawals</a>
+                                            </div>
+
+                                            <form method="GET" action="{{ route('Financial') }}" class="sm-tx-toolbar"
+                                                id="sm-tx-filter-form">
+                                                <input type="hidden" name="tab" value="savings">
+                                                <input type="hidden" name="type" value="{{ $type }}">
+                                                <div class="sm-search-box">
+                                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                                    <input type="text" name="ref" value="{{ $ref }}"
+                                                        placeholder="Search by reference no.">
+                                                </div>
+                                                <input type="date" class="sm-filter-select" name="date" value="{{ $date }}"
+                                                    onchange="document.getElementById('sm-tx-filter-form').submit()">
+
+                                                <select name="status" class="sm-filter-select"
+                                                    onchange="this.form.submit()">
+                                                    <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All Status
+                                                    </option>
+                                                    @foreach($availableStatuses as $s)
+                                                        <option value="{{ strtolower($s) }}" {{ $status === strtolower($s) ? 'selected' : '' }}>{{ $s }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @if($ref !== '' || $date !== '' || $status !== 'all')
+                                                    <a href="{{ route('Financial', ['tab' => 'savings', 'type' => $type]) }}"
+                                                        class="sm-filter-clear">Clear filters</a>
+                                                @endif
+                                            </form>
+
+                                            <div class="card-box-savings">
+                                                <div class="overflow-x-auto">
+                                                    <table class="table table-scroll m-0">
+                                                        <thead>
+                                                            <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
+                                                                <th class="text-start">Type</th>
+                                                                <th class="text-start">Reference No.</th>
+                                                                <th class="text-start">Date</th>
+                                                                <th class="text-start">Amount</th>
+                                                                <th class="text-start">Status</th>
+                                                                <th class="text-start">Receipt</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @forelse ($transactions as $tx)
+                                                                <tr>
+                                                                    <td class="text-start">
+                                                                        @if($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'DISB'))
+                                                                            <div class="deposit">Loan Disbursement</div>
+                                                                        @elseif($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'PAT'))
+                                                                            <div class="deposit">Patronage Refund</div>
+                                                                        @elseif($tx->type === 'deposit')
+                                                                            <div class="deposit">Deposit</div>
+                                                                        @elseif($tx->type === 'td_release')
+                                                                            <div class="deposit">Time Deposit Claimed</div>
+                                                                        @elseif(str_starts_with($tx->reference_no ?? '', 'LNPAY'))
+                                                                            <div class="withdraw">Loan Repay</div>
+                                                                        @else
+                                                                            <div class="withdraw">Withdrawal</div>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td class="text-start">
+                                                                        @if ($tx->reference_no)
+                                                                            <span class="tx-ref">{{ $tx->reference_no }}</span>
+                                                                        @else
+                                                                            <span style="color:#000000;font-size:0.78rem">—</span>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td class="text-start">
+                                                                        {{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
+                                                                    </td>
+                                                                    <td class="text-start"
+                                                                        style="font-weight:700; color:{{ $tx->type === 'withdrawal' ? 'var(--red)' : 'var(--green)' }}">
+                                                                        {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
+                                                                        {{ number_format($tx->amount, 2) }}
+                                                                    </td>
+                                                                    <td>
+                                                                        @php
+                                                                            $displayStatus = $tx->status ?? 'completed';
+                                                                        @endphp
+
+                                                                        @if ($displayStatus === 'pending')
+                                                                            <span class="status pending">Pending</span>
+                                                                        @elseif (in_array($displayStatus, ['approved', 'completed']))
+                                                                            <span
+                                                                                class="status approved">{{ ucfirst($displayStatus) }}</span>
+                                                                        @elseif ($displayStatus === 'released')
+                                                                            <span class="status released">Released</span>
+                                                                        @elseif ($displayStatus === 'deducted')
+                                                                            <span class="status deducted">Deducted</span>
+                                                                        @elseif ($displayStatus === 'rejected')
+                                                                            <span class="status rejected">Rejected</span>
+                                                                        @elseif ($displayStatus === 'credited')
+                                                                            <span class="status credited">Credited</span>
+                                                                        @elseif ($displayStatus === 'locked')
+                                                                            <span class="status locked">Locked</span>
+                                                                        @else
+                                                                            <span
+                                                                                class="status">{{ ucfirst($displayStatus) }}</span>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td class="text-start">
+                                                                        @if ($tx->reference_no && in_array($tx->type, ['deposit', 'withdrawal']))
+                                                                            <a href="{{ route('savings.receipt', $tx->reference_no) }}"
+                                                                                title="Download Receipt"
+                                                                                style="color: var(--teal);font-size: 18px;">
+                                                                                <i class="fa-solid fa-file-arrow-down"></i>
+                                                                            </a>
+                                                                        @else
+                                                                            <span style="color:#c4c4c4;font-size:0.78rem">—</span>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @empty
+                                                                <tr>
+                                                                    <td colspan="6" class="text-center py-5">
+                                                                        <i class="fa-solid fa-folder-open fa-2x mb-3"
+                                                                            style="color: var(--muted);"></i>
+                                                                        <p style="color:var(--muted);margin-top:0.5rem;">No
+                                                                            transactions yet.</p>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforelse
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                @if ($transactions->total() > 0)
+                                                    <div class="sm-pagination-wrap">
+                                                        <div class="sm-pagination-info">
+                                                            Showing <b>{{ $transactions->lastItem() }}</b> of
+                                                            <b>{{ $transactions->total() }}</b> transactions
                                                         </div>
 
-                                                        <div class="sm-tab-group">
-                                                            <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'all'])) }}"
-                                                                class="sm-tab {{ $type === 'all' ? 'active' : '' }}">All</a>
-                                                            <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'deposit'])) }}"
-                                                                class="sm-tab {{ $type === 'deposit' ? 'active' : '' }}">Deposits</a>
-                                                            <a href="{{ route('Financial', array_merge(request()->except('type', 'page'), ['tab' => 'savings', 'type' => 'withdrawal'])) }}"
-                                                                class="sm-tab {{ $type === 'withdrawal' ? 'active' : '' }}">Withdrawals</a>
-                                                        </div>
+                                                        @if ($transactions->hasPages())
+                                                            <div class="sm-pagination">
+                                                                @if ($transactions->onFirstPage())
+                                                                    <span class="sm-page-btn disabled"><i
+                                                                            class="fa-solid fa-chevron-left"></i></span>
+                                                                @else
+                                                                    <a href="{{ $transactions->previousPageUrl() }}"
+                                                                        class="sm-page-btn">
+                                                                        <i class="fa-solid fa-chevron-left"></i>
+                                                                    </a>
+                                                                @endif
 
-                                                        <form method="GET" action="{{ route('Financial') }}" class="sm-tx-toolbar"
-                                                            id="sm-tx-filter-form">
-                                                            <input type="hidden" name="tab" value="savings">
-                                                            <input type="hidden" name="type" value="{{ $type }}">
-                                                            <div class="sm-search-box">
-                                                                <i class="fa-solid fa-magnifying-glass"></i>
-                                                                <input type="text" name="ref" value="{{ $ref }}"
-                                                                    placeholder="Search by reference no.">
+                                                                @for ($i = 1; $i <= $transactions->lastPage(); $i++)
+                                                                    <a href="{{ $transactions->url($i) }}"
+                                                                        class="sm-page-btn {{ $i == $transactions->currentPage() ? 'active' : '' }}">
+                                                                        {{ $i }}
+                                                                    </a>
+                                                                @endfor
+
+                                                                @if ($transactions->hasMorePages())
+                                                                    <a href="{{ $transactions->nextPageUrl() }}" class="sm-page-btn">
+                                                                        <i class="fa-solid fa-chevron-right"></i>
+                                                                    </a>
+                                                                @else
+                                                                    <span class="sm-page-btn disabled"><i
+                                                                            class="fa-solid fa-chevron-right"></i></span>
+                                                                @endif
                                                             </div>
-                                                            <input type="date" class="sm-filter-select" name="date" value="{{ $date }}"
-                                                                onchange="document.getElementById('sm-tx-filter-form').submit()">
-
-                                                            <select name="status" class="sm-filter-select"
-                                                                onchange="this.form.submit()">
-                                                                <option value="all" {{ $status === 'all' ? 'selected' : '' }}>All Status
-                                                                </option>
-                                                                @foreach($availableStatuses as $s)
-                                                                    <option value="{{ strtolower($s) }}" {{ $status === strtolower($s) ? 'selected' : '' }}>{{ $s }}</option>
-                                                                @endforeach
-                                                            </select>
-
-                                                            @if($ref !== '' || $date !== '' || $status !== 'all')
-                                                                <a href="{{ route('Financial', ['tab' => 'savings', 'type' => $type]) }}"
-                                                                    class="sm-filter-clear">Clear filters</a>
-                                                            @endif
-                                                        </form>
-
-                                                        <div class="card-box-savings">
-                                                            <div class="overflow-x-auto">
-                                                                <table class="table table-scroll m-0">
-                                                                    <thead>
-                                                                        <tr style="border-bottom: 1px solid rgba(0,0,0,0.2);">
-                                                                            <th class="text-start">Type</th>
-                                                                            <th class="text-start">Reference No.</th>
-                                                                            <th class="text-start">Date</th>
-                                                                            <th class="text-start">Amount</th>
-                                                                            <th class="text-start">Status</th>
-                                                                            <th class="text-start">Receipt</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        @forelse ($transactions as $tx)
-                                                                            <tr>
-                                                                                <td class="text-start">
-                                                                                    @if($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'DISB'))
-                                                                                        <div class="deposit">Loan Disbursement</div>
-                                                                                    @elseif($tx->type === 'deposit' && str_starts_with($tx->reference_no ?? '', 'PAT'))
-                                                                                        <div class="deposit">Patronage Refund</div>
-                                                                                    @elseif($tx->type === 'deposit')
-                                                                                        <div class="deposit">Deposit</div>
-                                                                                    @elseif($tx->type === 'td_release')
-                                                                                        <div class="deposit">Time Deposit Claimed</div>
-                                                                                    @elseif(str_starts_with($tx->reference_no ?? '', 'LNPAY'))
-                                                                                        <div class="withdraw">Loan Repay</div>
-                                                                                    @else
-                                                                                        <div class="withdraw">Withdrawal</div>
-                                                                                    @endif
-                                                                                </td>
-                                                                                <td class="text-start">
-                                                                                    @if ($tx->reference_no)
-                                                                                        <span class="tx-ref">{{ $tx->reference_no }}</span>
-                                                                                    @else
-                                                                                        <span style="color:#000000;font-size:0.78rem">—</span>
-                                                                                    @endif
-                                                                                </td>
-                                                                                <td class="text-start">
-                                                                                    {{ \Carbon\Carbon::parse($tx->transaction_date)->format('m/d/Y') }}
-                                                                                </td>
-                                                                                <td class="text-start"
-                                                                                    style="font-weight:700; color:{{ $tx->type === 'withdrawal' ? 'var(--red)' : 'var(--green)' }}">
-                                                                                    {{ $tx->type === 'withdrawal' ? '-' : '+' }} ₱
-                                                                                    {{ number_format($tx->amount, 2) }}
-                                                                                </td>
-                                                                                <td>
-                                                                                    @php
-                                                                                        $displayStatus = $tx->status ?? 'completed';
-                                                                                    @endphp
-
-                                                                                    @if ($displayStatus === 'pending')
-                                                                                        <span class="status pending">Pending</span>
-                                                                                    @elseif (in_array($displayStatus, ['approved', 'completed']))
-                                                                                        <span
-                                                                                            class="status approved">{{ ucfirst($displayStatus) }}</span>
-                                                                                    @elseif ($displayStatus === 'released')
-                                                                                        <span class="status released">Released</span>
-                                                                                    @elseif ($displayStatus === 'deducted')
-                                                                                        <span class="status deducted">Deducted</span>
-                                                                                    @elseif ($displayStatus === 'rejected')
-                                                                                        <span class="status rejected">Rejected</span>
-                                                                                    @elseif ($displayStatus === 'credited')
-                                                                                        <span class="status credited">Credited</span>
-                                                                                    @elseif ($displayStatus === 'locked')
-                                                                                        <span class="status locked">Locked</span>
-                                                                                    @else
-                                                                                        <span
-                                                                                            class="status">{{ ucfirst($displayStatus) }}</span>
-                                                                                    @endif
-                                                                                </td>
-                                                                                <td class="text-start">
-                                                                                    @if ($tx->reference_no && in_array($tx->type, ['deposit', 'withdrawal']))
-                                                                                        <a href="{{ route('savings.receipt', $tx->reference_no) }}"
-                                                                                            title="Download Receipt"
-                                                                                            style="color: var(--teal);font-size: 18px;">
-                                                                                            <i class="fa-solid fa-file-arrow-down"></i>
-                                                                                        </a>
-                                                                                    @else
-                                                                                        <span style="color:#c4c4c4;font-size:0.78rem">—</span>
-                                                                                    @endif
-                                                                                </td>
-                                                                            </tr>
-                                                                        @empty
-                                                                            <tr>
-                                                                                <td colspan="6" class="text-center py-5">
-                                                                                    <i class="fa-solid fa-folder-open fa-2x mb-3"
-                                                                                        style="color: var(--muted);"></i>
-                                                                                    <p style="color:var(--muted);margin-top:0.5rem;">No
-                                                                                        transactions yet.</p>
-                                                                                </td>
-                                                                            </tr>
-                                                                        @endforelse
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-
-                                                            @if ($transactions->total() > 0)
-                                                                <div class="sm-pagination-wrap">
-                                                                    <div class="sm-pagination-info">
-                                                                        Showing <b>{{ $transactions->lastItem() }}</b> of
-                                                                        <b>{{ $transactions->total() }}</b> transactions
-                                                                    </div>
-
-                                                                    @if ($transactions->hasPages())
-                                                                        <div class="sm-pagination">
-                                                                            @if ($transactions->onFirstPage())
-                                                                                <span class="sm-page-btn disabled"><i
-                                                                                        class="fa-solid fa-chevron-left"></i></span>
-                                                                            @else
-                                                                                <a href="{{ $transactions->previousPageUrl() }}"
-                                                                                    class="sm-page-btn">
-                                                                                    <i class="fa-solid fa-chevron-left"></i>
-                                                                                </a>
-                                                                            @endif
-
-                                                                            @for ($i = 1; $i <= $transactions->lastPage(); $i++)
-                                                                                <a href="{{ $transactions->url($i) }}"
-                                                                                    class="sm-page-btn {{ $i == $transactions->currentPage() ? 'active' : '' }}">
-                                                                                    {{ $i }}
-                                                                                </a>
-                                                                            @endfor
-
-                                                                            @if ($transactions->hasMorePages())
-                                                                                <a href="{{ $transactions->nextPageUrl() }}" class="sm-page-btn">
-                                                                                    <i class="fa-solid fa-chevron-right"></i>
-                                                                                </a>
-                                                                            @else
-                                                                                <span class="sm-page-btn disabled"><i
-                                                                                        class="fa-solid fa-chevron-right"></i></span>
-                                                                            @endif
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </section>
-
-                                                @if(!$hasShareCapital)
-                                                    <div class="gate-shield">
-                                                        <div class="gate-lock"><i class="fa-solid fa-lock"></i></div>
-                                                        <div class="gate-msg">Transaction history is locked</div>
-                                                        <div class="gate-sub">
-                                                            Please subscribe to Share Capital first to unlock your transaction history —
-                                                            use the <a href="{{ route('Financial', ['tab' => 'share_capital']) }}">Share
-                                                                Capital tab</a> above.
-                                                        </div>
+                                                        @endif
                                                     </div>
                                                 @endif
                                             </div>
+                                        </div>
+                                    </section>
+
+                                    @if(!$hasShareCapital)
+                                        <div class="gate-shield">
+                                            <div class="gate-lock"><i class="fa-solid fa-lock"></i></div>
+                                            <div class="gate-msg">Transaction history is locked</div>
+                                            <div class="gate-sub">
+                                                Please subscribe to Share Capital first to unlock your transaction history —
+                                                use the <a href="{{ route('Financial', ['tab' => 'share_capital']) }}">Share
+                                                    Capital tab</a> above.
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
 
                             @endif
 
@@ -1518,12 +1528,12 @@
         @if(session('error'))
             <div
                 style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                                            background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
-                                                            padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                                            display: flex; align-items: center; gap: 12px; max-width: 360px;">
+                                                                        background: #fff; border: 1.5px solid #f5c6c6; border-radius: 14px;
+                                                                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                                                        display: flex; align-items: center; gap: 12px; max-width: 360px;">
                 <div
                     style="width: 36px; height: 36px; background: #fef0f0; border-radius: 50%;
-                                                                display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-times" style="color: #e03131; font-size: 15px;"></i>
                 </div>
                 <div>
@@ -1538,12 +1548,12 @@
         @if(session('warning'))
             <div
                 style="position: fixed; top: 1.2rem; right: 1.2rem; z-index: 9999;
-                                                            background: #fff; border: 1.5px solid #ffe082; border-radius: 14px;
-                                                            padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-                                                            display: flex; align-items: center; gap: 12px; max-width: 380px;">
+                                                                        background: #fff; border: 1.5px solid #ffe082; border-radius: 14px;
+                                                                        padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+                                                                        display: flex; align-items: center; gap: 12px; max-width: 380px;">
                 <div
                     style="width: 36px; height: 36px; background: #fff8e1; border-radius: 50%;
-                                                                display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                                            display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="fa fa-triangle-exclamation" style="color: #b8860b; font-size: 15px;"></i>
                 </div>
                 <div>
@@ -1934,6 +1944,18 @@
             }
 
             function setDest(d) {
+                if (d === 'savings' && !HAS_SHARE_CAPITAL) {
+                    destSelect.value = '';
+                    showInlineError('Savings is locked. You need an active Share Capital subscription before you can deposit or withdraw from Savings.');
+                    scFields.style.display = 'none';
+                    svFields.style.display = 'none';
+                    balanceLabel.textContent = 'Current Balance';
+                    balanceValue.textContent = 'Select an account';
+                    dest = '';
+                    updateFormAction();
+                    return;
+                }
+
                 dest = d;
                 destSelect.value = d;
                 clearInlineError();
@@ -2105,47 +2127,47 @@
 
                 const wrapper = document.createElement('div');
                 wrapper.style.cssText = `
-                                                        position: fixed; left: -9999px; top: 0;
-                                                        width: 400px; background: #fff;
-                                                        border-radius: 20px; overflow: hidden;
-                                                        box-shadow: 0 8px 40px rgba(0,0,0,0.15);
-                                                    `;
+                                                                    position: fixed; left: -9999px; top: 0;
+                                                                    width: 400px; background: #fff;
+                                                                    border-radius: 20px; overflow: hidden;
+                                                                    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+                                                                `;
 
                 wrapper.innerHTML = `
-                                                        <div style="background:linear-gradient(135deg,#1a4a3a,#2d6a4f);padding:2rem 1.5rem 1.2rem;text-align:center;">
-                                                            <div style="width:56px;height:56px;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem;">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                                            </div>
-                                                            <div style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:4px;">Request Submitted!</div>
-                                                            <div style="color:rgba(255,255,255,0.75);font-size:0.8rem;">
-                                                                ${isCompleted ? 'Your deposit has been recorded successfully.' : 'Your withdrawal request is pending for approval.'}
-                                                            </div>
-                                                        </div>
-                                                        <div style="height:16px;background:linear-gradient(135deg,#1a4a3a,#2d6a4f);position:relative;">
-                                                            <svg viewBox="0 0 400 16" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:16px;">
-                                                                <polygon fill="#ffffff" points="0,16 10,0 20,16 30,0 40,16 50,0 60,16 70,0 80,16 90,0 100,16 110,0 120,16 130,0 140,16 150,0 160,16 170,0 180,16 190,0 200,16 210,0 220,16 230,0 240,16 250,0 260,16 270,0 280,16 290,0 300,16 310,0 320,16 330,0 340,16 350,0 360,16 370,0 380,16 390,0 400,16"/>
-                                                            </svg>
-                                                        </div>
-                                                        <div style="padding:1.2rem 1.5rem;">
-                                                            <table style="width:100%;border-collapse:collapse;font-size:0.84rem;">
-                                                                ${scReceiptRow('Organization', 'KMPCATS')}
-                                                                ${scReceiptRow('Member', d.member)}
-                                                                ${scReceiptRow('Transaction Type', '<strong>' + d.type + '</strong>')}
-                                                                ${scReceiptRow('Shares', '<strong style="color:#1a4a3a">' + d.shares + ' shares</strong>')}
-                                                                ${scReceiptRow('Amount', '<strong style="color:#1a4a3a">&#8369;' + d.amount + '</strong>')}
-                                                                ${scReceiptRow('Payment Method', d.method)}
-                                                                ${scReceiptRow('Reference No.', '<span style="font-size:0.76rem;">' + d.ref + '</span>')}
-                                                                ${scReceiptRow('Date & Time', d.date)}
-                                                                ${scReceiptRow('Status', isCompleted
+                                                                    <div style="background:linear-gradient(135deg,#1a4a3a,#2d6a4f);padding:2rem 1.5rem 1.2rem;text-align:center;">
+                                                                        <div style="width:56px;height:56px;background:rgba(255,255,255,0.15);border:3px solid rgba(255,255,255,0.6);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem;">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                                                        </div>
+                                                                        <div style="color:#fff;font-size:1.2rem;font-weight:800;margin-bottom:4px;">Request Submitted!</div>
+                                                                        <div style="color:rgba(255,255,255,0.75);font-size:0.8rem;">
+                                                                            ${isCompleted ? 'Your deposit has been recorded successfully.' : 'Your withdrawal request is pending for approval.'}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style="height:16px;background:linear-gradient(135deg,#1a4a3a,#2d6a4f);position:relative;">
+                                                                        <svg viewBox="0 0 400 16" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:16px;">
+                                                                            <polygon fill="#ffffff" points="0,16 10,0 20,16 30,0 40,16 50,0 60,16 70,0 80,16 90,0 100,16 110,0 120,16 130,0 140,16 150,0 160,16 170,0 180,16 190,0 200,16 210,0 220,16 230,0 240,16 250,0 260,16 270,0 280,16 290,0 300,16 310,0 320,16 330,0 340,16 350,0 360,16 370,0 380,16 390,0 400,16"/>
+                                                                        </svg>
+                                                                    </div>
+                                                                    <div style="padding:1.2rem 1.5rem;">
+                                                                        <table style="width:100%;border-collapse:collapse;font-size:0.84rem;">
+                                                                            ${scReceiptRow('Organization', 'KMPCATS')}
+                                                                            ${scReceiptRow('Member', d.member)}
+                                                                            ${scReceiptRow('Transaction Type', '<strong>' + d.type + '</strong>')}
+                                                                            ${scReceiptRow('Shares', '<strong style="color:#1a4a3a">' + d.shares + ' shares</strong>')}
+                                                                            ${scReceiptRow('Amount', '<strong style="color:#1a4a3a">&#8369;' + d.amount + '</strong>')}
+                                                                            ${scReceiptRow('Payment Method', d.method)}
+                                                                            ${scReceiptRow('Reference No.', '<span style="font-size:0.76rem;">' + d.ref + '</span>')}
+                                                                            ${scReceiptRow('Date & Time', d.date)}
+                                                                            ${scReceiptRow('Status', isCompleted
                     ? '<span style="color:#2e7d32;font-weight:700;font-size:0.72rem;">✓ Completed</span>'
                     : '<span style="color:#b8860b;font-weight:700;font-size:0.72rem;">• Pending Approval</span>')}
-                                                            </table>
-                                                        </div>
-                                                        <div style="padding:0.8rem 1.5rem 1.2rem;text-align:center;border-top:1px dashed #e8e8e8;">
-                                                            <div style="color:#aaa;font-size:0.72rem;">This is an official transaction receipt from KMPCATS.</div>
-                                                            <div style="color:#bbb;font-size:0.68rem;margin-top:2px;">Keep this for your records.</div>
-                                                        </div>
-                                                    `;
+                                                                        </table>
+                                                                    </div>
+                                                                    <div style="padding:0.8rem 1.5rem 1.2rem;text-align:center;border-top:1px dashed #e8e8e8;">
+                                                                        <div style="color:#aaa;font-size:0.72rem;">This is an official transaction receipt from KMPCATS.</div>
+                                                                        <div style="color:#bbb;font-size:0.68rem;margin-top:2px;">Keep this for your records.</div>
+                                                                    </div>
+                                                                `;
 
                 document.body.appendChild(wrapper);
 
@@ -2160,11 +2182,11 @@
 
             function scReceiptRow(label, value) {
                 return `
-                                                        <tr style="border-bottom:1px dashed #ebebeb;">
-                                                            <td style="color:#888;font-weight:500;padding:0.55rem 0.5rem 0.55rem 0;vertical-align:middle;white-space:nowrap;">${label}</td>
-                                                            <td style="color:#1a1a1a;font-weight:600;text-align:right;padding:0.55rem 0 0.55rem 0.5rem;vertical-align:middle;">${value}</td>
-                                                        </tr>
-                                                    `;
+                                                                    <tr style="border-bottom:1px dashed #ebebeb;">
+                                                                        <td style="color:#888;font-weight:500;padding:0.55rem 0.5rem 0.55rem 0;vertical-align:middle;white-space:nowrap;">${label}</td>
+                                                                        <td style="color:#1a1a1a;font-weight:600;text-align:right;padding:0.55rem 0 0.55rem 0.5rem;vertical-align:middle;">${value}</td>
+                                                                    </tr>
+                                                                `;
             }
 
             /* CONTRIBUTION HISTORY — SEARCH + FILTERS + PAGINATION */
@@ -2254,9 +2276,9 @@
                             emptyRow = document.createElement('tr');
                             emptyRow.id = 'sc-filter-empty-row';
                             emptyRow.innerHTML = `<td colspan="6" style="text-align:center;color:#aaa;padding:2rem;font-size:13px;">
-                                                        <i class="fa fa-filter-circle-xmark" style="font-size:24px;display:block;margin-bottom:8px;"></i>
-                                                        No contributions match your filters.
-                                                    </td>`;
+                                                                    <i class="fa fa-filter-circle-xmark" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+                                                                    No contributions match your filters.
+                                                                </td>`;
                             tbody.appendChild(emptyRow);
                         }
                         emptyRow.style.display = '';
@@ -2339,7 +2361,7 @@
                     document.getElementById('triggerTdClaimSuccess').click();
                 @endif
 
-                                                });
+                                                            });
 
             document.querySelectorAll('.parent-panel .panel-body').forEach(el => el.scrollTop = 0);
 

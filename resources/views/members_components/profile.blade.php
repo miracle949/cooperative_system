@@ -224,7 +224,7 @@
                                     <strong>{{ $otherinfo->membership_status ?? 'N/A' }}</strong>
                                 </div>
 
-                                <div class="information">
+                                {{-- <div class="information">
                                     <span>Employer</span>
                                     <strong>{{ $otherinfo->employer ?? 'N/A' }}</strong>
                                 </div>
@@ -232,7 +232,7 @@
                                 <div class="information">
                                     <span>Standing</span>
                                     <strong>{{ $user->status ?? 'N/A' }}</strong>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 

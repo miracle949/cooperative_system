@@ -210,8 +210,11 @@
 
                         @if ($username)
                             <div class="main-header">
+                                {{-- <div class="main-intro-card">
+                                    <img src="images/cooperative-home-banner1.jpg" alt="">
+                                </div> --}}
                                 <div class="main-intro">
-                                    <!-- <div class="main-left">
+                                    {{-- <div class="main-left">
                                         <div class="left-icon">
 
                                         </div>
@@ -223,7 +226,7 @@
                                     </div>
                                     <div class="main-right">
 
-                                    </div> -->
+                                    </div> --}}
                                     <div class="main-intro-icon"></div>
                                     <div class="main-intro-text">
                                         <span>Member Cooperative Assistant</span>
@@ -233,6 +236,8 @@
                                 </div>
                             </div>
                         @endif
+
+                        
 
                         <div class="card-parent">
 
@@ -245,6 +250,36 @@
                                 <div class="card-body">
                                     <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
                                     <p>{{ $netSavingsThisMonth >= 0 ? '↑ +' : '↓ -' }}₱{{ number_format(abs($netSavingsThisMonth), 2) }} this month</p>
+                                </div>
+                            </div>
+
+                            {{-- Share Capital --}}
+                            <div class="card-box" onclick="window.location='{{ route('Financial') }}'">
+                                <div class="card-header">
+                                    <p>Share Capital</p>
+                                    <div class="update"><i class="fa fa-coins"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>₱ {{ number_format($shareCapitalBalance ?? 0, 2) }}</h5>
+                                    <p>{{ $shareCapitalShares ?? 0 }} shares</p>
+                                </div>
+                            </div>
+
+                            {{-- Seminars --}}
+                            <div class="card-box" onclick="document.getElementById('seminarsModal').style.display='flex'">
+                                <div class="card-header">
+                                    <p>Seminars</p>
+                                    <div class="update"><i class="fa fa-graduation-cap"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $seminarsCompletedCount }} Attended</h5>
+                                    <p>
+                                        @if ($seminarsCompletedCount === $seminarsTotalCount)
+                                            All seminars attended
+                                        @else
+                                            {{ $seminarsTotalCount - $seminarsCompletedCount }} remaining
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
 
@@ -272,6 +307,49 @@
                                 </div>
                             </div>
 
+                            {{-- Overdue Loans --}}
+                            <div class="card-box" onclick="document.getElementById('overdueLoansModal').style.display='flex'">
+                                <div class="card-header">
+                                    <p>Overdue Loans</p>
+                                    <div class="update">
+                                        <i class="fa fa-triangle-exclamation"></i>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $overdueLoansDisplay->count() }} Loan(s)</h5>
+                                    <p>{{ $overdueLoansDisplay->isNotEmpty() ? $overdueLoansDisplay->first()['subtitle'] : 'No overdue loans' }}</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="card-parent-mobile">
+                            
+                            <div class="card-1">
+                                {{-- Savings Balance --}}
+                            <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
+                                <div class="card-header">
+                                    <p>Savings Balance</p>
+                                    <div class="update"><i class="fa fa-layer-group"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>₱ {{ number_format($savingsAccount->balance ?? 0, 2) }}</h5>
+                                    <p>{{ $netSavingsThisMonth >= 0 ? '↑ +' : '↓ -' }}₱{{ number_format(abs($netSavingsThisMonth), 2) }} this month</p>
+                                </div>
+                            </div>
+
+                            {{-- Share Capital --}}
+                            <div class="card-box" onclick="window.location='{{ route('Financial') }}'">
+                                <div class="card-header">
+                                    <p>Share Capital</p>
+                                    <div class="update"><i class="fa fa-coins"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>₱ {{ number_format($shareCapitalBalance ?? 0, 2) }}</h5>
+                                    <p>{{ $shareCapitalShares ?? 0 }} shares</p>
+                                </div>
+                            </div>
+
                             {{-- Seminars --}}
                             <div class="card-box" onclick="document.getElementById('seminarsModal').style.display='flex'">
                                 <div class="card-header">
@@ -288,8 +366,48 @@
                                         @endif
                                     </p>
                                 </div>
+                              </div>
                             </div>
 
+                            <div class="card-2">
+                                {{-- Active Loans --}}
+                            <div class="card-box" onclick="window.location='{{ route('LoanStatus') }}'">
+                                <div class="card-header">
+                                    <p>Active Loans</p>
+                                    <div class="update"><i class="fa fa-piggy-bank"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $activeLoansCount }} Loan(s)</h5>
+                                    <p>{{ $nextDueDisplay ? "Next due {$nextDueDisplay}" : 'No upcoming dues' }}</p>
+                                </div>
+                            </div>
+
+                            {{-- Upcoming Dues --}}
+                            <div class="card-box" onclick="document.getElementById('upcomingDuesModal').style.display='flex'">
+                                <div class="card-header">
+                                    <p>Upcoming Dues</p>
+                                    <div class="update"><i class="fa fa-calendar-day"></i></div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $upcomingDues->count() }} Due(s)</h5>
+                                    <p>{{ $nextDueDisplay ? "Next due {$nextDueDisplay}" : 'No upcoming dues' }}</p>
+                                </div>
+                            </div>
+
+                            {{-- Overdue Loans --}}
+                            <div class="card-box" onclick="document.getElementById('overdueLoansModal').style.display='flex'">
+                                <div class="card-header">
+                                    <p>Overdue Loans</p>
+                                    <div class="update">
+                                        <i class="fa fa-triangle-exclamation"></i>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5>{{ $overdueLoansDisplay->count() }} Loan(s)</h5>
+                                    <p>{{ $overdueLoansDisplay->isNotEmpty() ? $overdueLoansDisplay->first()['subtitle'] : 'No overdue loans' }}</p>
+                                </div>
+                            </div>
+                            </div>
                         </div>
                     </main>
 
@@ -310,7 +428,7 @@
 
                     <section>
                         <div class="card-box-summary">
-                            <div class="loan-overview">
+                            {{-- <div class="loan-overview">
                                 <div class="loan-header">
                                     <div>
                                         <h4>Overdue Loans</h4>
@@ -341,72 +459,7 @@
                                         @endforelse
                                     </div>
                                 </div>
-                            </div>
-
-                            
-                            <div class="panel graph announcements">
-                                <div class="panel-head"
-                                style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                                    <div>
-                                        <h3>Announcements</h3>
-                                        <p>Latest updates</p>
-                                    </div>
-                                    <div class="balance-date">
-                                        <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
-                                            @foreach (range(1, 12) as $m)
-                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                    {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
-                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
-                                            @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}"
-                                                    {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="panel-body">
-
-                                </div>
-                            </div>
-                            
-
-                        
-                        </div>
-                        <div class="parent-panel panel-1">
-
-                            <div class="panel graph announcements">
-                                <div class="panel-head"
-                                style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
-                                    <div>
-                                        <h3>Announcements</h3>
-                                        <p>Latest updates</p>
-                                    </div>
-                                    <div class="balance-date">
-                                        <select id="announcementMonthSelect" onchange="updateAnnouncementMonth()">
-                                            @foreach (range(1, 12) as $m)
-                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
-                                                    {{ (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
-                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <select id="announcementYearSelect" onchange="updateAnnouncementMonth()">
-                                            @foreach ($availableYears as $year)
-                                                <option value="{{ $year }}"
-                                                    {{ (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
-                                                    {{ $year }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                            </div> --}}
 
                             <div class="recent-transaction">
                                 <div class="recent-header">
@@ -419,7 +472,7 @@
                                     </div>
                                 </div>
 
-                                <div style="display:flex; gap:8px; padding:14px 20px 14px; border-bottom: 1px solid var(--border)">
+                                <div class="button-parent" style="">
                                     <button type="button" class="tx-tab-btn active" data-tx-filter="all" onclick="filterRecentTx('all', this)">All</button>
                                     <button type="button" class="tx-tab-btn" data-tx-filter="loans" onclick="filterRecentTx('loans', this)">Loans</button>
                                     <button type="button" class="tx-tab-btn" data-tx-filter="savings" onclick="filterRecentTx('savings', this)">Savings</button>
@@ -432,11 +485,19 @@
                                             <div class="tx-list-item" data-category="{{ $tx['category'] }}">
                                                 <div class="tx-icon {{ $tx['icon'] }}"><i class="fa-solid {{ $tx['icon_fa'] }}"></i></div>
                                                 <div class="tx-list-info">
-                                                    <strong>{{ $tx['title'] }}</strong>
+                                                    <strong>{{ $tx['title'] }}
+                                                    </strong>
                                                     <span>{{ $tx['date_display'] }} · {{ $tx['time_display'] }}</span>
                                                 </div>
-                                                <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
-                                                    {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
+                                                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+                                                    <div class="tx-list-amt {{ $tx['amount'] >= 0 ? 'up' : 'down' }}">
+                                                        {{ $tx['amount'] >= 0 ? '+' : '-' }}₱{{ number_format(abs($tx['amount']), 2) }}
+                                                    </div>
+                                                    @if(($tx['status_class'] ?? '') === 'pending')
+                                                        <span style="font-size: 12.5px; color: var(--muted);">
+                                                            Pending
+                                                        </span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @empty
@@ -454,7 +515,147 @@
                             </div>
 
                             
+                            <div class="panel graph announcements">
+                                <div class="panel-head"
+                                style="">
+                                    <div>
+                                        <h3>Announcements</h3>
+                                        <p>Latest updates</p>
+                                    </div>
+                                    <div class="balance-date">
+                                        <select id="announcementMonthSelect">
+                                            <option value="all" {{ $announcementMonth === 'all' ? 'selected' : '' }}>All</option>
+                                            @foreach (range(1, 12) as $m)
+                                                <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                                    {{ $announcementMonth !== 'all' && (int) explode('-', $announcementMonth)[1] === $m ? 'selected' : '' }}>
+                                                    {{ \Carbon\Carbon::create()->month($m)->format('F') }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <select id="announcementYearSelect" {{ $announcementMonth === 'all' ? 'disabled' : '' }}>
+                                            @foreach ($availableYears as $year)
+                                                <option value="{{ $year }}"
+                                                    {{ $announcementMonth !== 'all' && (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="tx-list" id="announcementsList">
+                                        @forelse ($upcomingSeminars as $s)
+                                            <div class="tx-list-item" data-month="{{ $s['datetime']->format('m') }}" data-year="{{ $s['datetime']->format('Y') }}">
+                                                <div class="tx-icon gold"><i class="fa-solid fa-graduation-cap"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $s['label'] }}</strong>
+                                                    <span>
+                                                        {{ $s['datetime']->format('M d, Y') }} ·
+                                                        {{ $s['delivery_type'] === 'online' ? 'Online' : 'F2F · ' . ($s['meetup_place'] ?? 'Venue TBA') }}
+                                                    </span>
+                                                </div>
+                                                <span style="padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background-color: #FFF8E1; color: #B8860B;">
+                                                    Upcoming
+                                                </span>
+                                            </div>
+                                        @empty
+                                        @endforelse
+
+                                        @foreach ($remainingUnscheduledSeminars as $r)
+                                            <div class="tx-list-item" data-month="" data-year="">
+                                                <div class="tx-icon savings"><i class="fa-solid fa-hourglass-half"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $r['label'] }}</strong>
+                                                    <span>Not yet scheduled</span>
+                                                </div>
+                                                <span style="padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; background-color: #F1F3F5; color: #808080;">
+                                                    Pending
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div id="announcementsEmpty" style="display:none; text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                        <i class="fa fa-calendar-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                        No announcements for this period.
+                                    </div>
+                                </div>
+                            </div>
                             
+
+                        
+                        </div>
+                        <div class="parent-panel panel-1">
+
+                            {{-- Dividends (left) --}}
+                            <div class="panel graph announcements">
+                                <div class="panel-head" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                                    <div>
+                                        <h3>Dividends</h3>
+                                        <p>Interest on your share capital</p>
+                                    </div>
+                                    {{-- <a href="{{ route('Financial', ['tab' => 'dividends']) }}" style="font-size:12.5px; font-weight:600; color:var(--teal); white-space:nowrap;">View all</a> --}}
+                                </div>
+                                <div class="recent-body">
+                                    <div class="tx-list">
+                                        @forelse ($recentDividends as $d)
+                                            <div class="tx-list-item">
+                                                <div class="tx-icon gold"><i class="fa-solid fa-coins"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $d['label'] }}</strong>
+                                                    <span>{{ $d['date'] }}</span>
+                                                </div>
+                                                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+                                                    <div class="tx-list-amt up">+₱{{ number_format($d['amount'], 2) }}</div>
+                                                    @if(strtolower($d['status']) !== 'paid' && strtolower($d['status']) !== 'completed')
+                                                        <span style="font-size:12.5px; color:var(--muted);">{{ ucfirst($d['status']) }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-gift" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No dividends recorded yet.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Patronage Refund (right) --}}
+                            <div class="panel graph announcements">
+                                <div class="panel-head panel-patronage" style="">
+                                    <div>
+                                        <h3>Patronage Refund</h3>
+                                        <p>Based on your loan interest &amp; fees paid</p>
+                                    </div>
+                                    {{-- <a href="{{ route('Financial', ['tab' => 'patronage']) }}" style="font-size:12.5px; font-weight:600; color:var(--teal); white-space:nowrap;">View all</a> --}}
+                                </div>
+                                <div class="recent-body">
+                                    <div class="tx-list">
+                                        @forelse ($recentPatronage as $p)
+                                            <div class="tx-list-item">
+                                                <div class="tx-icon mint"><i class="fa-solid fa-percent"></i></div>
+                                                <div class="tx-list-info">
+                                                    <strong>{{ $p['label'] }}</strong>
+                                                    <span>{{ $p['date'] }}</span>
+                                                </div>
+                                                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+                                                    <div class="tx-list-amt up">+₱{{ number_format($p['amount'], 2) }}</div>
+                                                    @if(strtolower($p['status']) !== 'paid' && strtolower($p['status']) !== 'completed')
+                                                        <span style="font-size:12.5px; color:var(--muted);">{{ ucfirst($p['status']) }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                                                <i class="fa fa-percent" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                                                No patronage refunds recorded yet.
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         {{-- <div class="parent-panel panel-2" style="margin-top:1.5rem;">
@@ -749,6 +950,44 @@
         </div>
     </div>
 
+    <!-- Overdue Loans Modal -->
+    <div id="overdueLoansModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
+        onclick="if(event.target===this)this.style.display='none'">
+        <div
+            style="background:#fff; border-radius:16px; max-width:480px; width:90%; padding:0; box-shadow:0 25px 60px rgba(0,0,0,0.3); max-height:80vh; display:flex; flex-direction:column;">
+            <div
+                style="padding:20px 24px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="margin:0; font-size:15px; font-weight:700; color:#111827;">Overdue Loans</h3>
+                    <p style="margin:3.2px 0 0; font-size:13.5px; color:var(--muted);">Loans past due across all accounts</p>
+                </div>
+                <button onclick="document.getElementById('overdueLoansModal').style.display='none'"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#6b7280;">&times;</button>
+            </div>
+
+            <div style="padding: 0 24px; overflow-y:auto; height: 368px;">
+                @forelse ($overdueLoansDisplay as $overdue)
+                    <div style="display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--border);">
+                        <div class="tx-icon {{ $overdue['icon'] }}"><i class="fa-solid {{ $overdue['icon_fa'] }}"></i></div>
+                        <div style="flex:1;">
+                            <strong style="display:block; font-size:14px; color:#111827;">{{ $overdue['title'] }}</strong>
+                            <span style="font-size:12.5px; color:var(--muted);">{{ $overdue['date_display'] }} · {{ $overdue['subtitle'] }}</span>
+                        </div>
+                        <div style="font-size: 14px;font-weight:700; color:#DC2626;">
+                            +₱{{ number_format($overdue['amount'], 2) }}
+                        </div>
+                    </div>
+                @empty
+                    <div style="text-align:center; color:#aaa; padding:2rem; font-size:13px;">
+                        <i class="fa fa-circle-check" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                        No overdue loans.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
     <!-- Seminars Modal -->
     <div id="seminarsModal"
         style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center;"
@@ -814,28 +1053,42 @@
     </script>
 
     <script>
-        function updateBalanceMonth() {
-            var month = document.getElementById('balanceMonthSelect').value;
-            var year = document.getElementById('balanceYearSelect').value;
-            window.location = '{{ url()->current() }}?balance_month=' + year + '-' + month;
-        }
+        (function () {
+            const monthSelect = document.getElementById('announcementMonthSelect');
+            const yearSelect = document.getElementById('announcementYearSelect');
+            const list = document.getElementById('announcementsList');
+            if (!monthSelect || !list) return;
 
-        function updateAnnouncementMonth() {
-            var month = document.getElementById('announcementMonthSelect').value;
-            var year = document.getElementById('announcementYearSelect').value;
-            var url = new URL(window.location.href);
-            url.searchParams.set('announcement_month', year + '-' + month);
-            window.location = url.toString();
-        }
+            const items = Array.from(list.querySelectorAll('.tx-list-item'));
+            const emptyState = document.getElementById('announcementsEmpty');
 
-        function updateStandingMonth() {
-            var month = document.getElementById('standingMonthSelect').value;
-            var year = document.getElementById('standingYearSelect').value;
-            var url = new URL(window.location.href);
-            url.searchParams.set('standing_month', year + '-' + month);
-            url.searchParams.set('open_standing_modal', '1');
-            window.location = url.toString();
-        }
+            function applyAnnouncementFilter() {
+                const month = monthSelect.value;
+                const year = yearSelect.value;
+
+                yearSelect.disabled = (month === 'all');
+
+                let visibleCount = 0;
+
+                items.forEach(item => {
+                    let match;
+                    if (month === 'all') {
+                        match = true;
+                    } else {
+                        match = item.dataset.month === month && item.dataset.year === year;
+                    }
+                    item.style.display = match ? 'flex' : 'none';
+                    if (match) visibleCount++;
+                });
+
+                emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            monthSelect.addEventListener('change', applyAnnouncementFilter);
+            yearSelect.addEventListener('change', applyAnnouncementFilter);
+
+            applyAnnouncementFilter();
+        })();
     </script>
 
     {{-- Toast --}}

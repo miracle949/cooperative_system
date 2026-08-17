@@ -1809,7 +1809,7 @@
         <div class="rightbar">
             @include("components.navbar2")
             @include("components.footer")
-            
+
             <div class="main-sub-parent">
                 <main>
                     <div class="main-parent">

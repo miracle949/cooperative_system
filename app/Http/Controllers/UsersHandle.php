@@ -219,6 +219,11 @@ class UsersHandle extends Controller
     public function MemberPortal(Request $request)
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['login' => 'Please log in to continue.']);
+        }
+
         $member = $user->otherinfo;
         $username = $user->username ?? null;
         $email = $user->email ?? null;
@@ -347,6 +352,37 @@ class UsersHandle extends Controller
 
         // Still used elsewhere on the page (current, not "as of")
         $loanBalance = $loanBalanceAsOf;
+
+        // ── Dividends & Patronage Refunds (bottom dashboard panel) ────────────
+        $recentDividends = collect();
+        if (DB::getSchemaBuilder()->hasTable('dividend_histories_tbls') && $shareCapitalAccount) {
+            $recentDividends = DB::table('dividend_histories_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get()
+                ->map(fn($d) => [
+                    'label' => $d->period_label ?? 'Dividend',
+                    'amount' => (float) ($d->dividend_amount ?? 0),
+                    'status' => $d->status ?? 'Pending',
+                    'date' => Carbon::parse($d->date_paid ?? $d->created_at)->format('M d, Y'),
+                ]);
+        }
+
+        $recentPatronage = collect();
+        if (DB::getSchemaBuilder()->hasTable('patronage_refund_distributions_tbls')) {
+            $recentPatronage = DB::table('patronage_refund_distributions_tbls')
+                ->where('user_id', $user->id)
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get()
+                ->map(fn($p) => [
+                    'label' => 'Patronage Refund',
+                    'amount' => (float) $p->amount,
+                    'status' => $p->status ?? 'Pending',
+                    'date' => Carbon::parse($p->created_at)->format('M d, Y'),
+                ]);
+        }
 
         // ── Account Balance chart (Share Capital / Savings / Loan Balance) ───────
         $accountBalanceChart = collect([
@@ -597,9 +633,23 @@ class UsersHandle extends Controller
             $nextDividendDate = $jun15NextYear;
         }
 
-        // ── Announcements (month + year filter) ───────────────────────────────────
-        $announcementMonth = $request->query('announcement_month', Carbon::now()->format('Y-m'));
-        $annCarbon = Carbon::createFromFormat('Y-m', $announcementMonth);
+        $announcementMonth = $request->query('announcement_month', 'all');
+
+        // Normalize: treat "all", "2026-all", or any malformed value ending in "all" as All.
+        $isAllAnnouncements = str_ends_with($announcementMonth, 'all');
+
+        if ($isAllAnnouncements) {
+            $announcementMonth = 'all'; // normalize so the view's comparisons still work
+            $annCarbon = Carbon::now();
+        } else {
+            try {
+                $annCarbon = Carbon::createFromFormat('Y-m', $announcementMonth);
+            } catch (\Exception $e) {
+                // Fallback for any other malformed value — don't 500, just default to current month.
+                $announcementMonth = Carbon::now()->format('Y-m');
+                $annCarbon = Carbon::now();
+            }
+        }
 
         $announcements = collect();
         try {
@@ -737,6 +787,39 @@ class UsersHandle extends Controller
             ->filter(fn($s) => $s['completed']) // only show ones actually attended
             ->values();
 
+        // ── Upcoming Seminars (dashboard Announcements panel) ────────────────────
+// Filtered by the selected announcement month/year, unless "All" is selected.
+        $upcomingSeminars = $seminarAttendeeRecords
+            ->filter(function ($a) {
+                if ($a->status !== 'pending') {
+                    return false;
+                }
+                $sessionDate = Carbon::parse($a->seminar->schedule_datetime);
+                return $sessionDate->isFuture() || $sessionDate->isToday();
+            })
+            ->sortBy(fn($a) => $a->seminar->schedule_datetime)
+            ->map(function ($a) use ($seminarTypeLabels) {
+                $s = $a->seminar;
+                return [
+                    'label' => $seminarTypeLabels[$s->seminar_type] ?? ucfirst($s->seminar_type),
+                    'datetime' => Carbon::parse($s->schedule_datetime),
+                    'delivery_type' => $s->delivery_type,
+                    'meetup_place' => $s->meetup_place,
+                ];
+            })
+            ->values();
+
+        // ── Remaining (uncompleted, not-yet-scheduled) seminar types ─────────────
+        $scheduledTypes = $upcomingSeminars->pluck('label');
+
+        $remainingUnscheduledSeminars = collect($seminarCompletedFlags)
+            ->filter(fn($done) => !$done)
+            ->keys()
+            ->map(fn($key) => $seminarTypeLabels[$key] ?? ucfirst($key))
+            ->reject(fn($label) => $scheduledTypes->contains($label))
+            ->map(fn($label) => ['label' => $label])
+            ->values();
+
         $seminarsCompletedCount = $seminarsSummary->count();
         $seminarsTotalCount = count($seminarTypeLabels);
 
@@ -778,6 +861,9 @@ class UsersHandle extends Controller
             'selectedYear' => $selectedYear,
             'availableYears' => $availableYears,
 
+            'recentDividends' => $recentDividends,
+            'recentPatronage' => $recentPatronage,
+
             'overdueLoansDisplay' => $overdueLoansDisplay,
 
             // Loans
@@ -807,8 +893,10 @@ class UsersHandle extends Controller
 
             // Seminars
             'seminarsSummary' => $seminarsSummary,
+            'upcomingSeminars' => $upcomingSeminars,
             'seminarsCompletedCount' => $seminarsCompletedCount,
             'seminarsTotalCount' => $seminarsTotalCount,
+            'remainingUnscheduledSeminars' => $remainingUnscheduledSeminars
         ]);
     }
 
@@ -1770,7 +1858,6 @@ class UsersHandle extends Controller
             'finance' => 'Cooperative Finance',
         ];
 
-<<<<<<< HEAD
         // ── Completion summary — moved up so it can filter Upcoming below ──
         $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
         $completedFlags = [
@@ -1778,12 +1865,10 @@ class UsersHandle extends Controller
             'fundamentals' => (bool) ($completion->fundamentals_completed ?? false),
             'finance' => (bool) ($completion->finance_completed ?? false),
         ];
-=======
         $typeLabels = \App\Models\SeminarTypes_tbl::all()
             ->pluck('label', 'slug')
             ->union($typeLabels)
             ->all();
->>>>>>> 9fda94d578359d3a406ae18146d4ea1b160176a1
 
         // ── All of this member's attendee records, with their seminar info ──
         $attendeeRecords = \App\Models\SeminarAttendees_tbl::with('seminar')
@@ -1834,9 +1919,7 @@ class UsersHandle extends Controller
             })
             ->values();
 
-<<<<<<< HEAD
         $totalSeminars = count($typeLabels);
-=======
         // ── Completion summary (drives hero card) ──
         $completion = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
         $completedFlags = [
@@ -1846,7 +1929,6 @@ class UsersHandle extends Controller
         ];
 
         $totalSeminars = count($completedFlags);
->>>>>>> 9fda94d578359d3a406ae18146d4ea1b160176a1
         $completedCount = collect($completedFlags)->filter()->count();
         $remainingCount = $totalSeminars - $completedCount;
         $isFullyComplete = $remainingCount === 0;
@@ -2317,7 +2399,7 @@ class UsersHandle extends Controller
      * and Time Deposit maturity reminders. Computed fresh on every page load —
      * nothing here is stored in notifications_tbls.
      */
-    private function buildMemberNotifications($userId)
+    public function buildMemberNotifications($userId)
     {
         $notifications = collect();
         $today = Carbon::today();
@@ -2463,8 +2545,7 @@ class UsersHandle extends Controller
 
         $upcomingSeminarNotifs = $seminarAttendeeRecordsNotif
             ->filter(fn($a) => $a->status === 'pending'
-                && $a->seminar->schedule_datetime >= $today
-                && $a->seminar->schedule_datetime <= $today->copy()->addDays(7));
+                && $a->seminar->schedule_datetime >= $today);
 
         foreach ($upcomingSeminarNotifs as $a) {
             $s = $a->seminar;
@@ -2491,20 +2572,47 @@ class UsersHandle extends Controller
             ->filter(fn($a) => $a->status === 'attended'
                 && $a->seminar->schedule_datetime >= $today->copy()->subDays(14));
 
-        foreach ($recentlyAttended as $a) {
-            $s = $a->seminar;
-            $sessionDate = Carbon::parse($s->schedule_datetime);
-            $displayLabel = $seminarTypeLabelsNotif[$s->seminar_type] ?? ucfirst($s->seminar_type);
+        // ── 6) Seminars — remaining types with no session scheduled yet ──────
+        $scheduledSeminarTypes = $upcomingSeminarNotifs->pluck('seminar.seminar_type');
+
+        $seminarCompletionNotif = \App\Models\SeminarCompletions_tbl::where('user_id', $userId)->first();
+        $seminarCompletedFlagsNotif = [
+            'pmes' => (bool) ($seminarCompletionNotif->pmes_completed ?? false),
+            'fundamentals' => (bool) ($seminarCompletionNotif->fundamentals_completed ?? false),
+            'finance' => (bool) ($seminarCompletionNotif->finance_completed ?? false),
+        ];
+
+        foreach ($seminarCompletedFlagsNotif as $type => $done) {
+            if ($done || $scheduledSeminarTypes->contains($type)) {
+                continue;
+            }
+
+            $displayLabel = $seminarTypeLabelsNotif[$type] ?? ucfirst($type);
 
             $notifications->push([
-                'icon' => 'fa-circle-check',
-                'color' => 'mint',
-                'title' => 'Seminar Attendance Confirmed',
-                'message' => "You've been marked as attended for {$displayLabel} on {$sessionDate->format('M d, Y')}.",
-                'time' => $sessionDate->diffForHumans(),
-                'sort_at' => $sessionDate,
+                'icon' => 'fa-hourglass-half',
+                'color' => 'gold',
+                'title' => 'Seminar Not Yet Scheduled',
+                'message' => "{$displayLabel} is still required to complete your membership training. No session has been scheduled yet — check back soon.",
+                'time' => 'Pending',
+                'sort_at' => $today->copy()->addDays(90), // low priority — pushed toward the bottom
             ]);
         }
+
+        // foreach ($recentlyAttended as $a) {
+        //     $s = $a->seminar;
+        //     $sessionDate = Carbon::parse($s->schedule_datetime);
+        //     $displayLabel = $seminarTypeLabelsNotif[$s->seminar_type] ?? ucfirst($s->seminar_type);
+
+        //     $notifications->push([
+        //         'icon' => 'fa-circle-check',
+        //         'color' => 'mint',
+        //         'title' => 'Seminar Attendance Confirmed',
+        //         'message' => "You've been marked as attended for {$displayLabel} on {$sessionDate->format('M d, Y')}.",
+        //         'time' => $sessionDate->diffForHumans(),
+        //         'sort_at' => $sessionDate,
+        //     ]);
+        // }
 
         \Log::info('SORT CHECK', $notifications->map(fn($n) => [
             'title' => $n['title'],

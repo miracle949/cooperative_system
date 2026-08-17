@@ -17,4 +17,5 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('components.navbar2', NavbarComposer::class);
     }
+    
 }
