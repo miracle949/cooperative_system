@@ -1037,7 +1037,8 @@
     padding: 0rem 0.7rem;
     border-radius: 50%;
     /* background-color: #F3F4F6; */
-    background-color: #EAEDEB
+    background-color: #EAEDEB;
+    /* background-color: #D0D6E4; */
 }
 
 .container-fluid .nav-acc2 ul li .card-icon .fa {
@@ -1075,7 +1076,7 @@
 }
 
 .container-fluid .nav-acc2 ul li ul li:nth-child(1) .card-icon {
-    background-color: var(--blue);
+    background-color: var(--teal);
 }
 
 .container-fluid .nav-acc2 ul li ul li:nth-child(1) .card-icon p {
@@ -1491,7 +1492,7 @@
 }
 
 @media only screen and (max-width: 500px) {
-    .container-fluid main .parent-main {
+    .container-fluid main .parent-main-parent {
         padding: 1.5rem 1.5rem 6.5rem;
     }
 

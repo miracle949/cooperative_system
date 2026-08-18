@@ -54,6 +54,8 @@ Route::get("/member-portal", [UsersHandle::class, "MemberPortal"])->name("Member
 // Lending Program page GET
 Route::get("/loan_application", [lendingController::class, "index"])->name("LoanApplication");
 
+Route::post('/savings/{id}/update-status', [UserController::class, 'updateSavingsStatus'])->name('savings.updateStatus');
+
 // Route::get("/savings", [UsersHandle::class, "Savings"])->name("savings");
 
 // Savings routes

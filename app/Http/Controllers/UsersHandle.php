@@ -1640,7 +1640,7 @@ class UsersHandle extends Controller
             ->latest('opened_at')
             ->first();
 
-        $regularSavingsBalance = (float) $savingsAccount->balance;
+        $regularSavingsBalance = (new \App\Http\Controllers\SavingsController())->computeSavingsBalance($savingsAccount->id);
         $timeDepositBalance = (float) ($activeTd->balance ?? 0);
         $interestAccruedBalance = (float) ($activeTd->interest_accrued_balance ?? 0);
         $totalSavingsBalance = $regularSavingsBalance + $timeDepositBalance + $interestAccruedBalance;
@@ -1731,11 +1731,12 @@ class UsersHandle extends Controller
 
         // Reuses the exact same rule the standalone Savings page uses to gate
         // Deposit/Withdraw behind an active Share Capital subscription.
-        $hasShareCapital = DB::table('share_capital_account_tbls')
-            ->where('user_id', $memberId)
-            ->where('status', 'Active')
-            ->where('total_shares', '>', 0)
-            ->exists();
+        // $hasShareCapital = DB::table('share_capital_account_tbls')
+        //     ->where('user_id', $memberId)
+        //     ->where('status', 'Active')
+        //     ->where('total_shares', '>', 0)
+        //     ->exists();
+        $hasShareCapital = $currentShares > 0;
 
         $type = $request->query('type', 'all');
 
@@ -1761,7 +1762,7 @@ class UsersHandle extends Controller
             ->count();
 
         $monthlyAverage = $totalMonths > 0
-            ? $savingsAccount->balance / $totalMonths
+            ? $regularSavingsBalance / $totalMonths
             : 0;
 
         $lastUpdated = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
@@ -2415,12 +2416,26 @@ class UsersHandle extends Controller
         $loans = DB::table('lending_program_tbls')
             ->where('user_id', $userId)
             ->where('status', 'Approved')
-            ->whereNotNull('due_date')
             ->get()
             ->unique('id');
 
+        // Next-installment due dates (same source the dashboard, Loan Application
+// page, and Notifications bell must all agree on) — falls back to the
+// loan's own due_date (final maturity) only if no status row exists yet.
+        $loanStatusByLoanIdForNotif = DB::table('lending_status_tbls')
+            ->whereIn('lending_id', $loans->pluck('id'))
+            ->get()
+            ->keyBy('lending_id');
+
         foreach ($loans as $loan) {
-            $due = Carbon::parse($loan->due_date);
+            $statusRow = $loanStatusByLoanIdForNotif->get($loan->id);
+            $effectiveDueDate = $statusRow->due_date ?? $loan->due_date;
+
+            if (empty($effectiveDueDate)) {
+                continue;
+            }
+
+            $due = Carbon::parse($effectiveDueDate);
             $daysLeft = (int) $today->diffInDays($due, false);
             $displayType = $typeMap[$loan->lending_type] ?? $loan->lending_type;
 
@@ -2433,16 +2448,24 @@ class UsersHandle extends Controller
                     'time' => $due->diffForHumans(),
                     'sort_at' => $due,
                 ]);
-            } elseif ($daysLeft <= 7) {
+            } elseif ($daysLeft === 0) {
                 $notifications->push([
                     'icon' => 'fa-calendar-day',
-                    'color' => 'gold',
-                    'title' => 'Loan Payment Due Soon',
-                    'message' => "{$displayType} is due on {$due->format('M d, Y')}"
-                        . ($daysLeft === 0 ? ' (today)' : " (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ")") . ".",
+                    'color' => 'red',
+                    'title' => 'Loan Payment Due Today',
+                    'message' => "{$displayType} of ₱" . number_format((float) ($loan->monthly_payment ?? 0), 2) . " is due today ({$due->format('M d, Y')}).",
                     'time' => $due->diffForHumans(),
                     // Live reminder — use the exact current moment so it's never
                     // outranked by a real past event that happened later today.
+                    'sort_at' => $due,
+                ]);
+            } elseif ($daysLeft <= 7) {
+                $notifications->push([
+                    'icon' => 'fa-calendar-days',
+                    'color' => 'gold',
+                    'title' => 'Loan Payment Due This Week',
+                    'message' => "{$displayType} is due on {$due->format('M d, Y')} (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ").",
+                    'time' => $due->diffForHumans(),
                     'sort_at' => $due,
                 ]);
             }
@@ -2478,7 +2501,55 @@ class UsersHandle extends Controller
             }
         }
 
+        // ── 2b) Share Capital — recently approved/completed transactions ────
+        if ($scAccount) {
+            $scRecentTxs = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $scAccount->id)
+                ->whereIn('type', ['Deposit', 'Subscription', 'Withdrawal', ShareCapital::CONVERSION_TYPE])
+                ->whereRaw('LOWER(status) IN (?, ?)', ['completed', 'approved'])
+                ->where('updated_at', '>=', $today->copy()->subDays(14))
+                ->get();
+
+            foreach ($scRecentTxs as $tx) {
+                $isDeposit = in_array($tx->type, ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE]);
+
+                $notifications->push([
+                    'icon' => 'fa-circle-check',
+                    'color' => 'mint',
+                    'title' => $isDeposit ? 'Share Capital Deposit Approved' : 'Share Capital Withdrawal Approved',
+                    'message' => 'Your ' . number_format((float) $tx->shares, 2) . ' share(s) (₱'
+                        . number_format((float) $tx->total_amount, 2) . ') '
+                        . ($isDeposit ? 'deposit has been completed' : 'withdrawal has been approved')
+                        . ' (Ref: ' . $tx->reference_no . ').',
+                    'time' => Carbon::parse($tx->updated_at)->diffForHumans(),
+                    'sort_at' => Carbon::parse($tx->updated_at),
+                ]);
+            }
+        }
+
         $savingsAccount = savings_account_tbl::where('user_id', $userId)->first();
+
+        // ── 3b) Savings — recently approved/completed transactions ──────────
+        $svRecentTxs = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
+            ->whereIn('type', ['deposit', 'withdrawal'])
+            ->whereRaw('LOWER(status) IN (?, ?)', ['completed', 'approved'])
+            ->where('updated_at', '>=', $today->copy()->subDays(14))
+            ->get();
+
+        foreach ($svRecentTxs as $tx) {
+            $isDeposit = $tx->type === 'deposit';
+
+            $notifications->push([
+                'icon' => 'fa-circle-check',
+                'color' => 'mint',
+                'title' => $isDeposit ? 'Savings Deposit Approved' : 'Savings Withdrawal Approved',
+                'message' => 'Your ₱' . number_format((float) $tx->amount, 2) . ' '
+                    . ($isDeposit ? 'deposit has been completed' : 'withdrawal has been approved')
+                    . ' (Ref: ' . $tx->reference_no . ').',
+                'time' => Carbon::parse($tx->updated_at)->diffForHumans(),
+                'sort_at' => Carbon::parse($tx->updated_at),
+            ]);
+        }
 
         if ($savingsAccount) {
             // ── 3) Patronage refund credited to Savings (last 30 days) ──

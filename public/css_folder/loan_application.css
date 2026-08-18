@@ -229,8 +229,11 @@
 .container-fluid .table-filter {
     /* display: flex;
     align-items: center; */
-    display: grid;
-    grid-template-colums: repeat(3, 1fr);
+    /* display: grid;
+    grid-template-colums: repeat(3, 1fr); */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 1rem;
     padding: 20px 20px 20px;
     width: 100%;
@@ -428,6 +431,10 @@ select.form-select{
     /* color: #6F7174; */
     color: #c4c0b8;
     font-size: 13.5px;
+}
+
+.container-fluid select option{
+    color: #1a1a1a;
 }
 
 .container-fluid select:valid {

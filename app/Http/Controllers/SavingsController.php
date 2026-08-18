@@ -69,7 +69,7 @@ class SavingsController extends Controller
             ->latest('opened_at')
             ->first();
 
-        $regularSavingsBalance = (float) $savingsAccount->balance;
+        $regularSavingsBalance = $this->computeSavingsBalance($savingsAccount->id);
         $timeDepositBalance = (float) ($activeTd->balance ?? 0);
         $interestAccruedBalance = (float) ($activeTd->interest_accrued_balance ?? 0);
 
@@ -233,7 +233,7 @@ class SavingsController extends Controller
             ->count();
 
         $monthlyAverage = $totalMonths > 0
-            ? $savingsAccount->balance / $totalMonths
+            ? $regularSavingsBalance / $totalMonths
             : 0;
 
         $lastUpdated = savings_transaction_tbl::where('savings_account_id', $savingsAccount->id)
@@ -692,11 +692,13 @@ class SavingsController extends Controller
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
         $referenceNo = $this->generateReferenceNo('deposit');
 
-        $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
-            ->where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->where('total_shares', '>', 0)
-            ->exists();
+        $scAccount = share_capital_account_tbl::where('user_id', $user->id)->first();
+        $hasShareCapital = false;
+
+        if ($scAccount) {
+            [, $currentShares] = (new ShareCapital())->computeBalanceAndShares($scAccount);
+            $hasShareCapital = $currentShares > 0;
+        }
 
         if (!$hasShareCapital) {
             return redirect()->route('Financial', ['tab' => 'savings'])
@@ -753,19 +755,23 @@ class SavingsController extends Controller
         $user = Auth::user();
         $savingsAccount = savings_account_tbl::where('user_id', $user->id)->firstOrFail();
 
-        $hasShareCapital = \Illuminate\Support\Facades\DB::table('share_capital_account_tbls')
-            ->where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->where('total_shares', '>', 0)
-            ->exists();
+        $scAccount = share_capital_account_tbl::where('user_id', $user->id)->first();
+        $hasShareCapital = false;
+
+        if ($scAccount) {
+            [, $currentShares] = (new ShareCapital())->computeBalanceAndShares($scAccount);
+            $hasShareCapital = $currentShares > 0;
+        }
 
         if (!$hasShareCapital) {
             return redirect()->route('Financial', ['tab' => 'savings'])
                 ->with('error', 'You must have an active Share Capital account before you can deposit or withdraw savings.');
         }
 
-        if ($request->amount > $savingsAccount->balance) {
-            return back()->withErrors(['amount' => 'Insufficient balance. Available: ₱ ' . number_format($savingsAccount->balance, 2)]);
+        $availableBalance = $this->computeSavingsBalance($savingsAccount->id);
+
+        if ($request->amount > $availableBalance) {
+            return back()->withErrors(['amount' => 'Insufficient balance. Available: ₱ ' . number_format($availableBalance, 2)]);
         }
 
         $referenceNo = $this->generateReferenceNo('withdrawal');
@@ -842,6 +848,35 @@ class SavingsController extends Controller
         }
 
         return redirect()->back()->with('error', 'GCash payment failed. Please try again.');
+    }
+
+    /**
+     * Computes the Regular Savings balance purely from completed transactions,
+     * and syncs it back to the stored balance column so the database stays
+     * consistent with what's displayed (e.g. in phpMyAdmin, exports, admin
+     * screens) instead of drifting whenever a transaction's status changes.
+     */
+    public function computeSavingsBalance($savingsAccountId): float
+    {
+        $credits = savings_transaction_tbl::where('savings_account_id', $savingsAccountId)
+            ->where('type', 'deposit')
+            ->whereRaw('LOWER(status) = ?', ['completed'])
+            ->sum('amount');
+
+        $debits = savings_transaction_tbl::where('savings_account_id', $savingsAccountId)
+            ->where('type', 'withdrawal')
+            ->whereRaw('LOWER(status) = ?', ['completed'])
+            ->sum('amount');
+
+        $computedBalance = (float) $credits - (float) $debits;
+
+        // Keep the stored column in sync so every other place that still reads
+        // ->balance directly (admin views, exports, receipts) shows the same figure.
+        savings_account_tbl::where('id', $savingsAccountId)
+            ->where('balance', '!=', $computedBalance)
+            ->update(['balance' => $computedBalance]);
+
+        return $computedBalance;
     }
 
     public function downloadReceipt(string $referenceNo, Request $request)

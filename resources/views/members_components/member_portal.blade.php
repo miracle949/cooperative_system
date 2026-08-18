@@ -242,7 +242,7 @@
                         <div class="card-parent">
 
                             {{-- Savings Balance --}}
-                            <div class="card-box" onclick="window.location='{{ route('savings.index') }}'">
+                            <div class="card-box" onclick="window.location='{{ route('Financial') }}'">
                                 <div class="card-header">
                                     <p>Savings Balance</p>
                                     <div class="update"><i class="fa fa-layer-group"></i></div>
@@ -532,7 +532,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        <select id="announcementYearSelect" {{ $announcementMonth === 'all' ? 'disabled' : '' }}>
+                                        <select id="announcementYearSelect">
                                             @foreach ($availableYears as $year)
                                                 <option value="{{ $year }}"
                                                     {{ $announcementMonth !== 'all' && (int) explode('-', $announcementMonth)[0] === $year ? 'selected' : '' }}>
@@ -1066,14 +1066,13 @@
                 const month = monthSelect.value;
                 const year = yearSelect.value;
 
-                yearSelect.disabled = (month === 'all');
-
                 let visibleCount = 0;
 
                 items.forEach(item => {
                     let match;
                     if (month === 'all') {
-                        match = true;
+                        // "All" months, but still scoped to the selected year
+                        match = item.dataset.year === '' || item.dataset.year === year;
                     } else {
                         match = item.dataset.month === month && item.dataset.year === year;
                     }

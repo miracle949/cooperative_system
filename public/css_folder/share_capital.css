@@ -736,27 +736,7 @@ main .dividend-parent .table tbody tr td {
 /* ═══════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════ */
-@media (max-width: 900px) {
-    .sc-stat-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
 
-@media only screen and (max-width: 700px) {
-    main .parent-table table {
-        width: 800px;
-    }
-}
-
-@media (max-width: 500px) {
-    .sc-stat-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .div-modal-box {
-        border-radius: 16px;
-    }
-}
 
 
 /* ═══════════════════════════════════════════════════
@@ -1363,9 +1343,9 @@ main .dividend-parent .table tbody tr td {
     align-items: center;
     gap: 5px;
     border-radius: 20px;
-    padding: 3px 11px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .sc-status-pill.posted {
@@ -1397,29 +1377,6 @@ main .dividend-parent .table tbody tr td {
 /* ═══════════════════════════════════════════════════
    RESPONSIVE — new sections
    ═══════════════════════════════════════════════════ */
-@media (max-width: 900px) {
-    .sc-split-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .sc-notice-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .sc-timeline-row {
-        flex-wrap: wrap;
-        row-gap: 1.25rem;
-    }
-
-    .sc-timeline-row::before,
-    .sc-timeline-progress {
-        display: none;
-    }
-
-    .sc-tl-slot {
-        width: 22%;
-    }
-}
 
 
 /* ═══════════════════════════════════════════════════
@@ -1584,6 +1541,33 @@ main .dividend-parent .table tbody tr td {
     }
 }
 
+@media (max-width: 900px) {
+    .sc-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sc-timeline-row {
+        flex-wrap: wrap;
+        row-gap: 1.25rem;
+    }
+
+    .sc-timeline-row::before,
+    .sc-timeline-progress {
+        display: none;
+    }
+
+    .sc-tl-slot {
+        width: 22%;
+    }
+}
+
+@media only screen and (max-width: 890px) {
+    .sc-split-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
 @media only screen and (max-width: 835px) {
     .parent-text {
         width: 350px;
@@ -1607,6 +1591,12 @@ main .dividend-parent .table tbody tr td {
     }
 }
 
+@media only screen and (max-width: 700px) {
+    main .parent-table table {
+        width: 800px;
+    }
+}
+
 @media only screen and (max-width: 620px) {
     .sc-notice-grid {
         grid-template-columns: repeat(1, 1fr);
@@ -1627,6 +1617,10 @@ main .dividend-parent .table tbody tr td {
     .parent-text {
         width: 300px;
     }
+
+    .sc-split-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 @media only screen and (max-width: 560px) {
@@ -1639,23 +1633,18 @@ main .dividend-parent .table tbody tr td {
     }
 }
 
+@media only screen and (max-width: 550px) {
+    .sc-stat-icon {
+        display: none;
+    }
+}
+
+
 @media only screen and (max-width: 535px) {
     .container-fluid main .main-parent .table-header .main-text {
         display: none;
     }
 
-}
-
-@media only screen and (max-width: 465px) {
-    .sc-split-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
-}
-
-@media only screen and (max-width: 455px) {
-    /* .sc-split-grid {
-        grid-template-columns: repeat(1, 1fr);
-    } */
 }
 
 @media only screen and (max-width: 525px) {
@@ -1682,4 +1671,26 @@ main .dividend-parent .table tbody tr td {
     .sc-filter-group {
         width: 100%;
     }
+}
+
+@media (max-width: 500px) {
+    .sc-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .div-modal-box {
+        border-radius: 16px;
+    }
+}
+
+@media only screen and (max-width: 465px) {
+    .sc-split-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media only screen and (max-width: 455px) {
+    /* .sc-split-grid {
+        grid-template-columns: repeat(1, 1fr);
+    } */
 }

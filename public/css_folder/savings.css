@@ -257,7 +257,7 @@
 }
 
 .container-fluid main .card-box-parent .fa-solid {
-    font-size: 25px;
+    font-size: 16px;
 }
 
 .container-fluid main .card-box-parent .card-box {
@@ -936,6 +936,15 @@
     color: var(--green);
 }
 
+.table-scroll tbody td .status.pending {
+    background: #fff8e1;
+    color: #b8860b;
+    padding: 4px 10px;
+    border-radius: 28px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
 .table-scroll tbody td .withdraw {
     display: inline-flex;
     align-items: center;
@@ -1549,9 +1558,9 @@
         padding: 2rem 1.5rem;
     } */
 
-    .main-parent {
+    /* .main-parent {
         padding: 2rem 1.5rem;
-    }
+    } */
 }
 
 @media only screen and (max-width: 636px) {
@@ -1616,9 +1625,9 @@
         align-items: end;
     }
 
-    .container-fluid main {
+    /* .container-fluid main {
         padding: 30px;
-    }
+    } */
 
     .container-fluid #section2 .card-box-parent .card-box {
         margin-top: 2rem;

@@ -20,8 +20,8 @@
         </a>
     </div>
 
-    <div class="footer-nav">
-        <a href="#">
+    <div class="footer-nav {{ request()->routeIs('Financial') ? 'active' : '' }}">
+        <a href="{{ route('Financial') }}">
             <i class="fa fa-wallet"></i>
             <span>Financial</span>
         </a>

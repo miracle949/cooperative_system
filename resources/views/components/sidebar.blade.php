@@ -117,7 +117,7 @@
                         <span>Logout</span>
                     </a>
                 </li> --}}
-                <div class="menu" style="padding: 10px 10px 8px;">
+                {{-- <div class="menu" style="padding: 10px 10px 8px;">
                     <p>Account</p>
                 </div>
 
@@ -132,7 +132,7 @@
                         <i class="fa fa-sign-out"></i>
                         <span>Logout</span>
                     </a>
-                </li>
+                </li> --}}
             </div>
 
             {{-- <div class="logout">
