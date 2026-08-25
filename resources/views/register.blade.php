@@ -74,7 +74,7 @@
                 </div>
             </div>
 
-            <hr style="margin-top: 5rem; color: #FFFFFF4D;">
+            <hr style="margin-top: 5rem; color: var(--teal);">
 
             <div class="form-acc">
                 <label>Already a member? <a href="{{ route("LoginPage") }}" id="signin-link">Sign in here</a></label>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Loan Status</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
 
@@ -121,8 +122,8 @@
 
                     @if($loans->isEmpty())
                         <!-- <div class="loan-hero" style="display:flex;align-items:center;justify-content:center;padding:40px;">
-                                                    <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
-                                                </div> -->
+                                                        <p style="color:var(--teal);margin:0;">You have no approved loans yet.</p>
+                                                    </div> -->
                         <div class="header-main">
                             <h3>Loan Repayments</h3>
                             <p>Manage your loan repayments by tracking payment history, upcoming due dates, and outstanding
@@ -193,7 +194,8 @@
                                                     style="width:{{ $loan->progress_percent ?? 0 }}%;"></div>
                                             </div>
                                             <div class="amount-to-paid">
-                                                <span>{{ $loan->payments_made ?? 0 }}/{{ $loan->total_payments ?? 0 }} paid</span>
+                                                <span>{{ $loan->payments_made ?? 0 }}/{{ $loan->total_payments ?? 0 }}
+                                                    paid</span>
                                                 <i class="fa fa-arrow-right lsc-arrow"></i>
                                             </div>
                                         </div>
@@ -253,20 +255,20 @@
                                         </button>
 
                                         <!-- @if($selectedLoan->disbursed_at)
-                                                                    <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
-                                                                        <i class="fa fa-circle-check"></i>
-                                                                        <span>Disbursed</span>
-                                                                    </button>
-                                                                @else
-                                                                    <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
-                                                                        @csrf
-                                                                        <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
-                                                                        <button type="submit">
-                                                                            <i class="fa fa-hand-holding-dollar"></i>
-                                                                            <span>Disburse Loan</span>
+                                                                        <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
+                                                                            <i class="fa fa-circle-check"></i>
+                                                                            <span>Disbursed</span>
                                                                         </button>
-                                                                    </form>
-                                                                @endif -->
+                                                                    @else
+                                                                        <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
+                                                                            @csrf
+                                                                            <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                                                                            <button type="submit">
+                                                                                <i class="fa fa-hand-holding-dollar"></i>
+                                                                                <span>Disburse Loan</span>
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif -->
                                     </div>
                                 </div>
                             </div>
@@ -342,20 +344,20 @@
                                 </button>
 
                                 <!-- @if($selectedLoan->disbursed_at)
-                                                            <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
-                                                                <i class="fa fa-circle-check"></i>
-                                                                <span>Disbursed</span>
-                                                            </button>
-                                                        @else
-                                                            <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
-                                                                @csrf
-                                                                <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
-                                                                <button type="submit">
-                                                                    <i class="fa fa-hand-holding-dollar"></i>
-                                                                    <span>Disburse Loan</span>
+                                                                <button disabled style="opacity:.6;cursor:not-allowed;background:#e8f5ee;color:#1e7a4e;border:1px solid rgba(30,122,78,.3);">
+                                                                    <i class="fa fa-circle-check"></i>
+                                                                    <span>Disbursed</span>
                                                                 </button>
-                                                            </form>
-                                                        @endif -->
+                                                            @else
+                                                                <form action="{{ route('loan.disburse') }}" method="POST" style="margin:0;">
+                                                                    @csrf
+                                                                    <input type="hidden" name="lending_id" value="{{ $selectedLoan->id }}">
+                                                                    <button type="submit">
+                                                                        <i class="fa fa-hand-holding-dollar"></i>
+                                                                        <span>Disburse Loan</span>
+                                                                    </button>
+                                                                </form>
+                                                            @endif -->
                             </div>
 
                         </div>
@@ -385,7 +387,7 @@
                                     <div class="loan-icon"><i class="fa fa-check"></i></div>
                                 </div>
                                 <p>₱{{ number_format($selectedLoan->total_payment ?? 0, 2) }}</p>
-                                <span>Principal + interest</span>
+                                <span>Principal + interest + Charges</span> {{-- ← change this line --}}
                             </div>
                             <div class="loan-box" id="penalty-box">
                                 <div class="loan-header">
@@ -411,11 +413,11 @@
                             <div class="schedule-parent">
                                 <div class="schedule-header" onclick="openScheduleModal()" style="cursor:pointer;">
                                     <!-- <div class="header-tag">
-                                                                <div class="header-icon">
-                                                                    <i class="fa fa-calendar-check"></i> 
-                                                                </div>
+                                                                    <div class="header-icon">
+                                                                        <i class="fa fa-calendar-check"></i> 
+                                                                    </div>
 
-                                                            Payment Schedule</div> -->
+                                                                Payment Schedule</div> -->
                                     <div>
                                         <div class="header-tag">Payment Schedule</div>
                                         <p>View your upcoming loan payment</p>
@@ -465,11 +467,11 @@
                             <div class="charges-parent">
                                 <div class="charges-header" onclick="openChargesModal()" style="cursor:pointer;">
                                     <!-- <div class="header-tag">
-                                                                <div class="header-icon">
-                                                                    <i class="fa fa-money-check-dollar"></i> 
-                                                                </div>
+                                                                    <div class="header-icon">
+                                                                        <i class="fa fa-money-check-dollar"></i> 
+                                                                    </div>
 
-                                                                Loan Charges</div> -->
+                                                                    Loan Charges</div> -->
                                     <div>
                                         <div class="header-tag">Loan Charges</div>
                                         <p>View your breakdown loan charges</p>

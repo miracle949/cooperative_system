@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Loan Application — KPMPCATS</title>
     <link rel="icon" href="images/websitelogo.png" type="image/png">
     <link rel="stylesheet" href="css_folder/loan_application.css">
@@ -1478,7 +1479,7 @@
             color: #1a1a1a;
         }
 
-        .badge {
+        .badge-loan {
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -1488,52 +1489,46 @@
             font-weight: 700;
         }
 
-        .badge::before {
+        .badge-loan::before {
             content: "";
             width: 6px;
             height: 6px;
             border-radius: 50%;
         }
 
-        .badge.pending {
-            /* background: var(--gold-pale);
-            color: #a5710f; */
+        .badge-loan.pending {
             background: #fff8e1;
             color: #b8860b;
         }
 
-        .badge.pending::before {
+        .badge-loan.pending::before {
             background: var(--gold);
         }
 
-        .badge.approved {
-            /* background: var(--mint-pale);
-            color: var(--green); */
+        .badge-loan.approved {
             background-color: var(--mint-pale);
-            /* border: 1px solid rgba(34, 201, 147, .4); */
             color: var(--green);
         }
 
-        .badge.approved::before {
+        .badge-loan.approved::before {
             background: var(--mint);
         }
 
-        .badge.completed {
-            /* background: var(--lavender-tint); */
+        .badge-loan.completed {
             background-color: var(--green-tint);
             color: var(--green);
         }
 
-        .badge.completed::before {
+        .badge-loan.completed::before {
             background: var(--green);
         }
 
-        .badge.rejected {
+        .badge-loan.rejected {
             background: var(--coral-pale);
             color: var(--coral);
         }
 
-        .badge.rejected::before {
+        .badge-loan.rejected::before {
             background: var(--coral);
         }
 
@@ -1972,7 +1967,7 @@
                                             @forelse($allLoans ?? [] as $loan)
                                                 @php
                                                     $statusKey = strtolower($loan->status);
-                                                    $badgeClass = in_array($statusKey, ['pending', 'approved', 'completed', 'rejected']) ? $statusKey : 'pending';
+                                                    $badgeClass = in_array($statusKey, ['pending', 'approved', 'completed', 'rejected', 'declined']) ? $statusKey : 'pending';
                                                     $progress = $loan->progress_percent ?? 0;
                                                     $dueCat = $loan->due_category ?? null;
                                                 @endphp
@@ -2004,7 +1999,7 @@
                                                                 ₱{{ number_format($loan->lending_amount, 2) }}</div>
                                                         </div>
                                                         <div class="col-status">
-                                                            <span class="badge {{ $badgeClass }}">{{ $loan->status }}</span>
+                                                            <span class="badge-loan {{ $badgeClass }}">{{ $loan->status }}</span>
                                                             @if($loan->status === 'Approved')
                                                                 <span class="due-tag"
                                                                     style="background:var(--mint-pale);color:var(--green);">
@@ -2073,21 +2068,31 @@
                                                                     @endif
                                                                 </div>
                                                             @else
-                                                                <div class="detail-box"
-                                                                    style="text-align:center; padding: 14px;">
-                                                                    <div class="cell-value"
-                                                                        style="font-weight:600; color:var(--muted);">
-                                                                        @if($loan->status === 'Pending')
-                                                                            Your application is awaiting review by the credit
-                                                                            committee.
-                                                                        @elseif($loan->status === 'Rejected')
-                                                                            This application was not approved.
-                                                                        @else
-                                                                            A repayment schedule will be generated once funds are
-                                                                            released.
-                                                                        @endif
+                                                                @if(in_array($loan->status, ['Rejected', 'Declined']))
+                                                                    <div class="detail-box"
+                                                                        style="padding: 14px; border-color: var(--red); background: var(--red-tint);">
+                                                                        <div class="cell-label" style="color: var(--red);">Reason
+                                                                            for Decline</div>
+                                                                        <div class="cell-value"
+                                                                            style="font-weight:600; color: var(--red);">
+                                                                            {{ $loan->decline_reason ?? 'No reason was provided.' }}
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                @else
+                                                                    <div class="detail-box"
+                                                                        style="text-align:center; padding: 14px;">
+                                                                        <div class="cell-value"
+                                                                            style="font-weight:600; color:var(--muted);">
+                                                                            @if($loan->status === 'Pending')
+                                                                                Your application is awaiting review by the credit
+                                                                                committee.
+                                                                            @else
+                                                                                A repayment schedule will be generated once funds are
+                                                                                released.
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
                                                             @endif
 
                                                             <div class="detail-actions">
@@ -2138,12 +2143,14 @@
                                             <div class="filter-parent">
                                                 <div class="filter date">
                                                     <input type="date" id="date-all" class="date-input"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-control">
                                                 </div>
 
                                                 <div class="filter status">
                                                     <select id="status-all"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-select">
                                                         <option value="all">All Status</option>
                                                         <option value="Pending">Pending</option>
                                                         <option value="Approved">Approved</option>
@@ -2183,7 +2190,7 @@
                                                                 ₱{{ number_format($loan->lending_amount, 2) }}</div>
                                                         </div>
                                                         <div class="col-status">
-                                                            <span class="badge approved">Active</span>
+                                                            <span class="badge-loan approved">Active</span>
                                                             <span class="due-tag today">Due Today</span>
                                                         </div>
                                                         <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
@@ -2272,12 +2279,14 @@
                                             <div class="filter-parent">
                                                 <div class="filter date">
                                                     <input type="date" id="date-all" class="date-input"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-control">
                                                 </div>
 
                                                 <div class="filter status">
                                                     <select id="status-all"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-select">
                                                         <option value="all">All Status</option>
                                                         <option value="Pending">Pending</option>
                                                         <option value="Approved">Approved</option>
@@ -2317,7 +2326,7 @@
                                                                 ₱{{ number_format($loan->lending_amount, 2) }}</div>
                                                         </div>
                                                         <div class="col-status">
-                                                            <span class="badge approved">Active</span>
+                                                            <span class="badge-loan approved">Active</span>
                                                             <span class="due-tag week">Due This Week</span>
                                                         </div>
                                                         <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
@@ -2406,12 +2415,14 @@
                                             <div class="filter-parent">
                                                 <div class="filter date">
                                                     <input type="date" id="date-all" class="date-input"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-control">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-control">
                                                 </div>
 
                                                 <div class="filter status">
                                                     <select id="status-all"
-                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')" class="form-select">
+                                                        onchange="applyFilters('all-loans-list','search-all','date-all','status-all')"
+                                                        class="form-select">
                                                         <option value="all">All Status</option>
                                                         <option value="Pending">Pending</option>
                                                         <option value="Approved">Approved</option>
@@ -2451,7 +2462,7 @@
                                                                 ₱{{ number_format($loan->lending_amount, 2) }}</div>
                                                         </div>
                                                         <div class="col-status">
-                                                            <span class="badge approved">Active</span>
+                                                            <span class="badge-loan approved">Active</span>
                                                             <span class="due-tag late">Overdue</span>
                                                         </div>
                                                         <svg class="chevron" width="18" height="18" viewBox="0 0 24 24"
@@ -2685,7 +2696,8 @@
                                                 onchange="mUpdateTermOptions(); mCompute(); mClearError(this);" {{ !$canApplyLoan ? 'disabled' : '' }} required>
                                                 <option value="">Select type</option>
                                                 @foreach($loanSettings as $dbType => $s)
-                                                    <option value="{{ $dbType }}" {!! $mOptData($dbType) !!}>{{ $dbType }}</option>
+                                                    <option value="{{ $dbType }}" {!! $mOptData($dbType) !!}>{{ $dbType }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>

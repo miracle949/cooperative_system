@@ -2123,7 +2123,23 @@ class UsersHandle extends Controller
             ->orderBy('created_at', 'desc')
             ->value('monthly_income');
 
-        $shareCapitalBalance = (float) ($shareCapitalAccount->total_amount ?? 0);
+        $shareCapitalBalance = 0;
+        if ($shareCapitalAccount) {
+            $scDeposits = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->whereIn('type', ['Deposit', 'Subscription', ShareCapital::CONVERSION_TYPE])
+                ->whereIn('status', ['Completed', 'completed'])
+                ->sum('total_amount') ?? 0;
+
+            $scWithdrawals = DB::table('share_capital_transaction_tbls')
+                ->where('share_capital_account_id', $shareCapitalAccount->id)
+                ->where('type', 'Withdrawal')
+                ->whereIn('status', ['Approved', 'approved'])
+                ->sum('total_amount') ?? 0;
+
+            $shareCapitalBalance = $scDeposits - $scWithdrawals;
+        }
+
         $savingsBalance = (float) ($savingsAccount->balance ?? 0);
         // Overall = straight sum of all three balances shown in the Account Balance
 // card, not netted against the loan — the card lists Loan Balance as its
@@ -2281,6 +2297,7 @@ class UsersHandle extends Controller
             'present_address' => $request->present_address,
             'permanent_address' => $request->permanent_address,
             'date_of_birth' => $request->date_of_birth,
+            'place_of_birth' => $request->place_of_birth,   // ← add this line
             'sex' => $request->sex,
             'civil_status' => $request->civil_status,
             'citizenship' => $request->citizenship,
@@ -2382,16 +2399,27 @@ class UsersHandle extends Controller
 
         // ★ NEW: dynamic reminder-style notifications (not stored rows — computed live)
         $navNotifications = $this->buildMemberNotifications($userId);
+        $navUnreadCount = $navNotifications->where('is_read', false)->count(); // ★ NEW
 
-        return view(
-            "components.navbar2",
-            [
-                "username" => $username,
-                "email" => $email,
-                "missingCount" => $missingCount,
-                "navNotifications" => $navNotifications, // ★ NEW
-            ]
+        return view("components.navbar2", [
+            "username" => $username,
+            "email" => $email,
+            "missingCount" => $missingCount,
+            "navNotifications" => $navNotifications,
+            "navUnreadCount" => $navUnreadCount, // ★ NEW
+        ]);
+    }
+
+    public function MarkNotificationRead(Request $request)
+    {
+        $request->validate(['key' => 'required|string']);
+
+        DB::table('notification_reads_tbls')->updateOrInsert(
+            ['user_id' => Auth::id(), 'notif_key' => $request->key],
+            ['read_at' => now(), 'updated_at' => now(), 'created_at' => now()]
         );
+
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -2447,6 +2475,7 @@ class UsersHandle extends Controller
                     'message' => "{$displayType} was due on {$due->format('M d, Y')}. Please settle to avoid additional late fees.",
                     'time' => $due->diffForHumans(),
                     'sort_at' => $due,
+                    'loan_id' => $loan->id, // ★ ADD THIS
                 ]);
             } elseif ($daysLeft === 0) {
                 $notifications->push([
@@ -2455,9 +2484,8 @@ class UsersHandle extends Controller
                     'title' => 'Loan Payment Due Today',
                     'message' => "{$displayType} of ₱" . number_format((float) ($loan->monthly_payment ?? 0), 2) . " is due today ({$due->format('M d, Y')}).",
                     'time' => $due->diffForHumans(),
-                    // Live reminder — use the exact current moment so it's never
-                    // outranked by a real past event that happened later today.
                     'sort_at' => $due,
+                    'loan_id' => $loan->id, // ★ ADD THIS
                 ]);
             } elseif ($daysLeft <= 7) {
                 $notifications->push([
@@ -2467,6 +2495,7 @@ class UsersHandle extends Controller
                     'message' => "{$displayType} is due on {$due->format('M d, Y')} (in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's') . ").",
                     'time' => $due->diffForHumans(),
                     'sort_at' => $due,
+                    'loan_id' => $loan->id, // ★ ADD THIS
                 ]);
             }
         }
@@ -2525,6 +2554,39 @@ class UsersHandle extends Controller
                     'sort_at' => Carbon::parse($tx->updated_at),
                 ]);
             }
+        }
+
+        // ── 2c) Loan Application Decisions — recently approved/declined ────
+        $typeMapLoanNotif = [
+            'Personal Lending' => 'Personal Loan',
+            'Emergency Lending' => 'Emergency Loan',
+            'Business Lending' => 'Business Loan',
+            'Education Lending' => 'Education Loan',
+        ];
+
+        $recentLoanDecisions = DB::table('lending_program_tbls')
+            ->where('user_id', $userId)
+            ->whereIn('status', ['Approved', 'Declined', 'Rejected'])
+            ->where('updated_at', '>=', $today->copy()->subDays(14))
+            ->get();
+
+        foreach ($recentLoanDecisions as $loan) {
+            $displayType = $typeMapLoanNotif[$loan->lending_type] ?? $loan->lending_type;
+            $decidedAt = Carbon::parse($loan->updated_at ?? $loan->created_at);
+            $isDeclined = in_array($loan->status, ['Declined', 'Rejected']);
+
+            $notifications->push([
+                'icon' => $isDeclined ? 'fa-circle-xmark' : 'fa-circle-check',
+                'color' => $isDeclined ? 'red' : 'mint',
+                'title' => $isDeclined ? 'Loan Application Declined' : 'Loan Application Approved',
+                'message' => $isDeclined
+                    ? "Your {$displayType} application for ₱" . number_format((float) $loan->lending_amount, 2)
+                    . " was declined" . ($loan->decline_reason ? ": {$loan->decline_reason}" : '.') . " (Ref: {$loan->reference_no})."
+                    : "Your {$displayType} application for ₱" . number_format((float) $loan->lending_amount, 2)
+                    . " has been approved (Ref: {$loan->reference_no}).",
+                'time' => $decidedAt->diffForHumans(),
+                'sort_at' => $decidedAt,
+            ]);
         }
 
         $savingsAccount = savings_account_tbl::where('user_id', $userId)->first();
@@ -2691,13 +2753,55 @@ class UsersHandle extends Controller
             'distance_seconds' => abs(Carbon::now()->diffInSeconds($n['sort_at'], false)),
         ])->toArray());
 
+        // 1) Give each notification a stable key + a destination url
+        $typeToRoute = [
+            'Loan' => 'LoanApplication',      // adjust to your real route name
+            'Share' => 'Financial',
+            'Savings' => 'Financial',
+            'Seminar' => 'MemberPortal',
+        ];
+
+        $notifications = $notifications->map(function ($n) {
+            $url = '#';
+
+            if (
+                in_array($n['title'], ['Loan Payment Overdue', 'Loan Payment Due Today', 'Loan Payment Due This Week'])
+                && \Illuminate\Support\Facades\Route::has('LoanStatus')
+            ) {
+                $url = isset($n['loan_id'])
+                    ? route('LoanStatus', ['loan_id' => $n['loan_id']])
+                    : route('LoanStatus');
+            } elseif (str_contains($n['title'], 'Loan') && \Illuminate\Support\Facades\Route::has('LoanApplication')) {
+                $url = route('LoanApplication');
+            } elseif (str_contains($n['title'], 'Share') && \Illuminate\Support\Facades\Route::has('Financial')) {
+                $url = route('Financial', ['tab' => 'share_capital']);
+            } elseif (str_contains($n['title'], 'Savings') || str_contains($n['title'], 'Time Deposit')) {
+                if (\Illuminate\Support\Facades\Route::has('Financial')) {
+                    $url = route('Financial', ['tab' => 'savings']);
+                }
+            } elseif (str_contains($n['title'], 'Seminar') && \Illuminate\Support\Facades\Route::has('MemberPortal')) {
+                $url = route('MemberPortal');
+            }
+
+            $n['url'] = $url;
+            $n['key'] = md5($n['title'] . '|' . $n['message'] . '|' . $n['sort_at']->toDateTimeString());
+            return $n;
+        });
+
+        // 2) Mark which ones this user has already clicked
+        $readKeys = DB::table('notification_reads_tbls')
+            ->where('user_id', $userId)
+            ->pluck('notif_key')
+            ->all();
+
+        $notifications = $notifications->map(function ($n) use ($readKeys) {
+            $n['is_read'] = in_array($n['key'], $readKeys, true);
+            return $n;
+        });
+
         return $notifications
             ->unique(fn($n) => $n['title'] . '|' . $n['message'])
-            ->sortBy(function ($n) {
-                // Smallest distance from "now" wins — "16 hours ago" (16h gap)
-                // ranks above "due in 3 days" (72h gap), regardless of past/future.
-                return abs(Carbon::now()->diffInSeconds($n['sort_at'], false));
-            })
+            ->sortBy(fn($n) => abs(Carbon::now()->diffInSeconds($n['sort_at'], false)))
             ->values();
     }
 
@@ -2865,10 +2969,11 @@ class UsersHandle extends Controller
                 "first_name" => "required",
                 "middle_name" => "nullable|string|max:255",
                 "last_name" => "required",
+                "contact_no" => "required|regex:/^09[0-9]{9}$/",
                 "profile_picture" => "nullable|image|max:2048",
                 "date_of_birth" => "required|date",
                 "place_of_birth" => "required",
-                "email" => ["required", "email", "regex:/@gmail\.com$/i", Rule::unique("users_tbls", "email")],
+                "email" => ["required", "email:rfc,dns", Rule::unique("users_tbls", "email")],
                 "password" => "required|confirmed",
                 "membership_category" => "required",
                 "civil_status" => "required",
@@ -2921,7 +3026,7 @@ class UsersHandle extends Controller
                 "username" => $request->username,
                 "email" => $request->email,
                 "password" => bcrypt($request->password),
-                "role" => "Pending",
+                "role" => "pending",
             ]);
 
             // Spouse
@@ -2958,7 +3063,9 @@ class UsersHandle extends Controller
                 "membership_category" => $request->membership_category,
                 'email_verified' => $emailVerified,
                 "date_of_birth" => $request->date_of_birth,
-                "place_of_birth" => $request->place_of_birth,
+                "place_of_birth" =>
+                    $request->place_of_birth,
+                "contact_no" => $request->contact_no,
                 "sex" => $request->sex,
                 "civil_status" => $request->civil_status,
                 "citizenship" => $request->citizenship, // ← add this

@@ -187,103 +187,114 @@
 
         {{-- RIGHT PANEL / FORM --}}
         <div class="form-box-parent">
-            <div class="form-parent">
-
-                <!-- <div class="nav-logo">
-                    <img src="images/logo2.png" alt="">
-
-                    <h3>KPMPCATS</h3>
-                </div> -->
-
-                <div class="nav-form">
-                    <!-- <div class="nav-tag">Member Access</div> -->
-                    <div class="nav-tag">
-                        <a href="{{ route("index") }}">
-                            <img src="images/logo2.png" alt="">
-                            <h3>KPMPCATS</h3>
-                        </a>
+            <div class="form-sub-box">
+                {{-- <div class="blob-large"></div>
+                <div class="blob-large-2"></div>
+                <div class="blob-large-3"></div>
+                <div class="blob-large-4"></div>
+                <div class="blob-large-5"></div>
+                <div class="blob-large-6"></div>
+                <div class="blob-small"></div>
+                <div class="blob-small-2"></div>
+                <div class="blob-clip"></div> --}}
+                <div class="form-parent">
+                    <div class="form-wave"></div>
+                    {{-- <div class="background-form">
+                        <div class="overlay"></div>
+                    </div> --}}
+                    <div class="nav-form">
+                        <div class="nav-tag">
+                            <a href="{{ route("index") }}">
+                                <img src="images/logo5.jpg" alt="">
+                                <h3>KPMPCATS</h3>
+                            </a>
+                        </div>
+                        <h1>Sign in to your <b>account</b></h1>
+                        <p>Enter your credentials to access the member portal.</p>
+                        <div class="form-nav-divider"></div>
                     </div>
-                    <h1 class="text-left">Sign in to your <b>account</b></h1>
-                    <p class="text-left">Enter your credentials to access the member portal.</p>
-                    <div class="form-nav-divider"></div>
+
+                    <div class="body-background">
+
+
+                        <form action="{{ route("UserLogin") }}" method="post">
+                            @csrf
+                            <div class="form-sub-parent">
+                                @if ($errors->any())
+                                    <div
+                                        style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:4px; padding:0.8rem 1rem; margin: 1rem 0 1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                        {{ $errors->first('login') }}
+                                    </div>
+                                @endif
+
+                                <div class="form-input">
+                                    <label>Email Address</label>
+                                    <div style="position: relative;">
+                                        <div class="envelope" style="position: absolute; left: 16px; top: 36.2%;">
+                                            <i class="fa fa-envelope"></i>
+                                        </div>
+                                        <input type="text" name="login" value="{{ old('login') }}"
+                                            placeholder="Enter your email" class="mt-2" required>
+                                        <div class="focus-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-input">
+                                    <label>Password</label>
+                                    <div style="position: relative;">
+                                        <div class="lock" style="position: absolute; left: 16px; top: 36.2%;">
+                                            <i class="fa fa-lock"></i>
+                                        </div>
+                                        <input type="password" name="password" id="login-password"
+                                            placeholder="Enter your password" class="mt-2" style="padding-right: 40px;"
+                                            required>
+                                        <div class="focus-bar"></div>
+                                        <span onclick="toggleLoginPassword()"
+                                            style="position: absolute; right: 12px; top: 60%; transform: translateY(-50%); cursor: pointer; color: #888;">
+                                            <i class="fa fa-eye" id="eye-login"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 tw:flex tw:justify-end form-forgot">
+                                    <a href="#">Forgot Password</a>
+                                </div>
+
+                                <div class="mt-4 form-button">
+                                    <button class="tw:w-full tw:py-1.5 tw:bg-black fw-bold tw:hover:bg-gray-700"
+                                        id="login" type="submit">
+                                        <span>Sign In</span>
+                                        <i class="fa fa-arrow-right"></i>
+                                    </button>
+                                </div>
+
+                                <div class="text-center form-change">
+                                    <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply Membership
+                                            <i class="fa fa-arrow-right"></i></a></label>
+                                </div>
+
+                                {{-- <div class="form-divider"></div> --}}
+
+                                {{-- <div class="other-spec">
+                                    <div class="spec">
+                                        <span>12k+</span>
+                                        <p>Members</p>
+                                    </div>
+                                    <div class="spec">
+                                        <span>99.9%</span>
+                                        <p>Uptime</p>
+                                    </div>
+                                    <div class="spec">
+                                        <span>256-bit</span>
+                                        <p>Encryption</p>
+                                    </div>
+                                </div> --}}
+
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
-                <form action="{{ route("UserLogin") }}" method="post">
-                    @csrf
-                    <div class="form-sub-parent">
-                        @if ($errors->any())
-                            <div
-                                style="background:#fef0f0; border:1.5px solid #f5c6c6; border-radius:4px; padding:0.8rem 1rem; margin: 1rem 0 1rem; font-size:0.85rem; color:#e03131; font-weight:600;">
-                                <i class="fa-solid fa-circle-xmark"></i>
-                                {{ $errors->first('login') }}
-                            </div>
-                        @endif
-
-                        <div class="form-input">
-                            <label>Email Address</label>
-                            <div style="position: relative;">
-                                <div class="envelope" style="position: absolute; left: 16px; top: 36.2%;">
-                                    <i class="fa fa-envelope"></i>
-                                </div>
-                                <input type="text" name="login" value="{{ old('login') }}"
-                                    placeholder="Enter your email" class="mt-2" required>
-                                <div class="focus-bar"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-input">
-                            <label>Password</label>
-                            <div style="position: relative;">
-                                <div class="lock" style="position: absolute; left: 16px; top: 36.2%;">
-                                    <i class="fa fa-lock"></i>
-                                </div>
-                                <input type="password" name="password" id="login-password"
-                                    placeholder="Enter your password" class="mt-2" style="padding-right: 40px;"
-                                    required>
-                                <div class="focus-bar"></div>
-                                <span onclick="toggleLoginPassword()"
-                                    style="position: absolute; right: 12px; top: 60%; transform: translateY(-50%); cursor: pointer; color: #888;">
-                                    <i class="fa fa-eye" id="eye-login"></i>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 tw:flex tw:justify-end form-forgot">
-                            <a href="#">Forgot Password</a>
-                        </div>
-
-                        <div class="mt-4 form-button">
-                            <button class="tw:w-full tw:py-1.5 tw:bg-black fw-bold tw:hover:bg-gray-700" id="login"
-                                type="submit">
-                                <span>Sign In</span>
-                                <i class="fa fa-arrow-right"></i>
-                            </button>
-                        </div>
-
-                        <div class="text-center form-change">
-                            <label>Don't have an account? <a href="{{ route("RegisterPage") }}">Apply Membership <i
-                                        class="fa fa-arrow-right"></i></a></label>
-                        </div>
-
-                        {{-- <div class="form-divider"></div> --}}
-
-                        {{-- <div class="other-spec">
-                            <div class="spec">
-                                <span>12k+</span>
-                                <p>Members</p>
-                            </div>
-                            <div class="spec">
-                                <span>99.9%</span>
-                                <p>Uptime</p>
-                            </div>
-                            <div class="spec">
-                                <span>256-bit</span>
-                                <p>Encryption</p>
-                            </div>
-                        </div> --}}
-
-                    </div>
-                </form>
             </div>
         </div>
 

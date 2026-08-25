@@ -16,6 +16,7 @@ class NavbarComposer
             $view->with([
                 'navMissingCount' => 0,
                 'navNotifications' => collect(),
+                'navUnreadCount' => 0, // ★ ADD THIS
             ]);
             return;
         }
@@ -57,9 +58,13 @@ class NavbarComposer
         if (empty($membergovernIds->tin_id))
             $navMissingCount++;
 
+        $navNotifications = app(UsersHandle::class)->buildMemberNotifications($userId); // ★ pull out to a variable
+        $navUnreadCount = $navNotifications->where('is_read', false)->count(); // ★ ADD THIS
+
         $view->with([
             'navMissingCount' => $navMissingCount,
-            'navNotifications' => app(UsersHandle::class)->buildMemberNotifications($userId),
+            'navNotifications' => $navNotifications,
+            'navUnreadCount' => $navUnreadCount, // ★ ADD THIS
         ]);
     }
 }

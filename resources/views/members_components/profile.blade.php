@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Profile</title>
 
     {{-- AOS animation link css --}}
@@ -129,6 +130,11 @@
                                 <div class="information">
                                     <span>Date of Birth</span>
                                     <strong>{{ $otherinfo->date_of_birth ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Place of Birth</span>
+                                    <strong>{{ $otherinfo->place_of_birth ?? 'N/A' }}</strong>
                                 </div>
 
                                 <div class="information">
@@ -270,6 +276,34 @@
                                 @endforeach
                             </div>
                         </div>
+
+                        <div class="personal-information-1">
+                            <div class="personal-information-header">
+                                <div class="header-text">
+                                    <div class="header-icon">
+                                        <i class="fa fa-car"></i>
+                                    </div>
+                                    <h4>Vehicle Information</h4>
+                                </div>
+                            </div>
+                            <div class="personal-information-body document-body">
+                                @php
+                                    $vehiclesByType = $vehicles->groupBy('vehicle_type');
+                                @endphp
+                                @forelse($vehiclesByType as $type => $plates)
+                                    <div class="doc-row">
+                                        <i class="fa fa-car-side doc-icon"></i>
+                                        <div class="doc-name">{{ $type }} ({{ $plates->count() }})</div>
+                                        <div class="doc-meta">{{ $plates->pluck('plate_no')->implode(', ') }}</div>
+                                    </div>
+                                @empty
+                                    <div class="doc-row">
+                                        <div class="doc-name" style="color: var(--muted); font-weight: 400;">No
+                                            vehicles on file</div>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
                     </div>
                     <div class="personal-sub-information">
                         <div class="personal-information-2">
@@ -370,6 +404,47 @@
 
                             </div>
                         </div>
+                        <div class="personal-information-2">
+                            <div class="personal-information-header">
+                                <div class="header-text">
+                                    <div class="header-icon">
+                                        <i class="fa fa-heart"></i>
+                                    </div>
+                                    <h4>Family Background</h4>
+                                </div>
+                            </div>
+                            <div class="personal-information-body family-information-body">
+                                <div class="information">
+                                    <span>Spouse Name</span>
+                                    <strong>{{ $family->spouse_name ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Spouse Date of Birth</span>
+                                    <strong>{{ $family->spouse_date_birth ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Spouse Place of Birth</span>
+                                    <strong>{{ $family->spouse_place_birth ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Number of Sons</span>
+                                    <strong>{{ $family->number_son ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Number of Daughters</span>
+                                    <strong>{{ $family->number_daughter ?? 'N/A' }}</strong>
+                                </div>
+
+                                <div class="information">
+                                    <span>Other Specification</span>
+                                    <strong>{{ $family->other_spec ?? 'N/A' }}</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -392,105 +467,122 @@
                         <i class="fa fa-times"></i>
                     </button>
                 </div>
-                <div class="modal-body sm-modal-body" style="max-height: 68vh; overflow-y: auto;">
-                    <form action="{{ route('UpdateProfileMember') }}" method="POST" enctype="multipart/form-data"
-                        id="personalInfoForm">
-                        @csrf
+                <form action="{{ route('UpdateProfileMember') }}" method="POST" enctype="multipart/form-data"
+                    id="personalInfoForm">
+                    @csrf
+                    <div class="modal-body sm-modal-body" style="max-height: 68vh; overflow-y: auto; padding: 0;">
+
                         <input type="hidden" name="_form" value="personal">
 
-                        <div class="sm-field-row">
-                            <div class="sm-field">
-                                <label class="sm-label">First Name</label>
-                                <input type="text" name="first_name" class="sm-input"
-                                    value="{{ $user->first_name ?? '' }}">
+                        <div class="modal-body-form">
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">First Name</label>
+                                    <input type="text" name="first_name" class="sm-input"
+                                        value="{{ $user->first_name ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Middle Name</label>
+                                    <input type="text" name="middle_name" class="sm-input"
+                                        value="{{ $user->middle_name ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Last Name</label>
+                                    <input type="text" name="last_name" class="sm-input"
+                                        value="{{ $user->last_name ?? '' }}">
+                                </div>
                             </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Middle Name</label>
-                                <input type="text" name="middle_name" class="sm-input"
-                                    value="{{ $user->middle_name ?? '' }}">
+
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">Contact Number</label>
+                                    <input type="text" name="contact_no" class="sm-input"
+                                        value="{{ $otherinfo->contact_no ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Date of Birth</label>
+                                    <input type="date" name="date_of_birth" class="sm-input"
+                                        value="{{ $otherinfo->date_of_birth ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Place of Birth</label>
+                                    <input type="text" name="place_of_birth" class="sm-input"
+                                        value="{{ $otherinfo->place_of_birth ?? '' }}">
+                                </div>
                             </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Last Name</label>
-                                <input type="text" name="last_name" class="sm-input"
-                                    value="{{ $user->last_name ?? '' }}">
+
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">Sex</label>
+                                    <select name="sex" class="sm-input">
+                                        <option value="">Select</option>
+                                        <option value="Male" {{ ($otherinfo->sex ?? '') == 'Male' ? 'selected' : '' }}>
+                                            Male
+                                        </option>
+                                        <option value="Female" {{ ($otherinfo->sex ?? '') == 'Female' ? 'selected' : '' }}>
+                                            Female</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">Civil Status</label>
+                                    <select name="civil_status" class="sm-input">
+                                        <option value="">Select</option>
+                                        <option value="Single" {{ ($otherinfo->civil_status ?? '') == 'Single' ? 'selected' : '' }}>Single</option>
+                                        <option value="Married" {{ ($otherinfo->civil_status ?? '') == 'Married' ? 'selected' : '' }}>Married</option>
+                                        <option value="Widowed" {{ ($otherinfo->civil_status ?? '') == 'Widowed' ? 'selected' : '' }}>Widowed</option>
+                                        <option value="Divorced" {{ ($otherinfo->civil_status ?? '') == 'Divorced' ? 'selected' : '' }}>Divorced</option>
+                                    </select>
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Citizenship</label>
+                                    <input type="text" name="citizenship" class="sm-input"
+                                        value="{{ $otherinfo->citizenship ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Blood Type</label>
+                                    <input type="text" name="blood_type" class="sm-input"
+                                        value="{{ $otherinfo->blood_type ?? '' }}">
+                                </div>
+                            </div>
+
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">Height</label>
+                                    <input type="text" name="height" class="sm-input"
+                                        value="{{ $otherinfo->height ?? '' }}">
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Weight</label>
+                                    <input type="text" name="weight" class="sm-input"
+                                        value="{{ $otherinfo->weight ?? '' }}">
+                                </div>
+                            </div>
+
+                            <div class="sm-field-row">
+                                <div class="sm-field">
+                                    <label class="sm-label">Present Address</label>
+                                    <textarea name="present_address" class="sm-input"
+                                        rows="2">{{ $otherinfo->present_address ?? '' }}</textarea>
+                                </div>
+                                <div class="sm-field">
+                                    <label class="sm-label">Permanent Address</label>
+                                    <textarea name="permanent_address" class="sm-input"
+                                        rows="2">{{ $otherinfo->permanent_address ?? '' }}</textarea>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="sm-field-row">
-                            <div class="sm-field">
-                                <label class="sm-label">Contact Number</label>
-                                <input type="text" name="contact_no" class="sm-input"
-                                    value="{{ $otherinfo->contact_no ?? '' }}">
-                            </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Date of Birth</label>
-                                <input type="date" name="date_of_birth" class="sm-input"
-                                    value="{{ $otherinfo->date_of_birth ?? '' }}">
-                            </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Sex</label>
-                                <select name="sex" class="sm-input">
-                                    <option value="">Select</option>
-                                    <option value="Male" {{ ($otherinfo->sex ?? '') == 'Male' ? 'selected' : '' }}>Male
-                                    </option>
-                                    <option value="Female" {{ ($otherinfo->sex ?? '') == 'Female' ? 'selected' : '' }}>
-                                        Female</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="sm-field-row">
-                            <div class="sm-field">
-                                <label class="sm-label">Civil Status</label>
-                                <select name="civil_status" class="sm-input">
-                                    <option value="">Select</option>
-                                    <option value="Single" {{ ($otherinfo->civil_status ?? '') == 'Single' ? 'selected' : '' }}>Single</option>
-                                    <option value="Married" {{ ($otherinfo->civil_status ?? '') == 'Married' ? 'selected' : '' }}>Married</option>
-                                    <option value="Widowed" {{ ($otherinfo->civil_status ?? '') == 'Widowed' ? 'selected' : '' }}>Widowed</option>
-                                    <option value="Divorced" {{ ($otherinfo->civil_status ?? '') == 'Divorced' ? 'selected' : '' }}>Divorced</option>
-                                </select>
-                            </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Citizenship</label>
-                                <input type="text" name="citizenship" class="sm-input"
-                                    value="{{ $otherinfo->citizenship ?? '' }}">
-                            </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Blood Type</label>
-                                <input type="text" name="blood_type" class="sm-input"
-                                    value="{{ $otherinfo->blood_type ?? '' }}">
-                            </div>
+                        <div class="modal-footer-form">
+                            <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="sm-btn-confirm"><i class="fa fa-check"></i> Confirm
+                                Changes</button>
                         </div>
-
-                        <div class="sm-field-row">
-                            <div class="sm-field">
-                                <label class="sm-label">Height</label>
-                                <input type="text" name="height" class="sm-input"
-                                    value="{{ $otherinfo->height ?? '' }}">
-                            </div>
-                            <div class="sm-field">
-                                <label class="sm-label">Weight</label>
-                                <input type="text" name="weight" class="sm-input"
-                                    value="{{ $otherinfo->weight ?? '' }}">
-                            </div>
-                        </div>
-
-                        <div class="sm-field">
-                            <label class="sm-label">Present Address</label>
-                            <textarea name="present_address" class="sm-input"
-                                rows="2">{{ $otherinfo->present_address ?? '' }}</textarea>
-                        </div>
-                        <div class="sm-field">
-                            <label class="sm-label">Permanent Address</label>
-                            <textarea name="permanent_address" class="sm-input"
-                                rows="2">{{ $otherinfo->permanent_address ?? '' }}</textarea>
-                        </div>
-
-                        <button type="submit" class="sm-btn-confirm"><i class="fa fa-check"></i> Confirm
-                            Changes</button>
-                        <button type="button" class="sm-btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                    </form>
-                </div>
+                    </div>
+                </form>
 
                 @if ($errors->any() && old('_form') === 'personal')
                     <div class="alert alert-danger" style="border-radius:10px; font-size:13px; margin-bottom:1rem;">

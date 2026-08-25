@@ -71,8 +71,10 @@ Route::get('/share-capital', [ShareCapital::class, 'memberIndex'])
     ->name("ShareCapitalMember")
     ->middleware('auth');
 
+Route::post('/notifications/mark-read', [UsersHandle::class, 'MarkNotificationRead'])->name('notifications.markRead');
+
 // Loan Status page GET
-Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus");
+// Route::get("/loan-status", [UsersHandle::class, "LoanStatus"])->name("LoanStatus");
 
 // Profile Member page GET
 Route::get("/profile-member", [UsersHandle::class, "ProfileMember"])->name("ProfileMember");

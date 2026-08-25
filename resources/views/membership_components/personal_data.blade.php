@@ -175,30 +175,38 @@
                     <div class="col-lg-4 col-md-4 mt-4">
                         <label>Firstname *</label>
                         <input type="text" name="first_name" id="first_name" class="form-control"
-                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())"
+                            required>
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
                         <label>Middlename <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                        <input type="text" name="middle_name" id="middle_name"
-                            class="form-control"
+                        <input type="text" name="middle_name" id="middle_name" class="form-control"
                             oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
                     </div>
                     <div class="col-lg-4 col-md-4 mt-4">
                         <label>Lastname *</label>
                         <input type="text" name="last_name" id="last_name" class="form-control"
-                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())">
+                            oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '').replace(/\b\w/g, c => c.toUpperCase())"
+                            required>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-6 col-md-12 mt-4">
+                    <div class="col-lg-4 col-md-12 mt-4">
+                        <label>Cellphone Number *</label>
+                        <input type="tel" name="contact_no" id="contact_no" class="form-control"
+                            placeholder="09XXXXXXXXX" maxlength="11" required
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <small id="contact_no_error" class="text-danger"></small>
+                    </div>
+                    <div class="col-lg-4 col-md-12 mt-4">
                         <label>Date of Birth *</label>
-                        <input type="date" name="date_of_birth" id="date_birth" class="form-control">
+                        <input type="date" name="date_of_birth" id="date_birth" class="form-control" required>
                         <small id="dob_error" class="text-danger"></small>
                     </div>
-                    <div class="col-lg-6 mt-4">
+                    <div class="col-lg-4 mt-4">
                         <label>Civil Status *</label>
-                        <select name="civil_status" id="civil_status" class="form-select">
+                        <select name="civil_status" id="civil_status" class="form-select" required>
                             <option value="">Select Status</option>
                             <option value="Single">Single</option>
                             <option value="Married">Married</option>
@@ -208,7 +216,7 @@
                     </div>
                     <div class="col-lg-6 mt-4">
                         <label>Place of Birth *</label>
-                        <input type="text" name="place_of_birth" id="place_birth" class="form-control">
+                        <input type="text" name="place_of_birth" id="place_birth" class="form-control" required>
                     </div>
                     <div class="col-lg-6 mt-4">
                         <label>Sex</label>
@@ -272,8 +280,7 @@
 
                     <div class="col-lg-6 mt-4">
                         <label>Skills/Expertise <span style="font-size: 14px; color: #808080;">(Optional)</span></label>
-                        <input type="text" name="skills_expertise" class="form-control"
-                            id="skills_expertise">
+                        <input type="text" name="skills_expertise" class="form-control" id="skills_expertise">
                         <!-- <div class="reminder">
                         <span>(Optional)</span>
                     </div> -->
@@ -313,9 +320,10 @@
         <div class="row">
             <div class="col-lg-4 mt-4">
                 <label>Email *</label>
-                <input type="email" name="email" id="email" class="form-control"
+                {{-- <input type="email" name="email" id="email" class="form-control"
                     pattern="^[a-zA-Z0-9._%+\-]+@gmail\.com$"
-                    title="Only Gmail addresses are allowed (e.g. example@gmail.com)">
+                    title="Only Gmail addresses are allowed (e.g. example@gmail.com)"> --}}
+                <input type="email" name="email" id="email" class="form-control">
                 <div class="reminder">
                     <span>Enter existing email address</span>
                 </div>
@@ -327,7 +335,7 @@
                 <div class="password-wrapper">
                     <input type="password" name="password" id="login-password" class="form-control"
                         style="padding-right: 40px;" autocomplete="new-password"
-                        oninput="checkPasswordStrength(this.value); checkPasswordMatch();">
+                        oninput="checkPasswordStrength(this.value); checkPasswordMatch();" required>
                     <span onclick="toggleLoginPassword()"
                         style="position: absolute; right: 12px; top: 55%; transform: translateY(-50%); cursor: pointer; color: #888;">
                         <i class="fa fa-eye" id="eye-login"></i>
@@ -347,7 +355,8 @@
                 <label>Confirm Password *</label>
                 <div class="password-wrapper">
                     <input type="password" name="password_confirmation" id="login-password-2" class="form-control"
-                        style="padding-right: 40px;" autocomplete="new-password" oninput="checkPasswordMatch();">
+                        style="padding-right: 40px;" autocomplete="new-password" oninput="checkPasswordMatch();"
+                        required>
                     <span onclick="toggleLoginPassword2()"
                         style="position: absolute; right: 12px; top: 55%; transform: translateY(-50%); cursor: pointer; color: #888;">
                         <i class="fa fa-eye" id="eye-login-2"></i>
@@ -408,7 +417,7 @@ Rendered here but immediately moved to
 
             {{-- Icon --}}
             <div
-                style="width:44px; height:44px; border-radius:50%; background: var(--blue); display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+                style="width:44px; height:44px; border-radius:50%; background: var(--teal); display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -429,11 +438,11 @@ Rendered here but immediately moved to
 
             <div class="d-flex gap-2 mt-3">
                 <button id="otp-confirm-btn" type="button"
-                    style="flex:1; height:40px; background: var(--blue); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
+                    style="flex:1; height:40px; background: var(--teal); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer;">
                     Confirm
                 </button>
                 <button id="otp-cancel-btn" type="button"
-                    style="height:40px; flex:1; padding:0 16px; background:transparent; color:var(--blue); border:0.5px solid var(--blue); border-radius:8px; font-size:14px; cursor:pointer;">
+                    style="height:40px; flex:1; padding:0 16px; background:transparent; color:var(--teal); border:0.5px solid var(--teal); border-radius:8px; font-size:14px; cursor:pointer;">
                     Cancel
                 </button>
             </div>

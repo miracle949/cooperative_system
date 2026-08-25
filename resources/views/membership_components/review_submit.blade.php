@@ -41,7 +41,7 @@
         padding-left: 100px;
     }
 
-    #vehicles_review_display{
+    #vehicles_review_display {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -49,7 +49,7 @@
 
     .review-plate-badge {
         /* background: #f0fdf4; */
-        background-color: var(--blue);
+        background-color: var(--teal);
         /* border: 1px solid #bbf7d0; */
         border: 1px solid var(--line);
         /* color: #166534; */
@@ -137,6 +137,10 @@
                             <div class="review mt-3">
                                 <p>Skills/Expertise:</p>
                                 <p id="skills_display"></p>
+                            </div>
+                            <div class="review mt-3">
+                                <p>Cellphone Number:</p>
+                                <p id="contact_no_display"></p>
                             </div>
                         </div>
                     </div>
@@ -259,8 +263,10 @@
 
         <div class="row">
             <div class="col-lg-12 mt-4">
-                <div class="card py-3 px-4" style="background: rgba(245, 166, 35, .18); border: none; border-radius: 10px;">
-                    <p class="m-0" style="font-size: 14.5px; color: var(--gold);"><b>Note:</b> By submitting this application, you authorize
+                <div class="card py-3 px-4"
+                    style="background: rgba(245, 166, 35, .18); border: none; border-radius: 10px;">
+                    <p class="m-0" style="font-size: 14.5px; color: var(--gold);"><b>Note:</b> By submitting this
+                        application, you authorize
                         the cooperative to verify the information provided and to conduct necessary background checks as
                         required by law.</p>
                 </div>

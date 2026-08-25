@@ -62,10 +62,10 @@
                 <button type="button" onclick="toggleNavNotif(event)"
                     style="background:none; border:none; cursor:pointer; position:relative; padding:4px; display:flex; align-items:center;">
                     <i class="fa-solid fa-bell" style="font-size: 17px; color: var(--muted);"></i>
-                    @if($navNotifications->count() > 0)
+                    @if(($navUnreadCount ?? 0) > 0)
                         <span
                             style="position:absolute; top:-4px; right:-4px; background:#dc2626; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; line-height:1;">
-                            {{ $navNotifications->count() }}
+                            {{ $navUnreadCount ?? 0 }}
                         </span>
                     @endif
                 </button>
@@ -77,7 +77,9 @@
                     </div>
                     <div style="max-height:360px; overflow-y: scroll;">
                         @forelse($navNotifications as $n)
-                            <div style="display:flex; gap:10px; padding:12px 16px; border-bottom:1px solid #f5f5f5;">
+                            <a href="{{ $n['url'] }}" class="nb-notif-item" data-key="{{ $n['key'] }}"
+                                onclick="return handleNotifClick(event, this)"
+                                style="display:flex; gap:10px; padding:12px 16px; border-bottom:1px solid #f5f5f5; text-decoration:none; color:inherit; {{ $n['is_read'] ? 'opacity:0.55;' : '' }}">
                                 <div
                                     style="width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background: {{ $n['color'] === 'red' ? '#fee2e2' : ($n['color'] === 'gold' ? '#fef3c7' : '#d1fae5') }};">
                                     <i class="fa-solid {{ $n['icon'] }}"
@@ -87,10 +89,11 @@
                                     <p style="margin:0; font-size:13px; font-weight:600; color:#1a1a1a;">{{ $n['title'] }}
                                     </p>
                                     <p style="margin:2px 0 0; font-size:12px; color:#666; line-height:1.4;">
-                                        {{ $n['message'] }}</p>
+                                        {{ $n['message'] }}
+                                    </p>
                                     <p style="margin:4px 0 0; font-size:11px; color:#999;">{{ $n['time'] }}</p>
                                 </div>
-                            </div>
+                            </a>
                         @empty
                             <div style="padding:30px 16px; text-align:center; color:#999; font-size:13px;">
                                 <i class="fa-regular fa-bell-slash"
@@ -245,6 +248,49 @@
 
             sidebar.classList.toggle('collapsed');
             rightbar.classList.toggle('expanded');
+        }
+    </script>
+
+    <script>
+        function handleNotifClick(e, el) {
+            e.preventDefault();
+            const key = el.dataset.key;
+            const url = el.getAttribute('href');
+
+            const csrfTag = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = csrfTag ? csrfTag.content : '';
+
+            if (!csrfToken) {
+                console.warn('CSRF meta tag not found — skipping mark-as-read request.');
+            }
+
+            const finish = () => {
+                const badge = document.querySelector('.nb-notif-wrap span');
+                if (badge && el.dataset.wasRead !== '1') {
+                    const current = parseInt(badge.textContent.trim() || '0', 10);
+                    const next = Math.max(0, current - 1);
+                    if (next === 0) badge.remove(); else badge.textContent = next;
+                }
+                if (url && url !== '#') {
+                    window.location.href = url;
+                }
+            };
+
+            if (!csrfToken) {
+                finish();
+                return false;
+            }
+
+            fetch("{{ route('notifications.markRead') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken
+                },
+                body: JSON.stringify({ key })
+            }).finally(finish);
+
+            return false;
         }
     </script>
 

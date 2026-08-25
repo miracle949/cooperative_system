@@ -864,7 +864,8 @@ div.container-fluid {
     /* color: var(--ink2); */
     background-color: #ffffff;
     padding: 2rem;
-    border: 1px solid var(--line);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border: 1.5px solid var(--border);
     border-radius: 20px;
     margin: 2rem 0 0;
     /* color: var(--text-muted); */
@@ -963,7 +964,7 @@ button {
 .container-fluid .actions .btn-next {
     /* background: #2563eb; */
     /* background-color: #1E4035; */
-    background-color: var(--accent);
+    background-color: var(--teal);
     color: white;
     font-size: 14.5px;
     border-radius: 10px;
@@ -971,7 +972,7 @@ button {
 }
 
 .container-fluid .actions .btn-next:hover {
-    background-color: var(--accent);
+    background-color: var(--teal);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
@@ -990,7 +991,7 @@ button {
 .container-fluid .actions .btn-submit {
     /* background: #16a34a; */
     /* background: #1E4035; */
-    background-color: var(--blue);
+    background-color: var(--teal);
     color: white;
     font-size: 14.5px;
     border-radius: 10px;
@@ -998,7 +999,7 @@ button {
 }
 
 .container-fluid .actions .btn-submit:hover {
-    background-color: var(--accent);
+    background-color: var(--teal);
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(30, 64, 53, 0.25);
 }
@@ -1121,9 +1122,9 @@ button#clear:hover {
     width: 100%;
 }
 
-.review-parent .review-second .review:nth-child(6) p:nth-child(1) {
+/* .review-parent .review-second .review:nth-child(6) p:nth-child(1) {
     width: 102px;
-}
+} */
 
 .review-parent .review-third {
     width: 100%;

@@ -1034,8 +1034,13 @@
 
 
 .container-fluid .nav-acc2 ul li .card-icon {
-    padding: 0rem 0.7rem;
+    /* padding: 0rem 0.7rem; */
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     /* background-color: #F3F4F6; */
     background-color: #EAEDEB;
     /* background-color: #D0D6E4; */
@@ -1044,7 +1049,7 @@
 .container-fluid .nav-acc2 ul li .card-icon .fa {
     /* color: #364153; */
     /* color: var(--green); */
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .container-fluid .nav-acc2 ul li ul li {

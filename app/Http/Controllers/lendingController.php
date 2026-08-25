@@ -490,7 +490,10 @@ class lendingController extends Controller
             }
             $totalInterest = round($totalInterest, 2);
 
-            $totalPayment = round($principal + $totalInterest, 2);
+            // Charges now get repaid on top of principal + interest, in addition to
+// already being withheld from netProceeds at disbursement.
+            $totalCharges = $processingFee + $serviceFee + $loanProtectionFee + $retentionAmount;
+            $totalPayment = round($principal + $totalInterest + $totalCharges, 2);
             $monthlyPayment = $termMonths > 0 ? round($totalPayment / $termMonths, 2) : 0;
 
             lending_program_tbl::create([

@@ -566,7 +566,7 @@ select.form-select{
     font-size: 12.5px;
     /* margin-top: 10px; */
     margin: 0;
-    font-weight: 600;
+    font-weight: normal;
 }
 
 .container-fluid main .card-box:nth-child(1) .card-body span {
@@ -587,7 +587,7 @@ select.form-select{
 
 .container-fluid main .card-box:nth-child(4) .card-body span {
     /* color: #E32626; */
-    color: var(--coral);
+    color: var(--red);
 }
 
 .container-fluid main .card-box .card-sub-header {
@@ -1285,7 +1285,7 @@ select.form-select{
 
 .sm-btn:hover {
     /* background: #2A5C4E; */
-    background-color: var(--blue);
+    background-color: var(--teal);
 }
 
 /* ── Upload Cards ─────────────────────────────────────── */
@@ -1457,6 +1457,15 @@ select.form-select{
     cursor: pointer;
 }
 
+.badge-loan.declined {
+    background: var(--red-tint);
+    color: var(--red);
+}
+
+.badge-loan.declined::before {
+    background: var(--red);
+}
+
 /* ── Share Capital Alert ── */
 
 .sc-parent {
@@ -1614,7 +1623,7 @@ select.form-select{
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 28px;
     /* margin-top: 14px; */
     flex-wrap: wrap;
 }

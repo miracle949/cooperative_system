@@ -418,6 +418,24 @@
     gap: 20px 24px;
 }
 
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .family-information-body{
+    display: flex;
+    flex-direction: column;
+}
+
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .family-information-body span{
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--muted);
+}
+
+.container-fluid .rightbar .main-parent .parent-information .personal-information-2 .family-information-body strong{
+
+    font-size: 14px;
+    color: var(--teal);
+}
+
 .container-fluid .rightbar .main-parent .parent-information .personal-information-1 .more-button {
     /* position: absolute;
     right: 25px;
@@ -842,6 +860,7 @@ label {
 
 .sm-field-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 0;
 }
@@ -852,7 +871,7 @@ label {
 }
 
 .sm-field {
-    margin-bottom: 1.1rem;
+    margin-top: 1.1rem;
 }
 
 .sm-label {
@@ -870,7 +889,7 @@ label {
     border-radius: 10px;
     border: 1.5px solid #e0e0e0;
     height: 46px;
-    font-size: 14px;
+    font-size: 13.5px;
     color: #333;
     padding: 0 14px;
     box-sizing: border-box;
@@ -884,7 +903,7 @@ textarea.sm-input {
 
 .sm-input-prefix {
     position: absolute;
-    left: 14px;
+    left: 14px; 
     top: 50%;
     transform: translateY(-50%);
     color: var(--teal, #0f766e);
@@ -903,14 +922,18 @@ textarea.sm-input {
     margin-top: 4px;
 }
 
+.modal-body{
+    padding: 0;
+}
+
 .sm-btn-confirm {
     width: 100%;
     background: var(--navy, #0f1b3d);
     color: #fff;
     border: none;
     border-radius: 10px;
-    height: 48px;
-    font-size: 14px;
+    height: 46px;
+    font-size: 13.5px;
     font-weight: 600;
     margin-top: 0.4rem;
 }
@@ -936,6 +959,18 @@ textarea.sm-input {
         padding: 0;
     }
 } */
+
+.modal-body-form{
+    padding: 20px;
+}
+
+.modal-footer-form{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+    border-top: 1px solid var(--border);
+}
 
 @media only screen and (max-width: 1200px) {
     .container-fluid .rightbar {
