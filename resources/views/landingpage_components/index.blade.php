@@ -354,8 +354,8 @@
                                 <i class="fa fa-chart-simple"></i>
                             </div>
                             <div class="badge-text">
-                                <span>Credit Score</span>
-                                <small>Track your growth</small>
+                                <span>Savings</span>
+                                <small>Manage and grow</small>
                             </div>
                         </div>
                         <div class="badge-parent badge-4">
@@ -465,7 +465,7 @@
         </div> -->
 
         <section id="section3">
-            <div class="section3-parent">
+            <div class="section3-parent" id="section3-parent">
                 <div class="section-image reveal reveal-delay-1">
                     <!-- <img src="images/benefits.jpg" alt=""> -->
                     <img src="images/about-us.jpg" alt="">
@@ -558,7 +558,7 @@
             </div>
         </section>
 
-        <div class="how-it-works-parent">
+        <div class="how-it-works-parent" id="how-it-works-parent">
             <div class="how-it-works">
                 <div class="how-it-works-header">
                     <div class="how-it-card-tag">How it Works</div>
