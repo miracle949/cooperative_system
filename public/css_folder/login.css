@@ -559,7 +559,12 @@ div.container-fluid {
     position: relative;
     /* overflow: hidden; */
     /* background-color: #F5F6FA; */
-    background-color: #FBFBFD;
+    /* background-color: #FBFBFD; */
+    /* background-image: url('../images/loginImage5.jpg');
+    background-position: center;
+    background-size: cover;
+    background-position: no-repeat;
+    position: relative; */
     /* background-color: var(--ice); */
     /* background-color: var(--ice); */
     /* background-color: var(--cyan); */
@@ -574,6 +579,29 @@ div.container-fluid {
     /* Custom scrollbar */
     /* scrollbar-width: thin;
     scrollbar-color: rgba(245, 166, 35, .3) transparent; */
+}
+
+/* image layer — fixed to viewport, never scrolls */
+.container-fluid .form-box-parent::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url('../images/loginImage4.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* dark tint layer — also fixed, sits above the image */
+.container-fluid .form-box-parent::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 100%);
+    z-index: 1;
+    pointer-events: none;
 }
 
 /* .container-fluid .form-box-parent .form-sub-box{

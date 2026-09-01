@@ -1301,6 +1301,41 @@
             </div>
         </section>
 
+        <div class="officers-section">
+            <div class="officers-header">
+                <div class="officers-tag">Officers</div>
+                <h2>Meet the <b>Team</b></h2>
+                <p>The dedicated leaders guiding KPMPCATS toward sustainable growth and member-first service.</p>
+            </div>
+
+            <div class="officers-grid">
+                @forelse($officers as $officer)
+                    @php
+                        $name = trim(($officer->user->first_name ?? '') . ' ' . ($officer->user->last_name ?? ''));
+                    @endphp
+                    <div class="officer-card reveal">
+                        <div class="officer-avatar">
+                            <i class="fa fa-user"></i>
+                        </div>
+
+                        <h4>{{ $name }}</h4>
+                        <span class="officer-position">{{ $officer->position }}</span>
+
+                        @if($officer->term_start || $officer->term_end)
+                            <p class="officer-term">
+                                {{ $officer->term_start ? $officer->term_start->format('Y') : 'Present' }} –
+                                {{ $officer->term_end ? $officer->term_end->format('Y') : 'Present' }}
+                            </p>
+                        @endif
+                    </div>
+                @empty
+                    <div class="officers-empty">
+                        <p>Leadership information coming soon.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
         <section id="section5">
             <h2 class="text-center">Ready to Join <b>Our Community?</b></h2>
 

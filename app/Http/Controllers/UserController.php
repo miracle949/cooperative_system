@@ -328,7 +328,8 @@ class UserController extends Controller
 
     public function index()
     {
-        return view("landingpage_components.index");
+        $officers = \App\Models\officer_tbl::with('user')->orderBy('sort_order')->get();
+        return view("landingpage_components.index", compact('officers'));
     }
 
     public function RegisterPage()

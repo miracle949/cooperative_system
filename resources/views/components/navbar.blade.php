@@ -17,13 +17,13 @@
                     <a href="#section3" class="tw:no-underline text-decoration-none">About Us</a>
                 </li>
                 <li class="tw:list-none">
-                    <a href="#how-it-works-parent" class="tw:no-underline text-decoration-none">Membership</a>
+                    <a href="#how-it-works-parent" class="tw:no-underline text-decoration-none">Loan Application</a>
                 </li>
                 <li class="tw:list-none">
                     <a href="#products_services" class="tw:no-underline text-decoration-none">Products & Services</a>
                 </li>
                 <li class="tw:list-none">
-                    <a href="{{ route("ContactPage") }}" class="tw:no-underline text-decoration-none">Contact Us</a>
+                    <a href="{{ route("AboutUs") }}" class="tw:no-underline text-decoration-none">Contact Us</a>
                 </li>
             </ul>
         </div>
