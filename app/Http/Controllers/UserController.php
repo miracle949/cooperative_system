@@ -318,13 +318,7 @@ class UserController extends Controller
 
     public function UserDirection()
     {
-        $officers = \App\Models\officer_tbl::with('user')->orderBy('sort_order')->get();
-
-        $loansApprovedThisYear = \App\Models\lending_program_tbl::where('status', 'Approved')
-            ->whereYear('created_at', now()->year)
-            ->count();
-
-        return view("landingpage_components.index", compact('officers', 'loansApprovedThisYear'));
+        return view("landingpage_components.index");
     }
 
     public function LoginPage()
@@ -335,12 +329,7 @@ class UserController extends Controller
     public function index()
     {
         $officers = \App\Models\officer_tbl::with('user')->orderBy('sort_order')->get();
-
-        $loansApprovedThisYear = \App\Models\lending_program_tbl::where('status', 'Approved')
-            ->whereYear('created_at', now()->year)
-            ->count();
-
-        return view("landingpage_components.index", compact('officers', 'loansApprovedThisYear'));
+        return view("landingpage_components.index", compact('officers'));
     }
 
     public function RegisterPage()
@@ -1099,12 +1088,8 @@ class UserController extends Controller
         $statusFilter = $request->get('status', 'all');
         $search = $request->get('search', '');
 
-        $query = lending_program_tbl::with([
-            'user',
-            'repayments' => function ($q) {
-                $q->select('id', 'lending_id', 'payment_number');
-            }
-        ]);
+        $query = lending_program_tbl::with(['user', 'repayments' => function ($q) {
+            $q->select('id', 'lending_id', 'payment_number'); }]);
 
         if ($statusFilter !== 'all') {
             $query->where('status', ucfirst($statusFilter));

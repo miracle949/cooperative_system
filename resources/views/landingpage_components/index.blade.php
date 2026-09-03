@@ -212,8 +212,7 @@
                                     <div class="profile"></div>
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year
-                                    </p>
+                                    <p><b>12,000+</b> loans approved this year</p>
                                 </div>
                             </div>
                         </div>
@@ -240,12 +239,13 @@
 
                             <div class="member-parent">
                                 <div class="profile-parent">
-                                    @for ($i = 1; $i <= max(1, min(4, $loansApprovedThisYear ?? 0)); $i++)
-                                        <div class="profile"></div>
-                                    @endfor
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
+                                    <div class="profile"></div>
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year</p>
+                                    <p><b>12,000+</b> loans approved this year</p>
                                 </div>
                             </div>
                         </div>
@@ -465,7 +465,7 @@
         </div> -->
 
         <section id="section3">
-            <div class="section3-parent" id="about-us">
+            <div class="section3-parent" id="section3-parent">
                 <div class="section-image reveal reveal-delay-1">
                     <!-- <img src="images/benefits.jpg" alt=""> -->
                     <img src="images/about-us.jpg" alt="">
@@ -558,7 +558,7 @@
             </div>
         </section>
 
-        <div class="how-it-works-parent" id="how-it-works">
+        <div class="how-it-works-parent" id="how-it-works-parent">
             <div class="how-it-works">
                 <div class="how-it-works-header">
                     <div class="how-it-card-tag">How it Works</div>
@@ -1188,7 +1188,7 @@
 
         <section id="section4">
 
-            <div class="section4-parent" id="stories">
+            <div class="section4-parent">
                 <div class="header">
                     <!-- <span>Member Stories</span> -->
                     <div class="section4-tag">Member Stories</div>

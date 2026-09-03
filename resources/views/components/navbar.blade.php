@@ -14,16 +14,16 @@
                     <a href="{{ route("index") }}" class="tw:no-underline text-decoration-none">Home</a>
                 </li>
                 <li class="tw:list-none">
-                    <a href="#about-us" class="tw:no-underline text-decoration-none">About Us</a>
+                    <a href="#section3" class="tw:no-underline text-decoration-none">About Us</a>
                 </li>
                 <li class="tw:list-none">
-                    <a href="#how-it-works" class="tw:no-underline text-decoration-none">How it Works</a>
+                    <a href="#how-it-works-parent" class="tw:no-underline text-decoration-none">Loan Application</a>
                 </li>
                 <li class="tw:list-none">
                     <a href="#products_services" class="tw:no-underline text-decoration-none">Products & Services</a>
                 </li>
                 <li class="tw:list-none">
-                    <a href="#stories" class="tw:no-underline text-decoration-none">Stories</a>
+                    <a href="{{ route("AboutUs") }}" class="tw:no-underline text-decoration-none">Contact Us</a>
                 </li>
             </ul>
         </div>
