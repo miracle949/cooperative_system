@@ -206,13 +206,13 @@
 
                             <div class="member-parent">
                                 <div class="profile-parent">
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
+                                    @for ($i = 1; $i <= max(1, min(4, $loansApprovedThisYear ?? 0)); $i++)
+                                        <div class="profile"></div>
+                                    @endfor
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>12,000+</b> loans approved this year</p>
+                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -239,13 +239,13 @@
 
                             <div class="member-parent">
                                 <div class="profile-parent">
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
+                                    @for ($i = 1; $i <= max(1, min(4, $loansApprovedThisYear ?? 0)); $i++)
+                                        <div class="profile"></div>
+                                    @endfor
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>12,000+</b> loans approved this year</p>
+                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -272,13 +272,13 @@
 
                             <div class="member-parent">
                                 <div class="profile-parent">
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
+                                    @for ($i = 1; $i <= max(1, min(4, $loansApprovedThisYear ?? 0)); $i++)
+                                        <div class="profile"></div>
+                                    @endfor
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>12,000+</b> loans approved this year</p>
+                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -306,13 +306,13 @@
 
                             <div class="member-parent">
                                 <div class="profile-parent">
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
-                                    <div class="profile"></div>
+                                    @for ($i = 1; $i <= max(1, min(4, $loansApprovedThisYear ?? 0)); $i++)
+                                        <div class="profile"></div>
+                                    @endfor
                                 </div>
                                 <div class="profile-text">
-                                    <p><b>12,000+</b> loans approved this year</p>
+                                    <p><b>{{ number_format($loansApprovedThisYear ?? 0) }}+</b> loans approved this year
+                                    </p>
                                 </div>
                             </div>
                         </div>
