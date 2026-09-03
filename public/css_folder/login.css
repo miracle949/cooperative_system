@@ -1410,3 +1410,11 @@ div.container-fluid {
         padding: 1.3rem;
     }
 }
+
+@media only screen and (min-height: 800px){
+    .container-fluid .form-box-parent{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
