@@ -11,8 +11,10 @@
     right: 0;
     bottom: 0;
     background-color: var(--teal);
-    opacity: 0.55;              /* tint strength — tune to taste, 0.4–0.65 usually looks good */
-    border-radius: inherit;     /* keep the rounded top corners */
+    opacity: 0.55;
+    /* tint strength — tune to taste, 0.4–0.65 usually looks good */
+    border-radius: inherit;
+    /* keep the rounded top corners */
     pointer-events: none;
 }
 
@@ -659,6 +661,7 @@ div.container-fluid {
     /* background-color: var(--teal); */
     /* margin-top: 5rem; */
 }
+
 /* 
 .form-wave {
     position: absolute;
@@ -1408,5 +1411,13 @@ div.container-fluid {
 
     .container-fluid .form-parent {
         padding: 1.3rem;
+    }
+}
+
+@media only screen and (min-height: 800px) {
+    .container-fluid .form-box-parent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
